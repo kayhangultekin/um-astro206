@@ -19,4 +19,4 @@ This landing page has not been written yet.
 
 ## Lectures
 
-- [Special relativity: simultaneity, time dilation, and $E = mc^2$](lectures/special-relativity/lecture_notes.qmd)
+- [Special relativity: simultaneity, time dilation, and $E = mc^2$](lectures/special-relativity/index.qmd)

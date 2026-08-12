@@ -33,6 +33,20 @@ jobs:
       # incompatible with the in_class symlink swap. See the course playbook, outside this repo.
       - run: pip install -r requirements.txt
 
+      # TEMPORARY: diagnosing a kernel-launch failure on CI. Never fails the
+      # job; remove once the cause is understood.
+      - name: Diagnose Jupyter kernel
+        run: |
+          echo "--- which jupyter ---";        which jupyter || echo "jupyter NOT on PATH"
+          echo "--- kernelspecs ---";          python3 -m jupyter kernelspec list 2>&1 || true
+          echo "--- imports ---"
+          python3 -c "import ipykernel,jupyter_client,nbclient,nbformat,matplotlib;print('ipykernel',ipykernel.__version__);print('jupyter_client',jupyter_client.__version__);print('matplotlib',matplotlib.__version__)" 2>&1 || true
+          echo "--- direct kernel launch ---"
+          timeout 30 python3 -m ipykernel_launcher --help >/dev/null 2>&1 \
+            && echo "ipykernel_launcher OK" || echo "ipykernel_launcher FAILED rc=$?"
+          echo "--- quarto check jupyter ---"; quarto check jupyter 2>&1 || true
+        continue-on-error: true
+
       # HTML ONLY. `quarto render` with no --to would also build the PDF, which
       # is the blackboard document: it contains every "Ask yourself" answer.
       # Publishing it would hand students the answer key.
