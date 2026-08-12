@@ -10,7 +10,19 @@ numpy==2.5.1
 
 # Needed for Quarto's jupyter engine. ipykernel is what registers the "python3"
 # kernelspec that each lecture's YAML asks for by name.
+#
+# This list is not guesswork: it is every third-party import in Quarto's own
+# bridge scripts under <quarto>/share/jupyter/*.py. If a future Quarto version
+# imports something new, the symptom is a render that dies at "Starting python3
+# kernel..." with "Broken pipe (os error 32)" and no other explanation --
+# `quarto check jupyter` prints the real ModuleNotFoundError traceback and then
+# misleadingly reports OK anyway.
+#
+# pyyaml is the easy one to omit. Nothing here depends on it, so it is absent
+# from a minimal install, but Quarto's notebook.py does `from yaml import
+# safe_load`. It is usually present by accident on a developer machine.
 ipykernel==7.1.0
 jupyter-client==8.7.0
 nbclient==0.10.3
 nbformat==5.10.4
+pyyaml==6.0.3
