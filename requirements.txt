@@ -1,0 +1,16 @@
+# Build environment for rendering the lecture notes.
+#
+# Pinned to match Kayhan's local machine as of 2026-08-12. The pin on
+# matplotlib is not cosmetic bookkeeping: different matplotlib versions lay out
+# text differently, and every figure is cropped with savefig.bbox="tight", so an
+# unpinned build silently resizes all six figures. Bump deliberately, and
+# re-render locally when you do.
+matplotlib==3.11.1
+numpy==2.5.1
+
+# Needed for Quarto's jupyter engine. ipykernel is what registers the "python3"
+# kernelspec that each lecture's YAML asks for by name.
+ipykernel==7.1.0
+jupyter-client==8.7.0
+nbclient==0.10.3
+nbformat==5.10.4

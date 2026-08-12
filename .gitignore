@@ -1,0 +1,28 @@
+# Rendered output. The site is published from a build, not from committed HTML.
+/_site/
+/.quarto/
+
+# The blackboard PDFs contain every answer, including the in-class problems.
+# They render into _site/ (already ignored); this is a belt-and-braces net in
+# case anything is ever built in place.
+*.pdf
+
+# Freeze is disabled in _quarto.yml (see the comment there): its hash ignores
+# the in_class symlink, so it silently replays the wrong build in both
+# directions, and an instructor build leaves the answers sitting in _freeze/ as
+# plain text. Ignored here as a second line of defence in case it is ever
+# re-enabled.
+/_freeze/
+
+# NOT ignored, deliberately:
+#
+#   in_class     a committed symlink that must keep pointing at for_students/.
+#                A fresh clone with a dangling link fails the build outright —
+#                including the student HTML — so it cannot be ignored. Local
+#                flips to the instructor tree are hidden per-clone with:
+#                    git update-index --skip-worktree in_class
+#
+# The instructor material itself (../for_me) lives outside this repository
+# entirely, so there is nothing here to ignore.
+
+**/*.quarto_ipynb

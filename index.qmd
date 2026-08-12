@@ -1,0 +1,22 @@
+---
+title: "ASTRO 206 — Black Holes"
+# HTML only: the project-wide format map includes `pdf`, which every page would
+# otherwise inherit. There is no blackboard printout of a landing page.
+format:
+  live-html: default
+---
+
+<!--
+PLACEHOLDER. A Quarto website needs an index page to exist; this is structural
+scaffolding, not content. The words on this page are Kayhan's to write — what
+the course is, how students should use these notes, what to read before which
+lecture.
+-->
+
+::: {.callout-warning title="Placeholder page"}
+This landing page has not been written yet.
+:::
+
+## Lectures
+
+- [Special relativity: simultaneity, time dilation, and $E = mc^2$](lectures/special-relativity/lecture_notes.qmd)

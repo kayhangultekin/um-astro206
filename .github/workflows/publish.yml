@@ -1,0 +1,66 @@
+name: Publish to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never let two publishes race. Do not cancel a run in progress: a half-written
+# Pages deployment is worse than a slightly stale one.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: quarto-dev/quarto-actions/setup@v2
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+          cache: pip
+
+      # Python is required because `freeze` is deliberately disabled -- it is
+      # incompatible with the in_class symlink swap. See the course playbook, outside this repo.
+      - run: pip install -r requirements.txt
+
+      # HTML ONLY. `quarto render` with no --to would also build the PDF, which
+      # is the blackboard document: it contains every "Ask yourself" answer.
+      # Publishing it would hand students the answer key.
+      - run: quarto render --to live-html
+
+      # A fresh clone has in_class -> for_students, so the in-class problems are
+      # empty stubs. Fail loudly if that ever stops being true rather than
+      # publishing instructor material.
+      - name: Verify no instructor content in the built site
+        run: |
+          echo "in_class -> $(readlink in_class)"
+          test "$(readlink in_class)" = "for_students" \
+            || { echo "::error::in_class does not point at for_students"; exit 1; }
+          test -z "$(find _site -name '*.pdf' -print -quit)" \
+            || { echo "::error::a PDF reached _site; it contains answers"; exit 1; }
+          ! grep -rq "Other Formats" _site --include='*.html' \
+            || { echo "::error::an alternate-format link reached _site"; exit 1; }
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

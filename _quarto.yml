@@ -1,0 +1,97 @@
+# ASTRO 206 (Black Holes) — lecture notes.
+#
+# `render:` names pages explicitly. A Quarto project otherwise renders every
+# .qmd it can find, which would build the include fragments under
+# for_students/ as if they were standalone pages.
+
+project:
+  type: website
+  output-dir: _site
+  render:
+    - index.qmd
+    - lectures/special-relativity/index.qmd
+
+# PLACEHOLDER CHROME. Nav design is deliberately deferred to the look-and-feel
+# session: sidebar vs navbar, how students move between lectures, and whether
+# lectures that never get the Quarto treatment appear here at all.
+website:
+  title: "ASTRO 206 — Black Holes"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: lectures/special-relativity/index.qmd
+        text: "Special relativity"
+
+format:
+  live-html:
+    # NEVER remove this. Quarto otherwise renders an "Other Formats -> PDF"
+    # link into every page, and the PDF is the blackboard build: it contains
+    # every "Ask yourself" answer, and in an instructor build the in-class
+    # problems too. One click on a published page would hand students the
+    # answer key. Publishing must also render HTML only (see the CI workflow),
+    # so the file is not sitting there for a guessed URL either.
+    format-links: false
+    theme: [default, quarto-lecnotes.scss]
+    toc: true
+    toc-depth: 3
+    toc-location: left
+    toc-title: "On this page"
+    number-sections: true
+    number-depth: 2
+    html-math-method: mathjax
+    fig-align: center
+    fig-width: 6.5
+    fig-height: 4.0
+    fig-dpi: 115
+    code-fold: true
+    code-summary: "Show the Python"
+    code-tools:
+      source: false
+      toggle: true
+    code-copy: true
+    code-overflow: wrap
+    link-external-newwindow: true
+    smooth-scroll: true
+    grid:
+      margin-width: 320px
+  pdf:
+    documentclass: scrartcl
+    papersize: letter
+    geometry:
+      - margin=1in
+    toc: false          # moved to the back of the document — see the end of this file
+    number-sections: true
+    # The document's top heading level is "##", which LaTeX would number as
+    # subsections (0.1, 0.2, ...). Promote by one so sections number 1, 2, 3.
+    shift-heading-level-by: -1
+    include-in-header:
+      text: |
+        % Running head so every printed sheet identifies itself in the bag.
+        \usepackage{scrlayer-scrpage}
+        \clearpairofpagestyles
+        \KOMAoptions{headsepline=true}
+        \setcounter{tocdepth}{3}
+        \makeatletter
+        \ihead{\normalfont\footnotesize\@subtitle}
+        \ohead{\normalfont\footnotesize\@date}
+        \makeatother
+        \cfoot*{\normalfont\footnotesize\pagemark}
+        \pagestyle{scrheadings}
+    number-depth: 2
+    fig-align: center
+    fig-width: 6.5
+    fig-height: 4.0
+    colorlinks: true
+    echo: false
+crossref:
+  eq-prefix: "Eq."
+# freeze is deliberately OFF. `freeze: auto` is incompatible with the in_class
+# symlink swap: the freeze hash is computed from the .qmd, which never changes
+# when the symlink flips, so a stale build is replayed silently in BOTH
+# directions -- an instructor build loses the problems, and a student build
+# keeps them (and _freeze/ then holds the answers in plain text).
+execute:
+  warning: false
+  message: false
+  freeze: false
