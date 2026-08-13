@@ -7,10 +7,11 @@
 //  │  Body   XCharter      (free Charter; NOT Apple's Charter)       │
 //  │  Heads  EB Garamond   (h2 roman bold, h3 medium italic)         │
 //  │  Code   Inconsolata                                             │
-//  │  Math   MathJax 4 (Quarto 1.10.18 loads mathjax@4/tex-chtml).   │
-//  │         Its default font is mathjax-newcm — New Computer        │
-//  │         Modern. v4 offers 11 fonts and the choice IS            │
-//  │         configurable; the default is currently just unchanged.  │
+//  │  Math   MathJax 4, font `mathjax-termes` — set in _quarto.yml,  │
+//  │         not here, because it is a JS config rather than CSS.    │
+//  │         Figures use matplotlib's "stix" fontset, the closest    │
+//  │         Times-derived neighbour it has. See the lecture's       │
+//  │         setup cell for why that is not an exact match.          │
 //  │  All three are free, and all three ship in MacTeX. The files    │
 //  │  are vendored in fonts/ with their licences.                    │
 //  └─────────────────────────────────────────────────────────────────┘

@@ -38,6 +38,17 @@ format:
     # so the file is not sitting there for a guessed URL either.
     format-links: false
     theme: [default, quarto-lecnotes.scss]
+    # Quarto 1.10.18 loads MathJax *4*, whose maths font is selectable (11 of
+    # them); the default is mathjax-newcm. Termes is chosen because it typesets
+    # best here -- in the other fonts the "s" of \mathrm{cm\,s^{-1}} drops
+    # below the baseline next to the exponent.
+    #
+    # `output.font` is GLOBAL: one maths font per document. This must run
+    # before MathJax, which it does -- Quarto's own <script> carries `defer`,
+    # so it executes only after parsing, and any inline script beats it.
+    include-in-header:
+      - text: |
+          <script>window.MathJax = { output: { font: 'mathjax-termes' } };</script>
     toc: true
     toc-depth: 3
     toc-location: left

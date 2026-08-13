@@ -71,14 +71,19 @@ mpl.rcParams.update({
     "savefig.bbox": "tight",
     "font.family": "serif",
     "font.serif": ["XCharter"],
-    # Matches the maths on the page. Quarto 1.10.18 loads MathJax 4, whose
-    # default font is mathjax-newcm (New Computer Modern), so "cm" is the
-    # matplotlib fontset that agrees with it -- and it ships inside
-    # matplotlib, so it needs nothing vendored.
+    # The page's maths is MathJax's mathjax-termes (set in _quarto.yml), a
+    # Times clone. NOTHING in matplotlib matches it exactly -- matplotlib has
+    # five fontsets and none is Termes -- but "stix" is the closest available
+    # neighbour, because matplotlib's stix is STIXGeneral v1.0, which is also
+    # Times-based. Both sides are therefore Times-derived.
     #
-    # If the page's MathJax font is ever changed (v4 offers 11), change this
-    # with it or the figures will stop agreeing with the prose.
-    "mathtext.fontset": "cm",
+    # Do NOT read "stix" as matching MathJax's mathjax-stix2. That is STIX
+    # *Two* v2.13, a full redesign; matplotlib cannot render it at all, and
+    # side by side the Greek is visibly different.
+    #
+    # If the page's MathJax font changes, revisit this or the figures stop
+    # agreeing with the prose.
+    "mathtext.fontset": "stix",
     "font.size": 11,
     "axes.edgecolor": AXIS,
     "axes.linewidth": 0.8,
