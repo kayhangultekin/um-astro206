@@ -10,6 +10,11 @@ project:
   render:
     - index.qmd
     - lectures/special-relativity/index.qmd
+  # No `resources:` entry for fonts/ is needed. Quarto follows the url()
+  # references in the theme SCSS and copies those files next to the compiled
+  # CSS itself. Adding fonts/ here published a SECOND copy at _site/fonts/,
+  # including the four .otf files that exist only so matplotlib can draw
+  # figure labels at build time and have no business being served.
 
 # PLACEHOLDER CHROME. Nav design is deliberately deferred to the look-and-feel
 # session: sidebar vs navbar, how students move between lectures, and whether
