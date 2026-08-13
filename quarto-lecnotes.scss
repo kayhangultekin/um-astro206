@@ -93,10 +93,23 @@ $bi-key:         'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" wid
 @font-face { font-family: "EB Garamond"; font-weight: 500; font-style: italic;
   src: url("fonts/EBGaramond-MediumItalic.woff2") format("woff2"); font-display: swap; }
 
-@font-face { font-family: "Inconsolata"; font-weight: 400; font-style: normal;
-  src: url("fonts/Inconsolatazi4-Regular.woff2") format("woff2"); font-display: swap; }
-@font-face { font-family: "Inconsolata"; font-weight: 700; font-style: normal;
-  src: url("fonts/Inconsolatazi4-Bold.woff2") format("woff2"); font-display: swap; }
+//  Inconsolata 3.001 — Google's current upstream, a variable font covering
+//  weights 200–900 from one file.
+//
+//  It is here rather than Michael Sharpe's TeX build (Inconsolatazi4) for one
+//  reason: **upright quotes are its DEFAULT**. zi4's quotes are angled, and
+//  although it does carry upright variants, they sit behind stylistic set
+//  ss03 — and a feature-dependent fix is fragile in a way a default is not.
+//  Proof: the first version of this theme shipped zi4 with the quotes silently
+//  broken, because `--layout-features=+kern` had stripped ss03 out of the
+//  subset. Nothing errored. A default cannot fail that way.
+//
+//  Its zero is slashed by default. Two alternates are kept in the subset and
+//  are one line away if ever wanted: `font-feature-settings: "zero" 1` gives a
+//  DOTTED zero (not slashed, despite the tag name), and "ss01" 1 redraws the
+//  asterisk, tilde and caret.
+@font-face { font-family: "Inconsolata"; font-weight: 200 900; font-style: normal;
+  src: url("fonts/Inconsolata-var.woff2") format("woff2"); font-display: swap; }
 
 //  ── body ──────────────────────────────────────────────────────────────
 //  `li:not(.nav-item)` because a panel-tabset's <li class="nav-item"> is
