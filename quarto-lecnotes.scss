@@ -91,6 +91,39 @@ $tab-icon-size:  16px    !default;
 //  knobs"). Re-measure if a tab is ever renamed.
 $tab-label-max: 96px !default;
 
+//  ┌─ NAVBAR ─────────────────────────────────────────────────────────┐
+//  │  Serif throughout, on a tint the width of the window with a       │
+//  │  hairline under it. The tint ALONE is not an edge — #F4F4F2 on    │
+//  │  white measures 1.101:1 — so the rule is doing the boundary work  │
+//  │  and the two ship together. Never the tint on its own.            │
+//  │  Contrast on the tint: brand 17.15:1, links 11.47:1, hover        │
+//  │  19.07:1, search icon 6.77:1. All clear WCAG AA, and the nav is   │
+//  │  NOT "large text" (that needs 24px, or 18.66px bold), so 4.5:1 is │
+//  │  the applicable threshold rather than 3:1.                        │
+//  └──────────────────────────────────────────────────────────────────┘
+$nb-bg:        #F4F4F2 !default;   // the Family-1 callout tint
+$nb-rule:      #111111 !default;
+$nb-link:      #333333 !default;
+$nb-link-hot:  #000000 !default;   // hover + active
+$nb-brand-col: #111111 !default;
+$nb-icon:      #555555 !default;
+
+//  The brand is all-caps EB Garamond BOLD, so it reads at its cap height
+//  (0.655 em) rather than its x-height. 21.25px gives 13.9px of cap.
+$nb-brand-size: 21.25px !default;
+
+//  Nav items are XCharter — the BODY face, not a sans. A sans navbar was
+//  built and rejected (Libre Franklin / Inter / Source Sans 3, rendered at
+//  matched x-height); "let's stick with XCharter for the typeface."
+//
+//  19.83px is the size at which XCharter shows a 9.54px x-height, which is
+//  the value Kayhan chose by eye off the specimen's face comparison. It is
+//  deliberately NOT matched to the brand — that would be 18.78px, and the
+//  nav sits 5.6% above the brand on the x. THIS NUMBER IS PER-FACE AND
+//  PER-ANCHOR: recompute it against a named target if either face changes,
+//  the same way $callout-icon-top is derived rather than inherited.
+$nb-link-size: 19.83px !default;
+
 /*-- scss:rules --*/
 
 // ═══════════════════════════════════════════════════════════════════════
@@ -474,4 +507,94 @@ $tab-icons: "lightning", "plus-slash-minus", "calculator", "sliders";
   .panel-tabset.tracks-from-numerical .nav-tabs li.nav-item:nth-child(#{$i}) .nav-link.active::before {
     background-image: bi(nth($tab-icons, $i + 2), #0b0b0b);
   }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  NAVBAR
+// ═══════════════════════════════════════════════════════════════════════
+//
+//  Everything here fights two Quarto behaviours that are NOT configurable:
+//
+//  1. Quarto emits `data-bs-theme="dark"` on the <nav> unconditionally.
+//     `navbar: background:` does not change it — verified with both a hex
+//     and the named `light`. Bootstrap 5.3 therefore sets the whole
+//     --bs-navbar-* palette to near-white on [data-bs-theme=dark], which is
+//     specificity (0,1,0). Redefining those variables under
+//     `#quarto-header .navbar` (1,1,0) is what actually recolours the bar;
+//     setting `color` on the links alone would leave the toggler, the
+//     brand-hover and the search glyph light-on-light.
+//
+//  2. Quarto hard-codes flex `order` on every navbar part:
+//        .navbar .navbar-brand-container  order:2
+//        .navbar .navbar-collapse         order:20
+//        .navbar #quarto-search           order:999; margin-left:auto
+//     and kills the brand's margins with
+//        .navbar .navbar-container>.navbar-brand-container
+//          { margin-left:0!important; margin-right:0!important }   (0,3,0)
+//     so Bootstrap's mx-auto/ms-auto utilities are silently discarded —
+//     they are !important but only (0,1,0). Any arrangement must therefore
+//     be stated as explicit `order`. This is why the layout below is
+//     ordered rather than floated.
+
+#quarto-header .navbar {
+  // (1) — beat [data-bs-theme=dark] at (0,1,0) with (1,1,0).
+  --bs-navbar-color:             #{$nb-link};
+  --bs-navbar-hover-color:       #{$nb-link-hot};
+  --bs-navbar-active-color:      #{$nb-link-hot};
+  --bs-navbar-disabled-color:    #{rgba($nb-link, .55)};
+  --bs-navbar-brand-color:       #{$nb-brand-col};
+  --bs-navbar-brand-hover-color: #{$nb-brand-col};
+  --bs-navbar-toggler-border-color: #{rgba($nb-rule, .25)};
+
+  background-color: $nb-bg;
+  // The tint is 1.101:1 against the page. The RULE is the edge, not the
+  // tint — do not ship one without the other.
+  border-bottom: 1px solid $nb-rule;
+
+  // (2) — brand left, nav beside it, search pushed right.
+  .navbar-brand-container { order: 0; }
+  .navbar-collapse        { order: 1; flex-grow: 0; }
+  #quarto-search          { order: 2; margin-left: auto; }
+}
+
+// Quarto sets justify-content:space-between on the container, which would
+// spread the three parts across the full width once they are re-ordered.
+#quarto-header .navbar-container { justify-content: flex-start; gap: 1.6rem; }
+
+// Serif brand, serif items — the Atlantic's split was tried and dropped, but
+// the brand/item DISTINCTION it suggested was kept: they differ by face and
+// weight (EB Garamond Bold vs XCharter regular), not by category.
+//
+// EB Garamond is vendored ONLY at 700 normal and 500 italic. 700 is stated
+// explicitly because asking for 400 yields a synthesised face or a silent
+// Georgia fallback — no error either way.
+#quarto-header .navbar-title {
+  font-family: "EB Garamond", Georgia, serif;
+  font-weight: 700;
+  font-size: $nb-brand-size;
+  color: $nb-brand-col;
+}
+
+#quarto-header .navbar .nav-link {
+  font-family: "XCharter", Charter, Georgia, serif;
+  font-size: $nb-link-size;
+  color: $nb-link;
+
+  // Colour only. Never weight, size or letter-spacing: an active state that
+  // changes text metrics shifts every control after it in the row, which is
+  // the same rule the tabsets follow.
+  &:hover, &.active, &.show { color: $nb-link-hot; }
+}
+
+#quarto-header .navbar .dropdown-item {
+  font-family: "XCharter", Charter, Georgia, serif;
+}
+
+// The search glyph is coloured by three rules that hardcode the dark theme's
+// near-white at (1,5,1) — the --bs-navbar-* variables do not reach it.
+// Prefixing with #quarto-header makes these (2,5,1).
+#quarto-header .navbar #quarto-search.type-overlay .aa-Autocomplete .aa-Form .aa-Label svg,
+#quarto-header .navbar #quarto-search.type-overlay .aa-Autocomplete .aa-Form .aa-LoadingIndicator svg,
+#quarto-header .navbar #quarto-search.type-overlay .aa-Autocomplete svg.aa-SubmitIcon {
+  color: $nb-icon;
 }

@@ -16,17 +16,45 @@ project:
   # including the four .otf files that exist only so matplotlib can draw
   # figure labels at build time and have no business being served.
 
-# PLACEHOLDER CHROME. Nav design is deliberately deferred to the look-and-feel
-# session: sidebar vs navbar, how students move between lectures, and whether
-# lectures that never get the Quarto treatment appear here at all.
+# Navbar on top, one rail. The lecture pages set `toc-location: left`, and the
+# TOC occupies the SIDEBAR slot itself -- the left element on a lecture page is
+# `<nav id="quarto-sidebar" class="sidebar ... sidebar-navigation">` wrapping
+# `<nav id="TOC">`. So there is no free left rail for site navigation, and a
+# site sidebar would compete with the table of contents. Everything visual
+# lives in quarto-lecnotes.scss; this block is structure only.
 website:
-  title: "ASTRO 206 — Black Holes"
+  title: "ASTRO 206 · Black Holes"
   navbar:
+    # Always visible. Quarto's default header is `headroom fixed-top` plus
+    # headroom.min.js, which slides the bar away on scroll-down; `pinned` makes
+    # Quarto omit the SCRIPT (the class stays and is inert). The tell that this
+    # is working is the absence of headroom.min.js -- not the absence of the
+    # class. Costs 60.5px permanently: 7.4% of a 900px viewport.
+    pinned: true
+    search: true
+    # No `background:` here on purpose. It does NOT do what it looks like it
+    # does: Quarto emits `data-bs-theme="dark"` on the <nav> unconditionally,
+    # so the colour is set in the SCSS by overriding Bootstrap's dark navbar
+    # variables. Setting `background:` as well would just add a second, losing
+    # source of truth. Verified: both a hex and the named `light` left the
+    # attribute at "dark".
     left:
-      - href: index.qmd
-        text: Home
-      - href: lectures/special-relativity/index.qmd
-        text: "Special relativity"
+      # No Home item -- the brand links to index.html already.
+      #
+      # A dropdown from the start, even at one lecture, so the nav's shape does
+      # not change under students mid-semester as more are converted. Order is
+      # TEACHING order, mirroring for_me/lecNN; gaps are expected and fine,
+      # because some lectures are Keynote-based and deliberately never
+      # converted. Unconverted lectures do not appear at all: those students are
+      # pointed at Canvas, which is not on the open web.
+      #
+      # At ~25 lectures this menu can be grouped without a plugin: an entry with
+      # `text:` and no `href:` renders as <li class="dropdown-header">, and
+      # `text: "---"` renders as <hr class="dropdown-divider">.
+      - text: "Lectures"
+        menu:
+          - href: lectures/special-relativity/index.qmd
+            text: "Special relativity"
 
 format:
   live-html:
