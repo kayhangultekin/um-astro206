@@ -49,14 +49,30 @@ $callout-border-width: 4px    !default;
 $callout-title-size:   17.5px !default;
 $callout-title-lh:     1.32   !default;
 $callout-body-size:    17.5px !default;   // Quarto's own default is .9rem = 14.4px
-$callout-icon-size:    17px   !default;
+//  24px, and the number is not free. The icon's HEIGHT is the constrained
+//  dimension: it sits in a 17.5px/1.32 = 23.10px line box, and past that it
+//  drives the header's height instead of the text. 24px overshoots by 0.9px,
+//  which the header padding absorbs. WIDTH is free — a wider icon only pushes
+//  its own title right — and the marks are NOT square, so each rule takes its
+//  width from the mark's own aspect ratio. See marks.scss.
+//
+//  Changing this ALSO silently rescales every mark's darkening, which is baked
+//  into marks.scss in viewBox units against this exact value. Re-run
+//  ../typography_specimens/emit_marks.py if it ever moves.
+$callout-icon-size:    24px   !default;
 
 //  Puts the icon's centre on the title's CAP centre. Derived, not nudged:
 //      baseline − capHeight·size/2 − icon/2
-//  from XCharter Bold's capHeight (0.671 em) at 17.5px/1.32.
+//  from XCharter Bold's capHeight (0.671 em) at 17.5px/1.32. The first two
+//  terms measured 12.04px, so at a 24px icon this is 12.04 − 12 = 0.04px.
+//  (It was 3.54px when the icon was 17px.)
+//
+//  This works because each mark is centred on its own INK inside its viewBox,
+//  so the box's centre IS the mark's optical centre — a tall pilcrow and a
+//  small asterisk both sit centred, and one number serves all thirteen.
 //  THIS IS FACE-DEPENDENT. If the title typeface or size ever changes,
 //  recompute it — do not carry this number over.
-$callout-icon-top: 3.54px !default;
+$callout-icon-top: 0.04px !default;
 
 //  A purely OPTICAL nudge on top of the derived position above, because the
 //  arithmetic centre and the eye disagree by a little. It is applied with
@@ -70,8 +86,13 @@ $callout-icon-top: 3.54px !default;
 //  number that looks right.
 //  Kayhan's value, chosen by dialling the custom property live in dev tools
 //  against the rendered page. The derived cap-centre above is the arithmetic;
-//  this 1px is the eye's correction on top of it. Keep the two separate.
-$callout-icon-nudge: 1px !default;
+//  this is the eye's correction on top of it. Keep the two separate.
+//
+//  It was +1px against the 17px Bootstrap icons and is -1px against the 24px
+//  marks — re-dialled after the migration, and the SIGN FLIPPED. Worth knowing
+//  before assuming a future icon change can carry the number over: at the
+//  larger size the arithmetic cap-centre reads a little LOW rather than high.
+$callout-icon-nudge: -1px !default;
 
 //  ┌─ TABSET ─────────────────────────────────────────────────────────┐
 //  │  Its own colour, deliberately NOT borrowed from a callout family:│
@@ -238,20 +259,13 @@ div.cell-output-pyodide pre code { font-size: var(--code-size); }
 .cm-editor .cm-content,
 .cm-editor .cm-gutters { font-family: "Inconsolata", monospace; }
 
+//  ── the tabset icons ──────────────────────────────────────────────────
+//  What is left of Bootstrap Icons. The CALLOUT icons used to live here too;
+//  they are now typographic marks cut from XCharter and EB Garamond, and live
+//  in marks.scss. The split is deliberate and follows the same line that gave
+//  tabsets their own $tab-color: a tabset is a CONTROL and may look like UI,
+//  a callout is CONTENT and should look like the prose around it.
 $bi-paths: (
-  "journal-text": '<path d="M5 10.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0-2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/> <path d="M3 0h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-1h1v1a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1v1H1V2a2 2 0 0 1 2-2"/> <path d="M1 5v-.5a.5.5 0 0 1 1 0V5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0V8h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1zm0 3v-.5a.5.5 0 0 1 1 0v.5h.5a.5.5 0 0 1 0 1h-2a.5.5 0 0 1 0-1z"/>',
-  "chat-left-text": '<path d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/> <path d="M3 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M3 6a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9A.5.5 0 0 1 3 6m0 2.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/>',
-  "table": '<path d="M0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm15 2h-4v3h4zm0 4h-4v3h4zm0 4h-4v3h3a1 1 0 0 0 1-1zm-5 3v-3H6v3zm-5 0v-3H1v2a1 1 0 0 0 1 1zm-4-4h4V8H1zm0-4h4V4H1zm5-3v3h4V4zm4 4H6v3h4z"/>',
-  "check-circle": '<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/> <path d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05"/>',
-  "circle-fill": '<circle cx="8" cy="8" r="8"/>',
-  "circle-half": '<path d="M8 15A7 7 0 1 0 8 1zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16"/>',
-  "circle": '<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>',
-  "patch-question": '<path d="M8.05 9.6c.336 0 .504-.24.554-.627.04-.534.198-.815.847-1.26.673-.475 1.049-1.09 1.049-1.986 0-1.325-.92-2.227-2.262-2.227-1.02 0-1.792.492-2.1 1.29A1.7 1.7 0 0 0 6 5.48c0 .393.203.64.545.64.272 0 .455-.147.564-.51.158-.592.525-.915 1.074-.915.61 0 1.03.446 1.03 1.084 0 .563-.208.885-.822 1.325-.619.433-.926.914-.926 1.64v.111c0 .428.208.745.585.745"/> <path d="m10.273 2.513-.921-.944.715-.698.622.637.89-.011a2.89 2.89 0 0 1 2.924 2.924l-.01.89.636.622a2.89 2.89 0 0 1 0 4.134l-.637.622.011.89a2.89 2.89 0 0 1-2.924 2.924l-.89-.01-.622.636a2.89 2.89 0 0 1-4.134 0l-.622-.637-.89.011a2.89 2.89 0 0 1-2.924-2.924l.01-.89-.636-.622a2.89 2.89 0 0 1 0-4.134l.637-.622-.011-.89a2.89 2.89 0 0 1 2.924-2.924l.89.01.622-.636a2.89 2.89 0 0 1 4.134 0l-.715.698a1.89 1.89 0 0 0-2.704 0l-.92.944-1.32-.016a1.89 1.89 0 0 0-1.911 1.912l.016 1.318-.944.921a1.89 1.89 0 0 0 0 2.704l.944.92-.016 1.32a1.89 1.89 0 0 0 1.912 1.911l1.318-.016.921.944a1.89 1.89 0 0 0 2.704 0l.92-.944 1.32.016a1.89 1.89 0 0 0 1.911-1.912l-.016-1.318.944-.921a1.89 1.89 0 0 0 0-2.704l-.944-.92.016-1.32a1.89 1.89 0 0 0-1.912-1.911z"/> <path d="M7.001 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0"/>',
-  "patch-check": '<path fill-rule="evenodd" d="M10.354 6.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708 0"/> <path d="m10.273 2.513-.921-.944.715-.698.622.637.89-.011a2.89 2.89 0 0 1 2.924 2.924l-.01.89.636.622a2.89 2.89 0 0 1 0 4.134l-.637.622.011.89a2.89 2.89 0 0 1-2.924 2.924l-.89-.01-.622.636a2.89 2.89 0 0 1-4.134 0l-.622-.637-.89.011a2.89 2.89 0 0 1-2.924-2.924l.01-.89-.636-.622a2.89 2.89 0 0 1 0-4.134l.637-.622-.011-.89a2.89 2.89 0 0 1 2.924-2.924l.89.01.622-.636a2.89 2.89 0 0 1 4.134 0l-.715.698a1.89 1.89 0 0 0-2.704 0l-.92.944-1.32-.016a1.89 1.89 0 0 0-1.911 1.912l.016 1.318-.944.921a1.89 1.89 0 0 0 0 2.704l.944.92-.016 1.32a1.89 1.89 0 0 0 1.912 1.911l1.318-.016.921.944a1.89 1.89 0 0 0 2.704 0l.92-.944 1.32.016a1.89 1.89 0 0 0 1.911-1.912l-.016-1.318.944-.921a1.89 1.89 0 0 0 0-2.704l-.944-.92.016-1.32a1.89 1.89 0 0 0-1.912-1.911z"/>',
-  "patch-exclamation": '<path d="M7.001 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.553.553 0 0 1-1.1 0z"/> <path d="m10.273 2.513-.921-.944.715-.698.622.637.89-.011a2.89 2.89 0 0 1 2.924 2.924l-.01.89.636.622a2.89 2.89 0 0 1 0 4.134l-.637.622.011.89a2.89 2.89 0 0 1-2.924 2.924l-.89-.01-.622.636a2.89 2.89 0 0 1-4.134 0l-.622-.637-.89.011a2.89 2.89 0 0 1-2.924-2.924l.01-.89-.636-.622a2.89 2.89 0 0 1 0-4.134l.637-.622-.011-.89a2.89 2.89 0 0 1 2.924-2.924l.89.01.622-.636a2.89 2.89 0 0 1 4.134 0l-.715.698a1.89 1.89 0 0 0-2.704 0l-.92.944-1.32-.016a1.89 1.89 0 0 0-1.911 1.912l.016 1.318-.944.921a1.89 1.89 0 0 0 0 2.704l.944.92-.016 1.32a1.89 1.89 0 0 0 1.912 1.911l1.318-.016.921.944a1.89 1.89 0 0 0 2.704 0l.92-.944 1.32.016a1.89 1.89 0 0 0 1.911-1.912l-.016-1.318.944-.921a1.89 1.89 0 0 0 0-2.704l-.944-.92.016-1.32a1.89 1.89 0 0 0-1.912-1.911z"/>',
-  "exclamation-diamond": '<path d="M6.95.435c.58-.58 1.52-.58 2.1 0l6.515 6.516c.58.58.58 1.519 0 2.098L9.05 15.565c-.58.58-1.519.58-2.098 0L.435 9.05a1.48 1.48 0 0 1 0-2.098zm1.4.7a.495.495 0 0 0-.7 0L1.134 7.65a.495.495 0 0 0 0 .7l6.516 6.516a.495.495 0 0 0 .7 0l6.516-6.516a.495.495 0 0 0 0-.7L8.35 1.134z"/> <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>',
-  "question-diamond": '<path d="M6.95.435c.58-.58 1.52-.58 2.1 0l6.515 6.516c.58.58.58 1.519 0 2.098L9.05 15.565c-.58.58-1.519.58-2.098 0L.435 9.05a1.48 1.48 0 0 1 0-2.098zm1.4.7a.495.495 0 0 0-.7 0L1.134 7.65a.495.495 0 0 0 0 .7l6.516 6.516a.495.495 0 0 0 .7 0l6.516-6.516a.495.495 0 0 0 0-.7L8.35 1.134z"/> <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286m1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94"/>',
-  "star": '<path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.56.56 0 0 0-.163-.505L1.71 6.745l4.052-.576a.53.53 0 0 0 .393-.288L8 2.223l1.847 3.658a.53.53 0 0 0 .393.288l4.052.575-2.906 2.77a.56.56 0 0 0-.163.506l.694 3.957-3.686-1.894a.5.5 0 0 0-.461 0z"/>',
   "lightning": '<path d="M5.52.359A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .474.658L8.694 6H12.5a.5.5 0 0 1 .395.807l-7 9a.5.5 0 0 1-.873-.454L6.823 9.5H3.5a.5.5 0 0 1-.48-.641zM6.374 1 4.168 8.5H7.5a.5.5 0 0 1 .478.647L6.78 13.04 11.478 7H8a.5.5 0 0 1-.474-.658L9.306 1z"/>',
   "plus-slash-minus": '<path d="m1.854 14.854 13-13a.5.5 0 0 0-.708-.708l-13 13a.5.5 0 0 0 .708.708M4 1a.5.5 0 0 1 .5.5v2h2a.5.5 0 0 1 0 1h-2v2a.5.5 0 0 1-1 0v-2h-2a.5.5 0 0 1 0-1h2v-2A.5.5 0 0 1 4 1m5 11a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5A.5.5 0 0 1 9 12"/>',
   "calculator": '<path d="M12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/> <path d="M4 2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5zm0 4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"/>',
@@ -289,6 +303,34 @@ $bi-paths: (
 @function bi($name, $color) {
   $rgb: "rgb(#{red($color)}, #{green($color)}, #{blue($color)})";
   @return url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" style="fill: #{$rgb}" class="bi bi-#{$name}" viewBox="0 0 16 16">#{map-get($bi-paths, $name)}</svg>');
+}
+
+//  The callout marks. $marks comes from marks.scss, which is GENERATED by
+//  ../typography_specimens/emit_marks.py — edit chosen_set.py there, not here.
+//
+//  Unlike bi(), the viewBox is per-mark: it carries the mark's scale baked in
+//  as a zoom, and it is not square. Two things are injected at this call site
+//  rather than baked in:
+//
+//    fill    the family's accent, as with bi()
+//    stroke  the same colour again, because a mark's "darkening" is a stroke
+//            laid along its own outline — the trick that keeps a hairline
+//            from washing out once it is an unhinted SVG path rather than a
+//            grid-fitted glyph. sw is 0 for marks that need none.
+//
+//  BOTH must be rgb(), never hex: a literal "#" truncates the data URI at the
+//  first character. That trap now applies twice per mark.
+@function mark($name, $color) {
+  $m: map-get($marks, $name);
+  $rgb: "rgb(#{red($color)}, #{green($color)}, #{blue($color)})";
+  @return url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="#{map-get($m, vb)}" style="fill: #{$rgb}; stroke: #{$rgb}; stroke-width: #{map-get($m, sw)}; stroke-linejoin: round">#{map-get($m, svg)}</svg>');
+}
+
+//  Height is always $callout-icon-size; width follows the mark's own aspect,
+//  so a wide mark keeps its ink at full size instead of being squeezed.
+@mixin mark-icon($name, $color) {
+  background-image: mark($name, $color);
+  width: $callout-icon-size * map-get(map-get($marks, $name), ar);
 }
 
 @mixin cf-vars($fam) {
@@ -382,11 +424,29 @@ div.callout.callout-style-default > div.callout-header { align-items: flex-start
 //  A block has no line box, so $callout-icon-top is the only thing acting.
 :root { --callout-icon-nudge: #{$callout-icon-nudge}; }
 
-div.callout .callout-icon::before {
+//  width is NOT set here: it is per-mark, and comes from mark-icon() below,
+//  because the marks are not square. background-size follows the element box
+//  rather than naming a square, so a wide mark fills its wider box without
+//  distortion — the SVG's own aspect matches the width the mixin sets.
+//
+//  BOTH styles are named, and the selectors are heavier than they look, for a
+//  reason that only surfaced once the marks stopped being square. Quarto sets
+//
+//    .callout.callout-style-default .callout-icon::before  0.9rem   (0,3,1)
+//    .callout.callout-style-simple  .callout-icon::before  1rem     (0,3,1)
+//
+//  and the obvious `div.callout .callout-icon::before` is only (0,2,2), so it
+//  LOSES. That was invisible while the icons were Bootstrap's: width, height
+//  and background-size all lost together, and a square icon scaled uniformly,
+//  so it merely rendered at 0.9rem instead of the size named here. With a
+//  non-square mark the width rules below win (they are (0,3,3)) while height
+//  did not, and the marks came out squashed. Each selector here is (0,3,3):
+//  three classes, and div + i + ::before as the three elements.
+div.callout.callout-style-default i.callout-icon::before,
+div.callout.callout-style-simple  i.callout-icon::before {
   display: block;
-  width:  $callout-icon-size;
   height: $callout-icon-size;
-  background-size: $callout-icon-size $callout-icon-size;
+  background-size: 100% 100%;
   background-repeat: no-repeat;
   margin-top: $callout-icon-top;
   //  optical only — see $callout-icon-nudge. Layout-neutral by design.
@@ -394,29 +454,36 @@ div.callout .callout-icon::before {
   top: var(--callout-icon-nudge);
 }
 
-//  ── icons: family defaults, (0,3,2) ───────────────────────────────────
+//  ── marks: family defaults, (0,3,2) ───────────────────────────────────
 //  Deliberately NOT scoped to .callout-style-default: an appearance="simple"
-//  callout still draws an icon (the electron-volt aside is one), and without
+//  callout still draws a mark (the electron-volt aside is one), and without
 //  these it would keep Quarto's blue info-circle. The i element supplies the
 //  second element in the specificity, beating Quarto's
 //  div.callout-note.callout-titled .callout-icon::before at (0,3,1).
-div.callout.callout-note      i.callout-icon::before { background-image: bi("chat-left-text",      map-get($cf-note, accent)); }
-div.callout.callout-tip       i.callout-icon::before { background-image: bi("patch-question",      map-get($cf-socratic, accent)); }
-div.callout.callout-warning   i.callout-icon::before { background-image: bi("exclamation-diamond", map-get($cf-caution, accent)); }
-div.callout.callout-caution   i.callout-icon::before { background-image: bi("exclamation-diamond", map-get($cf-caution, accent)); }
-div.callout.callout-important i.callout-icon::before { background-image: bi("star",                map-get($cf-important, accent)); }
+//
+//  These five are the family DEFAULTS, so each is also a role in its own
+//  right — the aside, the "ask yourself", the caveat, the key result. Roles
+//  that need their own mark override below.
+div.callout.callout-note      i.callout-icon::before { @include mark-icon("aside",        map-get($cf-note, accent)); }
+div.callout.callout-tip       i.callout-icon::before { @include mark-icon("ask-yourself", map-get($cf-socratic, accent)); }
+div.callout.callout-warning   i.callout-icon::before { @include mark-icon("caveat",       map-get($cf-caution, accent)); }
+div.callout.callout-caution   i.callout-icon::before { @include mark-icon("caveat",       map-get($cf-caution, accent)); }
+div.callout.callout-important i.callout-icon::before { @include mark-icon("key-result",   map-get($cf-important, accent)); }
 
-//  ── icons: roles, (0,4,2) via i.callout-icon, so they beat the family
+//  ── marks: roles, (0,4,2) via i.callout-icon, so they beat the family
 //  default above without depending on source order ─────────────────────
-div.callout.callout-style-default.definition     i.callout-icon::before { background-image: bi("journal-text",      map-get($cf-note, accent)); }
-div.callout.callout-style-default.table-view     i.callout-icon::before { background-image: bi("table",             map-get($cf-note, accent)); }
-div.callout.callout-style-default.resolution     i.callout-icon::before { background-image: bi("patch-check",       map-get($cf-socratic, accent)); }
-div.callout.callout-style-default.in-class       i.callout-icon::before { background-image: bi("patch-exclamation", map-get($cf-socratic, accent)); }
-div.callout.callout-style-default.textbook-watch i.callout-icon::before { background-image: bi("question-diamond",  map-get($cf-caution, accent)); }
-div.callout.callout-style-default.worked-example i.callout-icon::before { background-image: bi("check-circle",      map-get($cf-help, accent)); }
-div.callout.callout-style-default.help-solution  i.callout-icon::before { background-image: bi("circle-fill",       map-get($cf-help, accent)); }
-div.callout.callout-style-default.help-hint      i.callout-icon::before { background-image: bi("circle-half",       map-get($cf-help, accent)); }
-div.callout.callout-style-default.help-answer    i.callout-icon::before { background-image: bi("circle",            map-get($cf-help, accent)); }
+//  Family 2's three-step ramp is one, two and three asterisks: the count IS
+//  the amount of help. The third is a constructed asterism rather than a row
+//  of three, which keeps the mark square-ish instead of smearing sideways.
+div.callout.callout-style-default.definition     i.callout-icon::before { @include mark-icon("definition",     map-get($cf-note, accent)); }
+div.callout.callout-style-default.table-view     i.callout-icon::before { @include mark-icon("table-view",     map-get($cf-note, accent)); }
+div.callout.callout-style-default.resolution     i.callout-icon::before { @include mark-icon("resolution",     map-get($cf-socratic, accent)); }
+div.callout.callout-style-default.in-class       i.callout-icon::before { @include mark-icon("in-class",       map-get($cf-socratic, accent)); }
+div.callout.callout-style-default.textbook-watch i.callout-icon::before { @include mark-icon("textbook-watch", map-get($cf-caution, accent)); }
+div.callout.callout-style-default.worked-example i.callout-icon::before { @include mark-icon("worked-example", map-get($cf-help, accent)); }
+div.callout.callout-style-default.help-solution  i.callout-icon::before { @include mark-icon("help-solution",  map-get($cf-help, accent)); }
+div.callout.callout-style-default.help-hint      i.callout-icon::before { @include mark-icon("help-hint",      map-get($cf-help, accent)); }
+div.callout.callout-style-default.help-answer    i.callout-icon::before { @include mark-icon("help-answer",    map-get($cf-help, accent)); }
 
 //  The disclaimer at the top of a lecture is appearance="simple" — no box,
 //  no header tint, no icon — and stays that way. Only its rule takes the
