@@ -384,7 +384,7 @@ fig.tight_layout()
 plt.show()
 ```
 
-::: {.panel-tabset}
+::: {.panel-tabset .tracks}
 
 ### Physical intuition
 
@@ -666,7 +666,7 @@ The clock lives in the primed frame, so the primed frame is where the *proper
 time* is measured. That single fact is what sets every subscript below.
 :::
 
-::: {.panel-tabset}
+::: {.panel-tabset .tracks}
 
 ### Physical intuition
 
@@ -857,7 +857,7 @@ plt.show()
 
 :::
 
-::: {.callout-note collapse="true" title="Table view: $\\gamma$ and $1/\\gamma$ at selected speeds"}
+::: {.callout-note .table-view collapse="true" title="Table view: $\\gamma$ and $1/\\gamma$ at selected speeds"}
 
 | $\beta = v/c$ | $\gamma$ | $1/\gamma$ |
 |--------------:|---------:|-----------:|
@@ -963,7 +963,7 @@ overlap. If they disagree, then one — say, Aang — will see his line painted
 above Zuko's. By symmetry, then, Zuko should see *his* line painted above
 Aang's.
 
-::: {.callout-caution title="This is unphysical"}
+::: {.callout-warning title="This is unphysical"}
 This is different from disagreeing over whether two things are simultaneous.
 This is disagreeing over whether the red paint or the blue paint is above the
 other. That just can't be: one strip of dried paint is physically above the
@@ -986,7 +986,7 @@ longer than the barn. In the barn's frame the pole is contracted and fits — yo
 could slam both doors shut with the pole entirely inside. In the vaulter's frame
 the *barn* is contracted and the pole certainly does not fit.
 
-::: {.callout-tip collapse="true" title="Resolution"}
+::: {.callout-tip .resolution collapse="true" title="Resolution"}
 "Both doors shut at the same time" is a statement about
 simultaneity, and the two frames do not share it. In the barn frame the doors
 close simultaneously with the pole inside. In the pole frame the far door closes
@@ -999,7 +999,7 @@ physics requires.
 
 Suppose a rain cloud is above you at rest and raining raindrops at a constant rate down on you.  You have a bucket and you run along the ground at high speed.  In the direction that you run, there is length contraction and so you see the horizontal space between the raindrops is smaller: the density of raindrops is denser and so you are filling up your bucket more than you would have at rest.  But from the cloud's perspective, you are moving fast and there is length contraction in the direction of motion and so the bucket is contracted in that direction.  The bucket opening is now a squashed ellipse.  So from the cloud's perspective, *you are collecting fewer raindrops than you would have at rest*.  What is the resolution?  Just a heads up:  I am leaving this to you to figure out.  I will never explain it to you or tell you if you are right.  You will know when you know.
 
-::: {.callout-tip collapse="true" title="Resolution"}
+::: {.callout-tip .resolution collapse="true" title="Resolution"}
 Nope.  Not going to tell you.
 :::
 
@@ -1013,14 +1013,14 @@ a tree in a garden in Ba Sing Se. Ba Sing Se is the primed ($^{\prime}$) referen
 frame. The flashlight emits a light wave that has $N$ peaks and troughs in a
 time that Zuko measures to be $\Delta t^{\prime}$.
 
-::: {.callout-warning title="Textbook watch (Kutner)"}
+::: {.callout-warning .textbook-watch title="Textbook watch (Kutner)"}
 The text has the direction of motion backwards here. In this derivation Aang
 moves *toward* Zuko, so we expect a **blueshift** — if your algebra produces
 a redshift for approach, check the sign convention before you check your
 algebra.
 :::
 
-::: {.panel-tabset}
+::: {.panel-tabset .tracks}
 
 ### Physical intuition
 
@@ -1253,7 +1253,7 @@ $$
 \nu^{\prime} = \frac{\nu}{(1 + v_r/c)\gamma}
 $$ {#eq-generaldoppler}
 
-::: {.callout-warning title="Textbook watch (Kutner): two different sign conventions"}
+::: {.callout-warning .textbook-watch title="Textbook watch (Kutner): two different sign conventions"}
 The textbook kind of screwed us up here again. [I refuse to admit how much time
 I spent banging my head against the wall trying to figure out what was going
 on.]{.aside .content-visible when-format="html"} In the first example, the velocity was defined as *toward* each other —
@@ -1284,7 +1284,7 @@ $$
 \lambda^{\prime} = \lambda\left(\frac{1 + \beta}{1 - \beta}\right)^{1/2}.
 $$ {#eq-wavelengthdoppler}
 
-::: {.callout-note title="Definition: redshift"}
+::: {.callout-note .definition title="Definition: redshift"}
 Remember that in astrophysics we frequently use the quantity **redshift**,
 defined as
 
@@ -1298,7 +1298,7 @@ no shift at all.
 
 ### Let's do some calculations
 
-::: {.callout-note collapse="true" title="Worked example (together): observed wavelength of H$\\alpha$ at $\\beta = 0.3$"}
+::: {.callout-note .worked-example collapse="true" title="Worked example (together): observed wavelength of H$\\alpha$ at $\\beta = 0.3$"}
 Calculate the wavelength we would observe if something is moving away from us
 with $\beta = 0.3$ and is emitting the H$\alpha$ line at rest wavelength
 $\lambda = 6563\,\text{Å}$.
@@ -1493,7 +1493,7 @@ fig.tight_layout()
 plt.show()
 ```
 
-::: {.panel-tabset}
+::: {.panel-tabset .tracks}
 
 ### Physical intuition
 
@@ -1554,7 +1554,7 @@ not $ct$ or $x$. It also isn't an interval in time $c\Delta t$, as we saw from
 time dilation. Nor is it an interval in distance, as we saw from length
 contraction.
 
-::: {.callout-note title="Definition: the spacetime interval"}
+::: {.callout-note .definition title="Definition: the spacetime interval"}
 It turns out that the invariant quantity is the **space-time interval**, defined
 as [The sign convention can go either way. I prefer a $(-,+,+,+)$ convention,
 but I'm following the text here. Bear with me on any mistakes I make because of
@@ -1619,7 +1619,7 @@ watch what changes and what doesn't: the primed coordinates $x^{\prime}$ and
 $ct^{\prime}$ slide around, while $\Delta s^2$ holds perfectly still. That is
 @eq-interval, doing the only thing it was ever supposed to do.
 
-::: {.callout-tip collapse="true" title="How to use it"}
+::: {.callout-note collapse="true" title="How to use it"}
 * **Click** anywhere in the diagram to place event A, then click again for
   event B. A third click starts over.
 * **Drag** either event to move it and watch the numbers update continuously.
@@ -1957,7 +1957,7 @@ $$
 E_0 = mc^2 .
 $$ {#eq-emc2}
 
-::: {.callout-caution title="That was loosey-goosey"}
+::: {.callout-warning title="That was loosey-goosey"}
 Note that the argument above is very loose. Einstein really came up with it from
 
 $$
@@ -2009,7 +2009,7 @@ non-rotating black hole can release around 6%, and onto a maximally rotating one
 up to roughly 30%. Every one of those numbers is a fraction of $mc^2$.
 :::
 
-::: {.panel-tabset}
+::: {.panel-tabset .tracks-from-numerical}
 
 ### Numerical exploration
 

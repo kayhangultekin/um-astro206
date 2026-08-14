@@ -94,6 +94,34 @@ format:
         \makeatother
         \cfoot*{\normalfont\footnotesize\pagemark}
         \pagestyle{scrheadings}
+
+        % Callout icons in the PDF.
+        %
+        % Quarto draws them with FontAwesome 5, not Bootstrap Icons, and picks
+        % the glyph by CALLOUT TYPE alone -- see filters/modules/callouts.lua,
+        % which emits a bare \textcolor{...}{\faInfo}\hspace{0.5em}. A custom
+        % class is never consulted, so roles inside a family share one glyph in
+        % print; only the HTML distinguishes them. That is accepted for now.
+        %
+        % Because the macro is emitted bare, redefining it here is the whole
+        % job -- no template override, and it survives a Quarto upgrade.
+        % Loading the package first guarantees the targets exist (a \let to an
+        % undefined macro would fail silently at use, not here).
+        %
+        % Safe in any order: no macro below is both a source and a target.
+        %   note      \faInfo        -> \faCommentDots     (Family 1)
+        %   tip       \faLightbulb   -> \faQuestionCircle  (Family 3)
+        %   important \faExclamation -> \faStar            (Family 5)
+        %   warning   \faExclamationTriangle               (Family 4 -- already
+        %                                                   correct, left alone)
+        %   caution   \faFire -> \faExclamationTriangle    (Family 4 absorbed
+        %                                                   caution AND warning,
+        %                                                   so both print alike)
+        \usepackage{fontawesome5}
+        \let\faInfo\faCommentDots
+        \let\faLightbulb\faQuestionCircle
+        \let\faExclamation\faStar
+        \let\faFire\faExclamationTriangle
     number-depth: 2
     fig-align: center
     fig-width: 6.5
