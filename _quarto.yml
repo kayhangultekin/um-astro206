@@ -105,8 +105,76 @@ format:
   pdf:
     documentclass: scrartcl
     papersize: letter
+    # Body size, for reading at the blackboard. Kayhan wears reading glasses.
+    #
+    # An earlier attempt scaled the MATHS font alone (Scale= on \setmathfont).
+    # He rejected it on sight, and the reason generalises: "I don't like how
+    # text and in-line math are different sizes. That *reduces* readability. If
+    # the text words are important enough for me to read, then we should
+    # increase their size as well." So the knob is the document base size and
+    # the maths follows it -- verified equal, page by page, in the specimen.
+    #
+    # KOMA takes an arbitrary `fontsize=`; standard classes only do 10/11/12pt.
+    # 13.75pt requested lands at 13.70pt painted (LaTeX rounds to its internal
+    # size), which is what the measurements below are against.
+    #
+    # NOTE: `-M classoption:...` on the command line is a SILENT NO-OP here --
+    # it reports success and leaves the body at 10.91pt. Change this key, or
+    # measure the painted size, or you will compare three identical documents.
+    classoption:
+      - fontsize=13.75pt
+    # Margins WIDENED, not narrowed. Narrow margins were considered and
+    # rejected: "All of the actions we are taking are to help readability for
+    # me, personally, while at the blackboard. Small margins hurts that."
+    #
+    # Sized to a 65-character measure, which is the classic optimum and his
+    # explicit target. At 13.70pt the real average character width is 5.94pt
+    # (0.4333 em), so 65 characters needs a 386pt block -> 1.57in sides.
+    # Verified by rasterising the render and counting characters on the 231
+    # full justified prose lines: median exactly 65.0.
+    #
+    # Do NOT compute this from a font's mean a-z advance. That proxy ignores
+    # spaces and weights rare wide letters equally, and it read 13% narrow --
+    # it put the baseline document at 87.5 chars/line when the true figure is
+    # 99.0, which would have set this margin at 1.22in and missed the target by
+    # eight characters.
+    #
+    # Only the SIDES move. Top and bottom stay at 1in: the target is line
+    # length, and shrinking the vertical would only cost pages.
     geometry:
-      - margin=1in
+      - left=1.57in
+      - right=1.57in
+      - top=1in
+      - bottom=1in
+    # Typography, matching the HTML. Until 2026-08-15 this PDF was stock Latin
+    # Modern -- Computer Modern's lineage, the family Kayhan is on record
+    # disliking -- while the HTML had been moved to XCharter/EB Garamond.
+    #
+    # The engine is LuaTeX, so pandoc's template already loads fontspec and
+    # unicode-math (the old Latin Modern Math was unicode-math's DEFAULT, not a
+    # choice). Setting these variables is therefore the whole job.
+    #
+    # Why this is the first lever for equation readability: XCharter's x-height
+    # is 0.481 em against Latin Modern's 0.431 em, so at the SAME 11pt it reads
+    # 11.6% larger -- Latin Modern would need 12.28pt to match it. The cost in
+    # width is +0.3% mean lowercase advance, i.e. no page-count change.
+    #
+    # XCharter has BOTH an Italic and a Slanted; a bare family lookup can pick
+    # the wrong one, so the four faces are named explicitly.
+    mainfont: XCharter
+    mainfontoptions:
+      - "UprightFont=*-Roman"
+      - "ItalicFont=*-Italic"
+      - "BoldFont=*-Bold"
+      - "BoldItalicFont=*-BoldItalic"
+    # XCharter-Math.otf ships in TeX Live 2025 (3111 glyphs, real MATH table),
+    # so the PDF -- unlike the web, where MathJax 4 can only use its own eleven
+    # packaged fonts -- can set text and maths in the SAME typeface. Verified:
+    # \mathrm{cm\,s^{-1}} keeps the "s" on the baseline (the criterion that
+    # chose mathjax-termes for the page), uppercase Greek stays upright, and
+    # \sqrt renders -- XCharter-Math carries radical extensions that the text
+    # face does not.
+    mathfont: XCharter-Math
     toc: false          # moved to the back of the document — see the end of this file
     number-sections: true
     # The document's top heading level is "##", which LaTeX would number as
@@ -125,6 +193,49 @@ format:
         \makeatother
         \cfoot*{\normalfont\footnotesize\pagemark}
         \pagestyle{scrheadings}
+
+        % Headings, mirroring the HTML: EB Garamond Bold for sections,
+        % EB Garamond MediumItalic for subsections.
+        %
+        % This is NOT cosmetic drift. KOMA's default disposition font is SANS
+        % (the old PDF set every heading in Latin Modern Sans Bold), which was
+        % survivable beside Latin Modern body text and is not beside XCharter.
+        % Moving the body without moving the headings would ship a serif/sans
+        % clash against the settled serif + serif choice.
+        %
+        % shift-heading-level-by: -1 maps "##" -> \section and "###" ->
+        % \subsection, so these are the same two levels the theme styles as h2
+        % and h3 on the web.
+        %
+        % The families are declared with all four shapes pointing at real
+        % files. KOMA applies \bfseries to dispositions, and a family whose
+        % bold slot is undefined emits "Font shape ... /bx/n undefined" and
+        % silently substitutes; mapping the subsection's bold slot back to the
+        % Medium keeps \bfseries from over-weighting an intentionally medium
+        % heading.
+        %
+        % Ligatures=TeX is NOT optional here. Pandoc's template scopes it to
+        % \rmfamily only (\defaultfontfeatures[\rmfamily]{Ligatures=TeX}), and
+        % a \newfontfamily does not inherit that. Pandoc also writes an em dash
+        % into the LaTeX as "---", so without this the subtitle printed a
+        % literal "ASTRO 206 --- Black Holes". Same mechanism would hit `` ''
+        % and -- in any heading.
+        \newfontfamily\ebgheading{EB Garamond}[
+          Ligatures=TeX,
+          UprightFont=*-Regular, BoldFont=*-Bold,
+          ItalicFont=*-Italic,   BoldItalicFont=*-BoldItalic]
+        \newfontfamily\ebgsubheading{EB Garamond}[
+          Ligatures=TeX,
+          UprightFont=*-Medium, BoldFont=*-Medium,
+          ItalicFont=*-MediumItalic, BoldItalicFont=*-MediumItalic]
+        % `disposition` is KOMA's PARENT element for every sectioning heading
+        % AND the title block, so one line catches the title, the subtitle and
+        % \subsubsection too. Scoping this to `section` alone left the title,
+        % the subtitle and all ten back-TOC entries in Latin Modern Sans --
+        % verified by reading the font off each run, not by looking at page 1.
+        \addtokomafont{disposition}{\ebgheading}
+        % Applied after `disposition`, so this wins for subsections only.
+        \addtokomafont{subsection}{\ebgsubheading\itshape}
 
         % Callout icons in the PDF.
         %

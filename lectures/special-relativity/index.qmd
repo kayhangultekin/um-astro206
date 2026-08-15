@@ -131,9 +131,9 @@ Einstein took note that Maxwell's equations
 
 $$
 \begin{aligned}
-\nabla \cdot \mathbf{E} &= 4\pi\rho \\
-\nabla \cdot \mathbf{B} &= 0 \\
-\nabla \times \mathbf{E} &= -\frac{1}{c}\frac{\partial \mathbf{B}}{\partial t} \\
+\nabla \cdot \mathbf{E} &= 4\pi\rho \\[0.8em]
+\nabla \cdot \mathbf{B} &= 0 \\[0.8em]
+\nabla \times \mathbf{E} &= -\frac{1}{c}\frac{\partial \mathbf{B}}{\partial t} \\[0.8em]
 \nabla \times \mathbf{B} &= \frac{1}{c}\left(4\pi \mathbf{J} + \frac{\partial \mathbf{E}}{\partial t}\right)
 \end{aligned}
 $$
@@ -142,9 +142,9 @@ which in a vacuum have $\rho = \mathbf{J} = 0$:
 
 $$
 \begin{aligned}
-\nabla \cdot \mathbf{E} &= 0 \\
-\nabla \cdot \mathbf{B} &= 0 \\
-\nabla \times \mathbf{E} &= -\frac{1}{c}\frac{\partial \mathbf{B}}{\partial t} \\
+\nabla \cdot \mathbf{E} &= 0 \\[0.8em]
+\nabla \cdot \mathbf{B} &= 0 \\[0.8em]
+\nabla \times \mathbf{E} &= -\frac{1}{c}\frac{\partial \mathbf{B}}{\partial t} \\[0.8em]
 \nabla \times \mathbf{B} &= \frac{1}{c}\left(\frac{\partial \mathbf{E}}{\partial t}\right),
 \end{aligned}
 $$
@@ -154,7 +154,7 @@ identities, looks like
 
 $$
 \begin{aligned}
-\frac{1}{c^{2}}\frac{\partial^{2}\mathbf{E}}{\partial t^{2}} - \nabla^{2}\mathbf{E} &= 0 \\
+\frac{1}{c^{2}}\frac{\partial^{2}\mathbf{E}}{\partial t^{2}} - \nabla^{2}\mathbf{E} &= 0 \\[0.8em]
 \frac{1}{c^{2}}\frac{\partial^{2}\mathbf{B}}{\partial t^{2}} - \nabla^{2}\mathbf{B} &= 0,
 \end{aligned}
 $$
@@ -1097,12 +1097,12 @@ Let's write it in terms of $\beta = v/c$ and expand the $\gamma$:
 
 $$
 \begin{aligned}
-\nu^{\prime} &= \nu\,\frac{[1 - \beta^2]^{1/2}}{[1 - \beta]} \\
-             &= \nu\,\frac{[(1 - \beta)^{1/2}(1 + \beta)^{1/2}]}{[1 - \beta]} \\
-             &= \nu\,\frac{[(1 - \beta)^{1/2}(1 + \beta)^{1/2}]}{[1 - \beta]} \times \frac{(1 + \beta)^{1/2}}{(1 + \beta)^{1/2}} \\
-             &= \nu\,\frac{[(1 - \beta)^{1/2}(1 + \beta)]}{[(1 - \beta)(1 + \beta)^{1/2}]} \\
-             &= \nu\,\frac{[(1 + \beta)]}{[(1 - \beta)^{1/2}(1 + \beta)^{1/2}]} \\
-             &= \nu\,\frac{[(1 + \beta)]}{[(1 - \beta^2)^{1/2}]} \\
+\nu^{\prime} &= \nu\,\frac{[1 - \beta^2]^{1/2}}{[1 - \beta]} \\[0.8em]
+             &= \nu\,\frac{[(1 - \beta)^{1/2}(1 + \beta)^{1/2}]}{[1 - \beta]} \\[0.8em]
+             &= \nu\,\frac{[(1 - \beta)^{1/2}(1 + \beta)^{1/2}]}{[1 - \beta]} \times \frac{(1 + \beta)^{1/2}}{(1 + \beta)^{1/2}} \\[0.8em]
+             &= \nu\,\frac{[(1 - \beta)^{1/2}(1 + \beta)]}{[(1 - \beta)(1 + \beta)^{1/2}]} \\[0.8em]
+             &= \nu\,\frac{[(1 + \beta)]}{[(1 - \beta)^{1/2}(1 + \beta)^{1/2}]} \\[0.8em]
+             &= \nu\,\frac{[(1 + \beta)]}{[(1 - \beta^2)^{1/2}]} \\[0.8em]
              &= \nu\,(1 + \beta)\gamma .
 \end{aligned}
 $$
@@ -1308,9 +1308,9 @@ $\beta = 0.3$:
 
 $$
 \begin{aligned}
-\lambda^{\prime} &= \lambda\left(\frac{1 + \beta}{1 - \beta}\right)^{1/2} \\
-                 &= 6563\,\text{Å}\left(\frac{1 + 0.3}{1 - 0.3}\right)^{1/2} \\
-                 &= 6563\,\text{Å}\,(1.36) \\
+\lambda^{\prime} &= \lambda\left(\frac{1 + \beta}{1 - \beta}\right)^{1/2} \\[0.8em]
+                 &= 6563\,\text{Å}\left(\frac{1 + 0.3}{1 - 0.3}\right)^{1/2} \\[0.8em]
+                 &= 6563\,\text{Å}\,(1.36) \\[0.8em]
                  &= 8925\,\text{Å}
 \end{aligned}
 $$
@@ -1331,8 +1331,8 @@ An H$\alpha$ line that is emitted red comes out in the near-infrared.
 
    $$
    \begin{aligned}
-   z &= \frac{\lambda^{\prime}}{\lambda} - 1 \\
-     &= \frac{7777\,\text{Å}}{4861\,\text{Å}} - 1 \\
+   z &= \frac{\lambda^{\prime}}{\lambda} - 1 \\[0.8em]
+     &= \frac{7777\,\text{Å}}{4861\,\text{Å}} - 1 \\[0.8em]
      &= 1.6 - 1 = 0.6
    \end{aligned}
    $$
@@ -2280,7 +2280,7 @@ separate pieces.
    $$
    \begin{aligned}
    -ct_{\text{rear}} &= -\frac{\ell + d}{\gamma} + v\,t_{\text{rear}}
-     &&\Longrightarrow&& t_{\text{rear}} = \frac{\ell + d}{\gamma\,(c + v)} \\
+     &&\Longrightarrow&& t_{\text{rear}} = \frac{\ell + d}{\gamma\,(c + v)} \\[0.8em]
    +ct_{\text{front}} &= +\frac{\ell - d}{\gamma} + v\,t_{\text{front}}
      &&\Longrightarrow&& t_{\text{front}} = \frac{\ell - d}{\gamma\,(c - v)} .
    \end{aligned}
