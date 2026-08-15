@@ -1,22 +1,374 @@
 ---
-title: "ASTRO 206 — Black Holes"
+title: "ASTRO 206 · Black Holes"
 # HTML only: the project-wide format map includes `pdf`, which every page would
 # otherwise inherit. There is no blackboard printout of a landing page.
 format:
   live-html: default
+# NOT optional, and it cannot move to _quarto.yml -- Quarto silently ignores it
+# there and auto-selects a different registered kernel, which changes every
+# figure without a warning.
+jupyter: python3
 ---
 
-<!--
-PLACEHOLDER. A Quarto website needs an index page to exist; this is structural
-scaffolding, not content. The words on this page are Kayhan's to write — what
-the course is, how students should use these notes, what to read before which
-lecture.
--->
+```{python}
+#| label: setup
+#| include: false
 
-::: {.callout-warning title="Placeholder page"}
-This landing page has not been written yet.
+# DUPLICATED from lectures/special-relativity/index.qmd, minus the parts this
+# page does not use (numpy, gamma()). Two copies is tolerable; if a third page
+# grows a setup cell, factor this into a shared include instead of a third copy.
+# Keep the wording identical to the lecture's so a drift is easy to diff.
+
+from pathlib import Path
+
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
+
+# Figure text is set in the same face as the body text, and figure MATH in the
+# same fontset the page's MathJax uses. So a symbol means the same thing whether
+# it appears in a sentence, a display equation, or a figure label -- which for
+# maths is the point: the typeface IS the symbol.
+#
+# Walk up rather than hardcode a relative path: Quarto's execute-dir defaults to
+# the document's directory, but that is a default, not a guarantee, and a wrong
+# relative path here would be a silent fallback rather than an error.
+_FONTDIR = next(
+    (p / "fonts" for p in (Path.cwd(), *Path.cwd().parents) if (p / "fonts").is_dir()),
+    None,
+)
+if _FONTDIR is None:
+    raise RuntimeError(f"no fonts/ directory found above {Path.cwd()}")
+for _f in sorted(_FONTDIR.glob("*.otf")):
+    fm.fontManager.addfont(str(_f))
+
+# Assert rather than hope. A missing family does not raise in matplotlib -- it
+# silently substitutes DejaVu Sans and the build "succeeds" with the figure
+# quietly wrong.
+_got = Path(fm.findfont(fm.FontProperties(family="XCharter"))).name
+assert _got.startswith("XCharter"), (
+    f"XCharter did not resolve (matplotlib chose {_got!r}). "
+    f"Checked {_FONTDIR}. Figures would silently fall back to DejaVu Sans."
+)
+
+# Validated 3-slot categorical palette (all-pairs safe, light surface).
+BLUE, ORANGE, AQUA = "#2a78d6", "#eb6834", "#1baf7a"
+INK, INK2, MUTED = "#0b0b0b", "#52514e", "#898781"
+GRID, AXIS, SURFACE = "#e1e0d9", "#c3c2b7", "#fcfcfb"
+
+mpl.rcParams.update({
+    "figure.facecolor": SURFACE,
+    "axes.facecolor": SURFACE,
+    "savefig.facecolor": SURFACE,
+    "savefig.bbox": "tight",
+    "font.family": "serif",
+    "font.serif": ["XCharter"],
+    # "stix" is the closest available neighbour to the page's mathjax-termes;
+    # both are Times-derived. See the lecture's setup cell for the full note.
+    "mathtext.fontset": "stix",
+    "font.size": 11,
+    "axes.edgecolor": AXIS,
+    "axes.linewidth": 0.8,
+    "axes.labelcolor": INK2,
+    "axes.titlecolor": INK,
+    "axes.titlesize": 12,
+    "axes.grid": True,
+    "grid.color": GRID,
+    "grid.linewidth": 0.8,
+    "grid.linestyle": "-",
+    "xtick.color": MUTED,
+    "ytick.color": MUTED,
+    "xtick.labelcolor": INK2,
+    "ytick.labelcolor": INK2,
+    "axes.spines.top": False,
+    "axes.spines.right": False,
+    "legend.frameon": False,
+    "lines.linewidth": 2.0,
+    "lines.markersize": 8,
+})
+```
+
+This webpage contains material for ASTRO 206 · Black Holes: the Triumph for Gravity, a 1-semester sophomore-level course as taught by me, [Kayhan Gultekin](https://kayhangultekin.com), during the Fall 2026 semester at the University of Michigan.  
+
+The content comes from lecture notes that I wrote for myself to use as I lectured by the blackboard.  On request of students, I posted the notes to the class webpage.  Over time, I added material to the notes that was only useful for the students.  So what started as notes for myself became supplementary reading for the class.  I have decided to, in earnest, make these notes into an online digital textbook with interactive content.  I do not expect to get there all at once, and this will be updated as the course goes on, time-depending.
+
+To get started, choose from the "Lectures" dropdown menu at the top.
+
+## How to Get the Most out of This Material
+
+The content in this page is meant to be read before the lecture on the corresponding material.  Students will get the most out of it, by engaging with the material and using their brains the way the text asks you to.  When the text says, "Ask yourself what happens when $\tau \gg 1$," honestly ask yourself this and try to answer.  Attempt all exercises before checking answers, hints, and solutions. Work with the interactive material to improve understanding.  When it comes time for the lecture, you will know what you don't understand and can ask meaningful questions.
+
+## A Quick Guide to the Format and Conventions
+
+The webpage uses a few tools that are worth further explanation.
+
+### Figures
+
+Many of the figures were originally just blank spaces in my lecture notes with cues on what to draw. That is not useful for online material. So now they are matplotlib-generated figures, like @fig-pythagoras.  A neat feature of [Quarto](https://quarto.org), the publishing engine I use to make these pages, is that you can expose the code used to make the figures, which you can see an example of below.
+
+```{python}
+#| label: fig-pythagoras
+#| fig-cap: "A right triangle, with the right angle at $C$. Each side takes the name of the vertex across from it, so the hypotenuse — the side facing the right angle — is $c$. That convention is what lets the theorem be written as $a^2 + b^2 = c^2$ without having to say which side is which."
+#| fig-alt: "A right triangle drawn on a plain background, with no axes or grid. The right angle sits at vertex C in the bottom-left corner and is marked with a small square. Vertex A is directly above C, and vertex B is off to the right of C along the bottom. The two legs are drawn in black: side a runs along the bottom from C to B, and side b runs vertically from C up to A. The hypotenuse, side c, is drawn in blue and slopes down from A at the top left to B at the bottom right. Each vertex is marked with a dot and labelled with a capital letter; each side is labelled at its midpoint with the lowercase letter matching the vertex opposite it."
+#| fig-height: 3.8
+
+# COPYING THIS OUT? This page runs a hidden setup cell before every figure, so
+# the block below is not quite self-contained. To run it in your own Python,
+# put these two lines at the top:
+#
+#     from matplotlib import pyplot as plt
+#     INK, BLUE, MUTED = "#0b0b0b", "#2a78d6", "#898781"
+#
+# It will then draw the same triangle -- but in your default typeface, on a
+# white background, because that hidden cell also matches the figures' fonts
+# and colours to the text you are reading.
+
+# A right triangle, with the right angle at C in the bottom-left corner. Each
+# side is named for the vertex across from it, so c faces the right angle.
+C = (0.0, 0.0)   # the right angle
+B = (4.0, 0.0)   # along the bottom from C
+A = (0.0, 3.0)   # straight up from C
+
+fig, ax = plt.subplots(figsize=(5.5, 3.8))
+
+# The two legs in ink, then the hypotenuse in blue.
+ax.plot([B[0], C[0]], [B[1], C[1]], color=INK)    # side a, opposite vertex A
+ax.plot([C[0], A[0]], [C[1], A[1]], color=INK)    # side b, opposite vertex B
+ax.plot([A[0], B[0]], [A[1], B[1]], color=BLUE)   # side c, opposite vertex C
+
+# The small square that marks the right angle.
+ax.plot([0.34, 0.34, 0.0], [0.0, 0.34, 0.34], color=MUTED, linewidth=1.1)
+
+# Vertices: a dot and a capital, nudged clear of the triangle.
+for point, name, offset in ((A, "A", (-15, 4)),
+                            (B, "B", (11, -13)),
+                            (C, "C", (-15, -13))):
+    ax.plot([point[0]], [point[1]], "o", color=INK, markersize=5.5, zorder=3)
+    ax.annotate(rf"${name}$", point, textcoords="offset points", xytext=offset,
+                ha="center", va="center", color=INK, fontsize=13)
+
+# Sides: a lowercase letter at the midpoint, pushed away from the triangle.
+for point, name, offset, colour in (((2.0, 0.0), "a", (0, -17), INK),
+                                    ((0.0, 1.5), "b", (-17, 0), INK),
+                                    ((2.0, 1.5), "c", (15, 11), BLUE)):
+    ax.annotate(rf"${name}$", point, textcoords="offset points", xytext=offset,
+                ha="center", va="center", color=colour, fontsize=13)
+
+ax.set_aspect("equal")   # so the right angle is drawn as one
+ax.set_xlim(-0.75, 4.75)
+ax.set_ylim(-0.7, 3.6)
+ax.axis("off")
+
+fig.tight_layout()
+plt.show()
+```
+
+### Tabsets
+
+Throughout the webpage, many concepts are explained side-by-side focussing on different aspects: (i) Physical intuition, (ii) Mathematical explanation, (iii) Numerical exploration, and (iv) an interactive piece I call Turn the knobs.  These are done using "Tabsets", with each of the four having its own tab.
+
+*Physical intuition* tabs explain the concept by invoking and developing our intuition about energy, momentum, and so on.
+
+*Mathematical explanation* tabs include more mathematical rigor, a neccessary component of understanding astrophysics.
+
+*Numerical exploration* tabs use python code to calculate quantities and/or make figures to help develop our quantitative understanding.  You see the code that generates the output, but it is precalculated for you.
+
+*Turn the knobs* tabs use the same or similar python code as the numerical exploration tabs but give you, the reader, the opportunity to modify numbers in the code and see how that changes things.  This runs in your browser using [Quarto Live](https://r-wasm.github.io/quarto-live/), which harnesses [Pyodide](https://pyodide.org/en/stable/). 
+
+Here is what all four look like, using the same triangle as above. The tab
+headings are one level deeper than a lecture's, because this tabset sits inside
+a subsection; `.tracks` is what puts the four icons on the labels.
+
+::: {.panel-tabset .tracks}
+
+#### Physical intuition
+
+I chose the Pythagorean theorem as an example because I figured it would be easy to make a figure, to do the mathematical calculations, and for everyone to understand.  It turns out that trying to explain the Pythagorean theorem *intuitively* is really challenging.
+
+#### Mathematical explanation
+
+Take four copies of the triangle and set them around a central square of side $c$, arranged so that the whole figure is itself a square, of side $a + b$.
+
+Now count the area of that large square two ways. Measured directly, it is
+
+$$(a + b)^2 .$$
+
+Measured piece by piece, it is the central square plus the four triangles:
+
+$$c^2 + 4 \cdot \tfrac{1}{2} ab = c^2 + 2ab .$$
+
+The two counts describe the same area, so they are equal. Expanding the left side gives
+
+$$a^2 + 2ab + b^2 = c^2 + 2ab ,$$
+
+and the $2ab$ on each side cancels, leaving
+
+$$a^2 + b^2 = c^2 .$$
+
+This is the first of the two algebraic proofs given in the Wikipedia article on the [Pythagorean theorem](https://en.wikipedia.org/wiki/Pythagorean_theorem#Algebraic_proofs).
+
+#### Numerical exploration
+
+```{python}
+#| label: pythagoras-table
+
+import math
+
+a_values = [3, 5, 8]
+b_values = [4, 12, 15]
+
+print(f"{'a':>3}  {'b':>3}  {'c':>9}")
+for a in a_values:
+    for b in b_values:
+        c = math.sqrt(a**2 + b**2)
+        # A whole-number hypotenuse is the exception, not the rule.
+        note = "   <- a Pythagorean triple" if c.is_integer() else ""
+        print(f"{a:>3}  {b:>3}  {c:>9.4f}{note}")
+```
+
+#### Turn the knobs
+
+The same calculation, but live. Edit either marked line below and run it to see what your own triangles give — whole-number hypotenuses are rarer than they look.
+
+```{pyodide}
+#| autorun: false
+
+import math
+
+a_values = [3, 5, 8]     # <- edit this
+b_values = [4, 12, 15]   # <- edit this
+
+print(f"{'a':>3}  {'b':>3}  {'c':>9}")
+for a in a_values:
+    for b in b_values:
+        c = math.sqrt(a**2 + b**2)
+        # A whole-number hypotenuse is the exception, not the rule.
+        note = "   <- a Pythagorean triple" if c.is_integer() else ""
+        print(f"{a:>3}  {b:>3}  {c:>9.4f}{note}")
+```
+
 :::
 
-## Lectures
+### Interactive Widgets
 
-- [Special relativity: simultaneity, time dilation, and $E = mc^2$](lectures/special-relativity/index.qmd)
+My most ambitious effort is in creating interactive widgets to help drive understanding home.
+
+::: {.callout-note collapse="true" title="How to use it"}
+* **Drag** either orange handle to lengthen or shorten a leg. Each one is stuck
+  on the axis it starts on, so the corner at $C$ stays a right angle whatever
+  you do.
+* **Keyboard:** Tab to a handle, then use the arrow keys to change that leg.
+  Hold <kbd>Shift</kbd> for larger steps, or press <kbd>Home</kbd> and
+  <kbd>End</kbd> for the shortest and longest legs.
+* With **snap to whole numbers** on, look for the combinations that make $c$
+  come out whole too — those are the Pythagorean triples from the table above.
+  Turn snapping off and you will see how rare they are.
+* Notice what you *cannot* do: there is no handle for $c$. Once you choose $a$
+  and $b$, the theorem has already decided the third side.
+:::
+
+```{=html}
+<figure id="py-fig" class="py-figure">
+  <div class="py-controls">
+    <label class="py-chk">
+      <input type="checkbox" class="py-snap" checked> Snap to whole numbers
+    </label>
+    <button type="button" class="py-reset">Reset to 3-4-5</button>
+  </div>
+
+  <div class="py-plot"></div>
+
+  <div class="py-readout">
+    <p class="py-lengths">
+      a = <output class="py-val-a">4</output>
+      <span class="py-sep">·</span>
+      b = <output class="py-val-b">3</output>
+      <span class="py-sep">·</span>
+      c <output class="py-val-c">= 5</output>
+    </p>
+    <p class="py-identity"></p>
+    <p><span class="py-badge"></span></p>
+  </div>
+
+  <p class="py-live" aria-live="polite"></p>
+
+  <figcaption>
+    Figure&nbsp;2: The same right triangle, now with the two legs under your
+    control. Drag either orange handle along its axis; the right angle at
+    <em>C</em> is fixed, so every triangle you can make here is a right
+    triangle. The hypotenuse <em>c</em> is drawn in the same blue as the figure
+    above, and it is the one length you cannot set yourself &mdash; it follows
+    from <em>a</em> and <em>b</em>.
+  </figcaption>
+</figure>
+
+<style>
+.py-figure {
+  margin: 1.6em 0 2em;
+  padding: 1em 1.1em 1.2em;
+  border: 1px solid #e1e0d9;
+  border-radius: 4px;
+  background: #fcfcfb;
+}
+.py-controls {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 1.2em; margin-bottom: .8em; font-size: .9rem;
+}
+.py-chk { display: inline-flex; align-items: center; gap: .4em; cursor: pointer; }
+.py-reset {
+  font: inherit; font-size: .88rem; padding: .18em .7em;
+  border: 1px solid #c3c2b7; border-radius: 3px;
+  background: #fff; color: #52514e; cursor: pointer;
+}
+.py-reset:hover { border-color: #898781; color: #0b0b0b; }
+.py-plot { max-width: 560px; margin: 0 auto; }
+.py-svg { display: block; touch-action: none; }
+.py-handle { cursor: grab; }
+.py-handle:active { cursor: grabbing; }
+.py-handle:focus { outline: 2px solid #2a78d6; outline-offset: 2px; }
+.py-tick { font-size: 12px; }
+.py-side { font-size: 17px; font-variant-numeric: tabular-nums; }
+.py-vertex { font-size: 14px; font-style: italic; }
+.py-readout { margin-top: .9em; text-align: center; }
+.py-lengths {
+  margin: 0 0 .25em; font-size: 1.05rem;
+  font-variant-numeric: tabular-nums;
+}
+.py-sep { color: #c3c2b7; margin: 0 .5em; }
+.py-identity {
+  margin: 0 0 .35em; color: #52514e;
+  font-variant-numeric: tabular-nums;
+}
+.py-badge {
+  display: inline-block; padding: 0 .6em; border-radius: 999px;
+  font-size: .82rem; font-weight: 600; line-height: 1.7;
+}
+.py-badge-on { background: #e8f0fb; color: #17457f; }
+.py-live {
+  position: absolute; width: 1px; height: 1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}
+.py-figure figcaption {
+  margin-top: .9em; font-size: .83rem; color: #52514e; line-height: 1.45;
+}
+</style>
+<script type="module" src="pythagoras.js"></script>
+```
+
+## Exercises and Why You Should Do Them
+
+Throughout the webpages are exercises for the student to do.  Doing the exercises strengthens mental capacities for the material in ways very analagous to how doing exercises in the gym strengthens muscular capacities.  There are worked examples in the pages, and exercises have various levels of assistance: full solutions, hints, and final numerical answers.
+
+## AI Usage Statement
+
+I used AI heavily in the creation of these pages.  In particular, I started with my own notes in LaTeX.  These are notes that I wrote entirely on my own, and then used LLMs to convert to the Quarto format.  I used LLMs to help create the icons and to test which typefaces to use, and so on.  I also designed, in my head, interactive figures, and then let LLMs do the coding for me.  
+
+I stand by all of the content on this site.[I'm sure there are mistakes, and you should tell me about them.]{.aside .content-visible when-format="html"}
+
+I wrote all of explanations of concepts on this site.[Some explanatory text from the first lecture I converted (on special relativity) may have slipped through from the LLM as I had not set strict rules against it yet.]{.aside .content-visible when-format="html"} I *designed* all figures, code examples, and interactive widgets, even if I used LLMs to do the work of going from spec to final product.  I even used them to create exercises along the lines of a prompt such as "I uploaded the in-class question. Make some exercises that will prepare the student for that."  I always made sure the final product met my expectations and standards.
+
+I also used LLMs for things such as creating typeface specimens for me to choose from and turning the typographical marks into SVG icons.
+
+Finally, I use AI to assist me in making the documents as accessible as possible.  I use LLM-generated alt-text, I use AI to evaluate whether color choices are accessible or not, and I generally probe for accessibility with LLM.
+
+
