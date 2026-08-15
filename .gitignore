@@ -26,3 +26,6 @@
 # entirely, so there is nothing here to ignore.
 
 **/*.quarto_ipynb
+
+# macOS Finder metadata.
+.DS_Store
