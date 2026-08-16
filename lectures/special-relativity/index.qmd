@@ -1414,8 +1414,7 @@ z^{\prime} &= z.
 \end{aligned}
 $$ {#eq-lorentz-inv}
 
-It's actually possible to derive these relatively easily, [See Scott Hughes'
-notes at <https://web.mit.edu/sahughes/www/8.033/lec03.pdf>.]{.aside .content-visible when-format="html"} but it is out of
+It's actually possible to derive these relatively easily, [See @hughes2024.]{.aside .content-visible when-format="html"} but it is out of
 the scope of our class. It *is* useful to see how this plays out geometrically,
 though.
 
@@ -2420,6 +2419,13 @@ separate pieces.
 Everything in this table follows from one assumption: **every observer measures
 the speed of light to be $c$.** Next time we add gravity, and the geometry stops
 being flat.
+
+:::: {.content-visible when-format="html"}
+## References {.unnumbered}
+
+::: {#refs}
+:::
+::::
 
 ::: {.content-visible when-format="pdf"}
 

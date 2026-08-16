@@ -1,0 +1,47 @@
+% ASTRO 206 — course bibliography.
+%
+% Wired up in _quarto.yml as `bibliography:` + `csl:`. Rendered by pandoc's
+% citeproc, which ships inside Quarto — there is no external toolchain here and
+% CI needs nothing new.
+%
+% STYLE IS Chicago author-date, not ApJ, and that was a deliberate choice made
+% against the astronomer's instinct. AAS/ApJ style omits article titles: it
+% renders a paper as "Gültekin, K., et al. 2009, The Astrophysical Journal,
+% 698, 198" — which is right for a journal, and useless here, because this
+% course's references are mostly NOT journal articles. Under ApJ the entry
+% below collapses to "Hughes, S. A. 2024, https://web.mit.edu/..." — author,
+% year and a bare URL, with nothing telling a student why they would click it.
+% Titles are the pedagogically load-bearing field for a reading list, so the
+% style that keeps them wins. Measured, both ways, before choosing.
+%
+% ENTRY TYPE CONTROLS TITLE TREATMENT, and the distinction is meaningful:
+%   @misc   -> italic title  — a standalone work (a set of lecture notes)
+%   @online -> quoted title  — a piece within a larger work (one wiki article)
+% Pick the one that describes what the thing actually is.
+%
+% TITLE CASE: Chicago re-cases titles, and that can mangle physics. A title
+% already in title case survives untouched (verified on the Hughes entry). One
+% with symbols or unusual capitalisation does NOT — "The M-sigma and M-L
+% Relations" came back as "The m–Sigma and m–l Relations". The fix is brace
+% protection around the affected words, but note it leaks bare <span> elements
+% into the HTML, so protect the smallest span of text that needs it and only
+% when a render shows it is needed.
+
+@misc{hughes2024,
+  author       = {Hughes, Scott A.},
+  title        = {Introduction to Relativity and Spacetime Physics,
+                  Lecture 3: From Galilean Relativity to \ldots ?},
+  howpublished = {8.033 course notes, Massachusetts Institute of Technology},
+  year         = {2024},
+  url          = {https://web.mit.edu/sahughes/www/8.033/lec03.pdf},
+  urldate      = {2026-08-16}
+}
+
+@online{wikipedia-pythagoras,
+  author       = {{Wikipedia contributors}},
+  title        = {Pythagorean theorem},
+  organization = {Wikipedia, The Free Encyclopedia},
+  year         = {2026},
+  url          = {https://en.wikipedia.org/wiki/Pythagorean_theorem#Algebraic_proofs},
+  urldate      = {2026-08-16}
+}

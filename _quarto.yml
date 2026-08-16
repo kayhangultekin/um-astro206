@@ -88,6 +88,43 @@ format:
     toc-title: "On this page"
     number-sections: true
     number-depth: 2
+    # `reference-section-title:` is deliberately NOT set here. It is a PANDOC
+    # option, and Quarto supersedes it -- setting both makes two layers each
+    # try to supply the heading. Measured at each layer separately:
+    #
+    #   pandoc alone, WITHOUT it   ->  a bare <div id="refs">, NO heading
+    #   pandoc alone, WITH it      ->  <section id="bibliography">
+    #                                    <h1 class="unnumbered">References</h1>
+    #                                    <div id="refs"> ... </div>
+    #                                  -- complete and correct on its own
+    #
+    # Then Quarto's APPENDIX pass runs on top of pandoc's output. It harvests
+    # the #refs div and the heading text, re-emits them inside #quarto-appendix
+    # as an <h2 class="quarto-appendix-heading">, and does NOT remove the now
+    # empty <section id="bibliography"> pandoc left. The TOC is built from the
+    # document's section structure, so it indexes that empty husk.
+    #
+    # So the heading you see always comes from Quarto, never from this key.
+    # With citeproc on, Quarto routes the reference list into its APPENDIX
+    # machinery by itself:
+    #
+    #   <div id="quarto-appendix">
+    #     <section role="doc-bibliography" id="quarto-bibliography">
+    #       <h2 class="quarto-appendix-heading">References</h2>
+    #       <div id="refs" class="csl-bib-body hanging-indent">
+    #
+    # So the heading already exists, already reads "References", and is already
+    # exempt from section numbering -- `number-sections: true` does NOT number
+    # it, so there is no "11 References" to suppress. Verified both ways by
+    # render, not inferred.
+    #
+    # The cost of leaving the key out is that there is NO TOC entry for
+    # References.
+    # That is Quarto's designed behaviour for appendices and is accepted for
+    # now. If a real "Further reading" section is ever wanted, the right shape
+    # is an explicit `## References` heading plus an empty `::: {#refs} :::`
+    # in the document -- a real section, a correct anchor, and somewhere for
+    # prose to live. That is content, so it is Kayhan's call, not a default.
     html-math-method: mathjax
     fig-align: center
     fig-width: 6.5
@@ -280,6 +317,33 @@ format:
     fig-height: 4.0
     colorlinks: true
     echo: false
+    # NO bibliography in the PDF. This is a deliberate asymmetry, not an
+    # oversight: the PDF is the blackboard build, for Kayhan to lecture from,
+    # and a reference list is student-facing apparatus that has no job at the
+    # board. It follows the same logic that already drops the .aside sidenotes.
+    #
+    # This is belt-and-braces rather than the mechanism. The primary guard is
+    # that each citation lives inside a `content-visible when-format="html"`
+    # block, so the PDF never contains the citation either -- which is also
+    # what keeps a bare "(Hughes 2024)" from printing with nothing to resolve
+    # it against. This key catches any citation that later lands in shared
+    # prose without that wrapper.
+    suppress-bibliography: true
+# Citations. Rendered by pandoc's citeproc, which ships INSIDE Quarto -- there
+# is no external toolchain and CI installs nothing new for this. Both files are
+# committed beside this one.
+#
+# Project-level, so every document inherits. Quarto puts the reference list at
+# the END of each document, which is where Kayhan wants it: after the Summary,
+# so the Summary stays the last word of the lecture proper and the references
+# read as apparatus rather than content.
+#
+# Chicago author-date, NOT ApJ -- the reasoning is in references.bib and it is
+# not the obvious choice for an astronomer. Short version: AAS style omits
+# titles, which is correct for a journal and useless for a reading list of
+# course notes and web pages.
+bibliography: references.bib
+csl: chicago-author-date.csl
 crossref:
   eq-prefix: "Eq."
 # freeze is deliberately OFF. `freeze: auto` is incompatible with the in_class

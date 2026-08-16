@@ -205,7 +205,7 @@ and the $2ab$ on each side cancels, leaving
 
 $$a^2 + b^2 = c^2 .$$
 
-This is the first of the two algebraic proofs given in the Wikipedia article on the [Pythagorean theorem](https://en.wikipedia.org/wiki/Pythagorean_theorem#Algebraic_proofs).
+This is the first of the two algebraic proofs given in the Wikipedia article on the Pythagorean theorem [@wikipedia-pythagoras].
 
 #### Numerical exploration
 
@@ -372,3 +372,8 @@ I also used LLMs for things such as creating typeface specimens for me to choose
 Finally, I use AI to assist me in making the documents as accessible as possible.  I use LLM-generated alt-text, I use AI to evaluate whether color choices are accessible or not, and I generally probe for accessibility with LLM.
 
 
+
+## References {.unnumbered}
+
+::: {#refs}
+:::

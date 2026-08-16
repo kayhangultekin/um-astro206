@@ -154,6 +154,15 @@ $nb-link-hot:  #000000 !default;   // hover + active
 $nb-brand-col: #111111 !default;
 $nb-icon:      #555555 !default;
 
+//  ── references ────────────────────────────────────────────────────────
+//  The hairline above the reference list. This is Bootstrap's $gray-300 by
+//  VALUE, because that is what Quarto's appendix drew before the reference
+//  list was moved into a real section, and the point is to keep an appearance
+//  Kayhan had already approved. It is spelled out rather than referenced as
+//  $gray-300 so the theme keeps naming its own colours -- and because that is
+//  the only Bootstrap variable this file would otherwise depend on.
+$ref-rule: #dee2e6 !default;
+
 //  The brand is all-caps EB Garamond BOLD, so it reads at its cap height
 //  (0.655 em) rather than its x-height. 21.25px gives 13.9px of cap.
 $nb-brand-size: 21.25px !default;
@@ -260,6 +269,54 @@ $nb-link-size: 19.83px !default;
 }
 //  Section numbers live inside the heading; keep them out of the italic.
 #quarto-document-content h3 .header-section-number { font-style: normal; }
+
+//  ── the References heading ────────────────────────────────────────────
+//  Restores an appearance Kayhan approved and a structural change then broke.
+//
+//  The reference list is an explicit `## References {.unnumbered}` plus an
+//  empty `::: {#refs} :::` in each document, NOT Quarto's appendix. That is
+//  deliberate and is what buys a real anchor and a TOC entry -- see the long
+//  note in _quarto.yml. But it costs the appendix's styling, because the
+//  heading stops being a `.quarto-appendix-heading` and becomes an ordinary
+//  h2, picking up the 31px rule above.
+//
+//  What the appendix gave, measured off the compiled CSS before the change:
+//
+//    font-size   1em !important, and `--bs-body-font-size` is 1rem -> 16px.
+//                NOT the 19.5px of body prose: the References heading was
+//                deliberately SMALLER than the text around it, and that is
+//                the "body size" Kayhan said he liked.
+//    border-top  a hairline above the whole block, with 2em of space, which
+//                is what separated apparatus from the lecture proper.
+//    font-weight 600 -- but the theme's h2 rule outranks it (2 ids vs 1), so
+//                what actually painted was EB Garamond 700. Nothing to do.
+//    opacity     .9. REPRODUCED, at Kayhan's call on 2026-08-16 -- "the
+//                lighter gray for now", flagged by him as a decision to
+//                re-verify once he has looked at it properly.
+//
+//                It is `opacity` rather than a computed colour on purpose:
+//                that is the exact mechanism the appendix used, so what he
+//                verifies is what he already saw, not an approximation of it.
+//                The theme sets no `color` on h2 in either arrangement, so
+//                the two are pixel-identical. If it survives review, the
+//                better long-term form is a deliberate colour -- opacity is
+//                blunt (it fades the hover anchor-link glyph too) and is the
+//                same washing-out the callout headers had to override.
+//
+//  SCOPED BY ID, and that id comes from the heading TEXT: pandoc slugs
+//  "References" to `references`. Renaming the heading -- to "Further reading",
+//  say -- changes the id and silently switches this rule off. Rename both.
+#quarto-document-content section#references {
+  border-top: 1px solid $ref-rule;
+  margin-top: 2.4rem;
+  padding-top: 1.4rem;
+
+  > h2 {
+    font-size: 1rem;
+    margin-top: 0;
+    opacity: .9;
+  }
+}
 
 //  ── code: three surfaces, one size ────────────────────────────────────
 //  A cell has an editor, a static block, and printed output, and they are
