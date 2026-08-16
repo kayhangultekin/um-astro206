@@ -290,18 +290,20 @@ $nb-link-size: 19.83px !default;
 //                is what separated apparatus from the lecture proper.
 //    font-weight 600 -- but the theme's h2 rule outranks it (2 ids vs 1), so
 //                what actually painted was EB Garamond 700. Nothing to do.
-//    opacity     .9. REPRODUCED, at Kayhan's call on 2026-08-16 -- "the
-//                lighter gray for now", flagged by him as a decision to
-//                re-verify once he has looked at it properly.
+//    opacity     .9. REPRODUCED, and CONFIRMED by Kayhan on 2026-08-16 after
+//                looking at it on the live site. Settled -- do not re-open it
+//                on the theory that a computed colour would be tidier.
 //
 //                It is `opacity` rather than a computed colour on purpose:
 //                that is the exact mechanism the appendix used, so what he
-//                verifies is what he already saw, not an approximation of it.
-//                The theme sets no `color` on h2 in either arrangement, so
-//                the two are pixel-identical. If it survives review, the
-//                better long-term form is a deliberate colour -- opacity is
-//                blunt (it fades the hover anchor-link glyph too) and is the
-//                same washing-out the callout headers had to override.
+//                approved is what he had already seen, not an approximation
+//                of it. The theme sets no `color` on h2 in either
+//                arrangement, so the two are pixel-identical.
+//
+//                Known cost, accepted: `opacity` is blunt and also fades the
+//                hover anchor-link glyph. A computed colour would avoid that,
+//                but it would no longer be the thing he signed off on, so it
+//                is not a free swap -- it needs his eyes again.
 //
 //  SCOPED BY ID, and that id comes from the heading TEXT: pandoc slugs
 //  "References" to `references`. Renaming the heading -- to "Further reading",
