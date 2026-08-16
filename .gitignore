@@ -7,6 +7,16 @@
 # case anything is ever built in place.
 *.pdf
 
+# In-place render output beside the source. `/_site/` above is root-anchored
+# and does not catch this: a `quarto preview` session, or a render aimed at a
+# directory rather than the project, drops index.html and index_files/ INTO
+# lectures/<slug>/. That happened on 2026-08-16 and left 680K of untracked
+# build output — safe content, but one `git add -A` from being committed to a
+# public repo. The *.pdf net above already anticipated in-place builds; this
+# is the same idea for HTML, which it did not cover.
+/lectures/*/index.html
+/lectures/*/*_files/
+
 # Freeze is disabled in _quarto.yml (see the comment there): its hash ignores
 # the in_class symlink, so it silently replays the wrong build in both
 # directions, and an instructor build leaves the answers sitting in _freeze/ as
