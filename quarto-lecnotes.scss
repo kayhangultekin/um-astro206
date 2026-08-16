@@ -102,7 +102,20 @@ $callout-icon-nudge: -1px !default;
 //  │  on white at 15.5px and FAILED WCAG AA; this is 6.34:1.          │
 //  └──────────────────────────────────────────────────────────────────┘
 $tab-color:      #1F5FAF !default;
-$tab-icon-size:  16px    !default;
+//  25px, not Bootstrap Icons' 16. That 16 was never a decision about this
+//  tab — it is the grid those icons are drawn on, so it is where their
+//  1-unit strokes land on whole pixels. The tabs now carry typographic
+//  marks (tab-marks.scss), and the size is set by the integral: a mark's
+//  ink cannot exceed its own box and ∫ is a full-height glyph.
+//
+//  Measured headroom before anything breaks: the row reaches the 702px
+//  column at about a 43px icon, and the tab grows taller than its two-line
+//  label at about 40px. 25px sits well inside both.
+//
+//  LOAD-BEARING BEYOND ITS OWN SIZE, exactly as $callout-icon-size is: each
+//  mark's darkening is baked into tab-marks.scss in viewBox units against
+//  this value. Re-run ../typography_specimens/emit_tab_marks.py if it moves.
+$tab-icon-size:  25px    !default;
 
 //  Wraps every tab label onto two lines at its own space with NO markup
 //  change — which matters, because a tabset's ### headings are also the
@@ -110,6 +123,18 @@ $tab-icon-size:  16px    !default;
 //  Valid window is (92.4px, 102.7px): wider than the longest single word
 //  ("Mathematical") and narrower than the shortest whole label ("Turn the
 //  knobs"). Re-measure if a tab is ever renamed.
+//
+//  UNCHANGED by the move to 25px marks, but the margin is thinner than it
+//  looks and the reason is worth knowing. This calc() budgets
+//  $tab-icon-size, NOT the mark's real width, so any mark wider than its
+//  own box takes the difference out of the label. Measured after the swap:
+//  the `+=` mark is 25.48px against a 25px box, leaving "Mathematical"
+//  95.5px for a word that needs 92.4 — a 3.1px margin. A future mark with a
+//  wider aspect ratio would eat that silently, and the failure shows up as
+//  a word crossing its tab border rather than as an error.
+//
+//  Note flex scrollWidth does NOT detect this; measure with a Range over
+//  the label text and compare getClientRects() against the content box.
 $tab-label-max: 96px !default;
 
 //  ┌─ NAVBAR ─────────────────────────────────────────────────────────┐
@@ -260,17 +285,25 @@ div.cell-output-pyodide pre code { font-size: var(--code-size); }
 .cm-editor .cm-gutters { font-family: "Inconsolata", monospace; }
 
 //  ── the tabset icons ──────────────────────────────────────────────────
-//  What is left of Bootstrap Icons. The CALLOUT icons used to live here too;
-//  they are now typographic marks cut from XCharter and EB Garamond, and live
-//  in marks.scss. The split is deliberate and follows the same line that gave
-//  tabsets their own $tab-color: a tabset is a CONTROL and may look like UI,
-//  a callout is CONTENT and should look like the prose around it.
-$bi-paths: (
-  "lightning": '<path d="M5.52.359A.5.5 0 0 1 6 0h4a.5.5 0 0 1 .474.658L8.694 6H12.5a.5.5 0 0 1 .395.807l-7 9a.5.5 0 0 1-.873-.454L6.823 9.5H3.5a.5.5 0 0 1-.48-.641zM6.374 1 4.168 8.5H7.5a.5.5 0 0 1 .478.647L6.78 13.04 11.478 7H8a.5.5 0 0 1-.474-.658L9.306 1z"/>',
-  "plus-slash-minus": '<path d="m1.854 14.854 13-13a.5.5 0 0 0-.708-.708l-13 13a.5.5 0 0 0 .708.708M4 1a.5.5 0 0 1 .5.5v2h2a.5.5 0 0 1 0 1h-2v2a.5.5 0 0 1-1 0v-2h-2a.5.5 0 0 1 0-1h2v-2A.5.5 0 0 1 4 1m5 11a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5A.5.5 0 0 1 9 12"/>',
-  "calculator": '<path d="M12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/> <path d="M4 2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5zm0 4a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3-6a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm0 3a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z"/>',
-  "sliders": '<path fill-rule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1z"/>',
-);
+//  GONE, 2026-08-15. Bootstrap Icons have no users left in this theme.
+//
+//  The callouts moved to typographic marks on 2026-08-14 and the tabs were
+//  deliberately kept as icons then, on the principle that a tabset is a
+//  CONTROL and may look like UI while a callout is CONTENT. Kayhan reopened
+//  that and chose marks for the tabs too: ∴ ∫ from XCharter-Math and += >>>
+//  from Inconsolata, in tab-marks.scss.
+//
+//  The argument that kept them as icons the first time was DEPICTION, not
+//  availability — the four track icons were pictorial (a calculator means
+//  "numerical" because it looks like one) and typographic marks are
+//  arbitrary. What answered it was that three of the four marks are not
+//  arbitrary at all in context: ∫ and ∴ are the notation of the thing the
+//  tab contains, and >>> is a Python prompt.
+//
+//  $bi-paths and bi() were deleted here rather than left to rot. If a
+//  Bootstrap icon is ever wanted again, the recipe is in git history and in
+//  PLAYBOOK.md Section 6 — note that Bootstrap ships fill="currentColor",
+//  which resolves to BLACK inside a data: URI.
 
 //  ═══════════════════════════════════════════════════════════════════
 //  CALLOUTS
@@ -295,16 +328,6 @@ $bi-paths: (
 //  without re-stating a single rule — and it works no matter which Quarto
 //  type the role happens to sit on.
 
-//  Bootstrap ships fill="currentColor", which resolves to BLACK inside a
-//  data: URI. The fill is injected here instead — in rgb(), never hex,
-//  because a literal "#" truncates the URI at the first character.
-//  (bi() is a compile-time function, so icon colour cannot come from the
-//  custom properties above; each icon rule names its family's colour.)
-@function bi($name, $color) {
-  $rgb: "rgb(#{red($color)}, #{green($color)}, #{blue($color)})";
-  @return url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" style="fill: #{$rgb}" class="bi bi-#{$name}" viewBox="0 0 16 16">#{map-get($bi-paths, $name)}</svg>');
-}
-
 //  The callout marks. $marks comes from marks.scss, which is GENERATED by
 //  ../typography_specimens/emit_marks.py — edit chosen_set.py there, not here.
 //
@@ -320,10 +343,22 @@ $bi-paths: (
 //
 //  BOTH must be rgb(), never hex: a literal "#" truncates the data URI at the
 //  first character. That trap now applies twice per mark.
-@function mark($name, $color) {
-  $m: map-get($marks, $name);
+//  Takes the ENTRY, not a name, so the callout marks and the tabset marks
+//  share one builder. Two maps, one URI: the pair of rgb() traps above is
+//  stated once rather than twice.
+@function svg-mark($m, $color) {
   $rgb: "rgb(#{red($color)}, #{green($color)}, #{blue($color)})";
   @return url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="#{map-get($m, vb)}" style="fill: #{$rgb}; stroke: #{$rgb}; stroke-width: #{map-get($m, sw)}; stroke-linejoin: round">#{map-get($m, svg)}</svg>');
+}
+
+@function mark($name, $color) {
+  @return svg-mark(map-get($marks, $name), $color);
+}
+
+//  $tab-marks comes from tab-marks.scss, GENERATED by
+//  ../typography_specimens/emit_tab_marks.py — edit tab_chosen.py there.
+@function tabmark($name, $color) {
+  @return svg-mark(map-get($tab-marks, $name), $color);
 }
 
 //  Height is always $callout-icon-size; width follows the mark's own aspect,
@@ -532,13 +567,17 @@ div.callout.callout-style-simple.callout-note { border-left-color: map-get($cf-n
 //  own. ORDER-DEPENDENT: re-check after reordering or inserting a tab.
 $tracks-sel: ".panel-tabset.tracks, .panel-tabset.tracks-from-numerical";
 
+//  width is NOT set here — it is per-mark, from the mark's own aspect ratio,
+//  in the loops below. Same reason as the callouts: these marks are not
+//  square, and naming a square background-size squashes them. `100% 100%`
+//  follows whatever width the per-mark rule sets, and the SVG's own viewBox
+//  aspect matches it, so the mark fills its box without distortion.
 #{$tracks-sel} { .nav-tabs .nav-link::before {
   content: "";
   display: block;
   flex: none;
-  width:  $tab-icon-size;
   height: $tab-icon-size;
-  background-size: $tab-icon-size $tab-icon-size;
+  background-size: 100% 100%;
   background-repeat: no-repeat;
   margin-right: 6px;
 } }
@@ -554,13 +593,21 @@ $tracks-sel: ".panel-tabset.tracks, .panel-tabset.tracks-from-numerical";
   max-width: calc(#{$tab-label-max + $tab-icon-size + 6px} + 1.8rem);
 }
 
-$tab-icons: "lightning", "plus-slash-minus", "calculator", "sliders";
+//  $tab-mark-order comes from tab-marks.scss and is the slot list in track
+//  order. Each rule is (0,5,2) — five classes counting :nth-child, and
+//  li + ::before as the elements — so the per-mark width beats the shared
+//  ::before block above, which is (0,4,1). That ordering is what stops a
+//  non-square mark being squashed into a square box; it is the same trap
+//  the callout marks hit when they stopped being square.
 @for $i from 1 through 4 {
+  $slot: nth($tab-mark-order, $i);
+  $w: $tab-icon-size * map-get(map-get($tab-marks, $slot), ar);
   .panel-tabset.tracks .nav-tabs li.nav-item:nth-child(#{$i}) .nav-link::before {
-    background-image: bi(nth($tab-icons, $i), $tab-color);
+    background-image: tabmark($slot, $tab-color);
+    width: $w;
   }
   .panel-tabset.tracks .nav-tabs li.nav-item:nth-child(#{$i}) .nav-link.active::before {
-    background-image: bi(nth($tab-icons, $i), #0b0b0b);
+    background-image: tabmark($slot, #0b0b0b);
   }
 }
 
@@ -568,11 +615,14 @@ $tab-icons: "lightning", "plus-slash-minus", "calculator", "sliders";
 //  by two. Without this it would inherit positions 1 and 2 and label
 //  "Numerical exploration" with a lightning bolt.
 @for $i from 1 through 2 {
+  $slot: nth($tab-mark-order, $i + 2);
+  $w: $tab-icon-size * map-get(map-get($tab-marks, $slot), ar);
   .panel-tabset.tracks-from-numerical .nav-tabs li.nav-item:nth-child(#{$i}) .nav-link::before {
-    background-image: bi(nth($tab-icons, $i + 2), $tab-color);
+    background-image: tabmark($slot, $tab-color);
+    width: $w;
   }
   .panel-tabset.tracks-from-numerical .nav-tabs li.nav-item:nth-child(#{$i}) .nav-link.active::before {
-    background-image: bi(nth($tab-icons, $i + 2), #0b0b0b);
+    background-image: tabmark($slot, #0b0b0b);
   }
 }
 

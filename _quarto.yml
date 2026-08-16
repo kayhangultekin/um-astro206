@@ -68,7 +68,9 @@ format:
     # marks.scss is GENERATED (../typography_specimens/emit_marks.py) and
     # carries the $marks map of callout glyph outlines. It must come BEFORE
     # the theme, which consumes $marks in its rules.
-    theme: [default, marks.scss, quarto-lecnotes.scss]
+    # marks.scss and tab-marks.scss are GENERATED (see typography_specimens/)
+    # and must precede the theme, which reads $marks and $tab-marks.
+    theme: [default, marks.scss, tab-marks.scss, quarto-lecnotes.scss]
     # Quarto 1.10.18 loads MathJax *4*, whose maths font is selectable (11 of
     # them); the default is mathjax-newcm. Termes is chosen because it typesets
     # best here -- in the other fonts the "s" of \mathrm{cm\,s^{-1}} drops

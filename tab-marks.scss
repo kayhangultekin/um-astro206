@@ -1,0 +1,54 @@
+/*-- scss:rules --*/
+// ═══════════════════════════════════════════════════════════════════════
+//  TABSET MARKS — GENERATED FILE, DO NOT HAND-EDIT
+// ═══════════════════════════════════════════════════════════════════════
+//  Written by ../typography_specimens/emit_tab_marks.py from tab_chosen.py.
+//  To change a mark, edit tab_chosen.py and re-run that script.
+//
+//  These replace the four Bootstrap Icons the tabs used to carry
+//  (lightning, plus-slash-minus, calculator, sliders). The callouts moved
+//  to typographic marks on 2026-08-14; the tabs were deliberately left as
+//  icons then, on the principle that a tabset is a CONTROL and may look
+//  like UI. Kayhan reopened it and chose marks here too, one tab at a
+//  time, 2026-08-15.
+//
+//  Sources are split by what the tab means: the two maths tabs take
+//  XCharter-Math, so they match the body text exactly; the two code-ish
+//  tabs take Inconsolata, the code face already vendored.
+//
+//  Entry shape is identical to $marks in marks.scss, so the theme's URI
+//  builder serves both:
+//
+//    svg   the inner markup, one <path>
+//    vb    viewBox, with the mark's SCALE baked in as a zoom
+//    ar    aspect ratio. The marks are NOT square — the theme multiplies
+//          $tab-icon-size by this to get the element's width.
+//    sw    darkening, as a stroke laid along the outline, in viewBox
+//          units. TIED TO $tab-icon-size.
+//
+//  Each mark was chosen by its APPARENT INK HEIGHT, not by a scale factor,
+//  and tab_chosen.py stores it that way — so moving $tab-icon-size and
+//  re-running rescales all four together instead of silently changing
+//  their relative sizes.
+//
+//  $tab-icon-size is 25px, set by the integral:
+//  a mark's ink cannot exceed its own box and that one is a
+//  full-height glyph.
+//
+//    physical   ∴    XCharter-Math.otf    ink 16.76px  scale 1.6081  dark 0.40  replaces lightning
+//    math       ∫    XCharter-Math.otf    ink 24.80px  scale 0.9989  dark 0.00  replaces plus-slash-minus
+//    numerical  +=   Inco400.ttf          ink 11.00px  scale 1.0552  dark 0.00  replaces calculator
+//    ttk        >>>  Inco700.ttf          ink  8.00px  scale 0.5889  dark 0.00  replaces sliders
+
+$tab-marks: (
+  "physical": (svg: '<path d="M29.1 65.7C29.1 68.5 31.4 70.8 34.2 70.8C37 70.8 39.3 68.5 39.3 65.7C39.3 63 37 60.6 34.2 60.6C31.4 60.6 29.1 63 29.1 65.7ZM44.9 34.3C44.9 37 47.2 39.4 50 39.4C52.8 39.4 55.1 37 55.1 34.3C55.1 31.5 52.8 29.2 50 29.2C47.2 29.2 44.9 31.5 44.9 34.3ZM60.7 65.7C60.7 68.5 63 70.8 65.8 70.8C68.6 70.8 70.9 68.5 70.9 65.7C70.9 63 68.6 60.6 65.8 60.6C63 60.6 60.7 63 60.7 65.7Z"/>', vb: "18.91 18.91 62.19 62.19", ar: 1.0000, sw: 0.9950),
+  "math": (svg: '<path d="M24.9 92.3C24.9 96.3 29.4 99.7 33.8 99.7C49.1 99.7 50.3 85.4 53.4 52.3C56.5 19.4 57.3 5.4 64.6 5.4L68 10.9C68.7 12.1 70.2 12.4 71.6 12.4C73.8 12.4 75.1 10.5 75.1 7.7C75.1 3.7 71.1 0.3 66.2 0.3C52.1 0.3 50.4 12.2 46.8 48.6C42.9 86.9 42.1 94.5 35.4 94.6L32 89.1C31.3 87.9 30.2 87.6 28.4 87.6C26.2 87.6 24.9 89.5 24.9 92.3Z"/>', vb: "-0.06 -0.06 100.11 100.11", ar: 1.0000, sw: 0.0000),
+  "numerical": (svg: '<path d="M22.3 70.8V52.2H4.7V46.2H22.3V29.2H28.6V46.2H45.6V52.2H28.6V70.8ZM54.4 42.5V36.4H95.3V42.5ZM54.4 63.1V57H95.3V63.1Z"/>', vb: "1.67 2.61 96.66 94.77", ar: 1.0199, sw: 0.0000),
+  "ttk": (svg: '<path d="M3 77.2V66.5L34.4 48.8L3.2 33.1V22.8L46.1 45.6V51.7ZM52.8 77.2V66.5L84.2 48.8L53 33.1V22.8L95.9 45.6V51.7ZM102.5 77.2V66.5L134 48.8L102.7 33.1V22.8L145.6 45.6V51.7Z"/>', vb: "-10.60 -34.91 169.81 169.81", ar: 1.0000, sw: 0.0000),
+);
+
+//  Slot order. Quarto gives tabs NO name-derived handle — the ids
+//  are positional — so nth-child is the only lever CSS has and
+//  this list is what supplies the missing identity. Re-check it
+//  after reordering or inserting a track.
+$tab-mark-order: "physical", "math", "numerical", "ttk";
