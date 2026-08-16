@@ -196,7 +196,7 @@ from him at $v$ and one is moving toward him at $v$.
 #| fig-alt: "Two side-by-side schematics of a train car above a track line. Left panel, Aang's frame: the car is stationary, two blue light arrows leave Aang at the center and reach the rear and front walls at equal distance, and an orange flag is raised at each wall, labeled as rising together. Right panel, Zuko's frame: the car has shifted right and an arrow below the track marks its motion at v; the left-going blue arrow has already met the advancing rear wall, whose orange flag is up, while the right-going arrow is still short of the retreating front wall, labeled front flag not yet."
 #| fig-height: 2.9
 
-fig, axes = plt.subplots(1, 2, figsize=(6.5, 2.9))
+fig, axes = plt.subplots(1, 2, figsize=(5.8, 2.9))
 
 def draw_car(ax, x0):
     """Draw a train car of unit half-length centered at x0."""
@@ -333,7 +333,7 @@ with it, or you could compare the two and detect your own absolute motion.
 #| fig-alt: "Two schematics of a light clock. Left, the clock frame: a vertical blue path of length L goes from source up to mirror and back down, total path 2L. Right, the lab frame: the same bounce traced as a triangle whose apex has slid to the right by v t over 2, with the two slanted blue legs labeled as the hypotenuse formula and the horizontal base labeled v t; the longer path at the same speed c means more elapsed time."
 #| fig-height: 3.1
 
-fig, axes = plt.subplots(1, 2, figsize=(6.5, 3.1))
+fig, axes = plt.subplots(1, 2, figsize=(5.8, 3.1))
 
 for ax in axes:
     ax.set_xlim(-0.45, 2.15)
@@ -768,7 +768,7 @@ beta = np.linspace(0, 0.995, 600)
 g = gamma(beta)
 marks = np.array([0.5, 0.9, 0.99])
 
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(6.5, 3.1))
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(5.8, 3.1))
 
 ax1.plot(beta, g, color=BLUE)
 ax1.plot(marks, gamma(marks), "o", color=BLUE, markeredgecolor=SURFACE,
@@ -826,7 +826,7 @@ beta = np.linspace(0, 0.995, 600)
 g = gamma(beta)
 marks = np.array([0.5, 0.9, 0.99])  # <- edit these beta values
 
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(6.5, 3.1))
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(5.8, 3.1))
 
 ax1.plot(beta, g, color=BLUE)
 ax1.plot(marks, gamma(marks), "o", color=BLUE, markeredgecolor=SURFACE,
@@ -1142,7 +1142,7 @@ relativistic = np.sqrt((1 + beta) / (1 - beta))
 classical = 1 + beta
 error_threshold = 0.10
 
-fig, ax = plt.subplots(figsize=(6.5, 3.8))
+fig, ax = plt.subplots(figsize=(5.8, 3.8))
 ax.plot(beta, relativistic, color=BLUE, label="relativistic")
 ax.plot(beta, classical, color=ORANGE, label=r"classical, $1+\beta$")
 
@@ -1205,7 +1205,7 @@ relativistic = np.sqrt((1 + beta) / (1 - beta))
 classical = 1 + beta
 error_threshold = 0.10  # <- edit this
 
-fig, ax = plt.subplots(figsize=(6.5, 3.8))
+fig, ax = plt.subplots(figsize=(5.8, 3.8))
 ax.plot(beta, relativistic, color=BLUE, label="relativistic")
 ax.plot(beta, classical, color=ORANGE, label=r"classical, $1+\beta$")
 
@@ -1631,8 +1631,10 @@ $ct^{\prime}$ slide around, while $\Delta s^2$ holds perfectly still. That is
   the origin, and A's light cone on or off as you need them.
 :::
 
+::: {#fig-spacetime-live}
+
 ```{=html}
-<figure id="st-fig" class="st-figure">
+<div id="st-fig" class="st-figure">
   <div class="st-controls">
     <div class="st-row">
       <label class="st-ctl" for="st-beta-input">
@@ -1681,16 +1683,7 @@ $ct^{\prime}$ slide around, while $\Delta s^2$ holds perfectly still. That is
   </div>
 
   <p class="st-live" aria-live="polite"></p>
-
-  <figcaption>
-    Figure&nbsp;6: An interactive spacetime diagram. The unprimed lab frame is
-    rectangular and gray; the primed frame, moving at &beta; along
-    <em>x</em>, is red and skewed. The spacetime interval &Delta;s&sup2;
-    between two events is the same in both frames. Use the checkboxes to show
-    or hide the light rays through the origin, the light cone of event A, and
-    the primed grid.
-  </figcaption>
-</figure>
+</div>
 
 <style>
 .st-figure {
@@ -1757,9 +1750,9 @@ $ct^{\prime}$ slide around, while $\Delta s^2$ holds perfectly still. That is
   position: absolute; width: 1px; height: 1px;
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
 }
-.st-figure figcaption {
-  margin-top: .9em; font-size: .83rem; color: #52514e; line-height: 1.45;
-}
+/* The caption is now Quarto's own, emitted OUTSIDE this box as a real float
+   caption, so it is styled with every other figure caption in the lecture and
+   needs no rule here. */
 @media (max-width: 600px) {
   .st-beta { width: 150px; }
   .st-readout { gap: .8em; }
@@ -1767,6 +1760,15 @@ $ct^{\prime}$ slide around, while $\Delta s^2$ holds perfectly still. That is
 </style>
 <script type="module" src="spacetime.js"></script>
 ```
+
+An interactive spacetime diagram. The unprimed lab frame is rectangular and
+gray; the primed frame, moving at $\beta$ along $x$, is red and skewed. The
+spacetime interval $\Delta s^2$ between two events is the same in both frames.
+Use the checkboxes to show or hide the light rays through the origin, the light
+cone of event A, and the primed grid.
+
+:::
+
 :::
 
 ::: {.content-visible when-format="html"}
@@ -2027,7 +2029,7 @@ exact = gamma(beta) - 1.0          # E_k in units of mc^2
 classical = 0.5 * beta**2          # (1/2)mv^2 in units of mc^2
 error_threshold = 0.01
 
-fig, ax = plt.subplots(figsize=(6.5, 3.8))
+fig, ax = plt.subplots(figsize=(5.8, 3.8))
 ax.plot(beta, exact, color=BLUE)
 ax.plot(beta, classical, color=ORANGE)
 
@@ -2117,7 +2119,7 @@ exact = gamma(beta) - 1.0          # E_k in units of mc^2
 classical = 0.5 * beta**2          # (1/2)mv^2 in units of mc^2
 error_threshold = 0.01  # <- edit this
 
-fig, ax = plt.subplots(figsize=(6.5, 3.8))
+fig, ax = plt.subplots(figsize=(5.8, 3.8))
 ax.plot(beta, exact, color=BLUE)
 ax.plot(beta, classical, color=ORANGE)
 
