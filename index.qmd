@@ -96,7 +96,7 @@ To get started, choose from the "Lectures" dropdown menu at the top.
 
 ## How to Get the Most out of This Material
 
-The content in this page is meant to be read before the lecture on the corresponding material.  Students will get the most out of it, by engaging with the material and using their brains the way the text asks you to.  When the text says, "Ask yourself what happens when $\tau \gg 1$," honestly ask yourself this and try to answer.  Attempt all exercises before checking answers, hints, and solutions. Work with the interactive material to improve understanding.  When it comes time for the lecture, you will know what you don't understand and can ask meaningful questions.
+The content in this page is meant to be read before the lecture on the corresponding material.  You will get the most out of it, by engaging with the material and using their brains the way the text asks you to.  When the text says, "Ask yourself what happens when $\tau \gg 1$," honestly ask yourself this and try to answer.  Attempt all exercises before checking answers, hints, and solutions. Work with the interactive material to improve understanding.  When it comes time for the lecture, you will know what you don't understand and can ask meaningful questions.
 
 ## A Quick Guide to the Format and Conventions
 
@@ -363,7 +363,7 @@ Throughout the webpages are exercises for the student to do.  Doing the exercise
 
 I used AI heavily in the creation of these pages.  In particular, I started with my own notes in LaTeX.  These are notes that I wrote entirely on my own, and then used LLMs to convert to the Quarto format.  I used LLMs to help create the icons and to test which typefaces to use, and so on.  I also designed, in my head, interactive figures, and then let LLMs do the coding for me.  
 
-I stand by all of the content on this site.[I'm sure there are mistakes, and you should tell me about them.]{.aside .content-visible when-format="html"}
+I stand by all of the content on this site.[I'm sure there are mistakes, and please tell me about them.]{.aside .content-visible when-format="html"}
 
 I wrote all of explanations of concepts on this site.[Some explanatory text from the first lecture I converted (on special relativity) may have slipped through from the LLM as I had not set strict rules against it yet.]{.aside .content-visible when-format="html"} I *designed* all figures, code examples, and interactive widgets, even if I used LLMs to do the work of going from spec to final product.  I even used them to create exercises along the lines of a prompt such as "I uploaded the in-class question. Make some exercises that will prepare the student for that."  I always made sure the final product met my expectations and standards.
 
