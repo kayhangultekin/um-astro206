@@ -39,3 +39,6 @@
 
 # macOS Finder metadata.
 .DS_Store
+
+# Editor backup files (emacs and friends).
+*~

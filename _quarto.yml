@@ -7,8 +7,11 @@
 project:
   type: website
   output-dir: _site
+  preview:
+    port: 4321
   render:
     - index.qmd
+    - lectures/scales-and-schwarzschild/index.qmd
     - lectures/special-relativity/index.qmd
   # No `resources:` entry for fonts/ is needed. Quarto follows the url()
   # references in the theme SCSS and copies those files next to the compiled
@@ -53,6 +56,8 @@ website:
       # `text: "---"` renders as <hr class="dropdown-divider">.
       - text: "Lectures"
         menu:
+          - href: lectures/scales-and-schwarzschild/index.qmd
+            text: "Scales and the Schwarzschild radius"
           - href: lectures/special-relativity/index.qmd
             text: "Special relativity"
 

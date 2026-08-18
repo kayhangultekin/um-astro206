@@ -1,0 +1,424 @@
+---
+title: "Scales, Escape Velocity, and the Schwarzschild Radius"
+subtitle: "ASTRO 206 — Black Holes · Lecture 1"
+author: "Kayhan Gültekin"
+date: "August 28"
+date-format: "MMMM D"
+
+# Kernel pinning is deliberate and must stay in the DOCUMENT, not _quarto.yml:
+# Quarto silently ignores a project-level `jupyter:` and auto-selects a kernel.
+# See the course playbook, outside this repo.
+jupyter: python3
+
+# The live "Turn the knobs" cells run under Pyodide, which loads ONLY
+# pyodide_http, micropip and ipython (plus their dependency closure -- that is
+# where matplotlib and numpy come from). astropy is NOT in that closure, so
+# without this block `from astropy import constants` raises ModuleNotFoundError
+# in the student's browser while the build-time cell above it succeeds. There
+# is no build error and no warning; the cell simply produces nothing when a
+# student clicks Run.
+#
+# Declared per-document rather than in _quarto.yml on purpose: astropy and its
+# dependencies are a measured 11.6 MB of extra download, and only this lecture
+# uses them.
+pyodide:
+  packages:
+    - astropy
+---
+
+::: {.callout-note appearance="simple" icon=false}
+**Disclaimer.** These notes have not been subjected to the usual scrutiny
+reserved for formal publications. They may be distributed outside this class
+only with the permission of the instructor.
+:::
+
+
+We're going to start out with just getting a feel for how the we
+measure things in astrophysics.  The scales we need to consider are so
+vast: from the subatomic to the size of the observable universe.  The
+combination of units that we use in astrophysics is a bit of a matter
+of culture.  We generally use cgs (centimeter-gram-second) system.[Cgs
+is the One True System of Units.  Look at Maxwell's Equations in cgs
+and then in SI (mks), and you'll see for yourself!]{.aside
+.content-visible when-format="html"} But we also use
+$\mathrm{km\,s^{-1}}$ for velocities, solar masses ($M_{\odot}$) for
+masses, and astronomical units (AU) or parsecs (pc) for distance.  See
+the formulae and constants sheet to get a handle on it.  We are going
+to start off by getting a sense of scale, first with time, and then
+with distance.
+
+
+## Ages are long
+
+Let's get an appreciation for the longest timespan that exists in
+nature: the age of the Universe.  The age of the Universe is
+13,700,000,000 years. We should write that as $1.37 \times
+10^{10}\,\mathrm{yr}$, but we frequently have to use the most
+convenient units. In this case, the age of the Universe is 13.7
+billion years, or $13.7\,\mathrm{Gyr}$.
+
+* Duration of this class ($1\,\mathrm{hr} \sim 1/10^4\,\mathrm{yr} = 10^{-4}\,\mathrm{yr}$)
+* Football season ($0.4\,\mathrm{yr}$)
+* Life of a human ($10^2\,\mathrm{yr}$)
+* Oldest currently existing *species* of animal ($600\,\mathrm{Myr}$, a type of sponge)
+* Age of Earth and Sun ($4.5\,\mathrm{Gyr}$)
+* Age of the oldest galaxies ($13\,\mathrm{Gyr}$)
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-ages}
+
+1. Convert every entry in the list above to units of seconds.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+   Everything here is already in years (or a multiple of years), so you only
+   need one conversion factor: the number of seconds in a year.
+
+   $$
+   1\,\mathrm{yr} = 365.25\,\mathrm{d} \times 24\,\frac{\mathrm{hr}}{\mathrm{d}}
+   \times 3600\,\frac{\mathrm{s}}{\mathrm{hr}} = 3.156 \times 10^{7}\,\mathrm{s}
+   $$
+
+   Worth committing to memory, because of a coincidence that is genuinely
+   useful: $\pi \times 10^{7}\,\mathrm{s}$ is within half a percent of a year.
+   If you can remember $\pi$, you can remember the length of a year.
+   :::
+
+   ::: {.callout-note .help-answer collapse="true" title="Answers"}
+   * Duration of this class: $3.16 \times 10^{3}\,\mathrm{s}$
+     (exactly $3600\,\mathrm{s}$, since one hour is a little over
+     $10^{-4}\,\mathrm{yr}$)
+   * Football season: $1.26 \times 10^{7}\,\mathrm{s}$
+   * Life of a human: $3.16 \times 10^{9}\,\mathrm{s}$
+   * Oldest currently existing species of animal: $1.89 \times 10^{16}\,\mathrm{s}$
+   * Age of Earth and Sun: $1.42 \times 10^{17}\,\mathrm{s}$
+   * Age of the oldest galaxies: $4.10 \times 10^{17}\,\mathrm{s}$
+   :::
+
+:::
+
+## Sizes are big
+
+Douglas Adams once wrote "Space is big. You just won't believe how
+vastly, hugely, mind-bogglingly big it is. I mean, you may think it's
+a long way down the road to the chemist's, but that's just peanuts to
+space" [@adams1979].  So let's try to wrap our head around these mind-bogglingly
+big numbers.
+
+
+* Size of Ann Arbor ($10\,\mathrm{km} = 10^{-12}\,\mathrm{ly}$)
+* Circumference of Earth ($40{,}000\,\mathrm{km} = 4 \times 10^{-9}\,\mathrm{ly}$)
+* Distance to Moon ($400{,}000\,\mathrm{km} = 4 \times 10^{-8}\,\mathrm{ly}$)
+* Distance to Sun (150 million km $= 1.6 \times 10^{-5}\,\mathrm{ly}$)
+* The Nearest Star (40 trillion km $= 4.5\,\mathrm{ly}$)
+* Diameter of our Milky Way Galaxy (100,000 light years)
+* Size of Observable Universe (10 billion light years)
+
+:::: {.callout-note .worked-example title="Worked example: the size of the Universe in km"}
+Given the speed of light, what is the size of the Universe in km?
+
+The two numbers we need are the speed of light,
+
+$$
+c \equiv \mathrm{speed\ of\ light} = 2.9979246 \times 10^{10}\,\mathrm{cm\,s^{-1}}
+$$ {#eq-c}
+
+and the distance light covers in a year,
+
+$$
+1\,\mathrm{light\ year} = 9.46 \times 10^{12}\,\mathrm{km}
+$$ {#eq-lightyear}
+
+A light year is a *distance*, not a time — it is how far light gets in one year,
+which is why @eq-c and @eq-lightyear are two ways of saying the same thing. So
+the conversion is a single multiplication. Taking the size of the observable
+Universe from the list above as $10^{10}\,\mathrm{ly}$,
+
+$$
+10^{10}\,\mathrm{ly} \times 9.46 \times 10^{12}\,\frac{\mathrm{km}}{\mathrm{ly}}
+= 9.46 \times 10^{22}\,\mathrm{km}.
+$$
+
+Which is a number so large that writing it in kilometres has done nothing
+whatsoever to help you picture it. That is the point of light years.
+::::
+
+
+I've used lightyears above, but that's only because you've heard of
+them before.  A legit astrophysicist would only use parsec.  For
+reference, $1\,\mathrm{pc} \approx 3.26\,\mathrm{lyr} \approx 3.09
+\times 10^{18}\,\mathrm{cm}$.
+
+
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-sizes}
+
+1. Convert every entry in the list above to units of parsecs.
+
+   ::: {.callout-note .help-answer collapse="true" title="Answers"}
+   * Size of Ann Arbor: $3.1 \times 10^{-13}\,\mathrm{pc}$
+   * Circumference of Earth: $1.2 \times 10^{-9}\,\mathrm{pc}$
+   * Distance to Moon: $1.2 \times 10^{-8}\,\mathrm{pc}$
+   * Distance to Sun: $4.9 \times 10^{-6}\,\mathrm{pc}$
+   * The Nearest Star: $1.4\,\mathrm{pc}$
+   * Diameter of our Milky Way Galaxy: $3.1 \times 10^{4}\,\mathrm{pc} = 31\,\mathrm{kpc}$
+   * Size of Observable Universe: $3.1 \times 10^{9}\,\mathrm{pc} = 3.1\,\mathrm{Gpc}$
+   :::
+
+:::
+
+
+## Time "travel"
+
+
+The speed of light is finite. As we said in @eq-c, it is $2.9979246
+\times 10^{10}\,\mathrm{cm\,s^{-1}}$. Because of this, it takes time
+for light to get to us, and we are seeing things as they were some
+time ago.  So all of those distances above indicate how long ago we
+are seeing them.
+
+
+
+## Escape velocity
+
+As we will see, black holes prevent light from escaping. In a (slightly
+incorrect) Newtonian sense, we can think of black holes as objects that have
+escape velocity greater than the speed of light, the ultimate speed limit.
+
+You can derive escape velocity by setting the total energy (kinetic energy plus
+gravitational potential energy) and setting it to zero:
+
+$$
+E_{\mathrm{tot}} = \frac{1}{2} m v^2 - \frac{G M m}{r} = 0,
+$$ {#eq-energy}
+
+where $m$ is the mass of the thing trying to escape (doesn't matter as long as
+it is much less than the planet/black hole/whatever it is trying to escape
+from), $M$ is the mass of the planet/black hole/whatever, $r$ is the radius at
+which you have velocity $v$. The smallest $r$ can be for a planet is the radius
+of the planet. $G = 6.67430 \times 10^{-8}\,\mathrm{cm^{3}\,g^{-1}\,s^{-2}}$ is
+the gravitational constant. This is easy to solve:
+
+$$
+v_{\mathrm{esc}} = \left(\frac{2 G M}{r}\right)^{1/2}
+$$ {#eq-vesc}
+
+::: {.callout-tip .resolution collapse="true" title="Note the
+dependencies on $M$ and $r$ and why."}
+The *larger* the mass, the *higher* the
+escape velocity.  Because bigger mass means stronger gravity, and
+therefore harder to escape.  And the *smaller* the radius, the
+*higher* the escape velocity because you are closer to the object,
+which is where gravity is the strongest.
+:::
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-escape}
+
+1. For the Earth ($M_{\oplus} = 5.97 \times 10^{27}\ \mathrm{g}$;
+   $r_{\oplus} = 6.37 \times 10^{8}\ \mathrm{cm}$), what is the escape speed?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   $v_{\mathrm{esc}} = 11\ \mathrm{km\ s^{-1}}$
+   :::
+
+2. How far from the center of the Earth do we need to be for the escape velocity
+   to be a modest highway speed of $100\ \mathrm{km\ hr^{-1}}$?
+
+   ::: {.callout-note .help-solution collapse="true" title="Solution"}
+   Start from @eq-vesc and solve it for $r$ instead of for $v$. Square both
+   sides,
+
+   $$
+   v_{\mathrm{esc}}^2 = \frac{2 G M}{r},
+   $$
+
+   then multiply by $r$ and divide by $v_{\mathrm{esc}}^2$:
+
+   $$
+   r = \frac{2 G M}{v_{\mathrm{esc}}^2}.
+   $$
+
+   Before putting any numbers in, convert the speed into the units everything
+   else is in. We are working in cgs, so we want $\mathrm{cm\,s^{-1}}$:
+
+   $$
+   100\,\frac{\mathrm{km}}{\mathrm{hr}}
+   \times 10^{5}\,\frac{\mathrm{cm}}{\mathrm{km}}
+   \times \frac{1\,\mathrm{hr}}{3600\,\mathrm{s}}
+   = 2.78 \times 10^{3}\,\mathrm{cm\,s^{-1}}.
+   $$
+
+   Now plug in, with $M_{\oplus} = 5.97 \times 10^{27}\ \mathrm{g}$:
+
+   $$
+   r = \frac{2 \left(6.674 \times 10^{-8}\right)\left(5.97 \times 10^{27}\right)}
+   {\left(2.78 \times 10^{3}\right)^{2}}
+   = 1.03 \times 10^{14}\,\mathrm{cm}.
+   $$
+
+   That is $1.03 \times 10^{9}\,\mathrm{km}$, or about $6.9\,\mathrm{AU}$ —
+   roughly Saturn's distance from the Sun, and some $160{,}000$ Earth radii out.
+   :::
+
+:::
+
+::: {.content-visible when-format="pdf"}
+{{< include ../../in_class/lec01/exercises00.qmd >}}
+:::
+
+## The Schwarzschild radius
+
+The Schwarzschild radius is a key concept for black holes.  We'll talk
+more about it next time, but is, in some ways, the "size" of a black
+hole.  We'll be more precise later.  For now, let's see how to
+calculate it.
+
+::: {.panel-tabset .tracks}
+
+### Physical intuition
+
+We can imagine taking an object of a given mass $M$ and shrinking its radius $r$
+until escape velocity at that radius is the speed of light. Then, because that's
+Nature's speed limit, we have something too massive to escape!
+
+### Mathematical explanation
+
+Take @eq-vesc and set the escape velocity equal to the speed of light:
+
+$$
+v_{\mathrm{esc}} = \left(\frac{2 G M}{r}\right)^{1/2} = c
+$$
+
+which leads to
+
+$$
+r_S = \frac{2 G M}{c^2}.
+$$ {#eq-schwarzschild}
+
+This is called the Schwarzschild radius.
+
+### Numerical exploration
+
+@eq-schwarzschild is a one-line calculation, but the answers span an absurd
+range. Here it is evaluated over a ladder of masses, printed in whatever unit
+keeps the number readable.
+
+The code uses [astropy](https://www.astropy.org), which carries physical
+constants and units as first-class objects: `const.G` and `const.c` know their
+own units, and `.to(u.km)` converts. You will see a lot of it in this course.
+
+```{python}
+#| label: rs-ladder
+
+from astropy import constants as const
+from astropy import units as u
+
+
+def r_S(M):
+    """Schwarzschild radius for a mass M, as a length in cm."""
+    return (2 * const.G * M / const.c**2).to(u.cm)
+
+
+def human_units(r):
+    """Convert a length to whichever unit keeps the number readable."""
+    if r < 1 * u.km:
+        return r.to(u.cm)
+    if r < 1 * u.au:
+        return r.to(u.km)
+    return r.to(u.au)
+
+
+# Any astropy Quantity works as a mass: 70 * u.kg, 1.4 * u.M_sun, 5.97e27 * u.g
+masses = [
+    ("Earth",            const.M_earth),
+    ("the Sun",          const.M_sun),
+    ("10 solar masses",  10 * const.M_sun),
+    ("1e6 solar masses", 1e6 * const.M_sun),
+    ("1e9 solar masses", 1e9 * const.M_sun),
+]
+
+for label, M in masses:
+    print(f"{label:>18}   M = {M.to(u.g):10.3e}   r_S = {human_units(r_S(M)):>12.4g}")
+```
+
+### Turn the knobs
+
+::: {.content-visible when-format="pdf"}
+Students have a live, editable version of this cell in the web notes —
+remind them to try it.
+:::
+
+::: {.content-visible when-format="html"}
+
+Same calculation, but editable — put your own masses into the marked line below.
+Anything with a mass has a Schwarzschild radius, so try things that are not
+astronomical: a car, a mountain, the Earth's atmosphere.
+
+```{pyodide}
+#| autorun: false
+
+from astropy import constants as const
+from astropy import units as u
+
+
+def r_S(M):
+    """Schwarzschild radius for a mass M, as a length in cm."""
+    return (2 * const.G * M / const.c**2).to(u.cm)
+
+
+def human_units(r):
+    """Convert a length to whichever unit keeps the number readable."""
+    if r < 1 * u.km:
+        return r.to(u.cm)
+    if r < 1 * u.au:
+        return r.to(u.km)
+    return r.to(u.au)
+
+
+# Any astropy Quantity works as a mass: 70 * u.kg, 1.4 * u.M_sun, 5.97e27 * u.g
+masses = [                          # <- edit this list
+    ("Earth",            const.M_earth),
+    ("the Sun",          const.M_sun),
+    ("10 solar masses",  10 * const.M_sun),
+    ("1e6 solar masses", 1e6 * const.M_sun),
+    ("1e9 solar masses", 1e9 * const.M_sun),
+]
+
+for label, M in masses:
+    print(f"{label:>18}   M = {M.to(u.g):10.3e}   r_S = {human_units(r_S(M)):>12.4g}")
+```
+:::
+
+:::
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-schwarzschild}
+
+1. Calculate the Schwarzschild radius of an object with a mass of
+   $6.73 \times 10^{34}\ \mathrm{g}$.
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   $r_S = 1 \times 10^{7}\ \mathrm{cm}$
+   :::
+
+:::
+
+:::: {.content-visible when-format="html"}
+## References {.unnumbered}
+
+::: {#refs}
+:::
+::::
+
+::: {.content-visible when-format="pdf"}
+
+```{=latex}
+\clearpage
+\tableofcontents
+```
+:::

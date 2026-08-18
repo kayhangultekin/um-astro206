@@ -8,6 +8,20 @@
 matplotlib==3.11.1
 numpy==2.5.1
 
+# astropy supplies the constants and units used in the lecture code cells, so
+# the students meet the real idiom (const.G, const.c, .to(u.km)) rather than
+# hand-typed cgs numbers. Without this the render dies in the jupyter engine
+# with a bare ModuleNotFoundError.
+#
+# NOTE THE VERSION SKEW, and do not try to "fix" it by pinning them together:
+# the live "Turn the knobs" twins run under Pyodide 0.28.1, whose package index
+# carries astropy 7.0.1, and that version is chosen by the r-wasm/live
+# extension, not by this file. Both versions agree on everything these cells
+# use (constants, units, .to()), which was checked -- but if a cell ever starts
+# depending on newer astropy behaviour, the static cell will pass locally and
+# the live twin will fail only in a student's browser.
+astropy==8.0.1
+
 # Needed for Quarto's jupyter engine. ipykernel is what registers the "python3"
 # kernelspec that each lecture's YAML asks for by name.
 #
