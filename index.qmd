@@ -96,7 +96,7 @@ To get started, choose from the "Lectures" dropdown menu at the top.
 
 ## How to Get the Most out of This Material
 
-The content in this page is meant to be read before the lecture on the corresponding material.  You will get the most out of it, by engaging with the material and using their brains the way the text asks you to.  When the text says, "Ask yourself what happens when $\tau \gg 1$," honestly ask yourself this and try to answer.  Attempt all exercises before checking answers, hints, and solutions. Work with the interactive material to improve understanding.  When it comes time for the lecture, you will know what you don't understand and can ask meaningful questions.
+The content in this page is meant to be read before the lecture on the corresponding material.  You will get the most out of it, by engaging with the material and using your brain the way the text asks you to.  When the text says, "Ask yourself what happens when $\tau \gg 1$," honestly ask yourself this and try to answer.  Attempt all exercises before checking answers, hints, and solutions. Work with the interactive material to improve understanding.  When it comes time for the lecture, you will know what you don't understand and can ask meaningful questions.
 
 ## A Quick Guide to the Format and Conventions
 
