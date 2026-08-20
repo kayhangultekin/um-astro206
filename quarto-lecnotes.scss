@@ -584,6 +584,29 @@ div.callout.callout-style-default.help-answer    i.callout-icon::before { @inclu
 //  Note family's grey, so it stops being Bootstrap blue.
 div.callout.callout-style-simple.callout-note { border-left-color: map-get($cf-note, accent); }
 
+//  ── a table inside a callout drops its TOP rule ────────────────────────
+//  Bootstrap gives `.table` a rule above and below (0,1,0). Inside a
+//  callout the top one lands INSIDE the tinted header band, not below it:
+//  measured in headless Chrome, `.callout-body` begins 3.5px ABOVE where
+//  the header's box ends, and a border painted at the body's top edge goes
+//  with it. Kayhan: "the top rule above the table headings cuts into the
+//  callout bar title and looks ugly."
+//
+//  Padding cannot fix this — Quarto already sets `padding-top: .5rem` on
+//  the body's first child, and padding is INSIDE the border, so it moves
+//  the text and leaves the rule where it was. A margin would need to clear
+//  3.5px before it did anything, and would then leave a hairline floating
+//  in white space directly under a colour boundary that already separates
+//  the two. So the rule simply goes.
+//
+//  The BOTTOM rule stays: nothing abuts it, and it closes the table off
+//  from whatever follows inside the box.
+//
+//  (0,2,1) — beats Bootstrap's `.table` at (0,1,0) without !important.
+.callout .callout-body > table {
+  border-top: 0;
+}
+
 // ═══════════════════════════════════════════════════════════════════════
 //  TABSET LABELS ARE CONTROLS, NOT HEADINGS
 // ═══════════════════════════════════════════════════════════════════════

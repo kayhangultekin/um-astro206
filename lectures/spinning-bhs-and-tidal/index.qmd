@@ -624,9 +624,12 @@ for M in [10, 100, 1e4, 1e6, 4.3e6, 1e9] * const.M_sun:
 <!-- DRAFT (assistant, 2026-08-20): this is a RESOLUTION callout, built by
      splitting Kayhan's own paragraph -- his question sentence became the
      title, the rest of the paragraph is the body. The title recast is the
-     assistant's wording, from his ruling 8. He asked to judge the length
-     of it rendered before it is treated as settled. -->
-::: {.callout-tip .resolution collapse="true" title="Think about what the strongest tidal force possible is for a given object (fixed $m$ and fixed $s$)."}
+     assistant's wording, from his ruling 8, SHORTENED 2026-08-20 to his
+     own one-line rewrite after he saw the first version rendered: "it's not
+     the end of the world if, in the future, we need to do two lines, but
+     it's preferable if we can do it in one line without changing the
+     meaning." Two-line titles are therefore allowed but not preferred. -->
+::: {.callout-tip .resolution collapse="true" title="Think about what the strongest tidal force possible is for fixed $m$ and $s$."}
 We want the biggest value of $M / d^3$. Well the closest you can get to an
 object is its radius. So you want the object to be compact to have a big tidal
 force. What's a compact, massive object? A black hole! So the maximum tidal
