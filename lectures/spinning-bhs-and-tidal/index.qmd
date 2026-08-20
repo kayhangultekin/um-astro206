@@ -654,6 +654,115 @@ into a black hole and have your choice of which one, choose the biggest one you
 can find. At least you'll survive going through the horizon. Then you'll get
 spaghettified inside on your way to the singularity.
 
+::: {.content-visible when-format="html"}
+
+::: {#fig-tidal-live}
+
+```{=html}
+<div id="td-fig" class="td-figure">
+  <div class="td-controls">
+    <div class="td-row">
+      <label class="td-ctl" for="td-mass-input">
+        <span class="td-ctl-label">Black hole mass</span>
+        <input id="td-mass-input" class="td-mass" type="range"
+               min="0" max="9" step="0.05" value="1">
+      </label>
+      <span class="td-vals"><output class="td-out-mass">10 M&#9737;</output></span>
+    </div>
+    <div class="td-row td-row-toggles">
+      <span class="td-ctl-label">Falling body</span>
+      <label class="td-chk"><input type="radio" name="td-body" value="person" checked> a person</label>
+      <label class="td-chk"><input type="radio" name="td-body" value="star"> a Sun-like star</label>
+    </div>
+  </div>
+
+  <div class="td-plot"></div>
+
+  <div class="td-readout">
+    <table class="td-table">
+      <tbody>
+        <tr><th scope="row">Schwarzschild radius r<sub>S</sub></th><td class="td-out-rs"></td></tr>
+        <tr><th scope="row">Distance d / r<sub>S</sub></th><td class="td-out-dr"></td></tr>
+        <tr><th scope="row">Distance d</th><td class="td-out-d"></td></tr>
+        <tr><th scope="row">Tidal acceleration a<sub>t</sub></th><td class="td-out-at"></td></tr>
+      </tbody>
+    </table>
+    <div class="td-verdict">
+      <span class="td-badge"></span>
+      <p class="td-warn" hidden></p>
+    </div>
+  </div>
+
+  <p class="td-live" aria-live="polite"></p>
+</div>
+
+<style>
+.td-figure {
+  margin: 1.6em 0 2em;
+  padding: 1em 1.1em 1.2em;
+  border: 1px solid #e1e0d9;
+  border-radius: 6px;
+  background: #fcfcfb;
+}
+.td-controls { margin-bottom: .7em; }
+.td-row {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: .55em 1.1em; margin-bottom: .5em;
+}
+.td-row-toggles { font-size: .87rem; }
+.td-ctl { display: flex; align-items: center; gap: .6em; }
+.td-ctl-label { font-size: .9rem; color: #52514e; white-space: nowrap; }
+.td-mass { width: 260px; max-width: 46vw; accent-color: #eb6834; }
+.td-vals {
+  font-size: .9rem; color: #0b0b0b;
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+.td-chk { display: inline-flex; align-items: center; gap: .35em; color: #52514e; }
+.td-plot { text-align: center; }
+.td-plot svg { max-width: 480px; }
+.td-plot circle[role="slider"]:focus-visible { outline: 2px solid #2a78d6; outline-offset: 2px; }
+.td-readout {
+  display: flex; flex-wrap: wrap; gap: 1.2em 2em;
+  margin-top: .9em; align-items: flex-start;
+}
+.td-table { font-size: .87rem; border-collapse: collapse; margin: 0; min-width: 19em; }
+.td-table th, .td-table td { padding: .2em .62em; border: 0; }
+.td-table th { text-align: left; font-weight: 600; color: #52514e; }
+.td-table td { text-align: right; font-variant-numeric: tabular-nums; color: #0b0b0b; }
+.td-verdict { flex: 1 1 15em; }
+.td-badge {
+  display: inline-block; padding: .12em .7em; border-radius: 999px;
+  font-size: .85rem; font-weight: 600;
+  background: #fdeaea; color: #a02020;
+}
+.td-warn {
+  margin: .4em 0 0; font-size: .85rem; color: #5C3D11;
+  background: #FAF5EB; border-left: 3px solid #B8860B;
+  padding: .4em .6em; border-radius: 3px;
+}
+.td-live {
+  position: absolute; width: 1px; height: 1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}
+@media (max-width: 600px) {
+  .td-mass { width: 170px; }
+  .td-readout { gap: .8em; }
+}
+</style>
+<script type="module" src="tidal.js"></script>
+```
+
+Tidal acceleration near a black hole, with distance measured in Schwarzschild
+radii so that the horizon is a fixed circle on screen. Drag the orange body to
+change $d/r_S$ and watch the $d^{-3}$ falloff. Then leave it at $d/r_S = 1$ and
+drag the mass instead: the picture does not change at all, but the tidal
+acceleration falls by twelve orders of magnitude, because at the horizon
+$a_t \propto 1/M^2$. Only the scale bar records that the black hole got bigger.
+
+:::
+
+:::
+
 ::: {.content-visible when-format="pdf"}
 {{< include ../../in_class/lec02/exercises00.qmd >}}
 :::
