@@ -1,0 +1,691 @@
+---
+title: "Spinning Black Holes and Tidal Forces"
+subtitle: "ASTRO 206 — Black Holes · Lecture 2"
+author: "Kayhan Gültekin"
+date: "August 31"
+date-format: "MMMM D"
+
+# Kernel pinning is deliberate and must stay in the DOCUMENT, not _quarto.yml:
+# Quarto silently ignores a project-level `jupyter:` and auto-selects a kernel.
+# See the course playbook, outside this repo.
+jupyter: python3
+
+# NO `pyodide: packages:` block here, and that is deliberate rather than an
+# omission. The one live "Turn the knobs" cell on this page computes r_ISCO in
+# units of r_S, which is dimensionless -- it needs numpy and nothing else, and
+# numpy is already inside Pyodide's default dependency closure. The tidal
+# section's astropy cell is BUILD-TIME only ({python}, not {pyodide}), so it
+# never runs in a browser and costs the student nothing. Declaring astropy here
+# would add a measured 11.6 MB to every visit for no benefit.
+---
+
+::: {.callout-note appearance="simple" icon=false}
+**Disclaimer.** These notes have not been subjected to the usual scrutiny
+reserved for formal publications. They may be distributed outside this class
+only with the permission of the instructor.
+:::
+
+```{python}
+#| label: setup
+#| include: false
+
+from pathlib import Path
+
+import numpy as np
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
+
+# This block is duplicated from lectures/special-relativity/index.qmd. Per the
+# playbook, a THIRD page carrying figures is the trigger to factor it into a
+# shared include rather than make a fourth copy -- this is that third page, so
+# the next one should not copy it again.
+_FONTDIR = next(
+    (p / "fonts" for p in (Path.cwd(), *Path.cwd().parents) if (p / "fonts").is_dir()),
+    None,
+)
+if _FONTDIR is None:
+    raise RuntimeError(f"no fonts/ directory found above {Path.cwd()}")
+for _f in sorted(_FONTDIR.glob("*.otf")):
+    fm.fontManager.addfont(str(_f))
+
+# Assert rather than hope: matplotlib does not raise on a missing family, it
+# silently substitutes DejaVu Sans and the build "succeeds" with every figure
+# quietly wrong.
+_got = Path(fm.findfont(fm.FontProperties(family="XCharter"))).name
+assert _got.startswith("XCharter"), (
+    f"XCharter did not resolve (matplotlib chose {_got!r}). "
+    f"Checked {_FONTDIR}. Figures would silently fall back to DejaVu Sans."
+)
+
+# Validated 3-slot categorical palette (all-pairs safe, light surface).
+BLUE, ORANGE, AQUA = "#2a78d6", "#eb6834", "#1baf7a"
+INK, INK2, MUTED = "#0b0b0b", "#52514e", "#898781"
+GRID, AXIS, SURFACE = "#e1e0d9", "#c3c2b7", "#fcfcfb"
+
+mpl.rcParams.update({
+    "figure.facecolor": SURFACE,
+    "axes.facecolor": SURFACE,
+    "savefig.facecolor": SURFACE,
+    "savefig.bbox": "tight",
+    "font.family": "serif",
+    "font.serif": ["XCharter"],
+    # "stix" is the closest available neighbour to the page's mathjax-termes.
+    # It is NOT mathjax-stix2 -- see the note in the special-relativity setup
+    # cell. If the page's MathJax font changes, revisit this.
+    "mathtext.fontset": "stix",
+    "font.size": 11,
+    "axes.edgecolor": AXIS,
+    "axes.linewidth": 0.8,
+    "axes.labelcolor": INK2,
+    "axes.titlecolor": INK,
+    "axes.titlesize": 12,
+    "axes.grid": True,
+    "grid.color": GRID,
+    "grid.linewidth": 0.8,
+    "grid.linestyle": "-",
+    "xtick.color": MUTED,
+    "ytick.color": MUTED,
+    "xtick.labelcolor": INK2,
+    "ytick.labelcolor": INK2,
+    "axes.spines.top": False,
+    "axes.spines.right": False,
+    "legend.frameon": False,
+    "lines.linewidth": 2.0,
+    "lines.markersize": 8,
+})
+
+
+def r_horizon(a):
+    """Horizon radius for spin a_*, in units of r_S."""
+    return (1.0 + np.sqrt(1.0 - np.asarray(a, float) ** 2)) / 2.0
+
+
+def r_ergo(a, theta):
+    """Static-surface radius for spin a_* at polar angle theta, in units of r_S."""
+    a = np.asarray(a, float)
+    return (1.0 + np.sqrt(1.0 - a**2 * np.cos(theta) ** 2)) / 2.0
+
+
+def r_isco(a):
+    """ISCO radius for signed spin a_*, in units of r_S.
+
+    The sign factor -a/|a| picks the prograde branch for a > 0 and the
+    retrograde branch for a < 0. At a = 0 it is 0/0, but Z1 = 3 there so the
+    square root vanishes identically and either branch gives 3 r_S.
+    """
+    a = np.asarray(a, float)
+    Z1 = 1.0 + np.cbrt(1.0 - a**2) * (np.cbrt(1.0 + a) + np.cbrt(1.0 - a))
+    Z2 = np.sqrt(3.0 * a**2 + Z1**2)
+    root = np.sqrt(np.clip((3.0 - Z1) * (3.0 + Z1 + 2.0 * Z2), 0.0, None))
+    sign = -np.sign(a)
+    return (3.0 + Z2 + sign * root) / 2.0
+```
+
+## The Schwarzschild radius, normalized
+
+So recall in [the previous chapter](../scales-and-schwarzschild/index.qmd) that
+we can derive the Schwarzschild radius, $r_S$ by using the Newtonian expression
+for escape velocity and setting it equal to $c$. This is a bit of a lie because
+the Schwarzschild radius comes from the Schwarzschild solution to Einstein's
+equations, which are different from Newtonian physics. They are also a lie in
+another, subtle way.
+
+Imagine Newtonian physics with a maximum speed for anything to be $c$. Now
+imagine a planet with escape speed of, say, $1.1 c$. What would happen if you
+had a rocket ship that could instantaneously get to $v = c$ from the ground?
+The same thing that happens when you throw a ball up in the air less than the
+escape speed: it goes up a bit and then comes down. And the faster you throw
+it, the farther up the ball goes. So the rocket ship could go quite a ways up.
+When it is far away, the escape speed is then slower, because you have a larger
+value of $r$ in:
+
+$$
+v_{\mathrm{esc}} = \left(\frac{2 G M}{r}\right)^{1/2}.
+$$ {#eq-vesc}
+
+So if you get very high up, you can then fire the rocket ship again to
+accelerate (up to $c$ in our made-up rules of physics) and go further away
+until the ship is at $r$ large enough that $v_{\mathrm{esc}} < c$. So you could
+eventually escape as long as you could keep accelerating and had enough fuel.
+
+This is not the case for a black hole. For a black hole, space is warped and
+curved such that you cannot get out. I like to think of it in an analogy to an
+intersection where all streets are one-way streets pointing toward the
+intersection. It is not that there is no practical way out, the laws of nature
+forbid it. The boundary where you can't get past is called the "event horizon,"
+and we will come back to that in a second, but first we should normalize the
+Schwarzschild radius expression into useful units.
+
+Take
+
+$$
+r_S = \frac{2 G M}{c^2}
+$$ {#eq-schwarzschild}
+
+and write it in terms of how many kilometers of radius per solar mass
+($1\ M_{\odot} = 2 \times 10^{33}\ \mathrm{g}$) of black hole:
+
+$$
+r_S = 3\ \mathrm{km}\ \left(\frac{M}{M_{\odot}}\right)
+$$ {#eq-rs-km}
+
+and then for AU ($1\ \mathrm{AU} = 1.5 \times 10^{13}\ \mathrm{cm}$) and
+hundreds of million solar masses:
+
+$$
+r_S = 2\ \mathrm{AU}\ \left(\frac{M}{10^8\ M_{\odot}}\right).
+$$ {#eq-rs-au}
+
+The one in km is good for stellar-mass black holes and one for AU is good for
+supermassive black holes.
+
+Both of these have event horizons, which I said we would get to, but first we
+need to talk about another oddball quirk of black holes.
+
+## The no-hair theorem
+
+One of the fun things about studying black holes, is that the phraseology is
+ridiculous and awesome. Even "black hole" is pretty cool in and of itself.
+"Event horizon" is another winner. One of the fun ones is the no-hair
+theorem.[Another fun one is related but pertains to neutron stars: I-Love-Q
+relations.]{.aside .content-visible when-format="html"}
+
+<!-- DRAFT (assistant, 2026-08-20): the attribution sentence below is the
+     assistant's wording, drafted under ruling 3 (option b) and mirrored from
+     for_me/lec02/main.tex. Kayhan to read. -->
+::: {.content-visible when-format="html"}
+The phrase is John Wheeler's, from a 1971 article he wrote with Remo Ruffini
+[@ruffini1971]; the theorem itself is a body of work by several people, and
+Jacob Bekenstein proved some of the sharpest pieces of it [@bekenstein1972].
+:::
+
+::: {.content-visible when-format="pdf"}
+The phrase is John Wheeler's, from a 1971 article he wrote with Remo Ruffini;
+the theorem itself is a body of work by several people, and Jacob Bekenstein
+proved some of the sharpest pieces of it.
+:::
+
+The no-hair theorem states that once a black hole has settled after it has
+formed or you add matter to it, it can be completely described by three
+numbers: the mass, $M$, the spin angular momentum, $J$, and the electrical
+charge, $Q$.
+
+Astrophysically, electrical charge is not important because there are always
+enough ions in space that any significant charge in a black hole would attract
+opposite charges and return it to zero charge again.
+
+We give names to different types of black holes (and the spacetimes [and the
+coordinate systems of the spacetimes]) depending on whether they incorporate
+$M$, $M$ & $J$, or $M$, $J$, & $Q$:
+
+::: {.callout-note .table-view title="The four black hole spacetimes"}
+| Name | Constraint | Free parameters |
+|---|---|---|
+| Kerr–Newman | — | $M$, $J$, $Q$ |
+| Kerr | $Q = 0$ | $M$, $J$ |
+| Reissner–Nordström | $J = 0$ | $M$, $Q$ |
+| Schwarzschild | $Q = J = 0$ | $M$ |
+:::
+
+Note, that we usually talk about the spin of a black hole using the
+dimensionless spin parameter:
+
+$$
+a_* = \frac{c J}{G M^2}.
+$$ {#eq-astar}
+
+You should check that this is dimensionless. Also note that sometimes people
+use the symbol $a$ or $\chi$ or $\tilde{\chi}$ for the same thing. The reason
+we do it this way is because there is a self-similarity about it. There is also
+a maximum amount of angular momentum a black hole can have so that the
+dimensionless spin parameter can only take on values $-1 < a_* < 1$, where the
+negative sign means spinning "backwards" from whatever coordinate system we
+have defined.
+
+<!-- DRAFT (assistant, 2026-08-20): the extremal-limit clause below is the
+     assistant's wording, drafted under ruling 1. Kayhan to read. -->
+The end points are a limit rather than a value: a black hole can be spun
+arbitrarily close to $|a_*| = 1$ but never quite to it, so when we quote a
+result "at $a_* = 1$" we mean the value it approaches. Such a black hole is
+called *extremal*. (More later!)
+
+Anyway, back to the hairlessness of black holes. Once the black hole has
+settled down, it does not matter if you filled it with buckeyes or (poor)
+wolverines as long as you filled it with the same amount of mass and angular
+momentum (and charge). From the outside, they look the same. So they have no
+"hair," a metaphor for anything other than those three quantities.
+
+## The event horizon
+
+The event horizon is a mathematical surface. It is not a physical surface just
+as the equator around the Earth is not a physical line but a mathematical line
+/ boundary.
+
+The event horizon is the surface of no return. Once something goes past the
+event horizon, it is impossible for it to escape. Nothing, not even light, can
+escape. In fact, no *information* (in the physics sense) can get out except for
+$M$, $J$, & $Q$.
+
+::: {.callout-note title="Why is it called an event horizon?"}
+As we shall see when we get more into relativity, an event is a point in
+spacetime. It has spatial location and a moment in time. A horizon is something
+you can't see past. If you look out at the ocean (or Lake Michigan?) you can't
+see any ships beyond the horizon. In this case it is caused by the curvature of
+the Earth. In the case of a black hole, you have no access to the spacetime on
+the other side of the horizon because no information comes out.
+:::
+
+Okay, where is this surface? For a Schwarzschild black hole, that surface is a
+sphere with radius $r_S$. See? There was a reason we spent so much time
+calculating it. So that's how close you can get to a non-spinning black hole
+without saying goodbye to the rest of the Universe. For a spinning black hole,
+you can get closer! Let's talk about spinning black holes specifically now.
+
+## Spinning black holes
+
+For me, spinning black holes really showed that general relativity is very
+different from Newtonian gravity plus special relativity. Of course there are
+no horizons in Newtonian gravity. So we have already learned about something
+inexplicable without GR. But when a black hole has significant spin angular
+momentum, its spin *drags* spacetime around it. You can think of a
+Schwarzschild black hole as *pulling* spacetime into it. Once you are inside
+the horizon, you *have* to go toward the center of the black hole (where there
+is a singularity). For spinning black holes there is another region called:
+
+### The ergosphere
+
+The ergosphere is not a sphere. It is a oblate spheroidal region. The degree of
+oblateness depends on the magnitude of $a_*$. Just as inside the Schwarzschild
+radius of a non-rotating black hole, you have to go toward the center of the
+black hole, inside the ergosphere you have to orbit in the same direction as
+the black hole's spin. Even if you pointed a laser pointer in the opposite
+direction, the light would move in the same direction as the spin.
+
+This effect is called *frame dragging*. The effect of gravity is such that a
+massive spinning object twists spacetime in the same direction. It is
+theoretically possible to extract energy from this region. This is why it is
+called "ergo" (from the Greek word $\epsilon\rho\gamma\omicron$, I think,
+meaning work). We will come back to this.
+
+Also worth noting is that the outer surface of the ergosphere is sometimes
+called the static surface (or static limit).
+
+The horizon radius for arbitrary spin is
+
+$$
+r_H = \frac{r_S + r_S\sqrt{1 - a_*^2}}{2}.
+$$ {#eq-rh}
+
+What's that? You want to know what the static surface equation is? Sure!
+
+$$
+r_E = \frac{r_S + r_S\sqrt{1 - a_*^2 \cos^2\theta}}{2}.
+$$ {#eq-re}
+
+It touches the horizon at $\theta = 0, \pi$ (at the poles).
+
+```{python}
+#| label: fig-ergosphere
+#| fig-cap: "The ergosphere is not a sphere. At three spins, the static surface (@eq-re, solid) drawn against the horizon (@eq-rh, dashed) in the same colour. Both are in units of $r_S$, and the picture is a slice through the spin axis, which runs vertically. The static surface always reaches $r_S$ at the equator no matter the spin; the horizon shrinks as the spin rises, so the gap between them opens up. The two meet only at the poles."
+#| fig-alt: "A polar cross-section through a spinning black hole, with the spin axis vertical. Three pairs of nested closed curves are drawn in different colours, one pair for each spin value 0.3, 0.6 and 0.95. In each pair a solid curve marks the static surface and a dashed curve of the same colour marks the horizon. Every solid curve passes through the same point on the horizontal equator at one Schwarzschild radius, while the dashed horizon circles get smaller as spin increases, from nearly touching at spin 0.3 to a much smaller circle at spin 0.95. Each solid curve is pinched inward at the top and bottom so that it meets its own dashed circle exactly on the vertical axis at the poles."
+
+# figsize is NOT portable between documents: bbox_inches='tight' crops by an
+# amount that depends on this figure's own labels, so the invariant to match
+# is PAINTED width, not figsize. Swept and measured: 5.2in paints 558 css px,
+# beside lecture 3's square fig-spacetime at 551. Column is 699px here (663
+# if this ever moves inside a tabset).
+fig, ax = plt.subplots(figsize=(5.2, 5.2))
+
+theta = np.linspace(0, 2 * np.pi, 721)
+spins = [(0.30, BLUE, "-"), (0.60, ORANGE, "-"), (0.95, AQUA, "-")]
+
+for a, colour, style in spins:
+    rE = r_ergo(a, theta)
+    ax.plot(rE * np.sin(theta), rE * np.cos(theta),
+            color=colour, linestyle=style, label=rf"$a_* = {a:g}$", zorder=3)
+    rH = r_horizon(a)
+    ax.plot(rH * np.sin(theta), rH * np.cos(theta),
+            color=colour, linestyle=(0, (4, 3)), linewidth=1.4, zorder=2)
+
+ax.plot([0], [0], marker="+", color=INK, markersize=9,
+        markeredgewidth=1.4, linestyle="none", zorder=4)
+ax.annotate("spin axis", xy=(0.02, 1.06), color=INK2, fontsize=10,
+            ha="left", va="center")
+ax.annotate("equator", xy=(1.02, 0.0), color=INK2, fontsize=10,
+            ha="left", va="center")
+
+ax.axhline(0.0, color=AXIS, linewidth=0.8, zorder=1)
+ax.axvline(0.0, color=AXIS, linewidth=0.8, zorder=1)
+ax.set_xlabel(r"$r/r_S$, perpendicular to the spin axis")
+ax.set_ylabel(r"$r/r_S$, along the spin axis")
+ax.set_xlim(-1.35, 1.35)
+ax.set_ylim(-1.35, 1.35)
+ax.set_aspect("equal")
+ax.grid(False)
+ax.legend(loc="upper right", fontsize=10)
+plt.show()
+```
+
+### The ISCO
+
+::: {.panel-tabset .tracks}
+
+#### Physical intuition
+
+There is another interesting concept with black holes, called the Innermost
+Stable Circular Orbit (ISCO). In Newtonian gravity, no matter where you put an
+orbiting particle around a massive object, it can have a circular orbit. What's
+more, it is stable. If you poke the orbit, it will become an eccentric orbit,
+moving slightly closer and slightly further away, but it will continue to
+orbit.
+
+General relativity becomes Newtonian gravity in the limit of weak gravity (far
+away, low-mass, slow-moving). So it still predicts Earth's orbit around the
+Sun. But there are places where GR predicts things that Newtonian gravity
+doesn't. Close to a black hole, gravity — in a sense — is stronger according to
+Einstein than according to Newton.[It should be noted that this is a very
+Newtonian way of thinking about it, but that's okay. We are building up
+intuition here.]{.aside .content-visible when-format="html"} So if you poke a
+circular orbit around a black hole, it would go further and closer, but when it
+got closer, it wouldn't be able to get further out again. It would go in, and
+in, and in, and in. So if a butterfly sneezes, the orbiting body would spiral
+in toward the black hole.
+
+#### Mathematical explanation
+
+This effect takes place inside a specific radius that is called the radius of
+the innermost stable circular orbit $r_{\mathrm{ISCO}}$. What is the value of
+$r_{\mathrm{ISCO}}$? It depends on the spin of the black hole. For $a_* = 0$,
+$r_{\mathrm{ISCO}} = 3 r_S$. For $a_* = 1$, $r_{\mathrm{ISCO}} = 0.5 r_S$. And
+for $a_* = -1$, $r_{\mathrm{ISCO}} = 4.5 r_S$. This means that the faster a
+black hole is spinning the "easier" it is to continue orbiting in a circular
+orbit in the same direction. But the harder it is to orbit in the opposite
+direction. The exact functional form is a little complicated, but it is:
+
+$$
+r_{\mathrm{ISCO}} = \frac{GM}{c^2}\left(3 + Z_2
+  - \frac{a_*}{|a_*|}\sqrt{(3 - Z_1)(3 + Z_1 + 2 Z_2)}\right),
+$$ {#eq-isco}
+
+<!-- DRAFT (assistant, 2026-08-20): the paragraph below is the assistant's
+     wording, drafted under ruling 1 and mirrored from main.tex. Kayhan to
+     read. -->
+where the factor $-a_*/|a_*|$ does nothing but set the sign: it is $-1$ for a
+prograde orbit ($a_* > 0$) and $+1$ for a retrograde one ($a_* < 0$), so the
+sign of the spin parameter now carries the direction of the orbit all by
+itself. Everything else in the formula depends only on $a_*^2$ and on
+$(1 \pm a_*)^{1/3}$ in a combination that is unchanged when $a_*$ flips sign,
+which is why the sign factor has to be put in by hand. At $a_* = 0$ the factor
+is undefined, but it does not matter: $Z_1 = 3$ there, the square root is
+exactly zero, and both choices give the same $3 r_S$. The other two quantities
+are
+
+$$
+Z_1 = 1 + (1 - a_*^2)^{1/3}\left( (1 + a_*)^{1/3} + (1 - a_*)^{1/3}\right),
+$$ {#eq-z1}
+
+and
+
+$$
+Z_2 = (3 a_*^2 + Z_1^2)^{1/2}.
+$$ {#eq-z2}
+
+#### Numerical exploration
+
+@eq-isco is the kind of formula that is much easier to trust once you have
+watched it produce the three numbers quoted above. Here it is, evaluated across
+the whole range of spins.
+
+```{python}
+#| label: isco-ladder
+
+import numpy as np
+
+
+def r_isco_over_rs(a):
+    """ISCO radius for signed spin a_*, in units of r_S."""
+    Z1 = 1.0 + np.cbrt(1.0 - a**2) * (np.cbrt(1.0 + a) + np.cbrt(1.0 - a))
+    Z2 = np.sqrt(3.0 * a**2 + Z1**2)
+    root = np.sqrt(max((3.0 - Z1) * (3.0 + Z1 + 2.0 * Z2), 0.0))
+    sign = -np.sign(a)
+    return (3.0 + Z2 + sign * root) / 2.0
+
+
+spins = [-1.0, -0.9, -0.5, 0.0, 0.5, 0.9, 0.998, 1.0]
+
+for a in spins:
+    direction = "retrograde" if a < 0 else ("prograde" if a > 0 else "either")
+    print(f"a* = {a:+6.3f}   r_ISCO = {r_isco_over_rs(a):6.3f} r_S   {direction}")
+```
+
+#### Turn the knobs
+
+Add your own spins to the list and re-run. Try creeping up on $a_* = 1$ from
+below and watch how fast $r_{\mathrm{ISCO}}$ falls at the very end.
+
+```{pyodide}
+#| label: isco-ladder-live
+#| autorun: false
+
+import numpy as np
+
+
+def r_isco_over_rs(a):
+    """ISCO radius for signed spin a_*, in units of r_S."""
+    Z1 = 1.0 + np.cbrt(1.0 - a**2) * (np.cbrt(1.0 + a) + np.cbrt(1.0 - a))
+    Z2 = np.sqrt(3.0 * a**2 + Z1**2)
+    root = np.sqrt(max((3.0 - Z1) * (3.0 + Z1 + 2.0 * Z2), 0.0))
+    sign = -np.sign(a)
+    return (3.0 + Z2 + sign * root) / 2.0
+
+
+spins = [-1.0, -0.9, -0.5, 0.0, 0.5, 0.9, 0.998, 1.0]  # <- edit this list
+
+for a in spins:
+    direction = "retrograde" if a < 0 else ("prograde" if a > 0 else "either")
+    print(f"a* = {a:+6.3f}   r_ISCO = {r_isco_over_rs(a):6.3f} r_S   {direction}")
+```
+
+:::
+
+```{python}
+#| label: fig-isco
+#| fig-cap: "@eq-isco across the whole range of spin. Prograde orbits are to the right of centre and retrograde to the left, and the curve is markedly steeper on the prograde side: almost all of the drop from $3\\,r_S$ to $0.5\\,r_S$ happens above $a_* = 0.9$. The three values quoted in the text are marked."
+#| fig-alt: "A line graph of the innermost stable circular orbit radius, in units of the Schwarzschild radius, against dimensionless spin from minus one to plus one. The curve falls monotonically from 4.5 at spin minus one to 0.5 at spin plus one, passing through 3.0 at zero spin. It is gently sloped on the left, retrograde, half and becomes very steep near the right end, so most of the descent from 3 to 0.5 is concentrated in the last tenth of the spin range. Three points are marked with dots and labels at spin minus one, zero, and plus one."
+#| fig-height: 4.03
+
+# Swept and measured: 6.5in paints 651 css px, matching the 652 that every
+# standard figure in lecture 3 paints. See the note on fig-ergosphere -- the
+# figsize differs from lecture 3's 5.8 precisely because the tight-bbox crop
+# is figure-specific.
+fig, ax = plt.subplots(figsize=(6.5, 4.03))
+
+a = np.linspace(-1.0, 1.0, 2001)
+ax.plot(a, r_isco(a), color=BLUE, zorder=3)
+
+for a0, label, ha in ((-1.0, r"$4.5\,r_S$", "left"),
+                      (0.0, r"$3\,r_S$", "center"),
+                      (1.0, r"$0.5\,r_S$", "right")):
+    y0 = float(r_isco(a0))
+    ax.plot([a0], [y0], marker="o", color=ORANGE, markeredgecolor=SURFACE,
+            markeredgewidth=1.2, linestyle="none", zorder=4)
+    ax.annotate(label, xy=(a0, y0), xytext=(0, 10), textcoords="offset points",
+                ha=ha, color=INK2, fontsize=10)
+
+ax.axvline(0.0, color=AXIS, linewidth=0.8, zorder=1)
+ax.annotate("retrograde", xy=(-0.5, 0.25), color=MUTED, fontsize=10, ha="center")
+ax.annotate("prograde", xy=(0.5, 0.25), color=MUTED, fontsize=10, ha="center")
+
+ax.set_xlabel(r"$a_* = cJ/GM^2$")
+ax.set_ylabel(r"$r_{\mathrm{ISCO}}\,/\,r_S$")
+ax.set_xlim(-1.05, 1.05)
+ax.set_ylim(0.0, 5.0)
+plt.show()
+```
+
+Because you can get closer to a spinning black hole, you can get more energy out
+of the black hole. This is important for understanding the black holes that we
+can see because of how much matter they are pulling into them.
+
+::: {.content-visible when-format="pdf"}
+{{< include ../../in_class/lec02/exercises01.qmd >}}
+:::
+
+Wow, we are learning a lot about black holes! I hope I get through this in one
+lecture! What happens if we get close to a black hole? Will we get shredded to
+pieces? Let's find out.
+
+## Tidal forces
+
+::: {.panel-tabset .tracks}
+
+### Physical intuition
+
+What is tidal force? It is a force that is different from one side of a body
+compared to the other. If I pull on both your head and feet equally, you just
+move. If I pull very hard on your feet and only a little bit on your head, then
+you will move but also get stretched. If I pull harder than your body can hold
+itself together (tensile strength), then you become *disrupted*.
+
+### Mathematical explanation
+
+Let's find the tidal force of gravity by a large mass $M$ acting on a smaller
+mass $m$. The distance from the center of mass $M$ to the center of mass $m$ is
+$d$ and the size of the small mass is $s = 2\Delta r$. What is the difference in
+forces between the gravitational pull on one side versus the other side of $m$?
+It's:
+
+$$
+F_t = - \frac{G M m}{(d - \Delta r)^2} + \frac{G M m}{(d + \Delta r)^2}.
+$$ {#eq-tidal-raw}
+
+We are going to make things easy for ourselves and assume that
+$\Delta r \ll d$ as well as only consider tidal forces in the radial direction.
+That is, we aren't considering tidal forces on a flying saucer landing on
+Earth. We are only considering tidal forces on a tall tree on Earth.
+
+We do a little rearranging and find that
+
+$$
+F_t = -\frac{G M m}{d^2} \left[ \frac{1}{(1 - \Delta r / d)^2}
+  - \frac{1}{(1 + \Delta r / d)^2} \right].
+$$ {#eq-tidal-rearranged}
+
+Next, we use the fact that $(1 + x)^y \approx 1 + y x$ for $x \ll 1$ to write
+
+$$
+F_t = -\frac{G M m}{d^2} \left[ (1 + 2 \Delta r / d)
+  - (1 - 2 \Delta r / d) \right].
+$$ {#eq-tidal-binomial}
+
+Collect things and ignore the sign at the front because we are only interested
+in the magnitude of the difference:
+
+$$
+F_t = \frac{2 G M m}{d^3} s.
+$$ {#eq-tidal}
+
+### Numerical exploration
+
+@eq-tidal has an $m$ in it, which is awkward for comparing one victim to
+another. Divide it out and what is left is a tidal *acceleration*,
+$a_t = 2GMs/d^3$, which depends only on the black hole and on how long you are.
+Here it is at the horizon, where $d = r_S$, for a person-sized body.
+
+```{python}
+#| label: tidal-ladder
+
+from astropy import constants as const
+from astropy import units as u
+
+
+def a_tidal(M, d, s):
+    """Tidal acceleration across a body of length s at distance d from mass M."""
+    return (2 * const.G * M * s / d**3).to(u.m / u.s**2)
+
+
+def r_S(M):
+    """Schwarzschild radius for a mass M."""
+    return (2 * const.G * M / const.c**2).to(u.km)
+
+
+person = 1.8 * u.m
+
+for M in [10, 100, 1e4, 1e6, 4.3e6, 1e9] * const.M_sun:
+    at = a_tidal(M, r_S(M), person)
+    print(f"M = {M.to(u.M_sun).value:9.1e} Msun   "
+          f"r_S = {r_S(M):>11.4g}   "
+          f"a_t = {(at / const.g0).decompose().value:9.2e} g")
+```
+
+:::
+
+<!-- DRAFT (assistant, 2026-08-20): this is a RESOLUTION callout, built by
+     splitting Kayhan's own paragraph -- his question sentence became the
+     title, the rest of the paragraph is the body. The title recast is the
+     assistant's wording, from his ruling 8. He asked to judge the length
+     of it rendered before it is treated as settled. -->
+::: {.callout-tip .resolution collapse="true" title="Think about what the strongest tidal force possible is for a given object (fixed $m$ and fixed $s$)."}
+We want the biggest value of $M / d^3$. Well the closest you can get to an
+object is its radius. So you want the object to be compact to have a big tidal
+force. What's a compact, massive object? A black hole! So the maximum tidal
+force possible is the tidal force at the horizon of a black hole.
+:::
+
+Now let's consider how this tidal force scales with mass when at the horizon:
+
+$$
+F_t \propto \frac{M}{r_S^3}.
+$$ {#eq-tidal-horizon}
+
+And using the fact that $r_S \propto M$, we get:
+
+$$
+F_t \propto \frac{M}{M^3} = \frac{1}{M^2}.
+$$ {#eq-tidal-scaling}
+
+The tidal force is *smaller* when the black hole is *bigger*! This will come
+into play when we discuss tidal disruption events (TDEs). If you *have* to go
+into a black hole and have your choice of which one, choose the biggest one you
+can find. At least you'll survive going through the horizon. Then you'll get
+spaghettified inside on your way to the singularity.
+
+::: {.content-visible when-format="pdf"}
+{{< include ../../in_class/lec02/exercises00.qmd >}}
+:::
+
+<!-- DRAFT (assistant, 2026-08-20): the whole Summary section is the
+     assistant's selection and wording, written under ruling 7 ("a summary
+     table is excellent"). Every RESULT in it is Kayhan's; what is mine is
+     which results were chosen and how the right-hand column is phrased.
+     Kayhan to read. The capstone exercise goes immediately ABOVE this, so
+     the Summary stays the last word. -->
+## Summary
+
+| Quantity | Expression | What to remember |
+|---|---|---|
+| Schwarzschild radius | $r_S = \dfrac{2GM}{c^2}$ | $3\ \mathrm{km}$ per $M_{\odot}$; $2\ \mathrm{AU}$ per $10^8 M_{\odot}$ |
+| No-hair theorem | $M$, $J$, $Q$ | Three numbers describe a settled black hole completely. $Q \approx 0$ astrophysically |
+| Spin parameter | $a_* = \dfrac{cJ}{GM^2}$ | Dimensionless, $-1 < a_* < 1$; negative means retrograde |
+| Horizon | $r_H = \dfrac{r_S}{2}\left(1 + \sqrt{1 - a_*^2}\right)$ | Shrinks as spin rises: $r_S$ at $a_* = 0$, half that at $|a_*| = 1$ |
+| Static surface | $r_E = \dfrac{r_S}{2}\left(1 + \sqrt{1 - a_*^2\cos^2\theta}\right)$ | Always $r_S$ at the equator whatever the spin; meets the horizon only at the poles |
+| Ergosphere | between $r_H$ and $r_E$ | Frame dragging: inside it you *must* orbit with the spin |
+| ISCO | @eq-isco | $3r_S$ at $a_* = 0$, $0.5r_S$ prograde extremal, $4.5r_S$ retrograde extremal |
+| Tidal force | $F_t = \dfrac{2GMms}{d^3}$ | Falls as $d^{-3}$; proportional to how long you are |
+| Tidal force at a horizon | $F_t \propto \dfrac{1}{M^2}$ | **Bigger black hole, gentler crossing.** The counterintuitive one |
+
+:::: {.content-visible when-format="html"}
+## References {.unnumbered}
+
+::: {#refs}
+:::
+::::
+
+::: {.content-visible when-format="pdf"}
+
+```{=latex}
+\clearpage
+\tableofcontents
+```
+:::
