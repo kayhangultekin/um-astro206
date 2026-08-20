@@ -599,12 +599,31 @@ div.callout.callout-style-simple.callout-note { border-left-color: map-get($cf-n
 //  in white space directly under a colour boundary that already separates
 //  the two. So the rule simply goes.
 //
-//  The BOTTOM rule stays: nothing abuts it, and it closes the table off
-//  from whatever follows inside the box.
+//  The BOTTOM rule goes too, and Kayhan's reason is the general one: those
+//  two rules exist to make a table feel snug and contained so its numbers do
+//  not read as mixed into the prose — and **inside a callout the box already
+//  does that job**. Redundant containment, so both rules go. The header
+//  underline (`.table>thead`) is untouched: that separates headings from
+//  data, which is a different job and still needed.
 //
-//  (0,2,1) — beats Bootstrap's `.table` at (0,1,0) without !important.
+//  TWO rules are needed for the bottom, and this is the part that is easy to
+//  get wrong: dropping `.table`'s own `border-bottom` changes NOTHING
+//  visible. Bootstrap also gives every CELL a `border-bottom`, and the last
+//  row's sits at the same y as the table's, so the two are coincident — the
+//  line a reader sees at the bottom is the cell's. Measured: removing the
+//  table border alone left the rule count at 5; removing the last row's cell
+//  border took it to 4.
+//
+//  (0,2,1) and (0,2,4) — both beat Bootstrap's `.table` at (0,1,0) and its
+//  `.table > :not(caption) > * > *` at (0,1,3), without !important.
 .callout .callout-body > table {
   border-top: 0;
+  border-bottom: 0;
+
+  //  The header underline (`.table > thead`) is deliberately NOT touched: it
+  //  separates headings from data, which is a different job from enclosing
+  //  the table, and it is still needed. Nor are the internal row separators.
+  > tbody > tr:last-child > * { border-bottom: 0; }
 }
 
 // ═══════════════════════════════════════════════════════════════════════
