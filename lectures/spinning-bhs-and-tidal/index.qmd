@@ -790,6 +790,114 @@ $a_t \propto 1/M^2$. Only the scale bar records that the black hole got bigger.
 
 :::
 
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-tidal}
+
+Throughout, take a person to be $s = 1.8\ \mathrm{m}$ tall, and use
+$r_S = 3\ \mathrm{km}\,(M/M_{\odot})$ from @eq-rs-km. Answers are quoted to two
+significant figures, which is enough that the rounding in $r_S$ does not
+matter. The interactive figure above is a good way to check yourself.
+
+1.  Sagittarius A\*, the black hole at the centre of our own Galaxy, has
+    $M = 4.3 \times 10^{6}\ M_{\odot}$. Calculate the tidal acceleration across
+    a person at its event horizon, and express it in units of $g$.
+
+    ::: {.callout-note .help-answer collapse="true" title="Answer"}
+    $a_t \approx 1.0 \times 10^{-4}\ g$. You would cross the horizon of our
+    Galaxy's black hole without feeling a thing.
+    :::
+
+2.  The tidal acceleration across a person at the horizon of a
+    $10\ M_{\odot}$ black hole is $1.9 \times 10^{7}\ g$. Chani wants the
+    value for a $10^{6}\ M_{\odot}$ black hole and starts substituting into
+    @eq-tidal all over again. Paul says she does not need to. Get the answer
+    Paul's way, in one line.
+
+    ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+    At the horizon, and only at the horizon, @eq-tidal-scaling applies: $a_t$
+    depends on nothing but $M^{-2}$. So the ratio of the two accelerations is
+    fixed by the ratio of the two masses alone, and you never need $G$, $c$ or
+    $s$ at all.
+    :::
+
+    ::: {.callout-note .help-answer collapse="true" title="Answer"}
+    $a_t \approx 1.9 \times 10^{-3}\ g$ — a factor of $10^{10}$ smaller, because
+    the mass went up by $10^{5}$ and $a_t \propto 1/M^{2}$.
+    :::
+
+3.  What is the smallest black hole whose event horizon a person could cross
+    intact? Take $10\ g$ as the most a body could withstand for more than a
+    moment.
+
+    ::: {.callout-note .help-solution collapse="true" title="Solution"}
+    Start from @eq-tidal as an acceleration, $a_t = 2GMs/d^3$, and evaluate it
+    at the horizon, $d = r_S = 2GM/c^2$:
+
+    $$
+    a_t = \frac{2GMs}{\left(2GM/c^2\right)^3}
+        = \frac{2GMs\,c^6}{8G^3M^3}
+        = \frac{s\,c^6}{4G^2M^2},
+    $$
+
+    which is @eq-tidal-scaling with the constants kept. Setting $a_t = 10g$ and
+    solving for $M$,
+
+    $$
+    M = \sqrt{\frac{s\,c^6}{4G^2\,(10g)}} \approx 1.4 \times 10^{4}\ M_{\odot}.
+    $$
+
+    **The number itself is not the lesson.** Because $M \propto a_t^{-1/2}$,
+    the answer barely moves when you change your mind about what a body can
+    take: $1\,g$ gives $4.3\times10^{4}\ M_{\odot}$ and $1000\,g$ gives
+    $1.4\times10^{3}\ M_{\odot}$. Every reasonable threshold lands in the same
+    place — the **intermediate-mass** range, thousands to tens of thousands of
+    solar masses. Surviving a horizon crossing is not a matter of being careful;
+    it requires a whole class of black hole.
+    :::
+
+4.  A star is torn apart when the tide across it beats the gravity holding it
+    together.
+
+    a.  A star of mass $M_*$ and radius $R_*$ sits a distance $r$ from a black
+        hole of mass $M$. Compare the tidal acceleration between the star's
+        **centre and its surface** with the star's own gravitational
+        acceleration at that surface. Set the two equal and show that the star
+        is disrupted inside a **tidal radius**
+        $$
+        R_T = R_*\left(\frac{2M}{M_*}\right)^{1/3}.
+        $$
+    b.  A star is only disrupted if $R_T$ lies *outside* the horizon — otherwise
+        it crosses intact and no one ever sees it come apart. Using a Sun-like
+        star ($R_* = R_{\odot} = 7.0 \times 10^{5}\ \mathrm{km}$,
+        $M_* = M_{\odot}$), find the smallest black hole mass for which a star
+        can cross the event horizon without being disrupted.
+
+    ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+    For (a) the star's surface gravity is $GM_*/R_*^2$. For the tide, divide
+    @eq-tidal by $m$ to get an acceleration and put $s = R_*$: that is the
+    difference between the centre and the surface, which is the half of the
+    star that surface gravity has to hold on. (Using the full diameter instead
+    compares the two *ends* to each other, and gives a $4$ where the $2$ is.)
+    For (b) you want the
+    mass at which $R_T = r_S$; write both in terms of $M$ and solve. Note
+    $R_T \propto M^{1/3}$ while $r_S \propto M$, so the ratio $R_T/r_S$ *falls*
+    as the black hole gets bigger.
+    :::
+
+    ::: {.callout-note .help-answer collapse="true" title="Answer"}
+    (b) $M \approx 1.6 \times 10^{8}\ M_{\odot}$. Above this mass a Sun-like
+    star goes through the horizon whole — the same story as exercise 3, one
+    rung up the ladder of victims.
+    :::
+
+5.  Repeat exercise 4(b) for a **white dwarf**, with $R = 0.013\,R_{\odot}$ and
+    $M = 0.6\,M_{\odot}$. Which black holes can tear one apart, and which
+    swallow it whole? Astronomers care about the answer: it is why a disrupted
+    white dwarf is evidence for a black hole of a particular size.
+
+:::
+
 ::: {.content-visible when-format="pdf"}
 {{< include ../../in_class/lec02/exercises00.qmd >}}
 :::
