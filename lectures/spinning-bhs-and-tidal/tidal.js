@@ -31,15 +31,28 @@ function init(root) {
   const G0 = 980.665;
 
   // Body sizes as the length s over which the tide acts.
+  const RSUN = 6.957e10;          // cm
   const BODIES = {
     person: { s: 180.0, label: "a person", note: "1.8 m tall" },
-    star: { s: 1.3914e11, label: "a Sun-like star", note: "1.39 million km across" },
+    star: { s: 2 * RSUN, label: "a Sun-like star", note: "one solar diameter" },
   };
 
-  // Beyond this the derivation's own assumption, dr << d, has failed and the
-  // formula is not applicable. A whole star is NOT a test body beside a 30 km
-  // horizon; it only becomes one next to a supermassive black hole.
+  // The a_t formula assumes dr << d. For a star that close it does not hold,
+  // so the NUMBER is indicative only -- but the disruption verdict below does
+  // not depend on it, being a separate criterion.
   const SMALL_BODY_LIMIT = 0.1;
+
+  // Tidal disruption radius, from the tide across the star beating its own
+  // self-gravity:
+  //     2 G M_BH R_* / r^3  ~  G M_* / R_*^2   ->   r ~ R_*(2 M_BH/M_*)^(1/3)
+  //
+  // NOTE ON THE EXPONENT. Kayhan's note wrote (2 M_BH/M_*)^(1/2). The cube
+  // root is what the derivation above gives, and his factor of 2 matches that
+  // derivation exactly, so the 1/2 reads as a slip. It is also self-checking:
+  // with 1/2, "disrupted" is the ONLY verdict reachable anywhere in this
+  // widget's range, so his own three-badge design collapses to one. Flagged
+  // to him rather than changed silently.
+  const rTidal = (Msun) => RSUN * Math.cbrt(2 * Msun);   // cm, solar star
 
   // ---- geometry --------------------------------------------------------
   // 5 r_S rather than a wider field: the interesting action is between 1 and
@@ -69,7 +82,9 @@ function init(root) {
     [1e9, "pulled apart atom from atom"],
     [1e6, "a steel cable would snap"],
     [1e3, "past what a human body holds together"],
-    [1e2, "more than any roller coaster ever built"],
+    // The roller-coaster rung is GONE: Kayhan pointed out that the strongest
+    // real coaster pulls about 6 g, which is BELOW the fighter pilot rung it
+    // was sitting above. It was simply wrong.
     [2e1, "like a hippopotamus sitting on you"],
     [9e0, "the most a fighter pilot can take"],
     [1e0, "as if a second you were hanging from your feet"],
@@ -79,6 +94,16 @@ function init(root) {
     [0, "far too small to detect by any means"],
   ];
   const badge = (g) => (RUNGS.find(([t]) => g >= t) || RUNGS[RUNGS.length - 1])[1];
+  const badgeTone = (g) => (g >= 1e3 ? "severe" : g >= 9 ? "warn" : "calm");
+
+  // A star gets its own verdicts, because "what does this feel like" is the
+  // wrong question for something held together by its own gravity.
+  function starVerdict(Msun, dr) {
+    const rt = rTidal(Msun) / rS(Msun);          // tidal radius in units of r_S
+    if (dr <= rt) return { text: "the star is tidally disrupted this close!", tone: "severe", rt };
+    if (dr <= 2 * rt) return { text: "the star is noticeably stretched out", tone: "warn", rt };
+    return { text: "the star is not really perturbed", tone: "calm", rt };
+  }
 
   // ---- physics ---------------------------------------------------------
   const rS = (Msun) => (2 * G * Msun * MSUN) / (C * C);          // cm
@@ -139,15 +164,15 @@ function init(root) {
       .attr("fill", "none").attr("stroke", COL.grid).attr("stroke-width", 1);
     gRings.append("text")
       .attr("x", CX + k * R0 - 3).attr("y", CY - 4)
-      .attr("text-anchor", "end").attr("font-size", 11).attr("fill", COL.muted)
+      .attr("text-anchor", "end").attr("font-size", 15).attr("fill", COL.muted)
       .text(`${k}`);
   }
   // Without this the ring numbers are unexplained.
   const ringCap = gRings.append("text")
-    .attr("x", CX + DR_MAX * R0 - 3).attr("y", CY - 20)
-    .attr("text-anchor", "end").attr("font-size", 11).attr("fill", COL.muted);
+    .attr("x", CX + DR_MAX * R0 - 3).attr("y", CY - 28)
+    .attr("text-anchor", "end").attr("font-size", 15).attr("fill", COL.muted);
   ringCap.append("tspan").text("d / r");
-  ringCap.append("tspan").attr("baseline-shift", "sub").attr("font-size", 8).text("S");
+  ringCap.append("tspan").attr("baseline-shift", "sub").attr("font-size", 11).text("S");
 
   // the horizon: a FIXED disc, and that is the whole point of the design
   svg.append("circle")
@@ -155,7 +180,7 @@ function init(root) {
     .attr("fill", COL.horizon);
   svg.append("text")
     .attr("x", CX).attr("y", CY + R0 + 15)
-    .attr("text-anchor", "middle").attr("font-size", 11).attr("fill", COL.ink2)
+    .attr("text-anchor", "middle").attr("font-size", 16).attr("fill", COL.ink2)
     .text("horizon");
 
   const spoke = svg.append("line")
@@ -176,7 +201,7 @@ function init(root) {
   // only thing that changes when the mass does. That is the whole "visual
   // indication of how much physical distance is spanned by some distance on
   // the screen" that this design owes the reader.
-  const SB_X = CX - 108;   // bar + label reads near-centred under the disc
+  const SB_X = CX - 140;   // bar + label reads near-centred under the disc
   const SB_Y = H - 11;
   const gScale = svg.append("g");
   gScale.append("line")
@@ -187,9 +212,9 @@ function init(root) {
     .attr("stroke", COL.ink2).attr("stroke-width", 2));
   const scaleText = gScale.append("text")
     .attr("x", SB_X + R0 + 8).attr("y", SB_Y + 4)
-    .attr("font-size", 12).attr("fill", COL.ink2);
+    .attr("font-size", 17).attr("fill", COL.ink2);
   scaleText.append("tspan").text("= one r");
-  scaleText.append("tspan").attr("baseline-shift", "sub").attr("font-size", 9).text("S");
+  scaleText.append("tspan").attr("baseline-shift", "sub").attr("font-size", 12).text("S");
   const scaleVal = scaleText.append("tspan");
 
   // ---- interaction -----------------------------------------------------
@@ -247,27 +272,43 @@ function init(root) {
     spoke.attr("x1", CX).attr("y1", CY).attr("x2", px).attr("y2", py);
     scaleVal.text(` = ${fmt(rs_cm / 1e5)} km`);
 
-    root.querySelector(".td-out-mass").textContent = `${fmt(M)} M⊙`;
+    // "M⊙" with U+2299 rides the maths axis and floats high beside the digits;
+    // a real <sub> sets it where a solar subscript belongs.
+    const massOut = root.querySelector(".td-out-mass");
+    massOut.textContent = `${fmt(M)} M`;
+    massOut.appendChild(Object.assign(document.createElement("sub"), { textContent: "⊙" }));
     root.querySelector(".td-out-rs").textContent = `${fmt(rs_cm / 1e5)} km`;
     root.querySelector(".td-out-dr").textContent = state.dr.toFixed(2);
     root.querySelector(".td-out-d").textContent = `${fmt(d_cm / 1e5)} km`;
     root.querySelector(".td-out-at").textContent = `${fmt(at)} g`;
 
-    const badgeEl = root.querySelector(".td-badge");
-    badgeEl.textContent = badge(at);
-    badgeEl.hidden = broken;
+    // A star is judged by whether its own gravity still holds it together;
+    // a person by what the tide would feel like. Different questions.
+    const isStar = state.body === "star";
+    const sv = isStar ? starVerdict(M, state.dr) : null;
+    const text = isStar ? sv.text : badge(at);
+    const tone = isStar ? sv.tone : badgeTone(at);
 
+    const badgeEl = root.querySelector(".td-badge");
+    badgeEl.textContent = text;
+    badgeEl.className = `td-badge td-badge-${tone}`;
+    badgeEl.hidden = false;
+
+    // The caveat is about the NUMBER, not the verdict: the disruption
+    // criterion is independent of the small-body formula.
     const warn = root.querySelector(".td-warn");
     warn.hidden = !broken;
     if (broken) {
       warn.textContent =
-        `${b.label} is not small compared with this distance (s/d ≈ ${fmt(ratio, 2)}), `
-        + "so the Δr ≪ d assumption behind the formula has broken down. "
-        + "Try a heavier black hole, or move further out.";
+        `a\u209C above uses the small-body formula, which assumes the body is much `
+        + `smaller than d. For ${b.label} at this distance it is not (s/d ≈ `
+        + `${fmt(ratio, 2)}), so treat that number as indicative only. `
+        + "The verdict above does not depend on it.";
     }
 
-    live.textContent = broken
-      ? `Approximation broken: s over d is ${speak(ratio, 2)}.`
+    live.textContent = isStar
+      ? `${state.dr.toFixed(2)} Schwarzschild radii, tidal radius `
+        + `${sv.rt.toFixed(2)}. ${sv.text}`
       : `${state.dr.toFixed(2)} Schwarzschild radii. Tidal acceleration `
         + `${speak(at)} g. ${badge(at)}.`;
   }
@@ -291,9 +332,10 @@ function init(root) {
     },
     read() {
       const M = Math.pow(10, state.logM);
-      return { M, rS_km: rS(M) / 1e5, dr: state.dr,
-               at_g: aTidal(M, state.dr, BODIES[state.body].s),
-               badge: badge(aTidal(M, state.dr, BODIES[state.body].s)) };
+      const at = aTidal(M, state.dr, BODIES[state.body].s);
+      return { M, rS_km: rS(M) / 1e5, dr: state.dr, at_g: at,
+               badge: state.body === "star" ? starVerdict(M, state.dr).text : badge(at),
+               rt_rS: rTidal(M) / rS(M) };
     },
   };
 }

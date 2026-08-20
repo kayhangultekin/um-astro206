@@ -664,11 +664,20 @@ spaghettified inside on your way to the singularity.
     <div class="td-row">
       <label class="td-ctl" for="td-mass-input">
         <span class="td-ctl-label">Black hole mass</span>
+        <span class="td-tick">1 M<sub>&#8857;</sub></span>
         <input id="td-mass-input" class="td-mass" type="range"
-               min="0" max="9" step="0.05" value="1">
+               min="0" max="9" step="0.05" value="1" list="td-mass-ticks">
+        <span class="td-tick">10<sup>9</sup> M<sub>&#8857;</sub></span>
       </label>
-      <span class="td-vals"><output class="td-out-mass">10 M&#9737;</output></span>
+      <span class="td-vals"><output class="td-out-mass"></output></span>
     </div>
+    <datalist id="td-mass-ticks">
+      <option value="0" label="1"></option><option value="1"></option>
+      <option value="2"></option><option value="3"></option>
+      <option value="4"></option><option value="5"></option>
+      <option value="6"></option><option value="7"></option>
+      <option value="8"></option><option value="9" label="10^9"></option>
+    </datalist>
     <div class="td-row td-row-toggles">
       <span class="td-ctl-label">Falling body</span>
       <label class="td-chk"><input type="radio" name="td-body" value="person" checked> a person</label>
@@ -681,10 +690,10 @@ spaghettified inside on your way to the singularity.
   <div class="td-readout">
     <table class="td-table">
       <tbody>
-        <tr><th scope="row">Schwarzschild radius r<sub>S</sub></th><td class="td-out-rs"></td></tr>
-        <tr><th scope="row">Distance d / r<sub>S</sub></th><td class="td-out-dr"></td></tr>
-        <tr><th scope="row">Distance d</th><td class="td-out-d"></td></tr>
-        <tr><th scope="row">Tidal acceleration a<sub>t</sub></th><td class="td-out-at"></td></tr>
+        <tr><th scope="row">Schwarzschild radius <i>r</i><sub>S</sub></th><td class="td-out-rs"></td></tr>
+        <tr><th scope="row">Distance <i>d</i> / <i>r</i><sub>S</sub></th><td class="td-out-dr"></td></tr>
+        <tr><th scope="row">Distance <i>d</i></th><td class="td-out-d"></td></tr>
+        <tr><th scope="row">Tidal acceleration <i>a</i><sub>t</sub></th><td class="td-out-at"></td></tr>
       </tbody>
     </table>
     <div class="td-verdict">
@@ -719,22 +728,40 @@ spaghettified inside on your way to the singularity.
 }
 .td-chk { display: inline-flex; align-items: center; gap: .35em; color: #52514e; }
 .td-plot { text-align: center; }
-.td-plot svg { max-width: 480px; }
+.td-plot svg { max-width: 560px; }
 .td-plot circle[role="slider"]:focus-visible { outline: 2px solid #2a78d6; outline-offset: 2px; }
 .td-readout {
   display: flex; flex-wrap: wrap; gap: 1.2em 2em;
   margin-top: .9em; align-items: flex-start;
 }
-.td-table { font-size: .87rem; border-collapse: collapse; margin: 0; min-width: 19em; }
+/* Quarto POST-PROCESSES this table even though it is inside a raw {=html}
+   block: it adds Bootstrap's `.table` class and `data-quarto-table-cell-role`
+   attributes, and rewrites <i> as <em>. That was not anticipated, and it drags
+   in `.table`'s width:100%, margin-bottom:1rem and enclosing rules. Neutralise
+   them here so the widget's readout does not depend on Quarto's table
+   handling. (The callout-table rule in the theme does not reach this one --
+   the widget is not a callout.) */
+.td-table {
+  font-size: .87rem; border-collapse: collapse; min-width: 19em;
+  width: auto; margin: 0; border: 0;
+}
 .td-table th, .td-table td { padding: .2em .62em; border: 0; }
 .td-table th { text-align: left; font-weight: 600; color: #52514e; }
 .td-table td { text-align: right; font-variant-numeric: tabular-nums; color: #0b0b0b; }
 .td-verdict { flex: 1 1 15em; }
 .td-badge {
   display: inline-block; padding: .12em .7em; border-radius: 999px;
-  font-size: .85rem; font-weight: 600;
-  background: #fdeaea; color: #a02020;
+  font-size: .9rem; font-weight: 600;
 }
+/* Tone tracks severity, so the badge reads before it is read. */
+.td-badge-calm   { background: #e7f3e7; color: #0b5c0b; }
+.td-badge-warn   { background: #FAF5EB; color: #5C3D11; }
+.td-badge-severe { background: #fdeaea; color: #a02020; }
+.td-tick {
+  font-size: .8rem; color: #898781; white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
 .td-warn {
   margin: .4em 0 0; font-size: .85rem; color: #5C3D11;
   background: #FAF5EB; border-left: 3px solid #B8860B;
