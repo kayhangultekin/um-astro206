@@ -1176,7 +1176,7 @@ matter. The interactive figure above is a good way to check yourself.
      approved by Kayhan the same day. -->
 ::: {.content-visible when-format="html"}
 
-## Capstone {#sec-capstone}
+## Putting it all together {#sec-capstone}
 
 <!-- The lead-in below is the assistant's wording; the three problems are
      Kayhan's spec. -->
@@ -1273,6 +1273,7 @@ the leading $GM/c^2$. It is a pure number that depends only on the spin.
 | ISCO | @eq-isco | $3r_S$ at $a_* = 0$, $0.5r_S$ prograde extremal, $4.5r_S$ retrograde extremal |
 | Tidal force | $F_t = \dfrac{2GMms}{d^3}$ | Falls as $d^{-3}$; proportional to how long you are |
 | Tidal force at a horizon | $F_t \propto \dfrac{1}{M^2}$ | **Bigger black hole, gentler crossing.** The counterintuitive one |
+| Tidal radius | $R_T = R_*\left(\dfrac{2M}{M_*}\right)^{1/3}$ | A star is torn apart inside this. Compare it with $r_S$: outside means a disruption someone could see, inside means the star goes in whole |
 
 :::: {.content-visible when-format="html"}
 ## References {.unnumbered}
