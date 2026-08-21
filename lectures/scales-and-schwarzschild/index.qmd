@@ -131,12 +131,35 @@ $$ {#eq-lightyear}
 
 A light year is a *distance*, not a time — it is how far light gets in one year,
 which is why @eq-c and @eq-lightyear are two ways of saying the same thing. So
-the conversion is a single multiplication. Taking the size of the observable
-Universe from the list above as $10^{10}\,\mathrm{ly}$,
+the conversion is a single multiplication, and we take the size of the
+observable Universe from the list above as $10^{10}\,\mathrm{ly}$.
+
+**Write the known equivalence as a fraction, and keep the units attached.**
+The equivalence in @eq-lightyear can be made into a fraction two ways up, and
+**you choose by asking which arrangement cancels the unit you are trying to get
+rid of.** Here the light years have to go, so they belong in the denominator:
 
 $$
-10^{10}\,\mathrm{ly} \times 9.46 \times 10^{12}\,\frac{\mathrm{km}}{\mathrm{ly}}
-= 9.46 \times 10^{22}\,\mathrm{km}.
+10^{10}\,\mathrm{ly} \times
+\frac{9.46 \times 10^{12}\,\mathrm{km}}{1\,\mathrm{ly}}
+$$
+
+**Now cancel the units, still without touching the numbers.** There is one
+factor of $\mathrm{ly}$ on the top and one on the bottom, and they cancel,
+leaving $\mathrm{km}$. *Do the units make sense?* Kilometers are a length, and
+the size of the Universe is a length, so yes.
+
+**This is why the fraction is worth writing out rather than just multiplying by
+$9.46 \times 10^{12}$.** Had you put it the other way up, as
+$1\,\mathrm{ly} / 9.46 \times 10^{12}\,\mathrm{km}$, nothing would have
+canceled and you would have been left with $\mathrm{ly^{2}\,km^{-1}}$ — which is
+not a length. The setup tells you whether to multiply or divide, so you never
+have to remember which. Every conversion from here on is written out this way.
+
+**Only now, the numbers.**
+
+$$
+10^{10} \times 9.46 \times 10^{12}\,\mathrm{km} = 9.46 \times 10^{22}\,\mathrm{km}
 $$
 
 Which is a number so large that writing it in kilometers has done nothing
@@ -243,25 +266,78 @@ which is where gravity is the strongest.
    $$
 
    Before putting any numbers in, convert the speed into the units everything
-   else is in. We are working in cgs, so we want $\mathrm{cm\,s^{-1}}$:
+   else is in. We are working in cgs, so we want $\mathrm{cm\,s^{-1}}$, and
+   each conversion is a fraction arranged so the unwanted unit cancels:
 
    $$
    100\,\frac{\mathrm{km}}{\mathrm{hr}}
-   \times 10^{5}\,\frac{\mathrm{cm}}{\mathrm{km}}
+   \times \frac{10^{5}\,\mathrm{cm}}{1\,\mathrm{km}}
    \times \frac{1\,\mathrm{hr}}{3600\,\mathrm{s}}
-   = 2.78 \times 10^{3}\,\mathrm{cm\,s^{-1}}.
    $$
 
-   Now plug in, with $M_{\oplus} = 5.97 \times 10^{27}\ \mathrm{g}$:
+   The $\mathrm{km}$ cancels against the first fraction and the $\mathrm{hr}$
+   against the second, leaving $\mathrm{cm\,s^{-1}}$. *Do the units make sense?*
+   A speed is a length over a time, so yes. Now the numbers:
 
    $$
-   r = \frac{2 \left(6.674 \times 10^{-8}\right)\left(5.97 \times 10^{27}\right)}
-   {\left(2.78 \times 10^{3}\right)^{2}}
-   = 1.03 \times 10^{14}\,\mathrm{cm}.
+   \frac{100 \times 10^{5}}{3600}\,\mathrm{cm\,s^{-1}}
+   = 2.78 \times 10^{3}\,\mathrm{cm\,s^{-1}}
    $$
 
-   That is $1.03 \times 10^{9}\,\mathrm{km}$, or about $6.9\,\mathrm{AU}$ —
-   roughly Saturn's distance from the Sun, and some $160{,}000$ Earth radii out.
+   **Substitute, and keep the units attached.** With
+   $M_{\oplus} = 5.97 \times 10^{27}\ \mathrm{g}$, and doing no arithmetic yet:
+
+   $$
+   \begin{aligned}
+   r &= \frac{2GM_{\oplus}}{v_{\mathrm{esc}}^{2}} \\[0.8em]
+     &= \frac{2\left(6.674 \times 10^{-8}\
+          \mathrm{cm^{3}\,g^{-1}\,s^{-2}}\right)
+          \left(5.97 \times 10^{27}\ \mathrm{g}\right)}
+          {\left(2.78 \times 10^{3}\ \mathrm{cm\,s^{-1}}\right)^{2}}
+   \end{aligned}
+   $$
+
+   **Now cancel the units, still without touching the numbers.** On top,
+   $\mathrm{cm^{3}\,g^{-1}\,s^{-2}} \times \mathrm{g} =
+   \mathrm{cm^{3}\,s^{-2}}$. On the bottom,
+   $\left(\mathrm{cm\,s^{-1}}\right)^{2} = \mathrm{cm^{2}\,s^{-2}}$. So the
+   whole expression has units
+
+   $$
+   \frac{\mathrm{cm^{3}\,s^{-2}}}{\mathrm{cm^{2}\,s^{-2}}} = \mathrm{cm}.
+   $$
+
+   *Do the units make sense?* Centimeters are a length, and a distance from the
+   center of the Earth is a length, so yes.
+
+   **Only now, the numbers.**
+
+   $$
+   r = \frac{2\,(6.674 \times 10^{-8})(5.97 \times 10^{27})}
+            {(2.78 \times 10^{3})^{2}}\ \mathrm{cm}
+     = \frac{7.97 \times 10^{20}}{7.72 \times 10^{6}}\ \mathrm{cm}
+     = 1.03 \times 10^{14}\,\mathrm{cm}
+   $$
+
+   That answer is in centimeters, which tells you nothing about how far away it
+   is, so convert it — again with the equivalence written as a fraction:
+
+   $$
+   r = 1.03 \times 10^{14}\ \mathrm{cm} \times
+       \frac{1\ \mathrm{km}}{10^{5}\ \mathrm{cm}}
+     = 1.03 \times 10^{9}\,\mathrm{km}
+   $$
+
+   and once more, with $1\ \mathrm{AU} = 1.5 \times 10^{13}\ \mathrm{cm}$:
+
+   $$
+   r = 1.03 \times 10^{14}\ \mathrm{cm} \times
+       \frac{1\ \mathrm{AU}}{1.5 \times 10^{13}\ \mathrm{cm}}
+     = 6.9\,\mathrm{AU}
+   $$
+
+   That is roughly Saturn's distance from the Sun, and some $160{,}000$ Earth
+   radii out.
    :::
 
 :::
