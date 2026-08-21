@@ -545,8 +545,8 @@ $$ {#eq-z2}
 
 #### Numerical exploration
 
-@eq-isco is the kind of formula that is much easier to trust once you have
-watched it produce the three numbers quoted above. Here it is, evaluated across
+The formula in @eq-isco is much easier to trust once you have watched it
+produce the three numbers quoted above. Here it is, evaluated across
 the whole range of spins.
 
 ```{python}
@@ -642,6 +642,48 @@ can see because of how much matter they are pulling into them.
 
 ::: {.content-visible when-format="pdf"}
 {{< include ../../in_class/lec02/exercises01.qmd >}}
+:::
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-isco}
+
+1.  Use @eq-isco, @eq-z1 and @eq-z2 to show that
+    $r_{\mathrm{ISCO}} = 3\,r_S$ for a non-spinning black hole.
+
+    ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+    Put $a_* = 0$ into @eq-z1 first and see what happens to the square root
+    in @eq-isco. Remember that $r_S = 2GM/c^2$, so a result in units of
+    $GM/c^2$ has to be halved to get units of $r_S$.
+    :::
+
+2.  Now show that $r_{\mathrm{ISCO}} = 0.5\,r_S$ for a maximally spinning black
+    hole with the orbit going the same way as the spin.
+
+3.  What spin gives a black hole an innermost stable circular orbit at exactly
+    twice its Schwarzschild radius, $r_{\mathrm{ISCO}} = 2\,r_S$? There is no
+    tidy way to invert @eq-isco by hand, so this one is a computation rather
+    than an algebra problem.
+
+    ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+    Three routes, and any of them is a real answer:
+
+    * **Read it off @fig-isco.** Find $2\,r_S$ on the vertical axis, follow
+      across to the curve, and drop down to the spin axis. That gets you the
+      first digit and tells you roughly where to look.
+    * **Use the Turn the knobs cell above**, iteratively. Put a spin in the
+      list, look at whether $r_{\mathrm{ISCO}}$ came out above or below
+      $2\,r_S$, and use that to choose the next one. Each round should let you
+      pin down one more digit — this is a perfectly respectable way to solve an
+      equation you cannot rearrange, and it is what the cell is there for.
+    * **Write your own program.** Whatever language you like: evaluate
+      @eq-isco over a range of spins and find where it crosses $2\,r_S$.
+
+    Whichever route you take, decide *before you start* whether the spin should
+    be prograde or retrograde — @fig-isco tells you at a glance, and knowing it
+    halves the range you have to search.
+    :::
+
 :::
 
 Wow, we are learning a lot about black holes! I hope I get through this in one
