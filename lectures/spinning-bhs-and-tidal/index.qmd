@@ -656,6 +656,44 @@ spaghettified inside on your way to the singularity.
 
 ::: {.content-visible when-format="html"}
 
+### Try it yourself {#sec-interactive-tidal}
+
+<!-- DRAFT (assistant, 2026-08-20): the two paragraphs below and the "How to
+     use it" callout are the assistant's wording, written under his instruction
+     to move the usage instructions out of the caption and to follow lecture
+     3's pattern. He asked to approve this text before it is pushed. -->
+
+The figure below is live. There are only two things to change — how far out the
+body is, and how heavy the black hole is — and the whole of this section is in
+what happens when you change one and not the other.
+
+Drag the body inward and the tidal acceleration climbs as $d^{-3}$; that much
+you would expect. Now park it on the horizon and drag the *mass* instead. The
+picture does not move at all — the horizon is drawn at $d/r_S = 1$ whatever the
+black hole weighs — and yet the acceleration falls by twelve orders of
+magnitude. That is @eq-tidal-scaling, and it is much stranger to watch than it
+is to read.
+
+::: {.callout-note collapse="true" title="How to use it"}
+* **Drag** the orange body to move it. It settles onto the horizon when you
+  bring it close, so you can park there without a steady hand.
+* **The mass slider** runs from $1$ to $10^{9}\ M_{\odot}$, with a tick at every
+  decade. Watch the scale bar under the diagram as you drag it: the picture
+  stays put while the physical size of that same circle runs from a few
+  kilometres to a few billion.
+* **Keyboard:** Tab to the body, then use the arrow keys to move it in and out.
+  Hold <kbd>Shift</kbd> for larger steps, or use <kbd>Home</kbd> and
+  <kbd>End</kbd> for the two extremes. The arrow keys stop at the horizon and
+  will not take you through it.
+* **Fall in** pushes the body through the horizon — as does simply dragging it
+  well inside. It falls to the centre and stays there, the readouts stop
+  meaning anything, and **Reset** is the only way to get it back. That is the
+  one thing about an event horizon worth feeling rather than being told.
+* Switch the falling body to **a Sun-like star** and the question changes from
+  what the tide *feels* like to whether the star survives it at all. Find the
+  mass where the verdict changes.
+:::
+
 ::: {#fig-tidal-live}
 
 ```{=html}
@@ -775,11 +813,19 @@ spaghettified inside on your way to the singularity.
   font-variant-numeric: tabular-nums;
 }
 
+/* Echoes the Caution family -- its tint and its left rule -- so the warning
+   reads as the same KIND of thing as a caution callout in the prose. But it is
+   sized to the FIGURE, not to the prose: at .85rem it was 13.6px, the smallest
+   text in the widget, against the SVG's own 15-17px labels, and a block of
+   serif prose at that size sitting inside an instrument read as body copy that
+   had wandered in. 15px puts it with the figure's own labels. */
 .td-warn {
-  margin: .4em 0 0; font-size: .85rem; color: #5C3D11;
-  background: #FAF5EB; border-left: 3px solid #B8860B;
-  padding: .4em .6em; border-radius: 3px;
+  margin: .5em 0 0; font-size: 15px; line-height: 1.35; color: #5C3D11;
+  background: #FAF5EB; border-left: 4px solid #B8860B;
+  padding: .45em .7em; border-radius: 3px;
 }
+.td-warn i { font-style: italic; }
+.td-warn sub { font-style: normal; }
 .td-live {
   position: absolute; width: 1px; height: 1px;
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
@@ -792,16 +838,9 @@ spaghettified inside on your way to the singularity.
 <script type="module" src="tidal.js"></script>
 ```
 
-Tidal acceleration near a black hole, with distance measured in Schwarzschild
-radii so that the horizon is a fixed circle on screen. Drag the orange body to
-change $d/r_S$ and watch the $d^{-3}$ falloff; it settles onto the horizon when
-you bring it close. Then leave it at $d/r_S = 1$ and drag the mass instead: the
-picture does not change at all, but the tidal acceleration falls by twelve
-orders of magnitude, because at the horizon $a_t \propto 1/M^2$. Only the scale
-bar records that the black hole got bigger. Push the body through the horizon,
-or press **Fall in**, and it goes — the readouts stop meaning anything and the
-only way to get it back is **Reset**, which is the one thing about a horizon
-worth feeling rather than being told.
+Tidal acceleration near a black hole. Distance is measured in Schwarzschild
+radii, so the horizon is a fixed circle on screen and only the scale bar records
+how big the black hole actually is.
 
 :::
 

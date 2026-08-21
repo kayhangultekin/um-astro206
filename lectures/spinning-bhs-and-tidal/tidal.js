@@ -62,7 +62,9 @@ function init(root) {
   const DR_MIN = 1, DR_MAX = 5;   // d / r_S
   const R0 = 52;                  // px per r_S -- the horizon's fixed radius
   const PAD = 22;
-  const SCALE_H = 30;             // strip under the disc for the scale bar
+  const SCALE_H = 42;             // strip under the disc for the scale bar
+                                  // (deep enough that the r_S subscript is
+                                  //  not clipped by the viewBox edge)
   const PLOT = 2 * R0 * DR_MAX;
   const W = PLOT + 2 * PAD;
   const H = W + SCALE_H;
@@ -201,7 +203,11 @@ function init(root) {
   const ringCap = gRings.append("text")
     .attr("x", CX + DR_MAX * R0 - 3).attr("y", CY - 28)
     .attr("text-anchor", "end").attr("font-size", 15).attr("fill", COL.muted);
-  ringCap.append("tspan").text("d / r");
+  // House style: a maths VARIABLE is italic, a label subscript stays upright.
+  // So d and r lean, S does not.
+  ringCap.append("tspan").attr("font-style", "italic").text("d");
+  ringCap.append("tspan").text(" / ");
+  ringCap.append("tspan").attr("font-style", "italic").text("r");
   ringCap.append("tspan").attr("baseline-shift", "sub").attr("font-size", 11).text("S");
 
   // the horizon: a FIXED disc, and that is the whole point of the design
@@ -236,7 +242,7 @@ function init(root) {
   // indication of how much physical distance is spanned by some distance on
   // the screen" that this design owes the reader.
   const SB_X = CX - 140;   // bar + label reads near-centred under the disc
-  const SB_Y = H - 11;
+  const SB_Y = H - 24;
   const gScale = svg.append("g");
   gScale.append("line")
     .attr("x1", SB_X).attr("x2", SB_X + R0).attr("y1", SB_Y).attr("y2", SB_Y)
@@ -247,7 +253,8 @@ function init(root) {
   const scaleText = gScale.append("text")
     .attr("x", SB_X + R0 + 8).attr("y", SB_Y + 4)
     .attr("font-size", 17).attr("fill", COL.ink2);
-  scaleText.append("tspan").text("= one r");
+  scaleText.append("tspan").text("= one ");
+  scaleText.append("tspan").attr("font-style", "italic").text("r");
   scaleText.append("tspan").attr("baseline-shift", "sub").attr("font-size", 12).text("S");
   const scaleVal = scaleText.append("tspan");
 
@@ -420,12 +427,25 @@ function init(root) {
     // criterion is independent of the small-body formula.
     const warn = root.querySelector(".td-warn");
     warn.hidden = !broken || inside;
-    if (broken) {
-      warn.textContent =
-        `a\u209C above uses the small-body formula, which assumes the body is much `
-        + `smaller than d. For ${b.label} at this distance it is not (s/d ≈ `
-        + `${fmt(ratio, 2)}), so treat that number as indicative only. `
-        + "The verdict above does not depend on it.";
+    if (broken && !inside) {
+      // Built from nodes rather than a string because the maths in it has to be
+      // set properly: variables italic, the label subscript upright.
+      //
+      // HOUSE RULE, and it is easy to violate without noticing: do not open a
+      // sentence with a maths symbol or a number. This one used to start
+      // "a_t above uses...", which reads as though the symbol were a word.
+      // "Above, a_t ..." costs nothing and fixes it.
+      warn.textContent = "";
+      const t = (x) => document.createTextNode(x);
+      const it = (x) => Object.assign(document.createElement("i"), { textContent: x });
+      const sub_ = (x) => Object.assign(document.createElement("sub"), { textContent: x });
+      warn.append(
+        t("Above, "), it("a"), sub_("t"),
+        t(" uses the small-body formula, which assumes the body is much smaller than "),
+        it("d"), t(`. For ${b.label} at this distance it is not (`),
+        it("s"), t("/"), it("d"), t(` ≈ ${fmt(ratio, 2)}), so treat that number `),
+        t("as indicative only. The verdict above does not depend on it."),
+      );
     }
 
     live.textContent = gone
