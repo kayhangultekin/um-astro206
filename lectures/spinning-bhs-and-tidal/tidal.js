@@ -203,7 +203,7 @@ function init(root) {
   const ringCap = gRings.append("text")
     .attr("x", CX + DR_MAX * R0 - 3).attr("y", CY - 28)
     .attr("text-anchor", "end").attr("font-size", 15).attr("fill", COL.muted);
-  // House style: a maths VARIABLE is italic, a label subscript stays upright.
+  // House style: a math VARIABLE is italic, a label subscript stays upright.
   // So d and r lean, S does not.
   ringCap.append("tspan").attr("font-style", "italic").text("d");
   ringCap.append("tspan").text(" / ");
@@ -385,7 +385,7 @@ function init(root) {
       .attr("opacity", inside ? 0 : 1);
     scaleVal.text(` = ${fmt(rs_cm / 1e5)} km`);
 
-    // "M⊙" with U+2299 rides the maths axis and floats high beside the digits;
+    // "M⊙" with U+2299 rides the math axis and floats high beside the digits;
     // a real <sub> sets it where a solar subscript belongs.
     const massOut = root.querySelector(".td-out-mass");
     massOut.textContent = `${fmt(M)} M`;
@@ -428,11 +428,11 @@ function init(root) {
     const warn = root.querySelector(".td-warn");
     warn.hidden = !broken || inside;
     if (broken && !inside) {
-      // Built from nodes rather than a string because the maths in it has to be
+      // Built from nodes rather than a string because the math in it has to be
       // set properly: variables italic, the label subscript upright.
       //
       // HOUSE RULE, and it is easy to violate without noticing: do not open a
-      // sentence with a maths symbol or a number. This one used to start
+      // sentence with a math symbol or a number. This one used to start
       // "a_t above uses...", which reads as though the symbol were a word.
       // "Above, a_t ..." costs nothing and fixes it.
       warn.textContent = "";
