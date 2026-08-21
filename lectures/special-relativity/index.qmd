@@ -595,10 +595,15 @@ picture in mind for Exercise 2.
 
    Watch how violently that responds to the last digits of $\beta$ — this is
    the behavior the $\gamma$-table in the "Turn the knobs" tab is built to let
-   you play with. Then
+   you play with.
+
+   Before multiplying, notice that $\beta$ is a speed divided by a speed, so it
+   is a pure number and so is $\gamma$. That means $t$ comes out in whatever
+   units $t_0$ was in. *Do the units make sense?* Microseconds times a pure
+   number is microseconds, and a dilated lifetime is a time, so yes.
 
    $$
-   t = t_0\,\gamma = 2.2\,\mu\text{s} \times 28.87 = 63.5\,\mu\text{s} .
+   t = t_0\,\gamma = 2.2\,\mu\text{s} \times 28.87 = 63.5\,\mu\text{s}
    $$
 
    From the ground, the muon lives about 64 microseconds — nearly thirty times
@@ -905,11 +910,13 @@ Zuko's yardstick contracts when measured by Aang.
           = \frac{1}{0.6} = \frac{5}{3} = 1.667 .
    $$
 
-   So
+   Again $\gamma$ is a pure number, so dividing a length by it leaves a length
+   untouched in its units. *Do the units make sense?* A contracted length is a
+   length, so yes. Then
 
    $$
    L^{\prime} = \frac{L_0}{\gamma} = \frac{120\,\text{m}}{5/3}
-              = 120\,\text{m} \times \frac{3}{5} = 72.0\,\text{m} .
+              = 120\,\text{m} \times \frac{3}{5} = 72.0\,\text{m}
    $$
 
    Note which way the arithmetic went. Dividing by $\gamma$ makes the number
@@ -1303,16 +1310,23 @@ Calculate the wavelength we would observe if something is moving away from us
 with $\beta = 0.3$ and is emitting the H$\alpha$ line at rest wavelength
 $\lambda = 6563\,\text{Å}$.
 
-**Solution.** Use @eq-wavelengthdoppler with $\lambda = 6563\,\text{Å}$ and
-$\beta = 0.3$:
+**Solution.** Substitute into @eq-wavelengthdoppler with
+$\lambda = 6563\,\text{Å}$ and $\beta = 0.3$, keeping the units attached and
+doing no arithmetic yet:
 
 $$
 \begin{aligned}
 \lambda^{\prime} &= \lambda\left(\frac{1 + \beta}{1 - \beta}\right)^{1/2} \\[0.8em]
-                 &= 6563\,\text{Å}\left(\frac{1 + 0.3}{1 - 0.3}\right)^{1/2} \\[0.8em]
-                 &= 6563\,\text{Å}\,(1.36) \\[0.8em]
-                 &= 8925\,\text{Å}
+                 &= 6563\,\text{Å}\left(\frac{1 + 0.3}{1 - 0.3}\right)^{1/2}
 \end{aligned}
+$$
+
+The bracket is a ratio of two pure numbers, so it is a pure number itself and
+brings no units of its own — the ångströms pass straight through it.
+*Do the units make sense?* A wavelength is a length, so yes. Now the numbers:
+
+$$
+\lambda^{\prime} = 6563\,\text{Å}\,(1.36) = 8925\,\text{Å}
 $$
 
 An H$\alpha$ line that is emitted red comes out in the near-infrared.
@@ -1332,9 +1346,17 @@ An H$\alpha$ line that is emitted red comes out in the near-infrared.
    $$
    \begin{aligned}
    z &= \frac{\lambda^{\prime}}{\lambda} - 1 \\[0.8em]
-     &= \frac{7777\,\text{Å}}{4861\,\text{Å}} - 1 \\[0.8em]
-     &= 1.6 - 1 = 0.6
+     &= \frac{7777\,\text{Å}}{4861\,\text{Å}} - 1
    \end{aligned}
+   $$
+
+   The ångströms cancel between the numerator and the denominator, and they
+   have to: subtracting 1 from something is only meaningful if that something
+   is a pure number. *Do the units make sense?* A redshift is a dimensionless
+   ratio, so yes.
+
+   $$
+   z = 1.6 - 1 = 0.6
    $$
 
    :::
@@ -1857,6 +1879,11 @@ of these there are infinitely many correct placements.
    (\Delta s)^2 = (\Delta ct)^2 - (\Delta x)^2 = (1.0)^2 - (2.0)^2 = -3 .
    $$
 
+   Pairing $t$ with $c$ is what makes this legal: $\Delta ct$ is a length, just
+   as $\Delta x$ is, so the two squares are both areas and can be subtracted
+   from one another. *Do the units make sense?* You can only ever subtract like
+   from like, and $(\Delta s)^2$ comes out as a length squared, so yes.
+
    That is negative, so the interval is **spacelike**: the two events are
    further apart in space than light could cross in the time between them, and
    no signal — and certainly no massive object — can get from one to the other.
@@ -2169,30 +2196,53 @@ else:
    whole country for a year?
 
    ::: {.callout-note .help-solution collapse="true" title="Solution"}
-   Straight from @eq-emc2, working in CGS so that grams and centimeters per
-   second give us ergs:
+   **Substitute into @eq-emc2 with the units attached**, and multiply nothing
+   yet:
 
    $$
-   \begin{aligned}
-   E_0 = mc^2 &= (1000\,\text{g})\,(2.998 \times 10^{10}\,\text{cm}\,\text{s}^{-1})^2 \\
-              &= (1000\,\text{g})\,(8.988 \times 10^{20}\,\text{cm}^2\,\text{s}^{-2}) \\
-              &= 8.99 \times 10^{23}\,\text{erg} .
-   \end{aligned}
+   E_0 = mc^2 = (1000\,\text{g})\,
+                (2.998 \times 10^{10}\,\text{cm}\,\text{s}^{-1})^2
    $$
 
-   As a fraction of the country's annual energy use:
+   **Now the units.** Squaring the speed gives $\mathrm{cm^2\,s^{-2}}$, and
+   multiplying that by a mass gives $\mathrm{g\,cm^2\,s^{-2}}$ — which is
+   exactly the erg, the CGS unit of energy. *Do the units make sense?* A rest
+   energy is an energy, so yes. **This is the whole reason for working in CGS
+   here:** grams and centimeters per second deliver ergs directly, with no
+   conversion at the end.
+
+   **Only now, the numbers.**
+
+   $$
+   E_0 = (1000)\,(8.988 \times 10^{20})\ \mathrm{g\,cm^2\,s^{-2}}
+       = 8.99 \times 10^{23}\,\text{erg}
+   $$
+
+   As a fraction of the country's annual energy use — and here the ergs cancel
+   top and bottom, leaving the pure number a fraction has to be:
 
    $$
    \frac{8.99 \times 10^{23}\,\text{erg}}{9.9 \times 10^{26}\,\text{erg}}
-   = 9.1 \times 10^{-4} = 0.091\% .
+   = 9.1 \times 10^{-4} = 0.091\%
    $$
 
-   And inverting to get the mass that would supply all of it:
+   And inverting to get the mass that would supply all of it. Dividing an
+   energy by a squared speed gives
+   $\mathrm{g\,cm^2\,s^{-2}} / \mathrm{cm^2\,s^{-2}} = \mathrm{g}$.
+   *Do the units make sense?* A mass is what was asked for, so yes.
 
    $$
    m = \frac{E}{c^2}
      = \frac{9.9 \times 10^{26}\,\text{erg}}{8.988 \times 10^{20}\,\text{cm}^2\,\text{s}^{-2}}
-     = 1.1 \times 10^{6}\,\text{g} \approx 1.1\,\text{tonnes} .
+     = 1.1 \times 10^{6}\,\text{g}
+   $$
+
+   Grams are not a helpful unit for a number that size, so convert, with the
+   equivalence written as a fraction so the grams cancel:
+
+   $$
+   m = 1.1 \times 10^{6}\,\text{g} \times
+       \frac{1\,\text{tonne}}{10^{6}\,\text{g}} = 1.1\,\text{tonnes}
    $$
 
    About a tonne of anything — gravel, seawater, old textbooks — converted
@@ -2300,6 +2350,10 @@ separate pieces.
    d = \ell\,\frac{v}{c} = \ell\beta .
    $$
 
+   The units check is quick because the algebra stayed in symbols: $\beta$ is a
+   pure number, so $d$ inherits the units of $\ell$ — a length, which is what a
+   position along the car has to be.
+
    Aang stands a fraction $\beta$ of the half-length **forward of center**,
    toward the front of the car. That direction is worth checking against your
    intuition: in Zuko's frame the rear wall advances into its pulse and would
@@ -2366,13 +2420,27 @@ separate pieces.
    Something else is going on, and it is the subject of an upcoming lecture.
 
    ::: {.callout-note .help-solution collapse="true" title="Solution"}
-   First the speed as a fraction of $c$:
+   First the speed as a fraction of $c$. The orbital speed is quoted in
+   $\mathrm{km\,s^{-1}}$ and the speed of light in $\mathrm{cm\,s^{-1}}$, so
+   convert before dividing — as always with the equivalence written as a
+   fraction, arranged so the kilometers cancel:
+
+   $$
+   3.874\,\frac{\mathrm{km}}{\mathrm{s}} \times
+   \frac{10^{5}\,\mathrm{cm}}{1\,\mathrm{km}}
+   = 3.874 \times 10^{5}\,\mathrm{cm\,s^{-1}}
+   $$
+
+   Now the two speeds are in the same units and the ratio is meaningful:
 
    $$
    \beta = \frac{3.874 \times 10^{5}\,\text{cm}\,\text{s}^{-1}}
                 {2.998 \times 10^{10}\,\text{cm}\,\text{s}^{-1}}
-         = 1.292 \times 10^{-5} .
+         = 1.292 \times 10^{-5}
    $$
+
+   Everything cancels, as it must. *Do the units make sense?* A speed divided
+   by a speed is a pure number, which is what $\beta$ has to be.
 
    That is tiny, and it is exactly the situation where computing $\gamma$
    directly is hopeless: $\gamma = 1.0000000000835$, and any calculator you
@@ -2390,11 +2458,13 @@ separate pieces.
    = \tfrac{1}{2}(1.292 \times 10^{-5})^2 = 8.35 \times 10^{-11} .
    $$
 
-   Over one day, $86\,400$ s:
+   Over one day, $86\,400$ s. That fractional difference is a pure number, so
+   multiplying it by a time gives a time. *Do the units make sense?* A clock
+   gaining or losing is measured in seconds, so yes.
 
    $$
    \Delta t = (8.35 \times 10^{-11})(86\,400\,\text{s})
-            = 7.2 \times 10^{-6}\,\text{s} = 7.2\,\mu\text{s} .
+            = 7.2 \times 10^{-6}\,\text{s} = 7.2\,\mu\text{s}
    $$
 
    The satellite clock **loses** about 7.2 μs per day, because it is the moving
