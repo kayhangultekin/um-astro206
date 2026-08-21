@@ -62,7 +62,7 @@ function init(root) {
   const DR_MIN = 1, DR_MAX = 5;   // d / r_S
   const R0 = 52;                  // px per r_S -- the horizon's fixed radius
   const PAD = 22;
-  const SCALE_H = 42;             // strip under the disc for the scale bar
+  const SCALE_H = 42;             // strip under the disk for the scale bar
                                   // (deep enough that the r_S subscript is
                                   //  not clipped by the viewBox edge)
   const PLOT = 2 * R0 * DR_MAX;
@@ -118,7 +118,7 @@ function init(root) {
   // one-way-street analogy exists precisely to say that nothing stops you
   // going IN -- only coming back. A hard stop taught the opposite.
   //
-  // So the faller can now be pushed through, falls to the centre, and stays
+  // So the faller can now be pushed through, falls to the center, and stays
   // there until Reset. You cannot drag it back out; that asymmetry IS the
   // lesson, and it is something an interactive can do that prose cannot.
   //
@@ -134,7 +134,7 @@ function init(root) {
   const FALL_MS = 900;
 
   // ---- state -----------------------------------------------------------
-  // phase: "free" (draggable) | "falling" (animating in) | "gone" (at centre)
+  // phase: "free" (draggable) | "falling" (animating in) | "gone" (at center)
   const state = {
     logM: 1, dr: START_DR, body: "person", angle: START_ANGLE,
     phase: "free", fallFrom: START_DR, fallT0: 0,
@@ -178,14 +178,14 @@ function init(root) {
     .attr("width", "100%")
     .attr("role", "img")
     .attr("aria-label",
-      "A black disc marks the event horizon, fixed in size. Faint rings mark "
+      "A black disk marks the event horizon, fixed in size. Faint rings mark "
       + "distances of two, three, four and five Schwarzschild radii. A draggable "
       + "marker shows the falling body, which starts directly above the hole at "
       + "four Schwarzschild radii and settles onto the horizon when brought "
       + "close to it. Because distance is measured in units of the Schwarzschild "
       + "radius, changing the black hole's mass does not change this picture -- "
       + "only the scale bar and the readouts below it change. If the body is "
-      + "pushed through the horizon it falls to the centre and stays there until "
+      + "pushed through the horizon it falls to the center and stays there until "
       + "the Reset button is pressed.");
 
   // rings at integer multiples of r_S
@@ -210,7 +210,7 @@ function init(root) {
   ringCap.append("tspan").attr("font-style", "italic").text("r");
   ringCap.append("tspan").attr("baseline-shift", "sub").attr("font-size", 11).text("S");
 
-  // the horizon: a FIXED disc, and that is the whole point of the design
+  // the horizon: a FIXED disk, and that is the whole point of the design
   svg.append("circle")
     .attr("cx", CX).attr("cy", CY).attr("r", R0)
     .attr("fill", COL.horizon);
@@ -236,12 +236,12 @@ function init(root) {
     .attr("aria-valuemin", 0).attr("aria-valuemax", DR_MAX)
     .style("cursor", "grab");
 
-  // scale bar -- one horizon radius of screen, labelled with what that IS
-  // Centred under the disc, and one horizon radius long, so its LABEL is the
+  // scale bar -- one horizon radius of screen, labeled with what that IS
+  // Centered under the disk, and one horizon radius long, so its LABEL is the
   // only thing that changes when the mass does. That is the whole "visual
   // indication of how much physical distance is spanned by some distance on
   // the screen" that this design owes the reader.
-  const SB_X = CX - 140;   // bar + label reads near-centred under the disc
+  const SB_X = CX - 140;   // bar + label reads near-centered under the disk
   const SB_Y = H - 24;
   const gScale = svg.append("g");
   gScale.append("line")

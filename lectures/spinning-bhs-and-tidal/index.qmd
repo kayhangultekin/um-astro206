@@ -70,7 +70,7 @@ mpl.rcParams.update({
     "savefig.bbox": "tight",
     "font.family": "serif",
     "font.serif": ["XCharter"],
-    # "stix" is the closest available neighbour to the page's mathjax-termes.
+    # "stix" is the closest available neighbor to the page's mathjax-termes.
     # It is NOT mathjax-stix2 -- see the note in the special-relativity setup
     # cell. If the page's MathJax font changes, revisit this.
     "mathtext.fontset": "stix",
@@ -240,7 +240,7 @@ use the symbol $a$ or $\chi$ or $\tilde{\chi}$ for the same thing. The reason
 we do it this way is because there is a self-similarity about it. There is also
 a maximum amount of angular momentum a black hole can have so that the
 dimensionless spin parameter can only take on values $-1 < a_* < 1$, where the
-negative sign means spinning "backwards" from whatever coordinate system we
+negative sign means spinning "backward" from whatever coordinate system we
 have defined.
 
 <!-- DRAFT (assistant, 2026-08-20): the extremal-limit clause below is the
@@ -327,8 +327,8 @@ It touches the horizon at $\theta = 0, \pi$ (at the poles).
 
 ```{python}
 #| label: fig-ergosphere
-#| fig-cap: "The ergosphere is not a sphere. At three spins, the static surface (@eq-re, solid) drawn against the horizon (@eq-rh, dashed) in the same colour. Both are in units of $r_S$, and the picture is a slice through the spin axis, which runs vertically. The static surface always reaches $r_S$ at the equator no matter the spin; the horizon shrinks as the spin rises, so the gap between them opens up. The two meet only at the poles."
-#| fig-alt: "A polar cross-section through a spinning black hole, with the spin axis vertical. Three pairs of nested closed curves are drawn in different colours, one pair for each spin value 0.3, 0.6 and 0.95. In each pair a solid curve marks the static surface and a dashed curve of the same colour marks the horizon. Every solid curve passes through the same point on the horizontal equator at one Schwarzschild radius, while the dashed horizon circles get smaller as spin increases, from nearly touching at spin 0.3 to a much smaller circle at spin 0.95. Each solid curve is pinched inward at the top and bottom so that it meets its own dashed circle exactly on the vertical axis at the poles."
+#| fig-cap: "The ergosphere is not a sphere. At three spins, the static surface (@eq-re, solid) drawn against the horizon (@eq-rh, dashed) in the same color. Both are in units of $r_S$, and the picture is a slice through the spin axis, which runs vertically. The static surface always reaches $r_S$ at the equator no matter the spin; the horizon shrinks as the spin rises, so the gap between them opens up. The two meet only at the poles."
+#| fig-alt: "A polar cross-section through a spinning black hole, with the spin axis vertical. Three pairs of nested closed curves are drawn in different colors, one pair for each spin value 0.3, 0.6 and 0.95. In each pair a solid curve marks the static surface and a dashed curve of the same color marks the horizon. Every solid curve passes through the same point on the horizontal equator at one Schwarzschild radius, while the dashed horizon circles get smaller as spin increases, from nearly touching at spin 0.3 to a much smaller circle at spin 0.95. Each solid curve is pinched inward at the top and bottom so that it meets its own dashed circle exactly on the vertical axis at the poles."
 
 # figsize is NOT portable between documents: bbox_inches='tight' crops by an
 # amount that depends on this figure's own labels, so the invariant to match
@@ -340,13 +340,13 @@ fig, ax = plt.subplots(figsize=(5.2, 5.2))
 theta = np.linspace(0, 2 * np.pi, 721)
 spins = [(0.30, BLUE, "-"), (0.60, ORANGE, "-"), (0.95, AQUA, "-")]
 
-for a, colour, style in spins:
+for a, color, style in spins:
     rE = r_ergo(a, theta)
     ax.plot(rE * np.sin(theta), rE * np.cos(theta),
-            color=colour, linestyle=style, label=rf"$a_* = {a:g}$", zorder=3)
+            color=color, linestyle=style, label=rf"$a_* = {a:g}$", zorder=3)
     rH = r_horizon(a)
     ax.plot(rH * np.sin(theta), rH * np.cos(theta),
-            color=colour, linestyle=(0, (4, 3)), linewidth=1.4, zorder=2)
+            color=color, linestyle=(0, (4, 3)), linewidth=1.4, zorder=2)
 
 ax.plot([0], [0], marker="+", color=INK, markersize=9,
         markeredgewidth=1.4, linestyle="none", zorder=4)
@@ -491,7 +491,7 @@ for a in spins:
 
 ```{python}
 #| label: fig-isco
-#| fig-cap: "@eq-isco across the whole range of spin. Prograde orbits are to the right of centre and retrograde to the left, and the curve is markedly steeper on the prograde side: almost all of the drop from $3\\,r_S$ to $0.5\\,r_S$ happens above $a_* = 0.9$. The three values quoted in the text are marked."
+#| fig-cap: "@eq-isco across the whole range of spin. Prograde orbits are to the right of center and retrograde to the left, and the curve is markedly steeper on the prograde side: almost all of the drop from $3\\,r_S$ to $0.5\\,r_S$ happens above $a_* = 0.9$. The three values quoted in the text are marked."
 #| fig-alt: "A line graph of the innermost stable circular orbit radius, in units of the Schwarzschild radius, against dimensionless spin from minus one to plus one. The curve falls monotonically from 4.5 at spin minus one to 0.5 at spin plus one, passing through 3.0 at zero spin. It is gently sloped on the left, retrograde, half and becomes very steep near the right end, so most of the descent from 3 to 0.5 is concentrated in the last tenth of the spin range. Three points are marked with dots and labels at spin minus one, zero, and plus one."
 #| fig-height: 4.03
 
@@ -680,13 +680,13 @@ is to read.
 * **The mass slider** runs from $1$ to $10^{9}\ M_{\odot}$, with a tick at every
   decade. Watch the scale bar under the diagram as you drag it: the picture
   stays put while the physical size of that same circle runs from a few
-  kilometres to a few billion.
+  kilometers to a few billion.
 * **Keyboard:** Tab to the body, then use the arrow keys to move it in and out.
   Hold <kbd>Shift</kbd> for larger steps, or use <kbd>Home</kbd> and
   <kbd>End</kbd> for the two extremes. The arrow keys stop at the horizon and
   will not take you through it.
 * **Fall in** pushes the body through the horizon — as does simply dragging it
-  well inside. It falls to the centre and stays there, the readouts stop
+  well inside. It falls to the center and stays there, the readouts stop
   meaning anything, and **Reset** is the only way to get it back. That is the
   one thing about an event horizon worth feeling rather than being told.
 * Switch the falling body to **a Sun-like star** and the question changes from
@@ -856,7 +856,7 @@ $r_S = 3\ \mathrm{km}\,(M/M_{\odot})$ from @eq-rs-km. Answers are quoted to two
 significant figures, which is enough that the rounding in $r_S$ does not
 matter. The interactive figure above is a good way to check yourself.
 
-1.  Sagittarius A\*, the black hole at the centre of our own Galaxy, has
+1.  Sagittarius A\*, the black hole at the center of our own Galaxy, has
     $M = 4.3 \times 10^{6}\ M_{\odot}$. Calculate the tidal acceleration across
     a person at its event horizon, and express it in units of $g$.
 
@@ -933,7 +933,7 @@ matter. The interactive figure above is a good way to check yourself.
 
     ::: {.callout-tip .resolution collapse="true" title="How to derive the tidal radius expression"}
     Divide @eq-tidal by $m$ to get an acceleration, and put $s = R_*$: that is
-    the tide between the star's centre and its surface, which is the half of
+    the tide between the star's center and its surface, which is the half of
     the star its own gravity has to hold on to.
 
     $$
@@ -954,7 +954,7 @@ matter. The interactive figure above is a good way to check yourself.
     $$
 
     Using the star's full diameter instead of its radius would compare the two
-    *ends* of the star to each other rather than the surface to the centre, and
+    *ends* of the star to each other rather than the surface to the center, and
     would put a $4$ where the $2$ is.
     :::
 
