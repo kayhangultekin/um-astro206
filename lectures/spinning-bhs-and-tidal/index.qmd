@@ -1230,7 +1230,7 @@ the leading $GM/c^2$. It is a pure number that depends only on the spin.
     star if the disruption happens outside the horizon — otherwise the star goes
     in whole and nobody watches it come apart. Find the largest **non-spinning**
     black hole that can tidally disrupt a star of two solar masses, taking its
-    radius to be $2\,R_{\odot} = 1.4 \times 10^{11}\ \mathrm{cm}$.
+    radius to be $1.7\,R_{\odot} = 1.19 \times 10^{11}\ \mathrm{cm}$.
 
     ::: {.callout-tip .help-hint collapse="true" title="Hint"}
     The disruption is just visible when the tidal radius sits exactly at the
@@ -1240,12 +1240,22 @@ the leading $GM/c^2$. It is a pure number that depends only on the spin.
     :::
 
     ::: {.callout-note .help-answer collapse="true" title="Answer"}
-    $M \approx 3.2 \times 10^{8}\ M_{\odot}$.
+    $M \approx 2.5 \times 10^{8}\ M_{\odot}$. Every black hole heavier than
+    this swallows such a star whole, with nothing for anyone to see.
 
     Compare it with the $1.6 \times 10^{8}\ M_{\odot}$ you found in
-    @sec-exercises-tidal for a Sun-like star. The same criterion, one star twice
-    as massive and twice as wide, and the answer doubles. Every black hole
-    heavier than this swallows such a star whole.
+    @sec-exercises-tidal for a Sun-like star — a factor of $1.6$ larger for a
+    star that is twice the mass and $1.7$ times the radius. Putting $f = 2$ into
+    your first answer shows why those two changes pull against each other:
+
+    $$
+    M \propto \frac{R_*^{3/2}}{M_*^{1/2}},
+    $$
+
+    so a bigger star is easier to disrupt and a denser one is harder, and here
+    the radius wins: $1.7^{3/2} / 2^{1/2} = 1.6$. **Density is what really sets
+    the answer**, which is why a white dwarf — tiny and heavy — must be met by a
+    far smaller black hole to come apart at all.
     :::
 
 :::
