@@ -1174,6 +1174,82 @@ matter. The interactive figure above is a good way to check yourself.
 
 <!-- This Summary section, and which results it selects was drafted by the assistant 2026-08-20 and
      approved by Kayhan the same day. -->
+::: {.content-visible when-format="html"}
+
+## Capstone {#sec-capstone}
+
+<!-- The lead-in below is the assistant's wording; the three problems are
+     Kayhan's spec. -->
+
+These three pull the whole lecture together: the ISCO, the tidal radius, and
+the Schwarzschild radius all in one place. Take them slowly, and keep the units
+attached the whole way through.
+
+Write the ISCO radius of @eq-isco as
+
+$$
+r_{\mathrm{ISCO}} = \frac{GM}{c^2}\,f(a_*),
+$$ {#eq-isco-f}
+
+where $f(a_*)$ is the whole complicated bracket — everything in @eq-isco except
+the leading $GM/c^2$. It is a pure number that depends only on the spin.
+
+1.  A star that wanders too close to a black hole is torn apart at its tidal
+    radius, @eq-tidal-radius, and swallowed once it is inside the innermost
+    stable circular orbit. For a given star and a given spin there is one black
+    hole mass at which those two radii coincide. Find an expression for it.
+
+    ::: {.callout-note .help-answer collapse="true" title="Answer"}
+    Set @eq-isco-f equal to @eq-tidal-radius:
+
+    $$
+    \frac{GM}{c^2}f(a_*) = R_*\left(\frac{2M}{M_*}\right)^{1/3}.
+    $$
+
+    Both sides carry $M$, so collect them. Dividing by $M^{1/3}$ leaves
+    $M^{2/3}$ on the left, and raising both sides to the power $3/2$ gives
+
+    $$
+    M = \left(\frac{2}{M_*}\right)^{1/2}
+        \left(\frac{R_*\,c^2}{G\,f(a_*)}\right)^{3/2}.
+    $$
+
+    *Do the units make sense?* Inside the second bracket,
+    $\mathrm{cm}\,(\mathrm{cm^2\,s^{-2}}) / (\mathrm{cm^3\,g^{-1}\,s^{-2}})
+    = \mathrm{g}$, so that bracket is $\mathrm{g^{3/2}}$. The first bracket is
+    $\mathrm{g^{-1/2}}$. Their product is $\mathrm{g}$ — a mass, which is what
+    was asked for.
+    :::
+
+2.  Evaluate that expression for an ordinary star of one solar mass
+    ($M_* = 2 \times 10^{33}\ \mathrm{g}$,
+    $R_* = 7.0 \times 10^{10}\ \mathrm{cm}$) orbiting a black hole with
+    $a_* = 0.5$. You will need $f(0.5)$, which you can get from @eq-isco.
+
+3.  Now the other end of the story. A black hole can only be *seen* to disrupt a
+    star if the disruption happens outside the horizon — otherwise the star goes
+    in whole and nobody watches it come apart. Find the largest **non-spinning**
+    black hole that can tidally disrupt a star of two solar masses, taking its
+    radius to be $2\,R_{\odot} = 1.4 \times 10^{11}\ \mathrm{cm}$.
+
+    ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+    The disruption is just visible when the tidal radius sits exactly at the
+    horizon, so set @eq-tidal-radius equal to $r_S$. You do not need a new
+    calculation: $r_S = 2GM/c^2$, so **the horizon is @eq-isco-f with
+    $f = 2$** — put $f(a_*) = 2$ into your answer to the first question.
+    :::
+
+    ::: {.callout-note .help-answer collapse="true" title="Answer"}
+    $M \approx 3.2 \times 10^{8}\ M_{\odot}$.
+
+    Compare it with the $1.6 \times 10^{8}\ M_{\odot}$ you found in
+    @sec-exercises-tidal for a Sun-like star. The same criterion, one star twice
+    as massive and twice as wide, and the answer doubles. Every black hole
+    heavier than this swallows such a star whole.
+    :::
+
+:::
+
 ## Summary
 
 | Quantity | Expression | What to remember |
