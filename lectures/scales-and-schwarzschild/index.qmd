@@ -244,100 +244,68 @@ which is where gravity is the strongest.
 1. For the Earth ($M_{\oplus} = 5.97 \times 10^{27}\ \mathrm{g}$;
    $r_{\oplus} = 6.37 \times 10^{8}\ \mathrm{cm}$), what is the escape speed?
 
-   ::: {.callout-note .help-answer collapse="true" title="Answer"}
-   $v_{\mathrm{esc}} = 11\ \mathrm{km\ s^{-1}}$
-   :::
-
-2. How far from the center of the Earth do we need to be for the escape velocity
-   to be a modest highway speed of $100\ \mathrm{km\ hr^{-1}}$?
-
    ::: {.callout-note .help-solution collapse="true" title="Solution"}
-   Start from @eq-vesc and solve it for $r$ instead of for $v$. Square both
-   sides,
-
-   $$
-   v_{\mathrm{esc}}^2 = \frac{2 G M}{r},
-   $$
-
-   then multiply by $r$ and divide by $v_{\mathrm{esc}}^2$:
-
-   $$
-   r = \frac{2 G M}{v_{\mathrm{esc}}^2}.
-   $$
-
-   Before putting any numbers in, convert the speed into the units everything
-   else is in. We are working in cgs, so we want $\mathrm{cm\,s^{-1}}$, and
-   each conversion is a fraction arranged so the unwanted unit cancels:
-
-   $$
-   100\,\frac{\mathrm{km}}{\mathrm{hr}}
-   \times \frac{10^{5}\,\mathrm{cm}}{1\,\mathrm{km}}
-   \times \frac{1\,\mathrm{hr}}{3600\,\mathrm{s}}
-   $$
-
-   The $\mathrm{km}$ cancels against the first fraction and the $\mathrm{hr}$
-   against the second, leaving $\mathrm{cm\,s^{-1}}$. *Do the units make sense?*
-   A speed is a length over a time, so yes. Now the numbers:
-
-   $$
-   \frac{100 \times 10^{5}}{3600}\,\mathrm{cm\,s^{-1}}
-   = 2.78 \times 10^{3}\,\mathrm{cm\,s^{-1}}
-   $$
-
-   **Substitute, and keep the units attached.** With
-   $M_{\oplus} = 5.97 \times 10^{27}\ \mathrm{g}$, and doing no arithmetic yet:
+   **Substitute into @eq-vesc, and keep the units attached.** Escaping *from the
+   surface* means the smallest $r$ can be, which is the radius of the Earth
+   itself. Do not multiply anything yet:
 
    $$
    \begin{aligned}
-   r &= \frac{2GM_{\oplus}}{v_{\mathrm{esc}}^{2}} \\[0.8em]
-     &= \frac{2\left(6.674 \times 10^{-8}\
-          \mathrm{cm^{3}\,g^{-1}\,s^{-2}}\right)
-          \left(5.97 \times 10^{27}\ \mathrm{g}\right)}
-          {\left(2.78 \times 10^{3}\ \mathrm{cm\,s^{-1}}\right)^{2}}
+   v_{\mathrm{esc}} &= \left(\frac{2GM_{\oplus}}{r_{\oplus}}\right)^{1/2}
+     \\[0.8em]
+   &= \left(\frac{2\left(6.674 \times 10^{-8}\
+        \mathrm{cm^{3}\,g^{-1}\,s^{-2}}\right)
+        \left(5.97 \times 10^{27}\ \mathrm{g}\right)}
+        {6.37 \times 10^{8}\ \mathrm{cm}}\right)^{1/2}
    \end{aligned}
    $$
 
    **Now cancel the units, still without touching the numbers.** On top,
    $\mathrm{cm^{3}\,g^{-1}\,s^{-2}} \times \mathrm{g} =
-   \mathrm{cm^{3}\,s^{-2}}$. On the bottom,
-   $\left(\mathrm{cm\,s^{-1}}\right)^{2} = \mathrm{cm^{2}\,s^{-2}}$. So the
-   whole expression has units
+   \mathrm{cm^{3}\,s^{-2}}$. Dividing that by the $\mathrm{cm}$ underneath
+   leaves $\mathrm{cm^{2}\,s^{-2}}$, and the square root of that is
 
    $$
-   \frac{\mathrm{cm^{3}\,s^{-2}}}{\mathrm{cm^{2}\,s^{-2}}} = \mathrm{cm}.
+   \left(\mathrm{cm^{2}\,s^{-2}}\right)^{1/2} = \mathrm{cm\,s^{-1}}.
    $$
 
-   *Do the units make sense?* Centimeters are a length, and a distance from the
-   center of the Earth is a length, so yes.
+   *Do the units make sense?* A speed is a length over a time, so yes. **This
+   is the step that catches mistakes early.** Had you forgotten to take the
+   square root, the answer would have come out in $\mathrm{cm^{2}\,s^{-2}}$ —
+   which is not a speed, and you would know something was wrong before doing a
+   single multiplication.
 
    **Only now, the numbers.**
 
    $$
-   r = \frac{2\,(6.674 \times 10^{-8})(5.97 \times 10^{27})}
-            {(2.78 \times 10^{3})^{2}}\ \mathrm{cm}
-     = \frac{7.97 \times 10^{20}}{7.72 \times 10^{6}}\ \mathrm{cm}
-     = 1.03 \times 10^{14}\,\mathrm{cm}
+   v_{\mathrm{esc}} = \left(\frac{7.97 \times 10^{20}}
+                                 {6.37 \times 10^{8}}\right)^{1/2}
+     \mathrm{cm\,s^{-1}}
+   = \left(1.25 \times 10^{12}\right)^{1/2}\ \mathrm{cm\,s^{-1}}
+   = 1.12 \times 10^{6}\ \mathrm{cm\,s^{-1}}
    $$
 
-   That answer is in centimeters, which tells you nothing about how far away it
-   is, so convert it — again with the equivalence written as a fraction:
+   Centimeters per second is not how anyone quotes a speed like this, so
+   convert, with the equivalence written as a fraction so the centimeters
+   cancel:
 
    $$
-   r = 1.03 \times 10^{14}\ \mathrm{cm} \times
-       \frac{1\ \mathrm{km}}{10^{5}\ \mathrm{cm}}
-     = 1.03 \times 10^{9}\,\mathrm{km}
+   v_{\mathrm{esc}} = 1.12 \times 10^{6}\ \mathrm{cm\,s^{-1}} \times
+     \frac{1\ \mathrm{km}}{10^{5}\ \mathrm{cm}}
+   = 11\ \mathrm{km\,s^{-1}}
    $$
 
-   and once more, with $1\ \mathrm{AU} = 1.5 \times 10^{13}\ \mathrm{cm}$:
+   About eleven kilometers every second — and that is why getting off this
+   planet is hard.
+   :::
 
-   $$
-   r = 1.03 \times 10^{14}\ \mathrm{cm} \times
-       \frac{1\ \mathrm{AU}}{1.5 \times 10^{13}\ \mathrm{cm}}
-     = 6.9\,\mathrm{AU}
-   $$
+2. How far from the center of the Earth do we need to be for the escape velocity
+   to be a modest highway speed of $100\ \mathrm{km\ hr^{-1}}$?
 
-   That is roughly Saturn's distance from the Sun, and some $160{,}000$ Earth
-   radii out.
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   The distance works out to $1.03 \times 10^{14}\ \mathrm{cm}$, which is
+   $1.03 \times 10^{9}\ \mathrm{km}$, or about $6.9\,\mathrm{AU}$ — roughly
+   Saturn's distance from the Sun, and some $160{,}000$ Earth radii out.
    :::
 
 :::

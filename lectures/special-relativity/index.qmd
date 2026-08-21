@@ -1322,7 +1322,7 @@ $$
 $$
 
 The bracket is a ratio of two pure numbers, so it is a pure number itself and
-brings no units of its own — the ångströms pass straight through it.
+brings no units of its own — the angstroms pass straight through it.
 *Do the units make sense?* A wavelength is a length, so yes. Now the numbers:
 
 $$
@@ -1342,6 +1342,8 @@ An H$\alpha$ line that is emitted red comes out in the near-infrared.
    *Try it before opening the solution.*
 
    ::: {.callout-note .help-solution collapse="true" title="Solution"}
+   The redshift is defined in @eq-redshift as the fractional change in
+   wavelength, so both numbers go straight in with no rearranging:
 
    $$
    \begin{aligned}
@@ -1350,7 +1352,7 @@ An H$\alpha$ line that is emitted red comes out in the near-infrared.
    \end{aligned}
    $$
 
-   The ångströms cancel between the numerator and the denominator, and they
+   The angstroms cancel between the numerator and the denominator, and they
    have to: subtracting 1 from something is only meaningful if that something
    is a pure number. *Do the units make sense?* A redshift is a dimensionless
    ratio, so yes.
