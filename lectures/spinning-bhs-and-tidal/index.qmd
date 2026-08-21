@@ -357,6 +357,18 @@ wolverines as long as you filled it with the same amount of mass and angular
 momentum (and charge). From the outside, they look the same. So they have no
 "hair," a metaphor for anything other than those three quantities.
 
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-nohair}
+
+1.  Show that the dimensionless spin parameter of @eq-astar really is
+    dimensionless. Angular momentum has units of
+    $\mathrm{g\,cm^{2}\,s^{-1}}$. This is the same units-canceling habit as
+    the worked solution in @sec-exercises-schwarzschild, with no numbers to
+    multiply at the end.
+
+:::
+
 ## The event horizon
 
 The event horizon is a mathematical surface. It is not a physical surface just
