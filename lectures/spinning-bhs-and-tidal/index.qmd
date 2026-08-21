@@ -794,7 +794,8 @@ $a_t \propto 1/M^2$. Only the scale bar records that the black hole got bigger.
 
 ### Exercises {#sec-exercises-tidal}
 
-Throughout, take a person to be $s = 1.8\ \mathrm{m}$ tall, and use
+Throughout, take a person to be $s = 1.8\ \mathrm{m}$ tall, take Earth's
+gravitational acceleration to be $g = 9.8\ \mathrm{m\,s^{-2}}$, and use
 $r_S = 3\ \mathrm{km}\,(M/M_{\odot})$ from @eq-rs-km. Answers are quoted to two
 significant figures, which is enough that the rounding in $r_S$ does not
 matter. The interactive figure above is a good way to check yourself.
@@ -802,6 +803,14 @@ matter. The interactive figure above is a good way to check yourself.
 1.  Sagittarius A\*, the black hole at the centre of our own Galaxy, has
     $M = 4.3 \times 10^{6}\ M_{\odot}$. Calculate the tidal acceleration across
     a person at its event horizon, and express it in units of $g$.
+
+    ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+    @eq-tidal gives a *force*. To turn it into the acceleration you want, use
+    $F_t = m\,a_t$ and set that equal to @eq-tidal — the $m$ cancels, leaving
+    $a_t = 2GMs/d^3$, which depends on the black hole and on how long you are
+    but not on your mass at all. Evaluate it at the horizon, $d = r_S$, then
+    divide by $g$ to express the result in Earth gravities.
+    :::
 
     ::: {.callout-note .help-answer collapse="true" title="Answer"}
     $a_t \approx 1.0 \times 10^{-4}\ g$. You would cross the horizon of our
@@ -857,41 +866,63 @@ matter. The interactive figure above is a good way to check yourself.
     :::
 
 4.  A star is torn apart when the tide across it beats the gravity holding it
-    together.
+    together. That happens inside the star's **tidal radius**,
 
-    a.  A star of mass $M_*$ and radius $R_*$ sits a distance $r$ from a black
-        hole of mass $M$. Compare the tidal acceleration between the star's
-        **centre and its surface** with the star's own gravitational
-        acceleration at that surface. Set the two equal and show that the star
-        is disrupted inside a **tidal radius**
-        $$
-        R_T = R_*\left(\frac{2M}{M_*}\right)^{1/3}.
-        $$
-    b.  A star is only disrupted if $R_T$ lies *outside* the horizon — otherwise
-        it crosses intact and no one ever sees it come apart. Using a Sun-like
-        star ($R_* = R_{\odot} = 7.0 \times 10^{5}\ \mathrm{km}$,
-        $M_* = M_{\odot}$), find the smallest black hole mass for which a star
-        can cross the event horizon without being disrupted.
+    $$
+    R_T = R_*\left(\frac{2M}{M_*}\right)^{1/3},
+    $$ {#eq-tidal-radius}
+
+    where $M_*$ and $R_*$ are the star's mass and radius and $M$ is the black
+    hole's mass.
+
+    ::: {.callout-tip .resolution collapse="true" title="How to derive the tidal radius expression"}
+    Divide @eq-tidal by $m$ to get an acceleration, and put $s = R_*$: that is
+    the tide between the star's centre and its surface, which is the half of
+    the star its own gravity has to hold on to.
+
+    $$
+    a_{\mathrm{tide}} = \frac{2GMR_*}{r^3}
+    \qquad\text{against}\qquad
+    g_* = \frac{GM_*}{R_*^2},
+    $$
+
+    the star's own gravitational acceleration at its surface. The star comes
+    apart where the tide wins, so set them equal:
+
+    $$
+    \frac{2GMR_*}{r^3} = \frac{GM_*}{R_*^2}
+    \quad\Longrightarrow\quad
+    r^3 = \frac{2MR_*^3}{M_*}
+    \quad\Longrightarrow\quad
+    r = R_*\left(\frac{2M}{M_*}\right)^{1/3}.
+    $$
+
+    Using the star's full diameter instead of its radius would compare the two
+    *ends* of the star to each other rather than the surface to the centre, and
+    would put a $4$ where the $2$ is.
+    :::
+
+    A star is only disrupted if $R_T$ lies *outside* the horizon — otherwise it
+    crosses intact and no one ever sees it come apart. Using a Sun-like star
+    ($R_* = R_{\odot} = 7.0 \times 10^{5}\ \mathrm{km}$, $M_* = M_{\odot}$),
+    find the smallest black hole mass for which a star can cross the event
+    horizon without being disrupted.
 
     ::: {.callout-tip .help-hint collapse="true" title="Hint"}
-    For (a) the star's surface gravity is $GM_*/R_*^2$. For the tide, divide
-    @eq-tidal by $m$ to get an acceleration and put $s = R_*$: that is the
-    difference between the centre and the surface, which is the half of the
-    star that surface gravity has to hold on. (Using the full diameter instead
-    compares the two *ends* to each other, and gives a $4$ where the $2$ is.)
-    For (b) you want the
-    mass at which $R_T = r_S$; write both in terms of $M$ and solve. Note
+    You want the mass at which $R_T = r_S$. Write both in terms of $M$ — one
+    from @eq-tidal-radius, one from @eq-rs-km — and solve. Note
     $R_T \propto M^{1/3}$ while $r_S \propto M$, so the ratio $R_T/r_S$ *falls*
-    as the black hole gets bigger.
+    as the black hole gets bigger, which is why there is a largest hole that
+    can still shred a star rather than a smallest one.
     :::
 
     ::: {.callout-note .help-answer collapse="true" title="Answer"}
-    (b) $M \approx 1.6 \times 10^{8}\ M_{\odot}$. Above this mass a Sun-like
-    star goes through the horizon whole — the same story as exercise 3, one
-    rung up the ladder of victims.
+    $M \approx 1.6 \times 10^{8}\ M_{\odot}$. Above this mass a Sun-like star
+    goes through the horizon whole — the same story as exercise 3, one rung up
+    the ladder of victims.
     :::
 
-5.  Repeat exercise 4(b) for a **white dwarf**, with $R = 0.013\,R_{\odot}$ and
+5.  Repeat exercise 4 for a **white dwarf**, with $R = 0.013\,R_{\odot}$ and
     $M = 0.6\,M_{\odot}$. Which black holes can tear one apart, and which
     swallow it whole? Astronomers care about the answer: it is why a disrupted
     white dwarf is evidence for a black hole of a particular size.
