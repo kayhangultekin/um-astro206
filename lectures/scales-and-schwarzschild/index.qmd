@@ -139,7 +139,7 @@ $$
 = 9.46 \times 10^{22}\,\mathrm{km}.
 $$
 
-Which is a number so large that writing it in kilometres has done nothing
+Which is a number so large that writing it in kilometers has done nothing
 whatsoever to help you picture it. That is the point of light years.
 ::::
 

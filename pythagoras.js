@@ -6,7 +6,7 @@
 // student does -- which is the whole point: a and b move freely, and c is not
 // free, it is whatever the theorem says it is.
 //
-// Colours come from the same validated palette as the matplotlib figures, so
+// Colors come from the same validated palette as the matplotlib figures, so
 // the hypotenuse is the same blue here as it is above.
 //
 // Accessibility: each handle is a real `role="slider"` rather than a bare
@@ -43,7 +43,7 @@ function init(root) {
     grid: "#e1e0d9",
     axis: "#c3c2b7",
     surface: "#fcfcfb",
-    hyp: "#2a78d6",        // BLUE -- the static figure's hypotenuse colour
+    hyp: "#2a78d6",        // BLUE -- the static figure's hypotenuse color
     handle: "#eb6834",     // ORANGE -- the palette slot that says "grab me"
   };
 
@@ -112,7 +112,7 @@ function init(root) {
   const rightAngle = gTri.append("path")
     .attr("fill", "none").attr("stroke", COL.muted).attr("stroke-width", 1.4);
 
-  // Only c is labelled on the figure. The legs carried "a = 7" / "b = 10"
+  // Only c is labeled on the figure. The legs carried "a = 7" / "b = 10"
   // labels, which collided with the axis ticks and duplicated the readout
   // below; c stays because it is the derived value and sits in open space.
   const labC = gTri.append("text").attr("class", "py-side").attr("fill", COL.hyp);
@@ -124,7 +124,7 @@ function init(root) {
   const gHandles = g.append("g");
 
   // The handle on the horizontal axis sets side a; the one on the vertical
-  // axis sets side b. Labelled by the side each one CONTROLS, which is the
+  // axis sets side b. Labeled by the side each one CONTROLS, which is the
   // functional description a screen-reader user needs.
   const handleA = gHandles.append("circle")
     .attr("class", "py-handle").attr("r", 9)

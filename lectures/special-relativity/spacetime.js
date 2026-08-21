@@ -586,7 +586,7 @@ function init(root) {
   // The crosshair is shown only for genuine keyboard use. Showing it on
   // `focus` was wrong: clicking the plot focuses the SVG (it is tabbable),
   // so a mouse user got a stray crosshair parked at the initial cursor
-  // position, which reads as a spurious second set of grey axes.
+  // position, which reads as a spurious second set of gray axes.
   svg.on("pointerdown", () => {
     state.keyboardMode = false;
     drawCursor();

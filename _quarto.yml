@@ -38,7 +38,7 @@ website:
     search: true
     # No `background:` here on purpose. It does NOT do what it looks like it
     # does: Quarto emits `data-bs-theme="dark"` on the <nav> unconditionally,
-    # so the colour is set in the SCSS by overriding Bootstrap's dark navbar
+    # so the color is set in the SCSS by overriding Bootstrap's dark navbar
     # variables. Setting `background:` as well would just add a second, losing
     # source of truth. Verified: both a hex and the named `light` left the
     # attribute at "dark".
@@ -79,12 +79,12 @@ format:
     # marks.scss and tab-marks.scss are GENERATED (see typography_specimens/)
     # and must precede the theme, which reads $marks and $tab-marks.
     theme: [default, marks.scss, tab-marks.scss, quarto-lecnotes.scss]
-    # Quarto 1.10.18 loads MathJax *4*, whose maths font is selectable (11 of
+    # Quarto 1.10.18 loads MathJax *4*, whose math font is selectable (11 of
     # them); the default is mathjax-newcm. Termes is chosen because it typesets
     # best here -- in the other fonts the "s" of \mathrm{cm\,s^{-1}} drops
     # below the baseline next to the exponent.
     #
-    # `output.font` is GLOBAL: one maths font per document. This must run
+    # `output.font` is GLOBAL: one math font per document. This must run
     # before MathJax, which it does -- Quarto's own <script> carries `defer`,
     # so it executes only after parsing, and any inline script beats it.
     include-in-header:
@@ -128,7 +128,7 @@ format:
     #
     # The cost of leaving the key out is that there is NO TOC entry for
     # References.
-    # That is Quarto's designed behaviour for appendices and is accepted for
+    # That is Quarto's designed behavior for appendices and is accepted for
     # now. If a real "Further reading" section is ever wanted, the right shape
     # is an explicit `## References` heading plus an empty `::: {#refs} :::`
     # in the document -- a real section, a correct anchor, and somewhere for
@@ -154,12 +154,12 @@ format:
     papersize: letter
     # Body size, for reading at the blackboard. Kayhan wears reading glasses.
     #
-    # An earlier attempt scaled the MATHS font alone (Scale= on \setmathfont).
-    # He rejected it on sight, and the reason generalises: "I don't like how
+    # An earlier attempt scaled the MATH font alone (Scale= on \setmathfont).
+    # He rejected it on sight, and the reason generalizes: "I don't like how
     # text and in-line math are different sizes. That *reduces* readability. If
     # the text words are important enough for me to read, then we should
     # increase their size as well." So the knob is the document base size and
-    # the maths follows it -- verified equal, page by page, in the specimen.
+    # the math follows it -- verified equal, page by page, in the specimen.
     #
     # KOMA takes an arbitrary `fontsize=`; standard classes only do 10/11/12pt.
     # 13.75pt requested lands at 13.70pt painted (LaTeX rounds to its internal
@@ -216,7 +216,7 @@ format:
       - "BoldItalicFont=*-BoldItalic"
     # XCharter-Math.otf ships in TeX Live 2025 (3111 glyphs, real MATH table),
     # so the PDF -- unlike the web, where MathJax 4 can only use its own eleven
-    # packaged fonts -- can set text and maths in the SAME typeface. Verified:
+    # packaged fonts -- can set text and math in the SAME typeface. Verified:
     # \mathrm{cm\,s^{-1}} keeps the "s" on the baseline (the criterion that
     # chose mathjax-termes for the page), uppercase Greek stays upright, and
     # \sqrt renders -- XCharter-Math carries radical extensions that the text

@@ -10,7 +10,7 @@
 //  │  Math   MathJax 4, font `mathjax-termes` — set in _quarto.yml,  │
 //  │         not here, because it is a JS config rather than CSS.    │
 //  │         Figures use matplotlib's "stix" fontset, the closest    │
-//  │         Times-derived neighbour it has. See the lecture's       │
+//  │         Times-derived neighbor it has. See the lecture's       │
 //  │         setup cell for why that is not an exact match.          │
 //  │  All three are free, and all three ship in MacTeX. The files    │
 //  │  are vendored in fonts/ with their licences.                    │
@@ -27,13 +27,13 @@ $font-family-monospace: "Inconsolata", ui-monospace, SFMono-Regular, Menlo,
                         Consolas, "Liberation Mono", monospace !default;
 
 //  ┌─ CALLOUT FAMILIES ──────────────────────────────────────────────┐
-//  │  Five colour families. Roles WITHIN a family differ by ICON,     │
-//  │  never by colour. Each family is (tint, accent, title):          │
+//  │  Five color families. Roles WITHIN a family differ by ICON,     │
+//  │  never by color. Each family is (tint, accent, title):          │
 //  │    tint    fills the HEADER only — the body keeps the page's     │
 //  │            white ground, because displayed equations live in     │
 //  │            these boxes and MathJax's glyphs are drawn for white  │
 //  │    accent  draws the left border AND the icon artwork            │
-//  │    title   the header text colour                                │
+//  │    title   the header text color                                │
 //  │  Measured: title-on-tint 9.1–14.5:1. Every family clears AA.     │
 //  └──────────────────────────────────────────────────────────────────┘
 $cf-note:      (tint: #F4F4F2, accent: #666666, title: #222222) !default;
@@ -61,41 +61,41 @@ $callout-body-size:    17.5px !default;   // Quarto's own default is .9rem = 14.
 //  ../typography_specimens/emit_marks.py if it ever moves.
 $callout-icon-size:    24px   !default;
 
-//  Puts the icon's centre on the title's CAP centre. Derived, not nudged:
+//  Puts the icon's center on the title's CAP center. Derived, not nudged:
 //      baseline − capHeight·size/2 − icon/2
 //  from XCharter Bold's capHeight (0.671 em) at 17.5px/1.32. The first two
 //  terms measured 12.04px, so at a 24px icon this is 12.04 − 12 = 0.04px.
 //  (It was 3.54px when the icon was 17px.)
 //
-//  This works because each mark is centred on its own INK inside its viewBox,
-//  so the box's centre IS the mark's optical centre — a tall pilcrow and a
-//  small asterisk both sit centred, and one number serves all thirteen.
+//  This works because each mark is centered on its own INK inside its viewBox,
+//  so the box's center IS the mark's optical center — a tall pilcrow and a
+//  small asterisk both sit centered, and one number serves all thirteen.
 //  THIS IS FACE-DEPENDENT. If the title typeface or size ever changes,
 //  recompute it — do not carry this number over.
 $callout-icon-top: 0.04px !default;
 
 //  A purely OPTICAL nudge on top of the derived position above, because the
-//  arithmetic centre and the eye disagree by a little. It is applied with
+//  arithmetic center and the eye disagree by a little. It is applied with
 //  position/top rather than margin, so it moves the painted icon without
 //  changing layout — which matters because plain headers are flex-start
-//  (they would shift by the full amount) while collapsible ones are centred
+//  (they would shift by the full amount) while collapsible ones are centered
 //  (they would shift by about half). This way both move identically.
 //
 //  Exposed as --callout-icon-nudge so it can be dialled live in dev tools:
 //  inspect any .callout-icon, change the value on :root, and read off the
 //  number that looks right.
 //  Kayhan's value, chosen by dialling the custom property live in dev tools
-//  against the rendered page. The derived cap-centre above is the arithmetic;
+//  against the rendered page. The derived cap-center above is the arithmetic;
 //  this is the eye's correction on top of it. Keep the two separate.
 //
 //  It was +1px against the 17px Bootstrap icons and is -1px against the 24px
 //  marks — re-dialled after the migration, and the SIGN FLIPPED. Worth knowing
 //  before assuming a future icon change can carry the number over: at the
-//  larger size the arithmetic cap-centre reads a little LOW rather than high.
+//  larger size the arithmetic cap-center reads a little LOW rather than high.
 $callout-icon-nudge: -1px !default;
 
 //  ┌─ TABSET ─────────────────────────────────────────────────────────┐
-//  │  Its own colour, deliberately NOT borrowed from a callout family:│
+//  │  Its own color, deliberately NOT borrowed from a callout family:│
 //  │  a tabset is a control, a callout is content, and sharing a      │
 //  │  variable between them was incidental rather than meaningful.    │
 //  │  #1F5FAF is the previous #2a78d6 darkened. That measured 4.42:1  │
@@ -159,7 +159,7 @@ $nb-icon:      #555555 !default;
 //  VALUE, because that is what Quarto's appendix drew before the reference
 //  list was moved into a real section, and the point is to keep an appearance
 //  Kayhan had already approved. It is spelled out rather than referenced as
-//  $gray-300 so the theme keeps naming its own colours -- and because that is
+//  $gray-300 so the theme keeps naming its own colors -- and because that is
 //  the only Bootstrap variable this file would otherwise depend on.
 $ref-rule: #dee2e6 !default;
 
@@ -199,7 +199,7 @@ $nb-link-size: 19.83px !default;
 //  So no `resources:` key is needed; adding one publishes a second copy.
 //  Verified after render: all 8 URLs resolve from the CSS's own directory.
 //
-//  Subset to Latin + Greek + maths punctuation; code faces to ASCII.
+//  Subset to Latin + Greek + math punctuation; code faces to ASCII.
 
 @font-face { font-family: "XCharter"; font-weight: 400; font-style: normal;
   src: url("fonts/XCharter-Roman.woff2") format("woff2"); font-display: swap; }
@@ -292,16 +292,16 @@ $nb-link-size: 19.83px !default;
 //                what actually painted was EB Garamond 700. Nothing to do.
 //    opacity     .9. REPRODUCED, and CONFIRMED by Kayhan on 2026-08-16 after
 //                looking at it on the live site. Settled -- do not re-open it
-//                on the theory that a computed colour would be tidier.
+//                on the theory that a computed color would be tidier.
 //
-//                It is `opacity` rather than a computed colour on purpose:
+//                It is `opacity` rather than a computed color on purpose:
 //                that is the exact mechanism the appendix used, so what he
 //                approved is what he had already seen, not an approximation
 //                of it. The theme sets no `color` on h2 in either
 //                arrangement, so the two are pixel-identical.
 //
 //                Known cost, accepted: `opacity` is blunt and also fades the
-//                hover anchor-link glyph. A computed colour would avoid that,
+//                hover anchor-link glyph. A computed color would avoid that,
 //                but it would no longer be the thing he signed off on, so it
 //                is not a free swap -- it needs his eyes again.
 //
@@ -327,7 +327,7 @@ $nb-link-size: 19.83px !default;
 
 #quarto-document-content pre code { font-size: var(--code-size); }
 
-//  quarto-live styles its output block for colour and wrapping but never
+//  quarto-live styles its output block for color and wrapping but never
 //  sets font-family, so it inherits --bs-font-monospace (set in defaults).
 //  Only the size needs stating here.
 div.exercise-cell-output pre code,
@@ -381,7 +381,7 @@ div.cell-output-pyodide pre code { font-size: var(--code-size); }
 //    div.callout-note.callout-style-default>.callout-header (0,3,1) tint
 //    div.callout-note.callout-titled .callout-icon::before  (0,3,1) icon
 //
-//  The colours are carried as CUSTOM PROPERTIES set on the box, and one
+//  The colors are carried as CUSTOM PROPERTIES set on the box, and one
 //  set of rules downstream consumes them. That is what lets a role such
 //  as .help-hint restyle itself completely by overriding three variables,
 //  without re-stating a single rule — and it works no matter which Quarto
@@ -395,7 +395,7 @@ div.cell-output-pyodide pre code { font-size: var(--code-size); }
 //  rather than baked in:
 //
 //    fill    the family's accent, as with bi()
-//    stroke  the same colour again, because a mark's "darkening" is a stroke
+//    stroke  the same color again, because a mark's "darkening" is a stroke
 //            laid along its own outline — the trick that keeps a hairline
 //            from washing out once it is an unhinted SVG path rather than a
 //            grid-fitted glyph. sw is 0 for marks that need none.
@@ -466,7 +466,7 @@ div.callout.callout-style-default.callout-important {
 }
 
 //  (0,3,2), beating Quarto's (0,3,1) header rule on element count.
-//  opacity is Quarto's, at 85%, and would wash out every title colour.
+//  opacity is Quarto's, at 85%, and would wash out every title color.
 div.callout.callout-style-default > div.callout-header {
   background-color: var(--cf-tint);
   color: var(--cf-title);
@@ -487,7 +487,7 @@ div.callout.callout-style-default .callout-body { font-size: $callout-body-size;
 //    header[aria-expanded]  align-items: center     COLLAPSIBLE ONLY
 //
 //  The first two sum to 2.75px of error, which is why plain callouts sat
-//  low while collapsible ones — re-centred by the third — looked right.
+//  low while collapsible ones — re-centered by the third — looked right.
 //  All three are zeroed here so $callout-icon-top is the ONLY thing
 //  positioning the icon, and both kinds of callout share one geometry.
 //
@@ -505,7 +505,7 @@ div.callout.callout-style-default:not(.no-icon) div.callout-title-container { ma
 //  align-items is set ONLY on plain headers, at (0,3,2), which deliberately
 //  loses to Quarto's (0,4,0) [aria-expanded] rule. That is not an oversight:
 //  a collapsible header is taller than a plain one because the toggle button
-//  pads it out, and Quarto centres its contents for exactly that reason.
+//  pads it out, and Quarto centers its contents for exactly that reason.
 //  Forcing flex-start there pinned the icon and title to the top of the
 //  taller tint band — measured at 3.3px from the top against 15.7px below,
 //  which reads as "the icon is too high" even though the icon-to-text
@@ -581,7 +581,7 @@ div.callout.callout-style-default.help-answer    i.callout-icon::before { @inclu
 
 //  The disclaimer at the top of a lecture is appearance="simple" — no box,
 //  no header tint, no icon — and stays that way. Only its rule takes the
-//  Note family's grey, so it stops being Bootstrap blue.
+//  Note family's gray, so it stops being Bootstrap blue.
 div.callout.callout-style-simple.callout-note { border-left-color: map-get($cf-note, accent); }
 
 //  ── a table inside a callout drops its TOP rule ────────────────────────
@@ -596,7 +596,7 @@ div.callout.callout-style-simple.callout-note { border-left-color: map-get($cf-n
 //  the body's first child, and padding is INSIDE the border, so it moves
 //  the text and leaves the rule where it was. A margin would need to clear
 //  3.5px before it did anything, and would then leave a hairline floating
-//  in white space directly under a colour boundary that already separates
+//  in white space directly under a color boundary that already separates
 //  the two. So the rule simply goes.
 //
 //  The BOTTOM rule goes too, and Kayhan's reason is the general one: those
@@ -634,7 +634,7 @@ div.callout.callout-style-simple.callout-note { border-left-color: map-get($cf-n
 //  typeface, no competing with the heading hierarchy — while Bootstrap's
 //  tab chrome keeps them reading as pressable.
 //
-//  The active state may differ ONLY in colour. Tabs sit in a row, so any
+//  The active state may differ ONLY in color. Tabs sit in a row, so any
 //  change to text metrics — weight, size, letter-spacing — on the active
 //  tab shoves every tab after it sideways as the reader clicks along.
 .panel-tabset .nav-tabs .nav-link {
@@ -731,7 +731,7 @@ $tracks-sel: ".panel-tabset.tracks, .panel-tabset.tracks-from-numerical";
 //  NAVBAR
 // ═══════════════════════════════════════════════════════════════════════
 //
-//  Everything here fights two Quarto behaviours that are NOT configurable:
+//  Everything here fights two Quarto behaviors that are NOT configurable:
 //
 //  1. Quarto emits `data-bs-theme="dark"` on the <nav> unconditionally.
 //     `navbar: background:` does not change it — verified with both a hex
@@ -798,7 +798,7 @@ $tracks-sel: ".panel-tabset.tracks, .panel-tabset.tracks-from-numerical";
   font-size: $nb-link-size;
   color: $nb-link;
 
-  // Colour only. Never weight, size or letter-spacing: an active state that
+  // Color only. Never weight, size or letter-spacing: an active state that
   // changes text metrics shifts every control after it in the row, which is
   // the same rule the tabsets follow.
   &:hover, &.active, &.show { color: $nb-link-hot; }
@@ -808,7 +808,7 @@ $tracks-sel: ".panel-tabset.tracks, .panel-tabset.tracks-from-numerical";
   font-family: "XCharter", Charter, Georgia, serif;
 }
 
-// The search glyph is coloured by three rules that hardcode the dark theme's
+// The search glyph is colored by three rules that hardcode the dark theme's
 // near-white at (1,5,1) — the --bs-navbar-* variables do not reach it.
 // Prefixing with #quarto-header makes these (2,5,1).
 #quarto-header .navbar #quarto-search.type-overlay .aa-Autocomplete .aa-Form .aa-Label svg,

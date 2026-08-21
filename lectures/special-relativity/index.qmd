@@ -32,7 +32,7 @@ import matplotlib.font_manager as fm
 # Figure text is set in the same face as the body text, and figure MATH in the
 # same Computer Modern that MathJax puts on the page. So a symbol means the
 # same thing whether it appears in a sentence, a display equation, or an axis
-# label -- which for maths is the point: the typeface IS the symbol.
+# label -- which for math is the point: the typeface IS the symbol.
 #
 # The .otf files are vendored because the CI runner has neither MacTeX nor
 # macOS system fonts, and freeze is off, so every figure is rebuilt there.
@@ -71,10 +71,10 @@ mpl.rcParams.update({
     "savefig.bbox": "tight",
     "font.family": "serif",
     "font.serif": ["XCharter"],
-    # The page's maths is MathJax's mathjax-termes (set in _quarto.yml), a
+    # The page's math is MathJax's mathjax-termes (set in _quarto.yml), a
     # Times clone. NOTHING in matplotlib matches it exactly -- matplotlib has
     # five fontsets and none is Termes -- but "stix" is the closest available
-    # neighbour, because matplotlib's stix is STIXGeneral v1.0, which is also
+    # neighbor, because matplotlib's stix is STIXGeneral v1.0, which is also
     # Times-based. Both sides are therefore Times-derived.
     #
     # Do NOT read "stix" as matching MathJax's mathjax-stix2. That is STIX
@@ -922,7 +922,7 @@ Zuko's yardstick contracts when measured by Aang.
    length. How fast is it going?
 
    ::: {.callout-tip .help-hint collapse="true" title="Hint"}
-   This is Exercise 1 run backwards: you know the ratio $L^{\prime}/L_0$ and
+   This is Exercise 1 run backward: you know the ratio $L^{\prime}/L_0$ and
    you want $\beta$. Rearrange @eq-lengthcontraction to get $\gamma$ from that
    ratio first, then unpack @eq-gamma to get $\beta$ out of $\gamma$. Squaring
    both sides early makes the algebra much less unpleasant.
@@ -1014,7 +1014,7 @@ frame. The flashlight emits a light wave that has $N$ peaks and troughs in a
 time that Zuko measures to be $\Delta t^{\prime}$.
 
 ::: {.callout-warning .textbook-watch title="Textbook watch (Kutner)"}
-The text has the direction of motion backwards here. In this derivation Aang
+The text has the direction of motion backward here. In this derivation Aang
 moves *toward* Zuko, so we expect a **blueshift** — if your algebra produces
 a redshift for approach, check the sign convention before you check your
 algebra.

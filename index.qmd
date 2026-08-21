@@ -28,7 +28,7 @@ import matplotlib.font_manager as fm
 # Figure text is set in the same face as the body text, and figure MATH in the
 # same fontset the page's MathJax uses. So a symbol means the same thing whether
 # it appears in a sentence, a display equation, or a figure label -- which for
-# maths is the point: the typeface IS the symbol.
+# math is the point: the typeface IS the symbol.
 #
 # Walk up rather than hardcode a relative path: Quarto's execute-dir defaults to
 # the document's directory, but that is a default, not a guarantee, and a wrong
@@ -63,7 +63,7 @@ mpl.rcParams.update({
     "savefig.bbox": "tight",
     "font.family": "serif",
     "font.serif": ["XCharter"],
-    # "stix" is the closest available neighbour to the page's mathjax-termes;
+    # "stix" is the closest available neighbor to the page's mathjax-termes;
     # both are Times-derived. See the lecture's setup cell for the full note.
     "mathtext.fontset": "stix",
     "font.size": 11,
@@ -109,7 +109,7 @@ Many of the figures were originally just blank spaces in my lecture notes with c
 ```{python}
 #| label: fig-pythagoras
 #| fig-cap: "A right triangle, with the right angle at $C$. Each side takes the name of the vertex across from it, so the hypotenuse — the side facing the right angle — is $c$. That convention is what lets the theorem be written as $a^2 + b^2 = c^2$ without having to say which side is which."
-#| fig-alt: "A right triangle drawn on a plain background, with no axes or grid. The right angle sits at vertex C in the bottom-left corner and is marked with a small square. Vertex A is directly above C, and vertex B is off to the right of C along the bottom. The two legs are drawn in black: side a runs along the bottom from C to B, and side b runs vertically from C up to A. The hypotenuse, side c, is drawn in blue and slopes down from A at the top left to B at the bottom right. Each vertex is marked with a dot and labelled with a capital letter; each side is labelled at its midpoint with the lowercase letter matching the vertex opposite it."
+#| fig-alt: "A right triangle drawn on a plain background, with no axes or grid. The right angle sits at vertex C in the bottom-left corner and is marked with a small square. Vertex A is directly above C, and vertex B is off to the right of C along the bottom. The two legs are drawn in black: side a runs along the bottom from C to B, and side b runs vertically from C up to A. The hypotenuse, side c, is drawn in blue and slopes down from A at the top left to B at the bottom right. Each vertex is marked with a dot and labeled with a capital letter; each side is labeled at its midpoint with the lowercase letter matching the vertex opposite it."
 #| fig-height: 3.8
 
 # COPYING THIS OUT? This page runs a hidden setup cell before every figure, so
@@ -121,7 +121,7 @@ Many of the figures were originally just blank spaces in my lecture notes with c
 #
 # It will then draw the same triangle -- but in your default typeface, on a
 # white background, because that hidden cell also matches the figures' fonts
-# and colours to the text you are reading.
+# and colors to the text you are reading.
 
 # A right triangle, with the right angle at C in the bottom-left corner. Each
 # side is named for the vertex across from it, so c faces the right angle.
@@ -148,11 +148,11 @@ for point, name, offset in ((A, "A", (-15, 4)),
                 ha="center", va="center", color=INK, fontsize=13)
 
 # Sides: a lowercase letter at the midpoint, pushed away from the triangle.
-for point, name, offset, colour in (((2.0, 0.0), "a", (0, -17), INK),
-                                    ((0.0, 1.5), "b", (-17, 0), INK),
-                                    ((2.0, 1.5), "c", (15, 11), BLUE)):
+for point, name, offset, color in (((2.0, 0.0), "a", (0, -17), INK),
+                                   ((0.0, 1.5), "b", (-17, 0), INK),
+                                   ((2.0, 1.5), "c", (15, 11), BLUE)):
     ax.annotate(rf"${name}$", point, textcoords="offset points", xytext=offset,
-                ha="center", va="center", color=colour, fontsize=13)
+                ha="center", va="center", color=color, fontsize=13)
 
 ax.set_aspect("equal")   # so the right angle is drawn as one
 ax.set_xlim(-0.75, 4.75)
