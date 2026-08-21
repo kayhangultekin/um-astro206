@@ -682,6 +682,8 @@ spaghettified inside on your way to the singularity.
       <span class="td-ctl-label">Falling body</span>
       <label class="td-chk"><input type="radio" name="td-body" value="person" checked> a person</label>
       <label class="td-chk"><input type="radio" name="td-body" value="star"> a Sun-like star</label>
+      <button type="button" class="td-fall">Fall in</button>
+      <button type="button" class="td-reset">Reset</button>
     </div>
   </div>
 
@@ -727,6 +729,17 @@ spaghettified inside on your way to the singularity.
   font-variant-numeric: tabular-nums; white-space: nowrap;
 }
 .td-chk { display: inline-flex; align-items: center; gap: .35em; color: #52514e; }
+.td-reset, .td-fall {
+  font: inherit; font-size: .85rem; padding: .22em .8em;
+  border: 1px solid #c3c2b7; border-radius: 4px;
+  background: #fff; color: #0b0b0b; cursor: pointer;
+}
+.td-reset:hover:not(:disabled), .td-fall:hover:not(:disabled) { background: #f0efec; }
+.td-reset:disabled, .td-fall:disabled { opacity: .4; cursor: default; }
+/* Only once the faller is inside does Reset become the thing to press. */
+.td-reset-live {
+  border-color: #a02020; color: #a02020; font-weight: 600;
+}
 .td-plot { text-align: center; }
 .td-plot svg { max-width: 560px; }
 .td-plot circle[role="slider"]:focus-visible { outline: 2px solid #2a78d6; outline-offset: 2px; }
@@ -781,10 +794,14 @@ spaghettified inside on your way to the singularity.
 
 Tidal acceleration near a black hole, with distance measured in Schwarzschild
 radii so that the horizon is a fixed circle on screen. Drag the orange body to
-change $d/r_S$ and watch the $d^{-3}$ falloff. Then leave it at $d/r_S = 1$ and
-drag the mass instead: the picture does not change at all, but the tidal
-acceleration falls by twelve orders of magnitude, because at the horizon
-$a_t \propto 1/M^2$. Only the scale bar records that the black hole got bigger.
+change $d/r_S$ and watch the $d^{-3}$ falloff; it settles onto the horizon when
+you bring it close. Then leave it at $d/r_S = 1$ and drag the mass instead: the
+picture does not change at all, but the tidal acceleration falls by twelve
+orders of magnitude, because at the horizon $a_t \propto 1/M^2$. Only the scale
+bar records that the black hole got bigger. Push the body through the horizon,
+or press **Fall in**, and it goes — the readouts stop meaning anything and the
+only way to get it back is **Reset**, which is the one thing about a horizon
+worth feeling rather than being told.
 
 :::
 

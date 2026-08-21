@@ -109,8 +109,34 @@ function init(root) {
   const rS = (Msun) => (2 * G * Msun * MSUN) / (C * C);          // cm
   const aTidal = (Msun, dr, s) => (2 * G * Msun * MSUN * s) / Math.pow(dr * rS(Msun), 3) / G0;
 
+  // ---- crossing the horizon --------------------------------------------
+  // The horizon is NOT a wall, and until now this widget behaved as though it
+  // were: the faller clamped at d/r_S = 1 and bounced off. Section 2.3 says
+  // outright that the horizon "is not a physical surface", and Section 2.1's
+  // one-way-street analogy exists precisely to say that nothing stops you
+  // going IN -- only coming back. A hard stop taught the opposite.
+  //
+  // So the faller can now be pushed through, falls to the centre, and stays
+  // there until Reset. You cannot drag it back out; that asymmetry IS the
+  // lesson, and it is something an interactive can do that prose cannot.
+  //
+  // THE DETENT is not a nicety. The widget's central lesson is "park at
+  // d/r_S = 1 and sweep the mass", so without help the single most important
+  // position would also be the edge of a cliff. Between these two bounds the
+  // faller sticks to exactly 1, which makes parking at the horizon EASIER
+  // than it was before, and makes crossing a deliberate extra push rather
+  // than an accident.
+  const SNAP_OUT = 0.15;   // pulled back to 1 from up to this far outside
+  const SNAP_IN = 0.20;    // held at 1 until pushed this far inside
+  const START_DR = 4, START_ANGLE = -Math.PI / 2;   // above the hole
+  const FALL_MS = 900;
+
   // ---- state -----------------------------------------------------------
-  const state = { logM: 1, dr: 1, body: "person", angle: -Math.PI / 5 };
+  // phase: "free" (draggable) | "falling" (animating in) | "gone" (at centre)
+  const state = {
+    logM: 1, dr: START_DR, body: "person", angle: START_ANGLE,
+    phase: "free", fallFrom: START_DR, fallT0: 0,
+  };
 
   // ---- number formatting ----------------------------------------------
   const SUP = { "-": "−", 0: "⁰", 1: "¹", 2: "²", 3: "³",
@@ -151,10 +177,14 @@ function init(root) {
     .attr("role", "img")
     .attr("aria-label",
       "A black disc marks the event horizon, fixed in size. Faint rings mark "
-      + "distances of two, four, six and eight Schwarzschild radii. A draggable "
-      + "marker shows the falling body. Because distance is measured in units of "
-      + "the Schwarzschild radius, changing the black hole's mass does not change "
-      + "this picture -- only the scale bar and the readouts below it change.");
+      + "distances of two, three, four and five Schwarzschild radii. A draggable "
+      + "marker shows the falling body, which starts directly above the hole at "
+      + "four Schwarzschild radii and settles onto the horizon when brought "
+      + "close to it. Because distance is measured in units of the Schwarzschild "
+      + "radius, changing the black hole's mass does not change this picture -- "
+      + "only the scale bar and the readouts below it change. If the body is "
+      + "pushed through the horizon it falls to the centre and stays there until "
+      + "the Reset button is pressed.");
 
   // rings at integer multiples of r_S
   const gRings = svg.append("g");
@@ -193,7 +223,11 @@ function init(root) {
     .attr("tabindex", 0)
     .attr("role", "slider")
     .attr("aria-label", "Distance from the black hole, in Schwarzschild radii")
-    .attr("aria-valuemin", DR_MIN).attr("aria-valuemax", DR_MAX)
+    // valuemin is 0, not DR_MIN: the value really can reach 0 now, when the
+    // faller is inside. There is no valid POSITION between 0 and 1 -- crossing
+    // is a discrete event, not a range -- but the reported value must still
+    // lie inside the advertised bounds or assistive tech is being lied to.
+    .attr("aria-valuemin", 0).attr("aria-valuemax", DR_MAX)
     .style("cursor", "grab");
 
   // scale bar -- one horizon radius of screen, labelled with what that IS
@@ -220,30 +254,89 @@ function init(root) {
   // ---- interaction -----------------------------------------------------
   const clampDr = (v) => Math.min(DR_MAX, Math.max(DR_MIN, v));
 
+  function startFall() {
+    if (state.phase !== "free") return;
+    state.phase = "falling";
+    state.fallFrom = state.dr;
+    state.fallT0 = performance.now();
+    requestAnimationFrame(stepFall);
+    // requestAnimationFrame does NOT run in a hidden tab, and is throttled in
+    // some environments. Without this the faller can be left stranded partway
+    // in -- a real scenario: a student switches tab mid-fall and comes back to
+    // a widget that looks broken. The timer guarantees the end state whether
+    // or not a single frame ever renders.
+    clearTimeout(state.fallGuard);
+    state.fallGuard = setTimeout(() => {
+      if (state.phase === "falling") { state.dr = 0; state.phase = "gone"; render(); }
+    }, FALL_MS + 80);
+    render();
+  }
+
+  function stepFall(now) {
+    const t = Math.min(1, (now - state.fallT0) / FALL_MS);
+    // Accelerating inward: r = r0(1 - t^2), so speed grows with t, which is
+    // the right shape for something falling rather than being lowered.
+    state.dr = state.fallFrom * (1 - t * t);
+    if (state.phase !== "falling") return;          // the guard already landed it
+    if (t < 1) { render(); requestAnimationFrame(stepFall); }
+    else { clearTimeout(state.fallGuard); state.dr = 0; state.phase = "gone"; render(); }
+  }
+
+  function resetFaller() {
+    clearTimeout(state.fallGuard);
+    state.phase = "free";
+    state.dr = START_DR;
+    state.angle = START_ANGLE;
+    render();
+    bodyDot.node().focus();
+  }
+
   bodyDot.call(drag()
-    .on("start", function () { select(this).style("cursor", "grabbing"); })
+    .on("start", function () {
+      if (state.phase !== "free") return;
+      select(this).style("cursor", "grabbing");
+    })
     .on("drag", (event) => {
+      if (state.phase !== "free") return;
       const dx = event.x - CX, dy = event.y - CY;
-      const r = Math.hypot(dx, dy);
+      const raw = Math.hypot(dx, dy) / R0;
       state.angle = Math.atan2(dy, dx);
-      state.dr = clampDr(r / R0);
+      if (raw < 1 - SNAP_IN) { startFall(); return; }        // pushed through
+      state.dr = raw < 1 + SNAP_OUT ? 1 : clampDr(raw);      // detent at 1
       render();
     })
     .on("end", function () { select(this).style("cursor", "grab"); }));
 
   bodyDot.on("keydown", (event) => {
+    if (state.phase !== "free") return;
     const big = event.shiftKey ? 1.0 : 0.1;
-    let handled = true;
+    let handled = true, inward = false;
     switch (event.key) {
       case "ArrowRight": case "ArrowUp": state.dr = clampDr(state.dr + big); break;
-      case "ArrowLeft": case "ArrowDown": state.dr = clampDr(state.dr - big); break;
+      case "ArrowLeft": case "ArrowDown": inward = true; break;
       case "PageUp": state.dr = clampDr(state.dr + 1); break;
-      case "PageDown": state.dr = clampDr(state.dr - 1); break;
-      case "Home": state.dr = DR_MIN; break;
+      case "PageDown": inward = true; break;
+      case "Home": inward = true; break;
       case "End": state.dr = DR_MAX; break;
       default: handled = false;
     }
-    if (handled) { event.preventDefault(); render(); }
+    if (inward) {
+      // Plain arrows STOP at the horizon and never cross. This is the keyboard
+      // half of the detent, and it is not optional: without it, holding the
+      // left arrow walks straight through, so a keyboard user could never park
+      // at d/r_S = 1 -- which is where the widget's central lesson lives. The
+      // deliberate crossing is the "Fall in" button, which is reachable by
+      // keyboard like any other button.
+      const step = event.key === "Home" ? state.dr - DR_MIN
+                 : event.key === "PageDown" ? 1 : big;
+      state.dr = clampDr(state.dr - step);
+    }
+    if (handled) { event.preventDefault(); if (state.phase === "free") render(); }
+  });
+
+  root.querySelector(".td-reset").addEventListener("click", resetFaller);
+  root.querySelector(".td-fall").addEventListener("click", () => {
+    if (state.phase === "free") startFall();
   });
 
   massInput.addEventListener("input", () => {
@@ -264,12 +357,25 @@ function init(root) {
     const ratio = b.s / d_cm;
     const broken = ratio > SMALL_BODY_LIMIT;
 
+    const gone = state.phase === "gone";
+    const inside = state.phase !== "free";
+
     const px = CX + Math.cos(state.angle) * state.dr * R0;
     const py = CY + Math.sin(state.angle) * state.dr * R0;
     bodyDot.attr("cx", px).attr("cy", py)
-      .attr("aria-valuenow", state.dr.toFixed(2))
-      .attr("aria-valuetext", `${state.dr.toFixed(2)} Schwarzschild radii`);
-    spoke.attr("x1", CX).attr("y1", CY).attr("x2", px).attr("y2", py);
+      .attr("aria-valuenow", gone ? 0 : state.dr.toFixed(2))
+      .attr("aria-disabled", gone ? "true" : null)
+      .attr("opacity", gone ? 0.45 : 1)
+      .attr("aria-valuetext",
+        gone ? "inside the horizon"
+             : Math.abs(state.dr - 1) < 1e-9
+               ? "1.00 Schwarzschild radii, at the horizon. "
+                 + "Use the Fall in button to cross it."
+               : `${state.dr.toFixed(2)} Schwarzschild radii`);
+    // No spoke once it is inside: there is no longer a radial distance to draw.
+    spoke.attr("x1", CX).attr("y1", CY)
+      .attr("x2", inside ? CX : px).attr("y2", inside ? CY : py)
+      .attr("opacity", inside ? 0 : 1);
     scaleVal.text(` = ${fmt(rs_cm / 1e5)} km`);
 
     // "M⊙" with U+2299 rides the maths axis and floats high beside the digits;
@@ -277,27 +383,43 @@ function init(root) {
     const massOut = root.querySelector(".td-out-mass");
     massOut.textContent = `${fmt(M)} M`;
     massOut.appendChild(Object.assign(document.createElement("sub"), { textContent: "⊙" }));
+    // r_S survives a fall -- it is a property of the black hole, not of the
+    // faller. The other three do not: inside the horizon a_t would diverge as
+    // r -> 0, and worse, the radial coordinate in there is not the distance
+    // this readout implies. Printing a number would be quantitatively false,
+    // so the row simply goes quiet. That silence is itself honest: the
+    // description we derived has stopped applying.
     root.querySelector(".td-out-rs").textContent = `${fmt(rs_cm / 1e5)} km`;
-    root.querySelector(".td-out-dr").textContent = state.dr.toFixed(2);
-    root.querySelector(".td-out-d").textContent = `${fmt(d_cm / 1e5)} km`;
-    root.querySelector(".td-out-at").textContent = `${fmt(at)} g`;
+    root.querySelector(".td-out-dr").textContent = inside ? "—" : state.dr.toFixed(2);
+    root.querySelector(".td-out-d").textContent = inside ? "—" : `${fmt(d_cm / 1e5)} km`;
+    root.querySelector(".td-out-at").textContent = inside ? "—" : `${fmt(at)} g`;
 
     // A star is judged by whether its own gravity still holds it together;
     // a person by what the tide would feel like. Different questions.
     const isStar = state.body === "star";
-    const sv = isStar ? starVerdict(M, state.dr) : null;
-    const text = isStar ? sv.text : badge(at);
-    const tone = isStar ? sv.tone : badgeTone(at);
+    const sv = isStar && !inside ? starVerdict(M, state.dr) : null;
+    const lost = isStar
+      ? "The star fell into the black hole, never to be seen again!"
+      : "The astronaut fell into the black hole, never to be seen again!";
+    const text = inside ? lost : isStar ? sv.text : badge(at);
+    const tone = inside ? "severe" : isStar ? sv.tone : badgeTone(at);
 
     const badgeEl = root.querySelector(".td-badge");
     badgeEl.textContent = text;
     badgeEl.className = `td-badge td-badge-${tone}`;
     badgeEl.hidden = false;
 
+    // Reset is always in the DOM so it can be found before it is needed --
+    // a student who loses the faller and cannot see a way back concludes the
+    // widget is broken. It only gains emphasis once it is the thing to press.
+    root.querySelector(".td-reset").classList.toggle("td-reset-live", inside);
+    root.querySelector(".td-reset").disabled = !inside;
+    root.querySelector(".td-fall").disabled = inside;
+
     // The caveat is about the NUMBER, not the verdict: the disruption
     // criterion is independent of the small-body formula.
     const warn = root.querySelector(".td-warn");
-    warn.hidden = !broken;
+    warn.hidden = !broken || inside;
     if (broken) {
       warn.textContent =
         `a\u209C above uses the small-body formula, which assumes the body is much `
@@ -306,11 +428,15 @@ function init(root) {
         + "The verdict above does not depend on it.";
     }
 
-    live.textContent = isStar
-      ? `${state.dr.toFixed(2)} Schwarzschild radii, tidal radius `
-        + `${sv.rt.toFixed(2)}. ${sv.text}`
-      : `${state.dr.toFixed(2)} Schwarzschild radii. Tidal acceleration `
-        + `${speak(at)} g. ${badge(at)}.`;
+    live.textContent = gone
+      ? `${lost} Press Reset to try again.`
+      : state.phase === "falling"
+        ? lost
+        : isStar
+          ? `${state.dr.toFixed(2)} Schwarzschild radii, tidal radius `
+            + `${sv.rt.toFixed(2)}. ${sv.text}`
+          : `${state.dr.toFixed(2)} Schwarzschild radii. Tidal acceleration `
+            + `${speak(at)} g. ${badge(at)}.`;
   }
 
   // Reflect the initial state back into the controls, so a reload that
@@ -322,7 +448,12 @@ function init(root) {
   // Exposed ONLY so the offline test harness can drive the widget and compare
   // against the Python reference implementation. Nothing in the page uses it.
   root.__tidal = {
+    // test-only, as above
+    phase: () => state.phase,
+    cross: () => { startFall(); },
+    reset: () => { resetFaller(); },
     set(logM, dr, body) {
+      state.phase = "free";
       state.logM = logM; state.dr = dr; state.body = body;
       // Keep the visible controls in step, so a screenshot taken after a
       // scripted set() cannot show a radio disagreeing with the readout.
