@@ -183,6 +183,58 @@ supermassive black holes.
 Both of these have event horizons, which I said we would get to, but first we
 need to talk about another oddball quirk of black holes.
 
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-schwarzschild}
+
+1.  Jupiter has a mass of $1.898 \times 10^{30}\ \mathrm{g}$. Calculate its
+    Schwarzschild radius, and give the answer in centimeters, in kilometers,
+    and in astronomical units.
+
+    ::: {.callout-note .help-solution collapse="true" title="Solution"}
+    Substitute straight into @eq-schwarzschild, keeping everything in cgs:
+
+    $$
+    r_S = \frac{2GM}{c^2}
+        = \frac{2\,(6.674 \times 10^{-8})\,(1.898 \times 10^{30})}
+               {(2.998 \times 10^{10})^{2}}
+        = \frac{2.533 \times 10^{23}}{8.988 \times 10^{20}}
+        = 282\ \mathrm{cm}.
+    $$
+
+    The other two units are just conversions. Since
+    $1\ \mathrm{km} = 10^{5}\ \mathrm{cm}$,
+
+    $$
+    r_S = \frac{282}{10^{5}} = 2.8 \times 10^{-3}\ \mathrm{km},
+    $$
+
+    and since $1\ \mathrm{AU} = 1.5 \times 10^{13}\ \mathrm{cm}$,
+
+    $$
+    r_S = \frac{282}{1.5 \times 10^{13}} = 1.9 \times 10^{-11}\ \mathrm{AU}.
+    $$
+
+    **Check it against the normalized form.** Jupiter is
+    $1.898\times10^{30} / 2\times10^{33} = 9.5 \times 10^{-4}\ M_{\odot}$, so
+    @eq-rs-km gives $3 \times 9.5\times10^{-4} = 2.85\times10^{-3}\ \mathrm{km}$
+    — agreeing with the direct calculation to about 1%. That last 1% is the
+    rounding in @eq-rs-km itself, not a mistake in either route.
+
+    Worth a moment: to make Jupiter a black hole you would have to squeeze the
+    largest planet in the Solar System down to a sphere **less than three
+    meters across**. You could walk past it.
+    :::
+
+2.  Calculate $r_S$ in kilometers for black holes of $5$, $15$, and
+    $55\ M_{\odot}$. *(You should be able to do these in your head.)*
+
+3.  Calculate $r_S$ in astronomical units for black holes of
+    $1.0 \times 10^{6}$, $3.0 \times 10^{8}$, and
+    $2 \times 10^{10}\ M_{\odot}$. *(These too.)*
+
+:::
+
 ## The no-hair theorem
 
 One of the fun things about studying black holes, is that the phraseology is
