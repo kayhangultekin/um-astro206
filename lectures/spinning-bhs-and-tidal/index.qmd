@@ -192,13 +192,42 @@ need to talk about another oddball quirk of black holes.
     and in astronomical units.
 
     ::: {.callout-note .help-solution collapse="true" title="Solution"}
-    Substitute straight into @eq-schwarzschild, keeping everything in cgs:
+    **Substitute into @eq-schwarzschild, and keep the units attached.** Do not
+    multiply anything yet.
 
     $$
-    r_S = \frac{2GM}{c^2}
-        = \frac{2\,(6.674 \times 10^{-8})\,(1.898 \times 10^{30})}
-               {(2.998 \times 10^{10})^{2}}
-        = \frac{2.533 \times 10^{23}}{8.988 \times 10^{20}}
+    \begin{aligned}
+    r_S &= \frac{2GM}{c^2} \\[0.8em]
+        &= \frac{2\,\left(6.674 \times 10^{-8}\
+             \mathrm{cm^3\,g^{-1}\,s^{-2}}\right)
+             \left(1.898 \times 10^{30}\ \mathrm{g}\right)}
+             {\left(2.998 \times 10^{10}\ \mathrm{cm\,s^{-1}}\right)^{2}}
+    \end{aligned}
+    $$
+
+    **Now cancel the units, still without touching the numbers.** On top,
+    $\mathrm{cm^3\,g^{-1}\,s^{-2}} \times \mathrm{g} =
+    \mathrm{cm^3\,s^{-2}}$. On the bottom,
+    $\left(\mathrm{cm\,s^{-1}}\right)^2 = \mathrm{cm^2\,s^{-2}}$. So the units
+    of the whole expression are
+
+    $$
+    \frac{\mathrm{cm^3\,s^{-2}}}{\mathrm{cm^2\,s^{-2}}} = \mathrm{cm}.
+    $$
+
+    *Do the units make sense?* Centimeters are a length, and a radius is a
+    length, so yes. **This is the step that catches mistakes early.** Had you
+    forgotten to square $c$, the bottom would have been
+    $\mathrm{cm\,s^{-1}}$ and the answer would have come out in
+    $\mathrm{cm^2\,s^{-1}}$ — not a length, and you would know something was
+    wrong before doing a single multiplication.
+
+    **Only now, the numbers.**
+
+    $$
+    r_S = \frac{2\,(6.674 \times 10^{-8})(1.898 \times 10^{30})}
+               {(2.998 \times 10^{10})^{2}}\ \mathrm{cm}
+        = \frac{2.533 \times 10^{23}}{8.988 \times 10^{20}}\ \mathrm{cm}
         = 282\ \mathrm{cm}.
     $$
 
@@ -951,7 +980,26 @@ matter. The interactive figure above is a good way to check yourself.
     solving for $M$,
 
     $$
-    M = \sqrt{\frac{s\,c^6}{4G^2\,(10g)}} \approx 1.4 \times 10^{4}\ M_{\odot}.
+    M = \sqrt{\frac{s\,c^6}{4G^2\,(10g)}}.
+    $$
+
+    **Check the units before substituting anything.** Inside the root,
+
+    $$
+    \frac{\mathrm{cm}\;\left(\mathrm{cm\,s^{-1}}\right)^{6}}
+         {\left(\mathrm{cm^3\,g^{-1}\,s^{-2}}\right)^{2}\ \mathrm{cm\,s^{-2}}}
+    = \frac{\mathrm{cm^{7}\,s^{-6}}}
+           {\mathrm{cm^{7}\,g^{-2}\,s^{-6}}}
+    = \mathrm{g^{2}},
+    $$
+
+    and the square root of that is $\mathrm{g}$. *Do the units make sense?* A
+    mass in grams is what we solved for, so yes. **Now** put the numbers in,
+    with $s = 1.8\ \mathrm{m} = 180\ \mathrm{cm}$:
+
+    $$
+    M \approx 2.7 \times 10^{37}\ \mathrm{g}
+      \approx 1.4 \times 10^{4}\ M_{\odot}.
     $$
 
     **The number itself is not the lesson.** Because $M \propto a_t^{-1/2}$,
@@ -994,6 +1042,13 @@ matter. The interactive figure above is a good way to check yourself.
     \quad\Longrightarrow\quad
     r = R_*\left(\frac{2M}{M_*}\right)^{1/3}.
     $$
+
+    *Do the units make sense?* The ratio $M/M_*$ is a mass over a mass, so it
+    is a pure number, and a pure number raised to any power is still a pure
+    number. That leaves $R_T$ with the units of $R_*$ — a length, which is what
+    a radius must be. The check is quick here because the algebra was done in
+    symbols, but it is the same habit: **satisfy yourself about the units
+    before you put any numbers in.**
 
     Using the star's full diameter instead of its radius would compare the two
     *ends* of the star to each other rather than the surface to the center, and
