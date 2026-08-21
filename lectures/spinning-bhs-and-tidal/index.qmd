@@ -191,9 +191,8 @@ ridiculous and awesome. Even "black hole" is pretty cool in and of itself.
 theorem.[Another fun one is related but pertains to neutron stars: I-Love-Q
 relations.]{.aside .content-visible when-format="html"}
 
-<!-- DRAFT (assistant, 2026-08-20): the attribution sentence below is the
-     assistant's wording, drafted under ruling 3 (option b) and mirrored from
-     for_me/lec02/main.tex. Kayhan to read. -->
+<!-- The no-hair attribution sentence was drafted by the assistant 2026-08-20 and
+     approved by Kayhan the same day. -->
 ::: {.content-visible when-format="html"}
 The phrase is John Wheeler's, from a 1971 article he wrote with Remo Ruffini
 [@ruffini1971]; the theorem itself is a body of work by several people, and
@@ -243,8 +242,8 @@ dimensionless spin parameter can only take on values $-1 < a_* < 1$, where the
 negative sign means spinning "backward" from whatever coordinate system we
 have defined.
 
-<!-- DRAFT (assistant, 2026-08-20): the extremal-limit clause below is the
-     assistant's wording, drafted under ruling 1. Kayhan to read. -->
+<!-- The extremal-limit clause was drafted by the assistant 2026-08-20 and
+     approved by Kayhan the same day. -->
 The end points are a limit rather than a value: a black hole can be spun
 arbitrarily close to $|a_*| = 1$ but never quite to it, so when we quote a
 result "at $a_* = 1$" we mean the value it approaches. Such a black hole is
@@ -408,9 +407,8 @@ r_{\mathrm{ISCO}} = \frac{GM}{c^2}\left(3 + Z_2
   - \frac{a_*}{|a_*|}\sqrt{(3 - Z_1)(3 + Z_1 + 2 Z_2)}\right),
 $$ {#eq-isco}
 
-<!-- DRAFT (assistant, 2026-08-20): the paragraph below is the assistant's
-     wording, drafted under ruling 1 and mirrored from main.tex. Kayhan to
-     read. -->
+<!-- The sign-factor paragraph was drafted by the assistant 2026-08-20 and
+     approved by Kayhan the same day. -->
 where the factor $-a_*/|a_*|$ does nothing but set the sign: it is $-1$ for a
 prograde orbit ($a_* > 0$) and $+1$ for a retrograde one ($a_* < 0$), so the
 sign of the spin parameter now carries the direction of the orbit all by
@@ -621,14 +619,8 @@ for M in [10, 100, 1e4, 1e6, 4.3e6, 1e9] * const.M_sun:
 
 :::
 
-<!-- DRAFT (assistant, 2026-08-20): this is a RESOLUTION callout, built by
-     splitting Kayhan's own paragraph -- his question sentence became the
-     title, the rest of the paragraph is the body. The title recast is the
-     assistant's wording, from his ruling 8, SHORTENED 2026-08-20 to his
-     own one-line rewrite after he saw the first version rendered: "it's not
-     the end of the world if, in the future, we need to do two lines, but
-     it's preferable if we can do it in one line without changing the
-     meaning." Two-line titles are therefore allowed but not preferred. -->
+<!-- This Resolution callout, and its title was drafted by the assistant 2026-08-20 and
+     approved by Kayhan the same day. -->
 ::: {.callout-tip .resolution collapse="true" title="Think about what the strongest tidal force possible is for fixed $m$ and $s$."}
 We want the biggest value of $M / d^3$. Well the closest you can get to an
 object is its radius. So you want the object to be compact to have a big tidal
@@ -658,10 +650,8 @@ spaghettified inside on your way to the singularity.
 
 ### Try it yourself {#sec-interactive-tidal}
 
-<!-- DRAFT (assistant, 2026-08-20): the two paragraphs below and the "How to
-     use it" callout are the assistant's wording, written under his instruction
-     to move the usage instructions out of the caption and to follow lecture
-     3's pattern. He asked to approve this text before it is pushed. -->
+<!-- This lead-in and the How to use it callout was drafted by the assistant 2026-08-20 and
+     approved by Kayhan the same day. -->
 
 The figure below is live. There are only two things to change — how far out the
 body is, and how heavy the black hole is — and the whole of this section is in
@@ -989,12 +979,8 @@ matter. The interactive figure above is a good way to check yourself.
 {{< include ../../in_class/lec02/exercises00.qmd >}}
 :::
 
-<!-- DRAFT (assistant, 2026-08-20): the whole Summary section is the
-     assistant's selection and wording, written under ruling 7 ("a summary
-     table is excellent"). Every RESULT in it is Kayhan's; what is mine is
-     which results were chosen and how the right-hand column is phrased.
-     Kayhan to read. The capstone exercise goes immediately ABOVE this, so
-     the Summary stays the last word. -->
+<!-- This Summary section, and which results it selects was drafted by the assistant 2026-08-20 and
+     approved by Kayhan the same day. -->
 ## Summary
 
 | Quantity | Expression | What to remember |
