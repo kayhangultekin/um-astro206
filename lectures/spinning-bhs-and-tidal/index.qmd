@@ -231,17 +231,38 @@ need to talk about another oddball quirk of black holes.
         = 282\ \mathrm{cm}.
     $$
 
-    The other two units are just conversions. Since
-    $1\ \mathrm{km} = 10^{5}\ \mathrm{cm}$,
+    **The other two units are conversions, and they get the same treatment.**
+    You have $282\ \mathrm{cm}$ and you want kilometers. You know that
+    $1\ \mathrm{km} = 10^{5}\ \mathrm{cm}$. Write that equivalence as a
+    fraction — and **choose which way up by asking which arrangement cancels
+    the unit you are trying to get rid of.** Here that means centimeters go in
+    the denominator:
 
     $$
-    r_S = \frac{282}{10^{5}} = 2.8 \times 10^{-3}\ \mathrm{km},
+    r_S = 282\ \mathrm{cm} \times \frac{1\ \mathrm{km}}{10^{5}\ \mathrm{cm}}.
     $$
 
-    and since $1\ \mathrm{AU} = 1.5 \times 10^{13}\ \mathrm{cm}$,
+    Cancel: $\mathrm{cm} \times \mathrm{km}/\mathrm{cm} = \mathrm{km}$. *Do the
+    units make sense?* Kilometers are a length, so yes. **Now** multiply:
 
     $$
-    r_S = \frac{282}{1.5 \times 10^{13}} = 1.9 \times 10^{-11}\ \mathrm{AU}.
+    r_S = \frac{282}{10^{5}}\ \mathrm{km} = 2.8 \times 10^{-3}\ \mathrm{km}.
+    $$
+
+    **This is why the fraction is worth writing out rather than just dividing.**
+    Had you put it the other way up, as
+    $10^{5}\ \mathrm{cm} / 1\ \mathrm{km}$, nothing would have cancelled and you
+    would have been left with $\mathrm{cm^2\,km^{-1}}$ — not a length. The setup
+    tells you whether to multiply or divide, so you never have to guess.
+
+    Astronomical units work the same way, with
+    $1\ \mathrm{AU} = 1.5 \times 10^{13}\ \mathrm{cm}$:
+
+    $$
+    r_S = 282\ \mathrm{cm} \times
+          \frac{1\ \mathrm{AU}}{1.5 \times 10^{13}\ \mathrm{cm}}
+        = \frac{282}{1.5 \times 10^{13}}\ \mathrm{AU}
+        = 1.9 \times 10^{-11}\ \mathrm{AU}.
     $$
 
     **Check it against the normalized form.** Jupiter is
@@ -995,10 +1016,21 @@ matter. The interactive figure above is a good way to check yourself.
 
     and the square root of that is $\mathrm{g}$. *Do the units make sense?* A
     mass in grams is what we solved for, so yes. **Now** put the numbers in,
-    with $s = 1.8\ \mathrm{m} = 180\ \mathrm{cm}$:
+    converting the height the same way, with
+    $1\ \mathrm{m} = 100\ \mathrm{cm}$:
 
     $$
-    M \approx 2.7 \times 10^{37}\ \mathrm{g}
+    s = 1.8\ \mathrm{m} \times \frac{100\ \mathrm{cm}}{1\ \mathrm{m}}
+      = 180\ \mathrm{cm},
+    $$
+
+    which gives $M \approx 2.7 \times 10^{37}\ \mathrm{g}$. Grams are awkward
+    for a black hole, so convert once more, with
+    $1\ M_{\odot} = 2 \times 10^{33}\ \mathrm{g}$:
+
+    $$
+    M = 2.7 \times 10^{37}\ \mathrm{g} \times
+        \frac{1\ M_{\odot}}{2 \times 10^{33}\ \mathrm{g}}
       \approx 1.4 \times 10^{4}\ M_{\odot}.
     $$
 
