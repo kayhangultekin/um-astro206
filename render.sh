@@ -17,6 +17,21 @@
 #
 #     git update-index --skip-worktree in_class
 #
+# AFTER A `me` BUILD the PDFs are copied somewhere you can actually find them,
+# named `lecNN-<slug>.pdf` so they sort in teaching order — every lecture's
+# build output is otherwise called `index.pdf`. The destination comes from
+# $ASTRO206_PDF_DEST, or failing that the first non-comment line of
+# ../for_me/pdf-destination. With neither set this script copies nothing and
+# says nothing, so a fresh clone and anyone who is not Kayhan are unaffected.
+# The path lives in for_me/ and not here because THIS FILE IS PUBLIC.
+#
+# The copy is guarded on mtime, and that guard is the whole point rather than
+# belt-and-braces: _site/ is shared mutable state. A `quarto preview` session
+# rewrites files there behind this script's back, and a single-lecture render
+# leaves every OTHER lecture's PDF untouched — possibly a student build from
+# hours ago. So "an index.pdf exists" is not evidence of anything, and only
+# files this run actually wrote are copied. See PLAYBOOK.md.
+#
 set -e
 cd "$(dirname "$0")"
 
@@ -37,6 +52,11 @@ esac
 
 echo "in_class -> $(readlink in_class)"
 
+# Freshness reference for the copy step below. Anything not newer than this
+# was not built by this run. Created before the render, removed on any exit.
+stamp=$(mktemp)
+trap 'rm -f "$stamp"' EXIT
+
 if [ -n "$2" ]; then
   target="lectures/$2"
   if [ ! -d "$target" ]; then
@@ -47,6 +67,88 @@ if [ -n "$2" ]; then
 else
   quarto render
 fi
+
+# ---------------------------------------------------------------------------
+# Copy the instructor PDFs out to somewhere printable.
+#
+# Everything here warns and continues; nothing fails the build. The render has
+# already succeeded by this point, and the exit status should keep meaning
+# "the build worked" rather than "the build worked and Dropbox was mounted".
+# ---------------------------------------------------------------------------
+copy_pdfs() {
+  # Instructor builds only. A student PDF has no answers in it and has no
+  # business in the folder Kayhan prints from.
+  [ "$(readlink in_class)" = "$INSTRUCTOR_TREE" ] || return 0
+
+  # `|| true` because a plain assignment from a failed command substitution
+  # trips `set -e`. Strips comments and blank lines, takes the first line left.
+  dest="${ASTRO206_PDF_DEST:-$(sed -e 's/#.*//' -e '/^[[:space:]]*$/d' \
+        "$INSTRUCTOR_TREE/pdf-destination" 2>/dev/null | head -1 || true)}"
+  [ -n "$dest" ] || return 0
+
+  # Refuse to invent a tree. A missing PARENT means the wrong machine or an
+  # unsynced Dropbox, and silently creating it there would be worse than not
+  # copying: the files would look filed away while being nowhere.
+  parent=$(dirname "$dest")
+  if [ ! -d "$parent" ]; then
+    echo "warning: PDF destination's parent does not exist, nothing copied:" >&2
+    echo "         $parent" >&2
+    return 0
+  fi
+  mkdir -p "$dest"
+
+  # Only the lectures this run rendered. Capture the mode FIRST: `set --`
+  # below replaces the positional parameters, so $2 is gone after it runs.
+  one_lecture=$2
+  if [ -n "$one_lecture" ]; then set -- "lectures/$one_lecture"; else set -- lectures/*/; fi
+
+  echo
+  copied=0
+  for dir in "$@"; do
+    dir=${dir%/}
+    slug=$(basename "$dir")
+    pdf="_site/$dir/index.pdf"
+
+    if [ ! -f "$pdf" ]; then
+      echo "warning: no PDF for '$slug' — not copied" >&2
+      continue
+    fi
+    # THE GUARD. Older than the stamp means some earlier build or a preview
+    # session wrote it, not us, and we have no idea which tree it came from.
+    if [ ! "$pdf" -nt "$stamp" ]; then
+      echo "warning: '$slug' PDF predates this build — not copied (stale)" >&2
+      continue
+    fi
+
+    # Lecture number from the document's own frontmatter. That subtitle is
+    # load-bearing already: the PDF running head prints it via \@subtitle.
+    num=$(sed -n 's/^subtitle:.*Lecture \([0-9][0-9]*\).*/\1/p' "$dir/index.qmd" \
+          | head -1)
+    if [ -n "$num" ]; then
+      name=$(printf 'lec%02d-%s.pdf' "$num" "$slug")
+    else
+      echo "warning: no 'Lecture N' in $slug's subtitle — filing it unnumbered" >&2
+      name="lec--$slug.pdf"
+    fi
+
+    cp "$pdf" "$dest/$name"
+    echo "  copied  $name"
+    copied=$((copied + 1))
+  done
+  echo "$copied PDF(s) -> $dest"
+
+  # After a FULL build only, every lecture was just written, so anything else
+  # matching the pattern is an orphan — usually the old name after a slug
+  # rename. Reported, never deleted: this directory is Kayhan's, not ours.
+  if [ -z "$one_lecture" ]; then
+    for old in "$dest"/lec*.pdf; do
+      [ -e "$old" ] || continue
+      if [ "$old" -nt "$stamp" ]; then continue; fi
+      echo "note: '$(basename "$old")' was not written by this build — stale?" >&2
+    done
+  fi
+}
+copy_pdfs "$@"
 
 echo
 echo "Built with in_class -> $(readlink in_class)"
