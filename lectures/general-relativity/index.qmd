@@ -84,6 +84,13 @@ No experiment you can do inside the sealed room tells the two apart.
 That is the **principle of equivalence**, and it is worth seeing why it is
 strange rather than obvious. Compare two forces.
 
+In what follows, $q_1$ and $q_2$ are the electric charges of two objects and
+$r$ is the distance between them. The two masses need distinguishing carefully:
+$m_i$ is the **inertial** mass, the one in Newton's second law $F = m_i a$ that
+says how hard an object is to accelerate, and $m_g$ is the **gravitational**
+mass, the one in the law of gravitation that says how strongly gravity pulls on
+it. Treat them as separate quantities for now — that is the whole point.
+
 For the electric force between charges,
 
 $$
@@ -143,19 +150,28 @@ way spacetime responds to matter. Objects in free fall are not being pulled by
 anything. They are traveling as straight as it is possible to travel, through a
 spacetime that is not flat.
 
-John Wheeler put the whole theory into two lines, and it is worth memorizing
-them against the Newtonian pair they replace:
+:::: {.callout-important title="Wheeler's summary, against the Newtonian pair it replaces"}
+**Newton**
 
-| | Newton | Einstein |
-|---|---|---|
-| | Force tells mass how to accelerate | Curved spacetime tells mass-energy how to move |
-| | Mass tells gravity how to exert force | Mass-energy tells spacetime how to curve |
+> Force tells mass how to accelerate.
+> Mass tells gravity how to exert force.
 
-Notice that both columns are circular, and deliberately so. Mass curves
-spacetime; the curvature tells mass how to move; the moving mass curves
-spacetime. It is a bit like Escher's hand drawing the hand that draws it. That
-circularity is not a flaw in the theory — it is why the equations are hard to
-solve, and it is a real feature of how gravity works.
+**Einstein**
+
+> Curved spacetime tells mass-energy how to move.
+> Mass-energy tells spacetime how to curve.
+
+The second pair is John Wheeler's, and it is worth memorizing
+[@wheelerford1998]. The longer form he adapted it from is in the standard
+graduate text [@mtw1973].
+::::
+
+Notice that both pairs are circular, and deliberately so. Mass curves spacetime;
+the curvature tells mass how to move; the moving mass curves spacetime. It is a
+bit like Escher's [*Drawing Hands*](https://escherinhetpaleis.nl/en/about-escher/masterpieces/drawing-hands),
+in which each hand draws the other. That circularity is not a flaw in the theory
+— it is why the equations are hard to solve, and it is a real feature of how
+gravity works.
 
 ### What the equations actually say
 
@@ -164,7 +180,7 @@ be asked to. But you should know their shape, because two pieces of them show
 up repeatedly.
 
 The **interval** generalizes the spacetime interval you met in
-[the previous chapter](../special-relativity/index.qmd):
+[the previous lecture](../special-relativity/index.qmd):
 
 $$
 ds^2 = \sum_{i,j} g_{ij}\, dx^i dx^j.
@@ -198,10 +214,12 @@ curved two-dimensional space. It cannot see the third dimension the ball curves
 into — but it can *measure* the curvature from the inside. Draw a big triangle
 and add up the angles: on a flat sheet you get exactly $180^\circ$, on the
 sphere you get more. The ant never has to leave the surface to discover that its
-world is curved. Neither do we.
+world is curved. Neither do we. Kutner draws exactly this construction in
+**Figure 8.2**, with the triangle bounded by the equator and two meridians.
 
-**Embedding diagrams.** These are the funnel-shaped pictures you have seen, and
-they are more precise than they look. Near a mass, measure a circle's radius the
+**Embedding diagrams.** These are the funnel-shaped pictures you have seen —
+Kutner's **Figure 8.7(a)** is one, drawn for Mercury's orbit around the Sun —
+and they are more precise than they look. Near a mass, measure a circle's radius the
 only way you honestly can: take its circumference and divide by $2\pi$. Do that
 for two circles and call the answers $r_1$ and $r_2$. Now actually travel inward
 from the outer circle to the inner one and measure how far you went.
@@ -211,15 +229,52 @@ more than that**. There is more room between the two circles than their radii
 say there should be. That extra distance is the curvature, and it is a
 measurement you could in principle make with a tape measure, not a metaphor.
 
+### What the rubber sheet gets wrong
+
+Everything above is what the picture gets *right*. But the bowling-ball-on-a-
+rubber-sheet image is the most common illustration of general relativity there
+is, and three things about it are actively misleading. They are worth naming,
+because each one is a place where students reliably form a wrong idea and then
+keep it.
+
+**As an explanation it is circular.** The sheet sags only because something
+pulls the bowling ball downward — and that something is gravity, the very thing
+the picture is supposed to be explaining. As an illustration of what curvature
+does to a *trajectory*, it works. As an account of *why* mass curves spacetime,
+it explains gravity by quietly assuming gravity.
+
+![*Teaching Physics*, by Randall Munroe. Source:
+[xkcd.com/895](https://xkcd.com/895/), used under
+[CC BY-NC 2.5](https://creativecommons.org/licenses/by-nc/2.5/). The hover text
+on the original reads: "Space-time is like some simple and familiar system which
+is both intuitively understandable and precisely analogous, and if I were
+Richard Feynman I'd be able to come up with
+it."](xkcd-895-teaching-physics.png){#fig-xkcd-rubber-sheet
+width="100%"
+fig-alt="A three-panel black-and-white line comic. In the first panel a teacher
+stands at a board saying that space-time is like a rubber sheet and that massive
+objects distort the sheet; a seated student interrupts with 'Wait.' In the
+second panel the student asks why the objects distort it — pulled down by what?
+In the third the teacher sighs and says instead that space-time is like a set of
+equations, to which any analogy must be an approximation, and the student
+replies 'Boooooring.'"}
+
+**Spacetime around a mass is not funnel-shaped.** The funnel is an artifact of
+drawing only a two-dimensional slice and then needing somewhere to put the
+curvature. Real spacetime around a star or a black hole is curved in every
+direction at once, and there is no preferred "down" for anything to sag into.
+
+**The event horizon is not a rim you could stand on.** You met it in
+[lecture 2](../spinning-bhs-and-tidal/index.qmd). It is a three-dimensional
+surface — a sphere completely surrounding the black hole — not the circular
+mouth at the top of a funnel, which is what the drawing makes it look like.
+
+None of this means the picture is useless. It means it is an analogy, and the
+honest way to use an analogy is to know where it stops.
+
 ::::: {.content-visible when-format="html"}
 
 ### Exercises {#sec-exercises-equivalence}
-
-::: {.callout-note appearance="simple" icon=false}
-Exercises are for your own preparation and are not collected. Some have full
-solutions, some give only the answer, and some give nothing at all — that is
-deliberate. Come to office hours for the ones that give nothing.
-:::
 
 **Exercise 4.1.** Kutner works through the case of a person standing on a
 bathroom scale in an elevator, for three states of motion. Re-do that analysis
@@ -242,8 +297,7 @@ what we mean when we claim that gravity *alters the geometry of spacetime*. Your
 answer should make clear what would be different about a measurement made in
 curved spacetime compared to flat spacetime.
 
-*(No solution given. If you can answer this one cleanly you have the central
-idea of the lecture; if you cannot, that is worth an office-hours visit.)*
+*If you can answer this one cleanly, you have the central idea of the lecture.*
 
 **Exercise 4.3.** Exactly one of the following is **not** a prediction of
 general relativity. Which one, and what is it instead?
@@ -313,6 +367,21 @@ $\theta = 2 r_S / b$ — twice the Schwarzschild radius, divided by how close th
 light gets. Set $b$ to the radius of the Sun and it gives $1.75$ arcseconds,
 which is the number the 1919 expeditions went to measure.
 
+:::: {.callout-note title="What an arcsecond is"}
+Angles this small are quoted in **arcseconds**. One degree is divided into 60
+**arcminutes**, written $1'$, and each arcminute into 60 **arcseconds**, written
+$1''$ — so there are 3600 arcseconds in a degree, and
+
+$$
+1\ \mathrm{rad} = 206265''.
+$$ {#eq-arcsec}
+
+For a sense of scale: the full Moon is about $1800''$ across, and $1''$ is
+roughly the width of a US quarter seen from four kilometers away. The $1.75''$
+deflection at the edge of the Sun is about a thousandth of the Moon's diameter,
+which is why measuring it was hard enough to require an eclipse expedition.
+::::
+
 Note that @eq-deflection assumes the deflection is small, which it very much is
 for the Sun. It is not a safe formula arbitrarily close to a compact object.
 
@@ -338,8 +407,24 @@ images, or arcs, or in the most symmetric cases a complete ring.
 There is no trickery here and nothing is being deflected in the sense of
 bouncing off anything. Every one of those paths is the shortest route between
 two points, through curved spacetime. Some of the most spectacular examples are
-the giant arcs in galaxy clusters, which are studied here at Michigan by
-Professor Keren Sharon.
+the giant arcs seen in galaxy clusters.
+
+![Eight gravitational lenses found by the Sloan Lens ACS (SLACS) Survey and
+imaged with the Hubble Space Telescope. In each one, a massive foreground galaxy
+lenses the light of a more distant galaxy behind it into a ring or a set of
+arcs. Credit: NASA, ESA, and the SLACS Survey team: A. Bolton
+(Harvard/Smithsonian), S. Burles (MIT), L. Koopmans (Kapteyn), T. Treu (UCSB),
+and L. Moustakas (JPL/Caltech).](einstein-rings-slacs.jpg){#fig-einstein-rings
+width="100%"
+fig-alt="A four-by-two grid of eight telescope images on black backgrounds. Each
+panel holds a bright yellow-white elliptical galaxy at its center, encircled by
+a thin blue ring or by two or more blue arcs facing each other across it. Some
+rings are nearly complete circles; others are broken into separate curved
+segments of different lengths and brightnesses."}
+
+Notice in @fig-einstein-rings how the *blue* arcs and the *yellow* galaxy at
+each center are two different objects at two different distances. The blue light
+is the background galaxy, wrapped around the foreground one.
 
 ::::: {.content-visible when-format="html"}
 
@@ -404,8 +489,6 @@ quadruples how strongly it bends light.
 total solar eclipse. Measuring the deflection of *radio waves* from a background
 source does not. Why not?
 
-*(No solution given.)*
-
 :::::
 
 ::: {.content-visible when-format="pdf"}
@@ -433,13 +516,13 @@ Try to draw a closed elliptical orbit on it. You cannot: the orbit no longer
 joins up with itself, and each pass comes back rotated. **Elliptical orbits do
 not close in curved spacetime.**
 
-### The star S02
+### The star S0-2
 
-The same effect shows up in a far more extreme place. The star S02 orbits
+The same effect shows up in a far more extreme place. The star S0-2 orbits
 Sgr A\*, the supermassive black hole at the center of our Galaxy, and its orbit
 precesses by about **12 arcminutes per orbit**. Compare that with Mercury's 43
 arcseconds per *century*. The precession is roughly a thousand times larger per
-orbit, for the same reason: S02 gets far closer to far more mass, so it is
+orbit, for the same reason: S0-2 gets far closer to far more mass, so it is
 sampling far more curvature.
 
 ::::: {.content-visible when-format="html"}
@@ -453,11 +536,11 @@ $$
 $$ {#eq-precession}
 
 where $a$ is the semi-major axis and $e$ the eccentricity. Mercury has
-$a = 0.387\ \mathrm{AU}$ and $e = 0.206$ around a $1\,M_\odot$ Sun. The star S02
+$a = 0.387\ \mathrm{AU}$ and $e = 0.206$ around a $1\,M_\odot$ Sun. The star S0-2
 has $a \approx 970\ \mathrm{AU}$ and $e \approx 0.88$ around Sgr A\*, whose mass
 is about $4.3 \times 10^{6}\,M_\odot$.
 
-By what factor is S02's precession per orbit larger than Mercury's?
+By what factor is S0-2's precession per orbit larger than Mercury's?
 
 :::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
 Take the ratio of two copies of @eq-precession and almost everything cancels —
@@ -465,7 +548,7 @@ the $3\pi$, and all the physical constants inside $r_S$. You are left with a
 ratio of masses divided by a ratio of $a(1-e^2)$, and you never need a single
 value in cgs.
 
-The answer is about **7000**. S02 sits vastly further out in absolute terms, but
+The answer is about **7000**. S0-2 sits vastly further out in absolute terms, but
 it orbits a black hole four million times heavier, and its orbit is far more
 eccentric — and the mass wins by a wide margin.
 ::::
@@ -474,7 +557,6 @@ eccentric — and the mass wins by a wide margin.
 this lecture and in Kutner chapter 8. For each one, say in a sentence what was
 measured and what the theory predicted.
 
-*(No solution given. This is the one most likely to look familiar on an exam.)*
 
 :::::
 
@@ -493,7 +575,7 @@ measured and what the theory predicted.
 - **Light bends**, confirmed at the 1919 eclipse, and used routinely now as
   gravitational lensing.
 - **Orbits do not close** in curved spacetime: 43 arcseconds per century for
-  Mercury, 12 arcminutes per orbit for S02 around Sgr A\*.
+  Mercury, 12 arcminutes per orbit for S0-2 around Sgr A\*.
 - And the thing to remember about black holes generally: **they do not "suck"
   any more than any other mass does.** Replace the Sun with a black hole of
   exactly one solar mass and Earth's orbit would not change at all. What is
@@ -503,6 +585,26 @@ measured and what the theory predicted.
 **Next time** we take the same geometry into the strong field, where the
 curvature is not a small correction: gravitational redshift, gravitational time
 dilation, the event horizon, and the ripples in spacetime that LIGO detects.
+
+:::: {.callout-note collapse="true" title="One last rubber sheet, for anyone still reading"}
+@fig-xkcd-rubber-sheet, back where we took the analogy apart, was making an
+argument. This one is not, and is here purely because it exists.
+
+![*Rubber Sheet*, by Randall Munroe. Source:
+[xkcd.com/1158](https://xkcd.com/1158/), used under
+[CC BY-NC 2.5](https://creativecommons.org/licenses/by-nc/2.5/). The hover text
+reads: "It IS about physics. It ALL
+is."](xkcd-1158-rubber-sheet.png){#fig-xkcd-dessert
+width="100%"
+fig-alt="A four-panel black-and-white line comic. A man in a beret stands on a
+bowling ball resting in a dented rubber sheet, telling a woman at the sheet's
+edge to imagine the ball's weight making the dent. In the next panel a rope has
+been tied to the sheet and pulls it down further. The rope snaps, the sheet
+recoils with a loud boing, and the ball is flung into the air while the woman
+loses her balance. In the last panel she stands on the flat sheet as the ball
+falls back down, saying she thought this was about physics; the man replies that
+imagining is fun."}
+::::
 
 :::: {.content-visible when-format="html"}
 ## References {.unnumbered}
