@@ -1,5 +1,5 @@
 ---
-title: "General Relativity: Equivalence, Curvature, and Gravitational Redshift"
+title: "General Relativity: The Equivalence Principle and Curved Spacetime"
 subtitle: "ASTRO 206 — Black Holes · Lecture 4"
 author: "Kayhan Gültekin"
 # NO `date:` KEY YET -- ON PURPOSE. A placeholder string renders as a
@@ -211,6 +211,67 @@ more than that**. There is more room between the two circles than their radii
 say there should be. That extra distance is the curvature, and it is a
 measurement you could in principle make with a tape measure, not a metaphor.
 
+::::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-equivalence}
+
+::: {.callout-note appearance="simple" icon=false}
+Exercises are for your own preparation and are not collected. Some have full
+solutions, some give only the answer, and some give nothing at all — that is
+deliberate. Come to office hours for the ones that give nothing.
+:::
+
+**Exercise 4.1.** Kutner works through the case of a person standing on a
+bathroom scale in an elevator, for three states of motion. Re-do that analysis
+for all three cases, and at every step say explicitly whether the mass you are
+using is the **inertial** mass or the **gravitational** mass.
+
+:::: {.callout-tip .help-hint collapse="true" title="Hint"}
+The scale never reads "your mass." It reads the **normal force** it has to push
+up with, and Newton's second law fixes that force. Write $\sum F = m_i a$ for
+the person in each case, and be careful that the weight term is $m_g g$ while
+the $ma$ term is $m_i a$ — they are different symbols until you decide they are
+equal.
+
+The point of the exercise is what you notice at the end: the two masses appear
+in different places, and every case comes out the same only because they cancel.
+::::
+
+**Exercise 4.2.** In one short paragraph, and without using any equations, say
+what we mean when we claim that gravity *alters the geometry of spacetime*. Your
+answer should make clear what would be different about a measurement made in
+curved spacetime compared to flat spacetime.
+
+*(No solution given. If you can answer this one cleanly you have the central
+idea of the lecture; if you cannot, that is worth an office-hours visit.)*
+
+**Exercise 4.3.** Exactly one of the following is **not** a prediction of
+general relativity. Which one, and what is it instead?
+
+a. The precession of Mercury's orbit
+b. The Lorentz transformations
+c. The decay of the orbit of the Hulse–Taylor binary pulsar
+d. LIGO's detection of gravitational waves
+
+:::: {.callout-tip .help-solution collapse="true" title="Solution"}
+**(b), the Lorentz transformations.** They belong to *special* relativity, which
+you met in [lecture 3](../special-relativity/index.qmd), and they describe how
+coordinates transform between two inertial frames in flat spacetime. No gravity
+and no curvature appear anywhere in them.
+
+The other three are all general relativity. (a) is the classic test discussed
+below. (c) is the slow inspiral of two neutron stars losing energy to
+gravitational radiation — the first, indirect evidence that gravitational waves
+are real. (d) is the direct detection of the same phenomenon fifty years later.
+
+It is worth noticing that (a), (c) and (d) are all *observations*, while (b) is
+a piece of mathematics. General relativity contains special relativity as the
+special case where spacetime is flat, so the Lorentz transformations are not
+contradicted by it — they are simply not what it predicts.
+::::
+
+:::::
+
 ## Seeing the curvature
 
 ### Light must bend
@@ -230,6 +291,30 @@ This is a real prediction, and it is not a small one. Light has no mass. In
 Newton's theory there is nothing for gravity to grab. In Einstein's, light
 follows the straightest available path through a spacetime that is curved, and
 the path bends because the spacetime does.
+
+General relativity makes the prediction quantitative. Light passing a distance
+$b$ from an object of mass $M$ is deflected through an angle
+
+$$
+\theta = \frac{4 G M}{b\, c^2}
+$$ {#eq-deflection}
+
+in radians. It is often more convenient in this course to write it using the
+Schwarzschild radius you derived in
+[lecture 1](../scales-and-schwarzschild/index.qmd),
+
+$$
+r_S = \frac{2 G M}{c^2} \approx 2.95\ \mathrm{km}
+      \left(\frac{M}{M_\odot}\right),
+$$ {#eq-rs-again}
+
+which turns @eq-deflection into the much more readable
+$\theta = 2 r_S / b$ — twice the Schwarzschild radius, divided by how close the
+light gets. Set $b$ to the radius of the Sun and it gives $1.75$ arcseconds,
+which is the number the 1919 expeditions went to measure.
+
+Note that @eq-deflection assumes the deflection is small, which it very much is
+for the Sun. It is not a safe formula arbitrarily close to a compact object.
 
 ### The 1919 eclipse
 
@@ -255,6 +340,77 @@ bouncing off anything. Every one of those paths is the shortest route between
 two points, through curved spacetime. Some of the most spectacular examples are
 the giant arcs in galaxy clusters, which are studied here at Michigan by
 Professor Keren Sharon.
+
+::::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-bending}
+
+**Exercise 4.4.** A neutron star has a mass of $1\,M_\odot$ and a radius of
+$10\ \mathrm{km}$. Through what angle is starlight bent as it grazes the surface?
+Give your answer in degrees.
+
+:::: {.callout-tip .help-solution collapse="true" title="Solution"}
+Use @eq-deflection with the impact parameter $b$ set to the neutron star's
+radius. The tidiest route is to notice that $4GM/c^2 = 2 r_S$, so
+
+$$
+\theta = \frac{4GM}{b c^2} = \frac{2 r_S}{b}.
+$$
+
+That is a ratio of two lengths, so $\theta$ comes out as a pure number — which
+is what an angle in radians is. *Do the units make sense?* Yes: radians are
+dimensionless, so anything with units left over would be wrong.
+
+From @eq-rs-again a one-solar-mass object has $r_S = 2.95\ \mathrm{km}$, and the
+radius is given as $10\ \mathrm{km}$, so both lengths are already in the same
+unit and nothing needs converting:
+
+$$
+\theta = \frac{2\,(2.95\ \mathrm{km})}{10\ \mathrm{km}} = 0.59\ \mathrm{rad}.
+$$
+
+Converting, with the equivalence written as a fraction so the radians cancel:
+
+$$
+\theta = 0.59\ \mathrm{rad} \times
+  \frac{180^\circ}{\pi\ \mathrm{rad}} = \boxed{34^\circ}.
+$$
+
+Compare that with the $1.75$ arcseconds at the edge of the Sun — about seventy
+thousand times larger. The reason is entirely $r_S/b$: the mass is the same, but
+the light gets to pass a hundred thousand times closer.
+
+**One honest caveat.** @eq-deflection is a *weak-field* result, derived on the
+assumption that $\theta$ is small. At $34^\circ$ that assumption is visibly
+strained, so treat this number as "tens of degrees" rather than as a precise
+prediction. Getting it exactly right requires tracing the photon's path through
+the full Schwarzschild geometry.
+::::
+
+**Exercise 4.5.** Consider an object with the same average density as the Sun,
+but a different size. Find an expression for the angle through which starlight
+grazing its surface is bent, as a function of the object's radius $R$.
+
+:::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
+You are told the *density* is fixed, not the mass — so write the mass in terms
+of the density and the radius before substituting into @eq-deflection, and watch
+what happens to the powers of $R$.
+
+The answer is $\theta \propto R^2$. Doubling the size of a solar-density object
+quadruples how strongly it bends light.
+::::
+
+**Exercise 4.6.** Measuring the deflection of *starlight* by the Sun requires a
+total solar eclipse. Measuring the deflection of *radio waves* from a background
+source does not. Why not?
+
+*(No solution given.)*
+
+:::::
+
+::: {.content-visible when-format="pdf"}
+{{< include ../../in_class/lec04/exercises00.qmd >}}
+:::
 
 ## The classic tests
 
@@ -286,433 +442,41 @@ arcseconds per *century*. The precession is roughly a thousand times larger per
 orbit, for the same reason: S02 gets far closer to far more mass, so it is
 sampling far more curvature.
 
-## Black holes, from the theory this time
-
-You already derived the Schwarzschild radius in
-[lecture 1](../scales-and-schwarzschild/index.qmd), using an argument about
-escape velocity: set the escape speed equal to $c$ and solve for the radius.
-That argument gives the right answer,
-
-$$
-r_S = \frac{2 G M}{c^2} \approx 3\ \mathrm{km}\left(\frac{M}{M_\odot}\right),
-$$ {#eq-rs-again}
-
-and it is a good way to remember the formula. But it is not really a derivation,
-because it treats light as a slow-moving cannonball that gravity pulls back.
-Now you have the real reason. Spacetime near a sufficiently compact mass is
-curved so steeply that all paths leading outward from inside a certain surface
-instead lead inward. Nothing gets out because there is no "out" to go to.
-
-The metric describing spacetime around a non-spinning mass $M$ is the
-**Schwarzschild metric**, and the single feature worth carrying away is what
-happens to it at large distance: for $r \gg r_S$ it reduces to the flat
-spacetime of special relativity. Curvature is a local business. Far from the
-mass, Einstein's picture and Newton's agree, which is why nobody noticed for two
-hundred years.
-
-One new radius is worth knowing. At $1.5\,r_S$ there is a **photon sphere**,
-where gravity is strong enough that light itself can orbit. A photon aimed just
-right there circles the black hole indefinitely. It is an unstable orbit — the
-slightest nudge sends the photon in or out — but it is the reason a black hole
-casts the particular shadow that the Event Horizon Telescope images show.
-
-:::: {.callout-tip .resolution collapse="true" title="Work out the Schwarzschild radius of a person"}
-Take a 70 kg person and ask what radius they would need to be compressed to in
-order to become a black hole. Using @eq-rs-again, first in solar masses:
-
-$$
-M = 70\ \mathrm{kg} \times \frac{10^{3}\ \mathrm{g}}{1\ \mathrm{kg}}
-    \times \frac{1\ M_\odot}{1.989 \times 10^{33}\ \mathrm{g}}
-  = 3.5 \times 10^{-29}\ M_\odot .
-$$
-
-Then
-
-$$
-r_S = 3\ \mathrm{km} \times 3.5 \times 10^{-29}
-    = 1.0 \times 10^{-28}\ \mathrm{km}
-    \times \frac{10^{5}\ \mathrm{cm}}{1\ \mathrm{km}}
-    = 1.0 \times 10^{-23}\ \mathrm{cm}.
-$$
-
-For comparison, an atomic nucleus is about $10^{-13}\ \mathrm{cm}$ across. Your
-personal Schwarzschild radius is ten orders of magnitude smaller than a nucleus.
-This is why you are not a black hole, and it is a good reminder of how
-absurdly compact a stellar-mass black hole is.
-::::
-
-## Gravitational redshift
-
-A photon climbing out of a gravitational well arrives with less energy than it
-started with. Since a photon's energy is $E = h\nu = hc/\lambda$, losing energy
-means a longer wavelength: the light is **redshifted**.
-
-:::: {.callout-tip .resolution collapse="true" title="Decide what speed the escaping light has when it reaches you"}
-Exactly $c$. Not less.
-
-This trips people up every year, because "the photon loses energy climbing out"
-sounds like it should slow down, the way a thrown ball does. But light does not
-work that way — its speed in vacuum is $c$ for every observer, which is the
-foundation everything in [lecture 3](../special-relativity/index.qmd) was built
-on, and general relativity does not overturn it.
-
-The energy has to go somewhere, so it comes out of the *frequency* instead. The
-photon arrives at the same speed, redder.
-::::
-
-Here is an approximate derivation. It is not rigorous — it treats the photon as
-though it had a mass, which it does not — but it gets remarkably close and shows
-where the effect comes from.
-
-Use conservation of energy between the emission point at radius $r$ and infinity,
-where there is no gravity. Assign the photon a "gravitational mass" $m$ through
-$E = hc/\lambda_0 = mc^2$, so that $m = h/\lambda_0 c$. Then
-
-$$
-\begin{aligned}
-\frac{hc}{\lambda} &= \frac{hc}{\lambda_0} - \frac{GMm}{r} \\[0.8em]
-\frac{1}{\lambda} &= \frac{1}{\lambda_0} - \frac{GM}{r}\cdot\frac{m}{hc} \\[0.8em]
-\frac{\lambda_0}{\lambda} &= 1 - \frac{GM}{r}
-   \left(\frac{h}{\lambda_0 c}\right)\left(\frac{\lambda_0}{hc}\right)
- = 1 - \frac{GM}{r c^2}.
-\end{aligned}
-$$ {#eq-redshift-approx}
-
-The full treatment in general relativity gives something very close, with a
-square root and a factor of two:
-
-$$
-\lambda = \frac{\lambda_0}{\sqrt{1 - \dfrac{2GM}{r c^2}}}
-        = \frac{\lambda_0}{\sqrt{1 - \dfrac{r_S}{r}}}.
-$$ {#eq-redshift}
-
-@eq-redshift is the one to use. Written in terms of $r_S$ it is easy to read:
-the redshift depends only on how close you are to the horizon *in units of the
-Schwarzschild radius*.
-
-And look at what it does as $r \to r_S$. The square root goes to zero and
-$\lambda \to \infty$. **A photon emitted exactly at the Schwarzschild radius
-arrives at infinite wavelength and zero energy** — which is to say, it never
-arrives at all. That is the event horizon, derived a second way.
-
 ::::: {.content-visible when-format="html"}
 
-### Exercises {#sec-exercises-redshift}
+### Exercises {#sec-exercises-tests}
 
-::: {.callout-note appearance="simple" icon=false}
-Exercises are for your own preparation and are not collected. Some have full
-solutions, some give only the answer, and some give nothing at all — that is
-deliberate. Come to office hours for the ones that give nothing.
-:::
-
-**Exercise 4.1.** A neutron star has mass $M = 1.4\,M_\odot$ and radius
-$R = 10\ \mathrm{km}$. An atomic transition on its surface emits light at a rest
-wavelength of $486.1\ \mathrm{nm}$.
-
-(a) Compute the redshift $z = \Delta\lambda/\lambda_0$ of light escaping from
-    the surface to a distant observer.
-(b) What wavelength does the distant observer measure?
-
-:::: {.callout-tip .help-solution collapse="true" title="Solution"}
-**(a)** First get the Schwarzschild radius, carrying the units through:
+**Exercise 4.7.** The angle a bound orbit precesses per revolution is
 
 $$
-r_S = \frac{2GM}{c^2}
-    = \frac{2\,(6.674\times10^{-8}\ \mathrm{cm^3\,g^{-1}\,s^{-2}})
-            (1.4)(1.989\times10^{33}\ \mathrm{g})}
-           {(2.998\times10^{10}\ \mathrm{cm\,s^{-1}})^2}.
-$$
+\Delta\phi = \frac{3\pi\, r_S}{a\,(1 - e^2)},
+$$ {#eq-precession}
 
-Cancel the units before touching the numbers:
+where $a$ is the semi-major axis and $e$ the eccentricity. Mercury has
+$a = 0.387\ \mathrm{AU}$ and $e = 0.206$ around a $1\,M_\odot$ Sun. The star S02
+has $a \approx 970\ \mathrm{AU}$ and $e \approx 0.88$ around Sgr A\*, whose mass
+is about $4.3 \times 10^{6}\,M_\odot$.
 
-$$
-\frac{\mathrm{cm^3\,g^{-1}\,s^{-2}} \cdot \mathrm{g}}
-     {\mathrm{cm^2\,s^{-2}}}
- = \frac{\mathrm{cm^3\,s^{-2}}}{\mathrm{cm^2\,s^{-2}}}
- = \mathrm{cm}.
-$$
-
-*Do the units make sense?* Centimeters are a length, and a radius is a length,
-so yes. Now the arithmetic:
-
-$$
-r_S = 4.14 \times 10^{5}\ \mathrm{cm}
-    \times \frac{1\ \mathrm{km}}{10^{5}\ \mathrm{cm}}
-    = 4.14\ \mathrm{km}.
-$$
-
-So $r_S/R = 4.14/10 = 0.414$, a pure number. From @eq-redshift,
-
-$$
-\frac{\lambda}{\lambda_0} = \frac{1}{\sqrt{1 - 0.414}} = \frac{1}{0.766} = 1.306,
-$$
-
-so $z = \lambda/\lambda_0 - 1 = \boxed{0.31}$.
-
-**(b)** $\lambda = 1.306 \times 486.1\ \mathrm{nm} = \boxed{635\ \mathrm{nm}}$.
-
-Worth noticing: 486.1 nm is the blue-green H$\beta$ line, and 635 nm is
-distinctly red. A 31% redshift is not subtle — this is an effect you could see
-by eye.
-::::
-
-**Exercise 4.2.** Two astronauts park $60\ \mathrm{km}$ from a
-$10\,M_\odot$ black hole and shine a $400\ \mathrm{nm}$ laser back toward Earth,
-which is effectively infinitely far away. What wavelength do we measure?
+By what factor is S02's precession per orbit larger than Mercury's?
 
 :::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
-Work in units of $r_S$ — you do not need the black hole's mass in grams for
-anything except getting $r_S$ itself, and @eq-rs-again gives you that in one
-step.
+Take the ratio of two copies of @eq-precession and almost everything cancels —
+the $3\pi$, and all the physical constants inside $r_S$. You are left with a
+ratio of masses divided by a ratio of $a(1-e^2)$, and you never need a single
+value in cgs.
 
-The answer is $561\ \mathrm{nm}$. The laser leaves violet and arrives
-yellow-green.
+The answer is about **7000**. S02 sits vastly further out in absolute terms, but
+it orbits a black hole four million times heavier, and its orbit is far more
+eccentric — and the mass wins by a wide margin.
 ::::
 
-**Exercise 4.3.** At what radius, in units of $r_S$, must a photon be emitted so
-that a distant observer measures its wavelength to be exactly **twice** the
-emitted wavelength?
+**Exercise 4.8.** Briefly describe the tests of general relativity discussed in
+this lecture and in Kutner chapter 8. For each one, say in a sentence what was
+measured and what the theory predicted.
 
-*(No hints on this one. The algebra is three lines, and the answer is a clean
-multiple of $r_S$.)*
+*(No solution given. This is the one most likely to look familiar on an exam.)*
 
 :::::
-
-## Gravitational time dilation
-
-The same factor that stretches wavelengths stretches time. This is not a
-coincidence — a wave's frequency *is* a clock, so anything that lowers the
-frequency of arriving light is also slowing the rate at which the emitter's
-seconds reach you.
-
-**All processes run slower in the presence of gravity**, and the deeper into the
-well, the slower they run. A clock at radius $r$ ticks slowly compared to a
-clock far away by the factor
-
-$$
-\frac{\Delta\tau}{\Delta t} = \sqrt{1 - \frac{r_S}{r}},
-$$ {#eq-timedilation-gr}
-
-which is exactly the square root from @eq-redshift.
-
-:::: {.callout-tip .resolution collapse="true" title="Decide which runs slowest: a clock in Ann Arbor, in Denver, or in Miami"}
-**Miami.** The rule is that deeper in the gravitational well means slower, and
-"deeper" means lower — closer to the center of the Earth. Miami is at sea level,
-Ann Arbor is about 880 feet up, and Denver is a mile up.
-
-So the order from slowest to fastest is Miami, then Ann Arbor, then Denver. The
-mile-high city gets the fastest clocks of the three.
-
-The effect is real and routinely measured, but it is tiny at these depths —
-parts in $10^{16}$. It matters enormously for GPS satellites, whose clocks are
-corrected for it, and it becomes overwhelming near a black hole, which is where
-we are going next.
-::::
-
-Now push @eq-timedilation-gr to its limit. As $r \to r_S$, the square root goes
-to zero and a distant observer sees the infalling clock tick more and more
-slowly, approaching a stop. **From far away, an object takes infinite time to
-reach the event horizon.** It appears to freeze there, fading and reddening as
-it goes, and never quite arrives.
-
-But the object itself experiences nothing of the sort. An observer riding along
-with the infalling matter crosses the horizon in a perfectly finite time, notices
-nothing locally remarkable about the crossing, and continues inward to the
-center. Both accounts are correct. They are different observers' descriptions
-of the same events, which should feel familiar after
-[lecture 3](../special-relativity/index.qmd) — except that here the disagreement
-is produced by curvature rather than relative motion.
-
-::::: {.content-visible when-format="html"}
-
-### Exercises {#sec-exercises-timedilation}
-
-**Exercise 4.4.** In a hypothetical movie, two astronauts go close to a black
-hole. One hour passes for them; ten hours pass on Earth, effectively infinitely
-far away. How close to the black hole did they get, in units of $r_S$?
-
-:::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
-You are given the *ratio* of elapsed times, which is exactly the factor
-in @eq-timedilation-gr. You never need the black hole's mass — the answer
-is in units of $r_S$ and the mass cancels out.
-
-The answer is $r = 1.01\,r_S$. Which is worth pausing on: to get a factor of ten,
-they had to be within one percent of the horizon.
-::::
-
-**Exercise 4.5.** Explain, in three or four sentences, how it can be true both
-that a distant observer never sees an object cross the event horizon *and* that
-the object crosses it in finite time by its own clock. Your answer should not
-require one of the two observers to be mistaken.
-
-*(No solution given. This is the conceptual heart of the section, and it is
-exactly the kind of thing worth being able to say out loud.)*
-
-:::::
-
-## Gravitational waves
-
-If mass-energy curves spacetime, then mass-energy that *moves* should make the
-curvature change — and a changing curvature should propagate. General relativity
-predicts exactly that: **ripples in the curvature of spacetime**, traveling at
-$c$, in close analogy to light waves being ripples in the electromagnetic field.
-
-A passing gravitational wave stretches space one way and squeezes it the other,
-alternating. Drop a ring of free particles in the path of one and the ring
-distorts to an ellipse, then to an ellipse the other way, then back.
-
-The quantity that describes the size of the effect is the **strain**,
-
-$$
-h = \frac{\Delta x}{x},
-$$ {#eq-strain}
-
-the fractional change in the distance between two points. It is a pure number,
-and it is very, very small.
-
-### LIGO
-
-The Laser Interferometer Gravitational-Wave Observatory measures that strain
-directly. A laser beam is split and sent down two perpendicular 4 km arms,
-bounced back and forth about 280 times by mirrors so that the effective path is
-around 1120 km, then recombined at a detector. The arms are arranged so the two
-beams cancel exactly when nothing is happening. A passing wave changes the
-lengths of the two arms by different amounts, the cancellation stops being
-perfect, and a signal appears.
-
-The sensitivity this achieves is difficult to overstate: LIGO can detect a change
-in arm length of about **one thousandth the size of a proton**.
-
-### GW150914
-
-On **14 September 2015** both LIGO detectors saw a signal — first at Livingston,
-Louisiana, and then, 7 milliseconds later, at Hanford, Washington. The delay
-between the two sites is itself information: it constrains where on the sky the
-source was.
-
-Matching the signal against solutions of Einstein's equations identified it as
-the merger of two stellar-mass black holes, of about $36\,M_\odot$ and
-$29\,M_\odot$. The black hole left behind was about $62\,M_\odot$.
-
-Add those up. $36 + 29 = 65$, and the remnant is 62. **Three solar masses were
-converted into energy** and radiated away as gravitational waves, in a fraction
-of a second.
-
-### Pulsar timing arrays
-
-LIGO is sensitive to waves with periods of milliseconds — the frequencies that
-stellar-mass black holes merge at. Supermassive black holes, being millions of
-times heavier, orbit and merge far more slowly, and radiate at periods of years.
-No instrument on Earth is big enough for that.
-
-So instead we use the Galaxy. **Pulsar timing arrays** exploit the fact that
-millisecond pulsars are extraordinarily regular clocks. A gravitational wave
-passing between us and a pulsar changes the distance the pulses have to travel,
-which shifts their arrival times by nanoseconds. Watch enough pulsars across the
-sky for long enough and the correlated pattern of those shifts reveals waves
-with periods of years.
-
-A third band is coming: **LISA**, a space-based interferometer with arms
-millions of kilometers long, originally a joint ESA/NASA mission and now
-ESA-led. It will cover the frequencies between the other two.
-
-::::: {.content-visible when-format="html"}
-
-### Exercises {#sec-exercises-waves}
-
-**Exercise 4.6.** GW150914's measured strain was about
-$h = 5 \times 10^{-22}$, and LIGO's arms are $4\ \mathrm{km}$ long.
-
-(a) What was the change in arm length?
-(b) Compare it with the size of a proton, about $10^{-13}\ \mathrm{cm}$.
-
-:::: {.callout-tip .help-solution collapse="true" title="Solution"}
-**(a)** From @eq-strain, $\Delta x = h\, x$. The strain is a pure number, so
-$\Delta x$ inherits the units of $x$ — a length, which is what a change in arm
-length had better be. Converting the arm length first:
-
-$$
-x = 4\ \mathrm{km} \times \frac{10^{5}\ \mathrm{cm}}{1\ \mathrm{km}}
-  = 4 \times 10^{5}\ \mathrm{cm},
-$$
-
-$$
-\Delta x = (5 \times 10^{-22})(4 \times 10^{5}\ \mathrm{cm})
-         = \boxed{2 \times 10^{-16}\ \mathrm{cm}}.
-$$
-
-**(b)**
-
-$$
-\frac{\Delta x}{r_p} = \frac{2 \times 10^{-16}\ \mathrm{cm}}
-                            {10^{-13}\ \mathrm{cm}}
-                     = 2 \times 10^{-3},
-$$
-
-a pure number, as a ratio of two lengths must be. So the mirrors moved by about
-**two thousandths of the width of a proton**, and that displacement was measured
-across a 4 km baseline. This is the number that should make the experiment seem
-impossible.
-::::
-
-**Exercise 4.7.** GW150914 radiated about $3\,M_\odot$ of energy in roughly
-20 milliseconds.
-
-(a) How much energy was that, in erg?
-(b) What was the average power, in $\mathrm{erg\,s^{-1}}$? Compare it with the
-    luminosity of the Sun, $L_\odot = 3.83 \times 10^{33}\ \mathrm{erg\,s^{-1}}$.
-
-:::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
-Part (a) is $E = mc^2$ and nothing more. For part (b), remember that power is
-just energy divided by time.
-
-The answers are $5.4 \times 10^{54}\ \mathrm{erg}$ and
-$2.7 \times 10^{56}\ \mathrm{erg\,s^{-1}}$, which is about
-$7 \times 10^{22}\,L_\odot$. Hold that second number up against something: it is
-comparable to the combined output of every star in the observable universe. For
-about twenty milliseconds, one pair of black holes outshone everything, in a
-form of radiation that passed straight through the Earth without anyone
-noticing.
-::::
-
-**Exercise 4.8.** A binary black hole system produces a strain of $10^{-22}$ at
-Earth. If an identical system were ten times further away, what strain would it
-produce? *(Strain falls off as $1/d$, not as $1/d^2$.)*
-
-*(No solution given. But it is worth asking yourself why the answer is not
-$10^{-24}$, and what it implies about how much more volume of the universe each
-improvement in detector sensitivity opens up.)*
-
-:::::
-
-## Loose ends worth knowing
-
-Four things that follow from general relativity and that you should have heard
-of, even though we are not going to develop them here.
-
-**Black holes have no hair.** A black hole is completely described by just three
-numbers: mass, angular momentum, and electric charge. Nothing else survives.
-There is no measurement that tells you whether it formed from hydrogen or
-helium, from a star or from a filing cabinet. You met this in
-[lecture 2](../spinning-bhs-and-tidal/index.qmd); it is worth knowing that it is
-a theorem in general relativity and not merely an observation.
-
-**Hawking radiation.** Black holes are not entirely black. Quantum effects near
-the horizon cause them to radiate very faintly, and therefore to evaporate over
-time. This is a genuinely important idea theoretically — it is where general
-relativity and quantum mechanics collide most productively — but for any
-astrophysical black hole the effect is so slow as to be irrelevant. Interesting,
-probably not important for anything you will observe.
-
-**The universe must expand or contract.** Einstein's equations applied to the
-universe as a whole do not admit a static solution. This bothered Einstein
-enough that he added a term to prevent it. Then Hubble showed the universe is
-expanding. We will come back to this.
-
-**We have pictures now.** The Event Horizon Telescope combines radio telescopes
-across the Earth into an instrument effectively the size of the planet, and has
-produced direct images of the shadows of the black holes in M87 and at the
-center of our own Galaxy. That shadow's size is set by the photon sphere.
 
 ## Summary
 
@@ -730,19 +494,15 @@ center of our own Galaxy. That shadow's size is set by the photon sphere.
   gravitational lensing.
 - **Orbits do not close** in curved spacetime: 43 arcseconds per century for
   Mercury, 12 arcminutes per orbit for S02 around Sgr A\*.
-- **Gravitational redshift**: $\lambda = \lambda_0/\sqrt{1 - r_S/r}$. It diverges
-  at the horizon.
-- **Gravitational time dilation** carries the same factor:
-  $\Delta\tau/\Delta t = \sqrt{1 - r_S/r}$. From far away an infalling object
-  never crosses the horizon; by its own clock it crosses in finite time.
-- **Gravitational waves** are ripples in curvature traveling at $c$, detected by
-  LIGO in 2015 at strains of $10^{-21}$, and now being pursued at other
-  frequencies by pulsar timing arrays and, soon, LISA.
 - And the thing to remember about black holes generally: **they do not "suck"
   any more than any other mass does.** Replace the Sun with a black hole of
   exactly one solar mass and Earth's orbit would not change at all. What is
   special about a black hole is not its pull at a distance — it is how close you
   are able to get.
+
+**Next time** we take the same geometry into the strong field, where the
+curvature is not a small correction: gravitational redshift, gravitational time
+dilation, the event horizon, and the ripples in spacetime that LIGO detects.
 
 :::: {.content-visible when-format="html"}
 ## References {.unnumbered}
