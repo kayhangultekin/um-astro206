@@ -15,6 +15,7 @@ project:
     - lectures/spinning-bhs-and-tidal/index.qmd
     - lectures/special-relativity/index.qmd
     - lectures/general-relativity/index.qmd
+    - lectures/strong-gravity/index.qmd
   # No `resources:` entry for fonts/ is needed. Quarto follows the url()
   # references in the theme SCSS and copies those files next to the compiled
   # CSS itself. Adding fonts/ here published a SECOND copy at _site/fonts/,
@@ -66,6 +67,8 @@ website:
             text: "Special relativity"
           - href: lectures/general-relativity/index.qmd
             text: "General relativity"
+          - href: lectures/strong-gravity/index.qmd
+            text: "Strong gravity"
 
 format:
   live-html:

@@ -42,3 +42,16 @@
 
 # Editor backup files (emacs and friends).
 *~
+
+# LaTeX intermediates. Quarto normally cleans these up after a PDF render, but
+# an interrupted or failed render leaves them behind in lectures/<slug>/ and
+# `git add -A` will happily stage them. Found staged 2026-08-27 after a render
+# that errored on a fenced-div problem. Root-anchored so they only match the
+# source tree, not anything a build produces elsewhere.
+/lectures/*/*.aux
+/lectures/*/*.log
+/lectures/*/*.tex
+/lectures/*/*.out
+/lectures/*/*.toc
+/lectures/*/*.fls
+/lectures/*/*.fdb_latexmk
