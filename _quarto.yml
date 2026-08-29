@@ -356,6 +356,18 @@ format:
 # not the obvious choice for an astronomer. Short version: AAS style omits
 # titles, which is correct for a journal and useless for a reading list of
 # course notes and web pages.
+# The `date:` on each lecture is the date the lecture is GIVEN, taken from the
+# Canvas Reading & Reflection due dates and cross-checked against the In-Class
+# Problem titles, which carry their date in the name. Quarto labels the date
+# field "Published" by default, which is wrong here -- these pages are
+# published whenever CI runs, not on the day the class meets. Override the
+# language string rather than the date, so the label matches what the value
+# actually means. Kayhan chose "Lecture date" on 2026-08-29.
+#
+# Reverting is this block alone; the dates themselves stay correct either way.
+language:
+  title-block-published: "Lecture date"
+
 bibliography: references.bib
 csl: chicago-author-date.csl
 crossref:

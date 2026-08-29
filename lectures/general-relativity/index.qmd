@@ -2,10 +2,14 @@
 title: "General Relativity: The Equivalence Principle and Curved Spacetime"
 subtitle: "ASTRO 206 — Black Holes · Lecture 4"
 author: "Kayhan Gültekin"
-# NO `date:` KEY YET -- ON PURPOSE. A placeholder string renders as a
-# literal "Invalid Date" in the title block (verified), which is worse
-# than no date at all. Add `date: "September N"` plus
-# `date-format: "MMMM D"` to match the other three lectures.
+date: "September 10"
+date-format: "MMMM D"
+# Dates are LECTURE dates -- when the class meets -- not publication dates.
+# Sourced from the Canvas Reading & Reflection due dates and cross-checked
+# against the In-Class Problem titles, which carry their date in the name.
+# Quarto's "Published" label is overridden to "Lecture date" in _quarto.yml.
+# A placeholder string here renders as a literal "Invalid Date" (verified),
+# so leave the key out entirely rather than guessing.
 
 # Kernel pinning is deliberate and must stay in the DOCUMENT, not _quarto.yml:
 # Quarto silently ignores a project-level `jupyter:` and auto-selects a kernel.

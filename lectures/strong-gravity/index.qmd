@@ -2,11 +2,14 @@
 title: "Strong Gravity: Redshift, Time Dilation, and Horizons"
 subtitle: "ASTRO 206 — Black Holes · Lecture 5"
 author: "Kayhan Gültekin"
-
-# NO `date:` KEY YET -- ON PURPOSE, as in lecture 4. A placeholder string
-# renders as a literal "Invalid Date" in the title block (verified), which is
-# worse than no date at all. Add `date: "September N"` plus
-# `date-format: "MMMM D"` to match the other lectures.
+date: "September 15"
+date-format: "MMMM D"
+# Dates are LECTURE dates -- when the class meets -- not publication dates.
+# Sourced from the Canvas Reading & Reflection due dates and cross-checked
+# against the In-Class Problem titles, which carry their date in the name.
+# Quarto's "Published" label is overridden to "Lecture date" in _quarto.yml.
+# A placeholder string here renders as a literal "Invalid Date" (verified),
+# so leave the key out entirely rather than guessing.
 
 # Kernel pinning is deliberate and must stay in the DOCUMENT, not _quarto.yml:
 # Quarto silently ignores a project-level `jupyter:` and auto-selects a kernel.
@@ -470,6 +473,7 @@ is produced by curvature rather than relative motion.
 @fig-infall shows both accounts side by side, for a particle spiraling into a
 black hole. The two panels are the *same* infall, clocked two different ways.
 
+:::: {.content-visible when-format="html"}
 ![The same infalling particle, timed two ways. The left panel advances by the
 particle's own **proper time** $t_p$, and the particle spirals in and crosses
 the horizon after a finite amount of it. The right panel advances by the
@@ -490,6 +494,47 @@ running time counter above it. In the left panel, labeled with proper time, a
 red curve winds inward around the sphere and reaches its surface. In the right
 panel, labeled with coordinate time whose counter runs to a larger value, the
 red curve stalls in a tight coil just above the sphere and never reaches it."}
+::::
+
+:::: {.content-visible when-format="pdf"}
+<!-- PDF gets a STILL FRAME because LaTeX cannot read .gif at all -- the build
+     fails with "Unknown graphics extension: .gif". Gating the animation to HTML
+     alone is not enough: @fig-infall is cross-referenced at the top of this
+     section, so the PDF needs a figure under the same label or the reference
+     renders as "?fig-infall".
+
+     Frame 360 of 481, chosen because it is the frame where the contrast is
+     legible in a single image: the left panel has finished (t_p = 12.666) while
+     the right is still winding (t_c = 45.000).
+     Regenerate with:
+       python -c "from PIL import Image; im=Image.open('timedilation-yukterez.gif'); \
+                  im.seek(360); im.convert('RGB').save('timedilation-yukterez-still.png')"
+
+     CAPTION CHANGE IS DELIBERATE AND IS A LICENSING REQUIREMENT, not a style
+     choice: CC BY-SA obliges you to state that you modified the work, and
+     taking one frame out of an animation is a modification. "used unmodified"
+     would be false here. -- drafted by the assistant, wording is Kayhan's call. -->
+![The same infalling particle, timed two ways. The left panel advances by the
+particle's own **proper time** $t_p$, and the particle spirals in and crosses
+the horizon after a finite amount of it. The right panel advances by the
+**coordinate time** $t_c$ of an observer far away, and by that clock the
+particle never gets there — it winds around and around, frozen against the
+horizon. Neither panel is wrong. Note that this is a *rotating* black hole, so
+the inward path spirals and there are two surfaces drawn rather than one; you
+met the ergosphere in
+[lecture 2](../spinning-bhs-and-tidal/index.qmd). The effect shown here does not
+depend on the spin. Still frame from an animation by
+[Yukterez](https://commons.wikimedia.org/wiki/File:Gravitational_time_dilation_around_a_black_hole.gif),
+under
+[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).](timedilation-yukterez-still.png){#fig-infall
+width="100%"
+fig-alt="A two-panel figure. Each panel shows a shaded sphere on a set of
+three-dimensional axes, surrounded by a larger translucent surface, with a time
+counter above it. The left panel, labeled proper time, reads 12.666 and a red
+curve has wound all the way inward to the sphere's surface. The right panel,
+labeled coordinate time, reads 45.000 and its red curve has only partly wound
+in, still short of the surface."}
+::::
 
 ::::: {.content-visible when-format="html"}
 

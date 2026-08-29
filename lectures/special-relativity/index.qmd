@@ -2,7 +2,7 @@
 title: "Special Relativity: Simultaneity, Time Dilation, and $E = mc^2$"
 subtitle: "ASTRO 206 — Black Holes · Lecture 3"
 author: "Kayhan Gültekin"
-date: "September 5"
+date: "September 8"
 date-format: "MMMM D"
 
 # Kernel pinning is deliberate and must stay in the DOCUMENT, not _quarto.yml:

@@ -2,7 +2,7 @@
 title: "Scales, Escape Velocity, and the Schwarzschild Radius"
 subtitle: "ASTRO 206 — Black Holes · Lecture 1"
 author: "Kayhan Gültekin"
-date: "August 28"
+date: "September 1"
 date-format: "MMMM D"
 
 # Kernel pinning is deliberate and must stay in the DOCUMENT, not _quarto.yml:

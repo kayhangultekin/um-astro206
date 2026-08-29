@@ -2,7 +2,7 @@
 title: "Spinning Black Holes and Tidal Forces"
 subtitle: "ASTRO 206 — Black Holes · Lecture 2"
 author: "Kayhan Gültekin"
-date: "August 31"
+date: "September 3"
 date-format: "MMMM D"
 
 # Kernel pinning is deliberate and must stay in the DOCUMENT, not _quarto.yml:
