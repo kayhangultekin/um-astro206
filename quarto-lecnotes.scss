@@ -816,3 +816,33 @@ $tracks-sel: ".panel-tabset.tracks, .panel-tabset.tracks-from-numerical";
 #quarto-header .navbar #quarto-search.type-overlay .aa-Autocomplete svg.aa-SubmitIcon {
   color: $nb-icon;
 }
+
+// ═══════════════════════════════════════════════════════════════════════
+//  <output> — UNDO BOOTSTRAP'S inline-block, OR SAFARI RAISES THE NUMBER
+// ═══════════════════════════════════════════════════════════════════════
+//  Bootstrap's Reboot sets `output { display: inline-block }`. An
+//  inline-block is supposed to align its own LAST LINE BOX's baseline to
+//  the parent's; WebKit does not, and falls back to the rule for a box
+//  with no line box at all — bottom margin edge onto the parent baseline.
+//  The readouts in the widgets are 22px line boxes whose internal baseline
+//  sits 16px down, so every number inside an <output> rides exactly 6px
+//  high. Measured in WKWebView (AppleWebKit 605.1.15) against the live
+//  lecture-3 widget: -6.00px, and 0.00px with this rule.
+//
+//  Blink takes the internal baseline and is correct either way, which is
+//  why this only ever showed up in Safari.
+//
+//  `display: inline` and not a vertical-align patch: the element holds one
+//  short text run and has no reason to be a block box, so removing the
+//  independent baseline fixes the cause instead of canceling the symptom
+//  with a number that would be wrong at any other font size. Width is
+//  unchanged (measured 29.78px -> 29.77px).
+//
+//  Bootstrap's rule is a bare type selector, (0,0,1), and so is this one;
+//  it wins on order, because quarto-lecnotes.scss is the last theme layer
+//  in _quarto.yml. Do not "strengthen" it into a descendant selector — it
+//  has to reach every widget, and there are three: the landing page's
+//  triangle, lecture 2's tidal readout and lecture 3's spacetime diagram.
+output {
+  display: inline;
+}
