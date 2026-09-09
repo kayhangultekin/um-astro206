@@ -1,0 +1,773 @@
+---
+title: "Even More Doppler"
+subtitle: "ASTRO 206 — Black Holes · Lecture 6"
+author: "Kayhan Gültekin"
+date: "September 17"
+date-format: "MMMM D"
+# Dates are LECTURE dates -- when the class meets -- not publication dates.
+# Sourced from Canvas (Reading & Reflection 3233489, due 2026-09-17) and
+# cross-checked against the In-Class Problem title, which carries its own date.
+# Quarto's "Published" label is overridden to "Lecture date" in _quarto.yml.
+# A placeholder string here renders as a literal "Invalid Date".
+
+# Kernel pinning is deliberate and must stay in the DOCUMENT, not _quarto.yml:
+# Quarto silently ignores a project-level `jupyter:` and auto-selects a kernel.
+# No code cells on this page yet; the key is here so the beaming figure, when
+# it arrives, cannot silently be built by the wrong interpreter.
+jupyter: python3
+
+# The labels inside @fig-anatomy are small at column width, so the figure gets
+# Quarto's lightbox treatment: click to open it full-screen and readable.
+# `auto` applies it to every image on the page rather than needing a class on
+# each one, which matters because there is currently one figure and there will
+# be more. Verified present in the render by grepping for the lightbox assets.
+lightbox: auto
+
+# No `pyodide: packages:` block: this page has no live cells.
+# No `resources:` entry: the three images are plain markdown figures, which
+# Quarto discovers and copies on its own.
+---
+
+::: {.callout-note appearance="simple" icon=false}
+**Disclaimer.** These notes have not been subjected to the usual scrutiny
+reserved for formal publications. They may be distributed outside this class
+only with the permission of the instructor.
+:::
+
+## How to read this lecture
+
+There is one more thing from the Doppler shift that we have not yet explored,
+and it turns out to be the thing that lets us recognize a black hole on sight.
+
+[In lecture 3](../special-relativity/index.qmd) we worked out what relative
+motion does to the *wavelength* of light. That is the half of the Doppler
+effect everybody meets first, and it is the half that does the work in most of
+astronomy: a line shifts, you read off a velocity, you go home. This lecture is
+about the other half. The same motion, by the same factor, also changes how
+*bright* the source looks — and it changes brightness far more violently than
+it changes color. That asymmetry is written all over the two black holes we
+have actually photographed.
+
+Before we can get there we need one piece of background that this course has so
+far assumed rather than stated: what light *is*, and how its wavelength, its
+frequency and its energy are related. That is the first section, and it is
+short.
+
+The lecture then has three payoffs, in increasing order of spectacle. The first
+is GPS, which is relativity doing an ordinary job in your pocket. The second is
+Doppler beaming, which is the new physics. The third is a pair of photographs.
+
+### The readings
+
+* **OpenStax *Astronomy 2e*,
+  [5.1 The Behavior of Light](https://openstax.org/books/astronomy-2e/pages/5-1-the-behavior-of-light)
+  and
+  [5.2 The Electromagnetic Spectrum](https://openstax.org/books/astronomy-2e/pages/5-2-the-electromagnetic-spectrum).**
+  Short, free, and the background that the first section here assumes rather
+  than rebuilds. Read these before the notes if you have not met light as a
+  wave before.
+* **OpenStax *Astronomy 2e*,
+  [5.6 The Doppler Effect](https://openstax.org/books/astronomy-2e/pages/5-6-the-doppler-effect).**
+  This is the *classical* Doppler shift, done slowly. We did the relativistic
+  version in lecture 3; if that has gone hazy, start here rather than there.
+* ESO,
+  [Astronomers Capture First Image of a Black Hole](https://www.eso.org/public/news/eso1907/) —
+  the M87 announcement, in the words used at the time.
+
+**If you want to go further**, the black hole in *Interstellar* was rendered by
+a visual-effects team working with Kip Thorne, and their code was accurate
+enough that it became
+[a published paper](https://doi.org/10.1088/0264-9381/32/6/065001)
+[@james2015]. It is open access. Section 4 and its figure 15 are the ones to
+look at: the same disk drawn three times, first with no shifts at all, then
+with its colors shifted, then with its brightness shifted too. Optional.
+
+## Light is a wave
+
+Light is a wave, and like any wave it has a wavelength $\lambda$ and a
+frequency $\nu$. For light in a vacuum the two are locked together by the one
+speed that never changes:
+
+$$
+c = \lambda\nu .
+$$ {#eq-cln}
+
+Nothing in @eq-cln is new physics — it is the definition of a wave speed,
+applied to the one wave whose speed [we already know is the same for
+everybody](../special-relativity/index.qmd). What it means in practice is that
+wavelength and frequency are not two independent facts about a photon. Give one
+and you have given the other. Long wavelength means low frequency; short
+wavelength means high.
+
+Light is also a particle, and this is where the two descriptions meet. A single
+photon carries an energy set entirely by its frequency:
+
+$$
+E = h\nu ,
+$$ {#eq-ehn}
+
+where $h = 6.6262 \times 10^{-27}\ \mathrm{erg\,s}$ is Planck's constant. Put
+@eq-cln and @eq-ehn together and the chain is complete: **short wavelength =
+high frequency = energetic photon**. That single chain is why a gamma ray will
+break a chemical bond and a radio photon will not, and it is the reason
+astronomers describe the same object by wavelength in one breath and by energy
+in the next. They are the same statement.
+
+The whole range of possibilities is the **electromagnetic spectrum**, and
+visible light is a startlingly thin slice of it — roughly 4000 to 7000
+angstroms, less than a factor of two in wavelength, against the twenty-odd
+factors of ten the spectrum covers in total. Everything else in it is invisible
+to your eye and perfectly ordinary to a telescope. Both of the black hole
+images at the end of this lecture were taken at a wavelength of 1.3
+millimeters, which is to say in the radio.
+
+::: {.callout-tip .resolution collapse="true" title="Think about why a black hole is imaged in the radio and not in visible light"}
+Two reasons, and they pull in the same direction.
+
+The first is that the gas near the black hole is not trying to emit visible
+light. It is hot, magnetized plasma radiating by synchrotron emission, and it
+is brightest in the radio and millimeter bands. Pointing an optical telescope
+at it would be looking where the light is not.
+
+The second is that the sightline is filthy. The center of our Galaxy sits
+behind tens of magnitudes of dust extinction — visible light from Sgr A\* does
+not reach us at all. Millimeter waves pass through dust essentially unimpeded,
+which is why the radio is the only band in which the picture can be taken.
+:::
+
+Both relations are worth using once before they are needed in anger. The
+H$\alpha$ line of hydrogen has a rest wavelength of $6563\ \text{Å}$, and
+here are its frequency and the energy of one of its photons, carried
+through with the units attached at every step.
+
+::: {.callout-note .worked-example collapse="true" title="Worked example (together): the energy of an H$\\alpha$ photon"}
+**Frequency first.** Rearranging @eq-cln gives $\nu = c/\lambda$. The speed
+of light is in $\mathrm{cm\,s^{-1}}$ and the wavelength is in angstroms, so
+they have to be brought into the same units before they can be divided.
+Write the equivalence as a fraction, arranged so that the angstroms cancel:
+
+$$
+\lambda = 6563\ \text{Å} \times
+          \frac{10^{-8}\ \mathrm{cm}}{1\ \text{Å}}
+        = 6.563 \times 10^{-4}\ \mathrm{cm}
+$$
+
+Now the division is meaningful:
+
+$$
+\nu = \frac{c}{\lambda}
+    = \frac{2.998 \times 10^{10}\ \mathrm{cm\,s^{-1}}}
+           {6.563 \times 10^{-4}\ \mathrm{cm}}
+$$
+
+The centimeters cancel and leave $\mathrm{s^{-1}}$. *Do the units make
+sense?* A frequency is a number of oscillations per second, which is exactly
+an inverse second, so yes.
+
+$$
+\nu = 4.568 \times 10^{14}\ \mathrm{s^{-1}} = 4.568 \times 10^{14}\ \mathrm{Hz}
+$$
+
+**Then the energy**, from @eq-ehn:
+
+$$
+E = h\nu = \left(6.6262 \times 10^{-27}\ \mathrm{erg\,s}\right)
+           \left(4.568 \times 10^{14}\ \mathrm{s^{-1}}\right)
+$$
+
+The seconds cancel against the inverse seconds and leave ergs.
+*Do the units make sense?* An erg is a unit of energy and a photon energy is
+an energy, so yes.
+
+$$
+E = 3.027 \times 10^{-12}\ \mathrm{erg}
+$$
+
+**Finally in electron volts**, using the conversion from your constants
+sheet, again as a fraction arranged so that the ergs cancel:
+
+$$
+E = 3.027 \times 10^{-12}\ \mathrm{erg} \times
+    \frac{6.242 \times 10^{11}\ \mathrm{eV}}{1\ \mathrm{erg}}
+  = 1.89\ \mathrm{eV}
+$$
+
+A couple of electron volts is the characteristic energy of visible light,
+and it is no coincidence that it is also the characteristic energy of a
+chemical bond. That is why your eye works.
+:::
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-light}
+
+1. Repeat that calculation for an X-ray photon of wavelength
+   $1\ \text{Å}$. How
+   many times more energetic is it than the H$\alpha$ photon, and could you
+   have predicted that ratio without doing either calculation?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answers"}
+   $\nu = 3.00 \times 10^{18}\ \mathrm{Hz}$,
+   $E = 1.99 \times 10^{-8}\ \mathrm{erg} = 1.24 \times 10^{4}\ \mathrm{eV}$,
+   which is $6563$ times the H$\alpha$ energy.
+
+   Yes. Energy is proportional to frequency and frequency is inversely
+   proportional to wavelength, so the energy ratio is just the *inverse* of the
+   wavelength ratio: $6563/1 = 6563$. The two calculations were never
+   independent.
+   :::
+
+2. A photon is emitted, travels across the Galaxy, and is absorbed. Its
+   wavelength when it arrives is longer than when it left. Give two physically
+   different reasons that could have happened, both of which you have already
+   met in this course.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+   One of them is in lecture 3 and needs the source to be *moving*. The other
+   is in lecture 5 and needs the source to be sitting *deeper in a
+   gravitational well* than you are — the photon loses energy climbing out,
+   with nothing moving at all.
+   :::
+:::
+
+## The Doppler shift, recalled
+
+We are about to lean hard on the relativistic Doppler shift, so it is worth
+having it in front of you rather than two lectures back. [The full derivation
+is in lecture 3](../special-relativity/#relativistic-doppler-shift-of-light)
+and nothing here supersedes it.
+
+A source emitting at wavelength $\lambda$ and moving with **radial velocity**
+$v_r$ relative to you is observed at
+
+$$
+\lambda^{\prime} = \lambda \left(1 + \frac{v_r}{c}\right)\gamma ,
+$$ {#eq-doppler}
+
+with the sign convention that $v_r > 0$ means the source is moving *away* and
+$v_r < 0$ means it is coming *toward* you, and with
+$\gamma = 1/\sqrt{1 - v^2/c^2}$ as always. Two separate effects are stacked
+inside @eq-doppler and it pays to keep them apart:
+
+* the factor $(1 + v_r/c)$ is the **ordinary Doppler effect** — the source
+  chases its own wavefronts, crowding them on approach and stretching them on
+  recession. It depends on the direction of motion and it changes sign.
+* the factor $\gamma$ is **time dilation** — the emitter's clock runs slow, so
+  the whole wave train is spread over more of your time. It does not care about
+  direction at all, because it depends on $v^2$.
+
+The second one is the piece that only relativity supplies, and it is the reason
+the classical formula served astronomy perfectly well for a century: $\gamma$
+departs from 1 at order $\beta^2$, while the ordinary term departs from 1 at
+order $\beta$. At the speeds of stars and galaxies the difference is invisible.
+Near a black hole it is not.
+
+Astronomers usually quote the shift as a **redshift**,
+
+$$
+z \equiv \frac{\lambda^{\prime}}{\lambda} - 1 ,
+$$ {#eq-z}
+
+which is a ratio of two lengths and therefore a pure number, defined so that
+$z = 0$ means no shift at all.
+
+::: {.callout-warning .textbook-watch title="Textbook watch: the same symbol, three different jobs"}
+The letter $z$ is doing heavy duty in astronomy. Here it is a *kinematic*
+redshift caused by motion. In [lecture
+5](../strong-gravity/#gravitational-redshift) the identical quantity was
+produced by climbing out of a gravitational well, with no motion at all. In
+cosmology it is produced by the expansion of space itself.
+
+The number is measured the same way in all three cases — you compare an
+observed wavelength to a known rest wavelength — and it is the *interpretation*
+that differs. A measured $z$ does not come with a label saying which mechanism
+made it. Working out which one you are looking at is a large part of the job.
+:::
+
+## GPS
+
+Here is a piece of relativity you have been carrying in your pocket.
+
+A GPS satellite does one thing: it broadcasts, continuously, the time on its
+own atomic clock together with a statement of where it is. Your phone listens
+to several satellites at once, notes that the timestamps arriving from each are
+slightly stale, converts each staleness into a distance by multiplying by $c$,
+and finds the one point in space consistent with all of them. The entire system
+is a distance measurement dressed up as a clock reading, and its accuracy is
+therefore an accuracy in timekeeping.
+
+The exchange rate is brutal and easy to remember: light travels almost exactly
+one foot in one nanosecond. The satellite clocks are good to something like
+25 nanoseconds, which is 7.5 meters of position, and that is where the "accurate
+to within about ten meters" figure on the back of the box comes from.
+
+Now put the satellites in orbit and both of the effects in this course turn up
+at once, pulling in opposite directions.
+
+**Special relativity slows the satellite clocks down.** They orbit at a radius
+of about $26{,}600\ \mathrm{km}$ from the center of the Earth, which works out
+to $3.87\ \mathrm{km\,s^{-1}}$. That is a $\beta$ of $1.3 \times 10^{-5}$,
+utterly negligible for anything else you would ever do with it, and
+$\gamma - 1 \approx \beta^2/2 = 8.3 \times 10^{-11}$. Over a day that
+accumulates to
+
+$$
+\Delta t_{\mathrm{SR}} \approx -\tfrac{1}{2}\beta^2 \times 86{,}400\ \mathrm{s}
+                        = -7.2\ \mathrm{\mu s\ per\ day} ,
+$$ {#eq-gpssr}
+
+with the minus sign meaning the moving clock falls behind.
+
+**General relativity speeds them up.** [Lecture 5](../strong-gravity/#gravitational-time-dilation)
+gave the rate of a clock at radius $r$ as $\sqrt{1 - r_S/r}$ times the rate far
+away. Deep in a well the clock is slow — and the satellite is *less* deep than
+you are. Expanding the square root for the Earth's very weak field, the
+difference between the two clocks comes out to
+
+$$
+\Delta t_{\mathrm{GR}} \approx \frac{GM_{\oplus}}{c^{2}}
+   \left(\frac{1}{R_{\oplus}} - \frac{1}{a}\right) \times 86{,}400\ \mathrm{s}
+   = +45.7\ \mathrm{\mu s\ per\ day} ,
+$$ {#eq-gpsgr}
+
+with the plus sign meaning the satellite clock runs ahead of yours.
+
+The two do not cancel. They do not even come close:
+
+$$
+-7.2 + 45.7 = +38.5\ \mathrm{\mu s\ per\ day} .
+$$
+
+Left uncorrected, that is a timing error of $38.5\ \mathrm{\mu s}$ after one
+day, and multiplying by $c$ turns it into **11.5 kilometers of position error,
+accumulating every day.** The system would be useless within about two minutes
+of being switched on, and unusable by lunchtime.
+
+It is worth being precise about what this does and does not prove. It is not a
+test of relativity — the corrections were designed in from the start, not
+discovered afterward by a confused engineer. What it is, is a demonstration
+that the two effects are *quantitatively* right at the part-in-$10^{10}$ level,
+every day, in a system that a billion people would notice breaking.
+
+::: {.callout-note title="Where the other half of this went"}
+[Lecture 3's fifth Doppler exercise](../special-relativity/#sec-exercises-doppler)
+asked you to work out the special-relativistic half of this, and then told you
+the real correction had the opposite sign, was several times larger, and was
+the subject of an upcoming lecture. This is that.
+:::
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-gps}
+
+1. Work out the general-relativistic drift for yourself. Take
+   $GM_{\oplus}/c^{2} = 0.443\ \mathrm{cm}$, the Earth's radius as
+   $6.37 \times 10^{8}\ \mathrm{cm}$, and the orbit radius as
+   $2.66 \times 10^{9}\ \mathrm{cm}$, and confirm the $+45.7\ \mathrm{\mu s}$
+   per day in @eq-gpsgr.
+
+   ::: {.callout-note .help-solution collapse="true" title="Solution"}
+   Substitute into @eq-gpsgr with the units attached and do no arithmetic yet:
+
+   $$
+   \frac{\Delta t_{\mathrm{GR}}}{\Delta t}
+     = 0.443\ \mathrm{cm} \left(
+        \frac{1}{6.37 \times 10^{8}\ \mathrm{cm}}
+      - \frac{1}{2.66 \times 10^{9}\ \mathrm{cm}} \right)
+   $$
+
+   The bracket has units of inverse centimeters and the prefactor has units of
+   centimeters, so they cancel and the rate difference is a pure number.
+   *Do the units make sense?* It is a ratio of two clock rates, so it must be
+   dimensionless — and it is.
+
+   $$
+   \frac{\Delta t_{\mathrm{GR}}}{\Delta t}
+     = 0.443\left(1.570 \times 10^{-9} - 3.759 \times 10^{-10}\right)
+     = 5.29 \times 10^{-10}
+   $$
+
+   Over one day:
+
+   $$
+   \Delta t_{\mathrm{GR}} = 5.29 \times 10^{-10} \times 86{,}400\ \mathrm{s}
+     = 4.57 \times 10^{-5}\ \mathrm{s} = 45.7\ \mathrm{\mu s}
+   $$
+
+   Note which term dominates. The satellite is four times farther from the
+   center of the Earth than you are, so its own $1/a$ contributes only a
+   quarter as much as your $1/R_{\oplus}$ — most of the effect is *your* clock
+   being slow, not the satellite's being fast.
+   :::
+
+2. A colleague proposes that since one effect is negative and the other
+   positive, an orbit could be chosen at which they cancel exactly and no
+   relativistic correction would be needed at all. Is there such an orbit? If
+   so, say roughly where it is; if not, say why not.
+
+:::
+
+::: {.content-visible when-format="pdf"}
+{{< include ../../in_class/lec06/exercises00.qmd >}}
+:::
+
+## Doppler beaming
+
+Everything so far has been about *color*. A source moving toward you looks
+bluer and a source moving away looks redder, by the factor in @eq-doppler. That
+is the half of the Doppler effect that lecture 3 covered and that almost every
+introduction stops at.
+
+It is not the whole story, and the missing half is larger.
+
+Define the **Doppler factor** as the amount by which the observed frequency is
+boosted — the reciprocal of the wavelength stretch in @eq-doppler:
+
+$$
+\mathcal{D} \equiv \frac{\lambda}{\lambda^{\prime}} = \frac{\nu^{\prime}}{\nu}
+  = \frac{1}{\left(1 + v_r/c\right)\gamma} .
+$$ {#eq-dfactor}
+
+Approach gives $\mathcal{D} > 1$ and recession gives $\mathcal{D} < 1$. Now ask
+not what color the source appears, but how *bright*. Three separate things
+happen, and every one of them scales with the same $\mathcal{D}$.
+
+**One: each photon arrives with more energy.** From @eq-ehn the energy of a
+photon is $h\nu$, and the frequency has been multiplied by $\mathcal{D}$. So
+has the energy. That is one factor of $\mathcal{D}$.
+
+**Two: the photons arrive more often.** The same crowding of wavefronts that
+shortened the wavelength also compresses the interval between one photon and
+the next, so a given number of them is delivered in less of your time. That is
+a second factor of $\mathcal{D}$.
+
+**Three: the light is swept forward into a narrower cone.** A source moving
+toward you does not radiate the same amount in every direction as it would at
+rest; its emission is thrown forward, like the headlights of a car. More of
+what it emits lands on you and less goes elsewhere. That concentration turns
+out to be worth two more factors of $\mathcal{D}$.
+
+Multiply the three together:
+
+$$
+F \propto \mathcal{D}^{4} .
+$$ {#eq-beaming}
+
+::: {.callout-tip .resolution collapse="true" title="How the third factor comes out to exactly two powers of the Doppler factor"}
+The forward sweeping is **relativistic aberration**: the direction a photon
+travels is not the same in the source's frame and in yours, and a moving source
+therefore sees its own isotropic emission arrive at you concentrated.
+
+The clean route is not to track the cone at all, but to use a conserved
+quantity. The combination $I_\nu/\nu^3$ — specific intensity divided by the
+cube of the frequency — is the same in every frame; this is a consequence of
+Liouville's theorem, which says that photons do not bunch up or thin out in
+phase space just because you changed frames. So
+
+$$
+\frac{I_{\nu^{\prime}}^{\prime}}{\nu^{\prime 3}} = \frac{I_\nu}{\nu^3}
+\qquad\Longrightarrow\qquad
+I_{\nu^{\prime}}^{\prime} = \mathcal{D}^{3} I_\nu ,
+$$
+
+and integrating over all frequencies picks up one more factor of
+$\mathcal{D}$, giving @eq-beaming. The three-and-one split there is a different
+bookkeeping of the same four powers as the argument above; both are correct and
+the invariant is the shorter road.
+
+**This box is for the ones who are going further.** Specific intensity is not
+something ASTRO 206 uses, and none of it will be asked of you here. But if you
+carry on into astrophysics you will meet $I_\nu$ in your first radiative
+transfer course and you will meet this invariant with it, and it is worth
+having seen once that it is the thing standing behind a picture you have
+already looked at. The standard treatment is Rybicki and Lightman
+[-@rybicki1979], in the chapter on relativistic covariance — it is the book
+essentially every graduate program uses for this, and it is where to go if you
+want the derivation done properly rather than gestured at.
+
+The reason it is in these notes at all is that @eq-beaming would otherwise be a
+fact handed down from nowhere, and that it is the same $\nu^3$ that Thorne's
+team used to render *Interstellar* [@james2015].
+:::
+
+Now put a disk around a black hole and look at it edge-on-ish. The gas on one
+side of the ring is coming toward you, the gas on the other side is going away,
+and both are moving at the same speed. Write the inclination as $i$, with
+$i = 0$ face-on and $i = 90^{\circ}$ edge-on, so that the radial velocity of
+the approaching side is $-\beta c \sin i$ and of the receding side is
+$+\beta c \sin i$. Put those into @eq-dfactor, take the ratio, and the factors
+of $\gamma$ cancel — they are the same on both sides, because $\gamma$ does not
+care about direction:
+
+$$
+\frac{F_{\mathrm{app}}}{F_{\mathrm{rec}}}
+  = \left(\frac{1 + \beta\sin i}{1 - \beta\sin i}\right)^{4} .
+$$ {#eq-ratio}
+
+Compare that with the wavelength ratio between the same two sides, which is the
+bracket without the exponent. The result is worth stating on its own line,
+because it is the whole lesson of this lecture:
+
+$$
+\frac{F_{\mathrm{app}}}{F_{\mathrm{rec}}}
+  = \left(\frac{\lambda_{\mathrm{rec}}}{\lambda_{\mathrm{app}}}\right)^{4} .
+$$ {#eq-fourthpower}
+
+**The brightness ratio is the fourth power of the color ratio.** A shift in
+color that you would have to measure with a spectrograph to notice is a shift
+in brightness that is obvious in a photograph.
+
+Some numbers, for a disk seen at $i = 60^{\circ}$:
+
+| $\beta$ | color ratio | brightness ratio |
+|---|---|---|
+| 0.1 | 1.19 | 2.0 |
+| 0.2 | 1.42 | 4.1 |
+| 0.3 | 1.70 | 8.4 |
+| 0.5 | 2.53 | 40.8 |
+
+At a tenth of the speed of light the color shift is a 19% effect — real, but
+you would need an instrument. The brightness has already doubled.
+
+The last row is not a hypothetical. [The innermost stable circular orbit](../spinning-bhs-and-tidal/index.qmd)
+around a non-spinning black hole sits at $3\,r_S$, and gas there orbits at
+**exactly half the speed of light**, for a black hole of any mass whatsoever —
+the same cancellation that ran through all of lecture 5. So the inner disk of a
+black hole is a place where one side is genuinely forty times brighter than the
+other.
+
+::: {.callout-tip .resolution collapse="true" title="Think about what happens to the part of the ring moving straight across your line of sight"}
+At the top and bottom of the ring the motion is transverse: $v_r = 0$, so the
+ordinary Doppler term is exactly 1 and there is no crowding of wavefronts at
+all. Classically, nothing should happen there.
+
+Relativistically, $\mathcal{D} = 1/\gamma$, which is less than one. That gas is
+**redshifted and dimmed even though it is neither approaching nor receding** —
+purely because its clock is running slow. At $\beta = 0.5$ the effect is not
+subtle: the light is reddened by 15%, and @eq-beaming dims it to
+$1/\gamma^4 = 56\%$ of what it would be at rest.
+
+So a relativistic disk is not simply bright on one side and faint on the other.
+It is bright on one side and faint everywhere else.
+:::
+
+<!-- THE BEAMING WIDGET GOES HERE, and it is the last thing to be built.
+     House frame per HOUSE_STYLE Section 5: a `### Try it yourself` heading, a
+     short prose lead saying what to look for, a COLLAPSED callout-note "How to
+     use it" carrying the instructions and the keyboard route, then the figure.
+     Fallback if the widget is dropped: a static matplotlib figure of
+     @eq-ratio against beta at three inclinations, plus a Turn-the-knobs twin.
+     Design and cost are in for_me/lec06/CONVERSION-LOG.md.
+     No heading is emitted yet on purpose -- an empty section renders as a
+     hole in the page. -->
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-beaming}
+
+1. A disk is seen at $i = 30^{\circ}$ and its gas orbits at $\beta = 0.4$.
+   Calculate the ratio of wavelengths between the approaching and receding
+   sides, and the ratio of brightnesses.
+
+   ::: {.callout-note .help-answer collapse="true" title="Answers"}
+   $\beta\sin i = 0.200$, so the color ratio is $1.200/0.800 = 1.50$ and the
+   brightness ratio is $1.50^{4} = 5.06$.
+   :::
+
+2. Show that the factors of $\gamma$ cancel when @eq-ratio is formed, and say
+   in one sentence why that had to happen without doing any algebra.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+   Ask what $\gamma$ depends on, and whether the two sides of the ring differ
+   in that quantity.
+   :::
+
+3. Steve and Alex are looking at the same accretion disk. Steve measures a
+   color ratio of 1.3 between the two sides. Alex, without measuring any
+   wavelengths at all, reports a brightness ratio. What number should Alex get,
+   and what does that tell you about which of the two measurements is easier?
+
+4. A disk is seen exactly face-on. Show from @eq-ratio that there is no
+   beaming asymmetry at all, and then say — using the previous Resolution
+   callout — whether that means relativity has no visible effect on the disk's
+   appearance.
+
+5. The approaching side of a disk is measured to be 50 times brighter than the
+   receding side. What is $\beta\sin i$? Can you determine $\beta$ from this
+   measurement alone?
+:::
+
+## What a black hole looks like
+
+A black hole emits nothing. Everything in a picture of one is light from gas
+that has not fallen in yet, bent on its way out. So the question "what does a
+black hole look like" is really two questions — where is the gas, and what does
+the geometry do to its light on the way to us — and we now have the pieces for
+both.
+
+![A simulated black hole with a thin accretion disk, seen from just above the
+disk plane. The figure labels six different relativistic effects.
+Visualization by
+[NASA's Goddard Space Flight Center / Jeremy Schnittman](https://svs.gsfc.nasa.gov/13326)
+[@nasa-bh-visualization], used unmodified apart from
+resizing.](bh-anatomy-nasa.jpg){#fig-anatomy
+width="100%"
+fig-alt="A simulated black hole seen from just above the plane of its
+accretion disk. The disk glows orange and is labeled at lower left. Its left
+side is conspicuously brighter than its right, labeled Doppler beaming: light
+from gas moving toward the viewer is brighter, and from gas moving away,
+fainter. The disk does not pass behind the black hole as it would in flat
+space; instead its far side is bent up and over the top into an arch, labeled
+image of the disk's far side, and its underside is bent up beneath into a
+second arch, labeled image of the disk's underside. A thin bright circle just
+inside those arches is labeled photon ring, made of light that orbited the
+black hole two or more times before escaping. The dark region it encloses is
+labeled black hole shadow, roughly twice the size of the event horizon."}
+
+<!-- NASA is public domain, so the credit is requested rather than legally
+     required -- but it is given anyway, and in the caption rather than in a
+     comment, because that is where lecture 5 puts credits and because a
+     reader cannot see an HTML comment. Source file BH_labeled.jpg,
+     3851x2166, resized to 1600x900 at quality 86 (150 KB). -->
+
+Work through @fig-anatomy one feature at a time.
+
+**The disk is brighter on one side.** That is @eq-ratio, and it is the only
+feature in the picture you could have predicted before this lecture. The gas is
+orbiting; one side comes toward you and one side goes away; the fourth power
+does the rest.
+
+**The far side of the disk is not hidden.** In flat space a disk seen nearly
+edge-on would disappear behind the central object. Here the light from the far
+side is bent up and over the top, so the disk appears to rise into an arch
+above the hole. There is a second arch below, which is the *underside* of the
+far side, lensed the other way. Neither is a separate structure. You are seeing
+the same disk from three directions at once.
+
+**There is a thin bright circle just outside the darkness.** That is the
+**photon ring**, and lecture 5 already named the reason for it: at $1.5\,r_S$
+there is a [photon sphere](../strong-gravity/#black-holes-from-the-theory-this-time)
+where light can orbit. Rays that wind around the hole two, three, or more times
+before escaping pile up into an ever-thinner, ever-fainter set of nested rings
+at that radius.
+
+**And the middle is dark.** That is the **shadow**, and it is bigger than you
+would guess.
+
+::: {.callout-tip .resolution collapse="true" title="How a black hole's silhouette comes out larger than the black hole"}
+The event horizon of a non-spinning black hole is at $r_S$. Its shadow is not.
+
+The dark patch is the set of directions on your sky along which a ray traced
+backward ends on the horizon rather than escaping to infinity. Because the
+geometry bends rays *inward*, a ray that would have missed the hole in flat
+space can still be captured — so the hole intercepts a larger patch of sky than
+its own size. Doing the null-geodesic calculation gives a shadow of radius
+
+$$
+r_{\mathrm{shadow}} = \frac{\sqrt{27}}{2}\,r_S \approx 2.60\,r_S ,
+$$ {#eq-shadow}
+
+so the shadow's **diameter** is $\sqrt{27}\,r_S \approx 5.20\,r_S$, against a
+horizon diameter of $2\,r_S$. The silhouette is **2.6 times the size of the
+thing casting it.**
+
+Note that this is a bigger radius than the photon sphere at $1.5\,r_S$, and
+that is not a contradiction. The photon sphere is where the orbiting light
+physically is; the shadow edge is where it *appears* to be after its own light
+has climbed out through the same curvature.
+
+A spinning black hole's shadow is smaller and not quite circular, but not by
+much — even at maximal spin the departure from @eq-shadow is at the few-percent
+level, which is why the round-shadow prediction survives not knowing the spin.
+:::
+
+Put the shadow and the beaming together and you have the shape to look for: a
+**ring of light, brighter on one side, wrapped around a dark center that is
+larger than the horizon.** That is a prediction, and it is specific enough to
+be wrong.
+
+It is not wrong. The Event Horizon Telescope has now photographed two black
+holes — the giant one at the center of the galaxy M87 [@eht2019m87] and
+Sagittarius A\* at the center of our own [@eht2022sgra] — and both of them
+look like that: a lopsided ring around a dark center of very nearly the
+predicted size. We will come back to those images later in the term, when we
+have the accretion physics to say what the glowing gas is actually doing.
+
+## Putting it together
+
+::: {.content-visible when-format="html"}
+
+This one is meant to be harder than the section exercises, and it needs more
+than one lecture.
+
+**Reading a photograph.** Suppose you are handed an image of an accretion disk
+in which the bright side is 20 times brighter than the faint side, and you know
+nothing else about the system.
+
+a. What is $\beta\sin i$?
+b. The gas cannot orbit faster than $\beta = 0.5$ if it is outside the
+   innermost stable circular orbit of a non-spinning black hole. Use that to
+   put a lower bound on the inclination $i$.
+c. Now suppose a spectrum of the same disk shows the two sides separated by
+   a wavelength ratio of 1.4. Is that consistent with the brightness ratio
+   you were given? Show your reasoning, and say what it would mean if it
+   were not.
+
+::: {.callout-note .help-answer collapse="true" title="Answers"}
+a. From @eq-ratio, the color ratio is $20^{1/4} = 2.115$, so
+   $\beta\sin i = (2.115 - 1)/(2.115 + 1) = 0.358$.
+b. If $\beta \le 0.5$ then $\sin i \ge 0.358/0.5 = 0.716$, so
+   $i \ge 45.7^{\circ}$. The disk cannot be close to face-on.
+c. Not consistent. @eq-fourthpower says the brightness ratio is the fourth
+   power of the color ratio, and $1.4^{4} = 3.8$, not 20. Something is
+   wrong: either the two measurements are of different regions of the disk,
+   or the brightness difference is not purely kinematic — a real disk is
+   also hotter on the inside, and gravitational redshift is acting on top of
+   everything. The point of the exercise is that the two measurements are
+   *not* independent, so disagreement is informative.
+:::
+:::
+
+## Summary
+
+- **Light is a wave and a particle at once**, and the two descriptions are
+  locked together: $c = \lambda\nu$ and $E = h\nu$. Short wavelength means high
+  frequency means energetic photon. Visible light is a very thin slice of the
+  electromagnetic spectrum, and both black hole images in this lecture were
+  taken in the radio.
+- **The relativistic Doppler shift**,
+  $\lambda^{\prime} = \lambda(1 + v_r/c)\gamma$, has two pieces: an ordinary
+  term that depends on direction and a time-dilation term that does not.
+- **Motion changes brightness far more than it changes color.** The Doppler
+  factor enters the observed flux four times over — once for photon energy,
+  once for arrival rate, twice for the forward sweeping of the beam — so
+  $F \propto \mathcal{D}^4$, and the brightness ratio across a disk is the
+  **fourth power** of the wavelength ratio.
+- Gas at the innermost stable circular orbit moves at **exactly half the speed
+  of light**, whatever the mass, so the inner disk of a black hole really is
+  tens of times brighter on one side than the other.
+- **A black hole's silhouette is larger than the black hole**:
+  $\sqrt{27}\,r_S/2$ in radius, or 2.6 times the horizon, because the geometry
+  bends into the hole rays that would have missed it.
+- Put those together and a black hole should look like **a lopsided ring of
+  light around a dark center larger than the horizon** — which is what the two
+  black holes that have actually been photographed look like. We return to
+  those images later in the term.
+- Next time we start asking not what the gas near a black hole *looks* like but
+  **how much energy it gives up on the way in**, which turns out to be the most
+  efficient process in the universe.
+
+:::: {.content-visible when-format="html"}
+## References {.unnumbered}
+
+::: {#refs}
+:::
+::::
+
+::: {.content-visible when-format="pdf"}
+
+```{=latex}
+\clearpage
+\tableofcontents
+```
+:::

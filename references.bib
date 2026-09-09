@@ -206,3 +206,95 @@
   address   = {San Francisco},
   year      = {1973}
 }
+
+% ---------------------------------------------------------------------------
+% Lecture 6 (light, Doppler beaming, seeing black holes).
+%
+% All three DOIs verified against Crossref metadata 2026-09-09 -- title,
+% journal, volume, page and year read back from the API rather than typed
+% from memory.
+%
+% The EHT papers carry 349 and 389 individual authors. Crossref lists the
+% collaboration as the first author on the Sgr A* paper and leaves it blank on
+% the M87 one; a corporate author is used for both, which is how AAS itself
+% renders them and the only form a reading list can use.
+%
+% JAMES ET AL. IS THE ONE TO READ, and it is the licensing pivot too: the
+% PUBLISHED version is open access under CC BY 3.0 (verified at the IOP
+% article page), so its figures are reusable with attribution. The arXiv
+% preprint of the same paper is CC BY-NC-SA 3.0 -- a DIFFERENT and more
+% restrictive license. If a figure from this paper is ever reproduced here,
+% the pixels must come from the published version, not from arXiv.
+%
+% Its figure 15 is the three-panel sequence the lecture is built around:
+%   (a) the disk with no shifts at all
+%   (b) the same disk with its colors Doppler and gravitationally shifted
+%   (c) the same disk with its specific intensity also shifted, I_nu ~ nu^3
+% -- which is the beaming exponent, stated by the authors themselves, and the
+% same three states the widget's toggle is designed to step through.
+% ---------------------------------------------------------------------------
+
+@article{james2015,
+  author  = {James, Oliver and von Tunzelmann, Eug{\'e}nie and
+             Franklin, Paul and Thorne, Kip S.},
+  title   = {Gravitational Lensing by Spinning Black Holes in Astrophysics,
+             and in the Movie {Interstellar}},
+  journal = {Classical and Quantum Gravity},
+  volume  = {32},
+  number  = {6},
+  pages   = {065001},
+  year    = {2015},
+  doi     = {10.1088/0264-9381/32/6/065001}
+}
+
+@article{eht2019m87,
+  author  = {{Event Horizon Telescope Collaboration}},
+  title   = {First {M87} Event Horizon Telescope Results.
+             I. The Shadow of the Supermassive Black Hole},
+  journal = {The Astrophysical Journal Letters},
+  volume  = {875},
+  pages   = {L1},
+  year    = {2019},
+  doi     = {10.3847/2041-8213/ab0ec7}
+}
+
+@article{eht2022sgra,
+  author  = {{Event Horizon Telescope Collaboration}},
+  title   = {First {Sagittarius A*} Event Horizon Telescope Results.
+             I. The Shadow of the Supermassive Black Hole in the Center of
+             the {Milky Way}},
+  journal = {The Astrophysical Journal Letters},
+  volume  = {930},
+  pages   = {L12},
+  year    = {2022},
+  doi     = {10.3847/2041-8213/ac6674}
+}
+
+@online{nasa-bh-visualization,
+  author       = {Schnittman, Jeremy},
+  title        = {Black Hole Accretion Disk Visualization},
+  organization = {NASA's Goddard Space Flight Center Scientific
+                  Visualization Studio},
+  year         = {2019},
+  url          = {https://svs.gsfc.nasa.gov/13326},
+  urldate      = {2026-09-09}
+}
+
+% The standard graduate radiative-transfer text, cited once in lecture 6 from
+% the Resolution callout that derives the beaming exponent -- as a pointer for
+% students continuing into astrophysics, not as assigned reading. Specific
+% intensity is not otherwise used in this course.
+%
+% Publication year checked two ways because Crossref and the book disagree:
+% the DOI below is Wiley's online edition and Crossref dates it 1985, while
+% Open Library gives the first edition as Wiley 1979, which is the year
+% astronomers cite. 1979 is used here.
+
+@book{rybicki1979,
+  author    = {Rybicki, George B. and Lightman, Alan P.},
+  title     = {Radiative Processes in Astrophysics},
+  publisher = {Wiley},
+  address   = {New York},
+  year      = {1979},
+  doi       = {10.1002/9783527618170}
+}
