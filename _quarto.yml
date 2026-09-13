@@ -17,6 +17,7 @@ project:
     - lectures/general-relativity/index.qmd
     - lectures/strong-gravity/index.qmd
     - lectures/seeing-black-holes/index.qmd
+    - lectures/accretion-efficiency/index.qmd
   # No `resources:` entry for fonts/ is needed. Quarto follows the url()
   # references in the theme SCSS and copies those files next to the compiled
   # CSS itself. Adding fonts/ here published a SECOND copy at _site/fonts/,
@@ -72,6 +73,8 @@ website:
             text: "Strong gravity"
           - href: lectures/seeing-black-holes/index.qmd
             text: "Light, Doppler beaming and seeing black holes"
+          - href: lectures/accretion-efficiency/index.qmd
+            text: "Rest-mass energy and accretion efficiency"
 
 format:
   live-html:

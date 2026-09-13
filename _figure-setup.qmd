@@ -1,0 +1,78 @@
+```{python}
+#| label: setup
+#| include: false
+
+# SHARED FIGURE SETUP, pulled in with {{< include ../../_figure-setup.qmd >}}.
+#
+# Lecture 2's copy of this block said that a THIRD page carrying figures was
+# the trigger to stop copying it; lecture 7 was the fourth, so this is that
+# include. Lectures 2, 3 and the landing page still carry their own copies and
+# were deliberately not migrated -- they are finished, published pages. When
+# one of them is next edited for another reason, switch it to this file.
+#
+# The leading underscore keeps Quarto from rendering this as a page. It holds
+# ONLY what every figure page shares: fonts, palette, rcParams. Anything
+# lecture-specific (r_isco, gamma, ...) belongs in the lecture.
+
+from pathlib import Path
+
+import numpy as np
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import matplotlib.font_manager as fm
+
+_FONTDIR = next(
+    (p / "fonts" for p in (Path.cwd(), *Path.cwd().parents) if (p / "fonts").is_dir()),
+    None,
+)
+if _FONTDIR is None:
+    raise RuntimeError(f"no fonts/ directory found above {Path.cwd()}")
+for _f in sorted(_FONTDIR.glob("*.otf")):
+    fm.fontManager.addfont(str(_f))
+
+# Assert rather than hope: matplotlib does not raise on a missing family, it
+# silently substitutes DejaVu Sans and the build "succeeds" with every figure
+# quietly wrong.
+_got = Path(fm.findfont(fm.FontProperties(family="XCharter"))).name
+assert _got.startswith("XCharter"), (
+    f"XCharter did not resolve (matplotlib chose {_got!r}). "
+    f"Checked {_FONTDIR}. Figures would silently fall back to DejaVu Sans."
+)
+
+# Validated 3-slot categorical palette (all-pairs safe, light surface).
+BLUE, ORANGE, AQUA = "#2a78d6", "#eb6834", "#1baf7a"
+INK, INK2, MUTED = "#0b0b0b", "#52514e", "#898781"
+GRID, AXIS, SURFACE = "#e1e0d9", "#c3c2b7", "#fcfcfb"
+
+mpl.rcParams.update({
+    "figure.facecolor": SURFACE,
+    "axes.facecolor": SURFACE,
+    "savefig.facecolor": SURFACE,
+    "savefig.bbox": "tight",
+    "font.family": "serif",
+    "font.serif": ["XCharter"],
+    # "stix" is the closest available neighbor to the page's mathjax-termes.
+    # It is NOT mathjax-stix2 -- see the note in the special-relativity setup
+    # cell. If the page's MathJax font changes, revisit this.
+    "mathtext.fontset": "stix",
+    "font.size": 11,
+    "axes.edgecolor": AXIS,
+    "axes.linewidth": 0.8,
+    "axes.labelcolor": INK2,
+    "axes.titlecolor": INK,
+    "axes.titlesize": 12,
+    "axes.grid": True,
+    "grid.color": GRID,
+    "grid.linewidth": 0.8,
+    "grid.linestyle": "-",
+    "xtick.color": MUTED,
+    "ytick.color": MUTED,
+    "xtick.labelcolor": INK2,
+    "ytick.labelcolor": INK2,
+    "axes.spines.top": False,
+    "axes.spines.right": False,
+    "legend.frameon": False,
+    "lines.linewidth": 2.0,
+    "lines.markersize": 8,
+})
+```
