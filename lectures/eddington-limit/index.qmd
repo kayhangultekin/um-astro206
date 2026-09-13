@@ -87,11 +87,12 @@ Write out the units of each ingredient. A flux is an energy per second per
 square centimeter, and an erg is $\mathrm{g\,cm^2\,s^{-2}}$, so
 
 $$
-[F] = \frac{\mathrm{g\,cm^2\,s^{-2}}}{\mathrm{s\,cm^2}} = \mathrm{g\,s^{-3}},
-\qquad
-[\sigma_T] = \mathrm{cm^2},
-\qquad
-[c] = \mathrm{cm\,s^{-1}} .
+\begin{aligned}
+[F] &= \frac{\mathrm{g\,cm^2\,s^{-2}}}{\mathrm{s\,cm^2}} = \mathrm{g\,s^{-3}} ,
+  \\[0.8em]
+[\sigma_T] &= \mathrm{cm^2} , \\
+[c] &= \mathrm{cm\,s^{-1}} .
+\end{aligned}
 $$
 
 A dyne is $\mathrm{g\,cm\,s^{-2}}$. The grams can only come from $F$, so $F$
@@ -296,15 +297,17 @@ plt.show()
    Substitute into @eq-ledd with the units attached, and no arithmetic yet:
 
    $$
-   L_{\mathrm{Edd}} = \frac{4\pi
-     \left(3.00 \times 10^{10}\ \mathrm{cm\,s^{-1}}\right)
-     \left(6.67 \times 10^{-8}\ \mathrm{cm^3\,g^{-1}\,s^{-2}}\right)
-     \left(2.78 \times 10^{33}\ \mathrm{g}\right)
-     \left(1.67 \times 10^{-24}\ \mathrm{g}\right)}
-     {6.65 \times 10^{-25}\ \mathrm{cm^2}}
+   \begin{aligned}
+   L_{\mathrm{Edd}} = {} & \frac{4\pi
+     \left(3.00 \times 10^{10}\ \mathrm{cm\,s^{-1}}\right)}
+     {6.65 \times 10^{-25}\ \mathrm{cm^2}} \\[0.8em]
+     & \times \left(6.67 \times 10^{-8}\ \mathrm{cm^3\,g^{-1}\,s^{-2}}\right) \\
+     & \times \left(2.78 \times 10^{33}\ \mathrm{g}\right)
+     \left(1.67 \times 10^{-24}\ \mathrm{g}\right)
+   \end{aligned}
    $$
 
-   The units on top are
+   Counting the lower two lines with the numerator, the units on top are
    $\mathrm{cm\,s^{-1}} \times \mathrm{cm^3\,g^{-1}\,s^{-2}} \times
    \mathrm{g} \times \mathrm{g} = \mathrm{g\,cm^4\,s^{-3}}$. Dividing by
    $\mathrm{cm^2}$ leaves $\mathrm{g\,cm^2\,s^{-3}}$, an erg per second.
@@ -326,10 +329,10 @@ plt.show()
    $3.3 \times 10^{12}\,L_\odot$.
    :::
 
-3. A student argues that gas close to a black hole must be blown away more
-   easily than gas far from it, because the light is so much more intense up
-   close. Is the student right that the light is more intense? Explain why the
-   student is nonetheless wrong about the gas.
+3. Zuko argues that gas close to a black hole must be blown away more easily
+   than gas far from it, because the light is so much more intense up close.
+   Is Zuko right that the light is more intense? Explain why Zuko is
+   nonetheless wrong about the gas.
 
    ::: {.callout-tip .help-hint collapse="true" title="Hint"}
    Ask how the gravitational pull changes over the same change in distance.
@@ -376,11 +379,14 @@ Eddington luminosity on less gas, so it hits its ceiling sooner. Put in the
 numbers, scaled to the standard efficiency of 10%:
 
 $$
-\dot M_{\mathrm{Edd}} \approx 1.4 \times 10^{18}
+\begin{aligned}
+\dot M_{\mathrm{Edd}} &\approx 1.4 \times 10^{18}
   \left(\frac{M}{M_\odot}\right)\left(\frac{0.1}{\eta}\right)\ \mathrm{g\,s^{-1}}
-  \approx 2.2 \times 10^{-8}
+  \\[0.8em]
+  &\approx 2.2 \times 10^{-8}
   \left(\frac{M}{M_\odot}\right)\left(\frac{0.1}{\eta}\right)
   M_\odot\,\mathrm{yr^{-1}} .
+\end{aligned}
 $$ {#eq-mdot-edd-num}
 
 :::: {.callout-note .worked-example collapse="true" title="Worked example: the fastest a billion-solar-mass black hole can eat"}
@@ -399,17 +405,20 @@ $$
 Now substitute into @eq-mdot-edd with the units attached:
 
 $$
-\dot M_{\mathrm{Edd}} = \frac{4\pi
-  \left(6.67 \times 10^{-8}\ \mathrm{cm^3\,g^{-1}\,s^{-2}}\right)
-  \left(1.99 \times 10^{42}\ \mathrm{g}\right)
+\begin{aligned}
+\dot M_{\mathrm{Edd}} = {} & \frac{4\pi
+  \left(6.67 \times 10^{-8}\ \mathrm{cm^3\,g^{-1}\,s^{-2}}\right)}
+  {0.1 \left(3.00 \times 10^{10}\ \mathrm{cm\,s^{-1}}\right)} \\[0.8em]
+  & \times \frac{\left(1.99 \times 10^{42}\ \mathrm{g}\right)
   \left(1.67 \times 10^{-24}\ \mathrm{g}\right)}
-  {0.1 \left(3.00 \times 10^{10}\ \mathrm{cm\,s^{-1}}\right)
-  \left(6.65 \times 10^{-25}\ \mathrm{cm^2}\right)}
+  {6.65 \times 10^{-25}\ \mathrm{cm^2}}
+\end{aligned}
 $$
 
-On top, $\mathrm{cm^3\,g^{-1}\,s^{-2}} \times \mathrm{g} \times \mathrm{g} =
-\mathrm{g\,cm^3\,s^{-2}}$. On the bottom, $\mathrm{cm\,s^{-1}} \times
-\mathrm{cm^2} = \mathrm{cm^3\,s^{-1}}$ (the efficiency is a pure number). The
+Across both lines, the tops carry $\mathrm{cm^3\,g^{-1}\,s^{-2}} \times
+\mathrm{g} \times \mathrm{g} = \mathrm{g\,cm^3\,s^{-2}}$ and the bottoms carry
+$\mathrm{cm\,s^{-1}} \times \mathrm{cm^2} = \mathrm{cm^3\,s^{-1}}$ (the
+efficiency is a pure number). The
 cubic centimeters cancel and one power of the seconds cancels, leaving
 $\mathrm{g\,s^{-1}}$. *Do the units make sense?* An accretion rate is a mass
 per unit time, so yes.
@@ -422,10 +431,12 @@ Last, into solar masses per year, again with fractions arranged so the grams
 and the seconds cancel:
 
 $$
-1.40 \times 10^{27}\ \mathrm{g\,s^{-1}}
-  \times \frac{1\,M_\odot}{1.99 \times 10^{33}\ \mathrm{g}}
-  \times \frac{3.156 \times 10^{7}\ \mathrm{s}}{1\ \mathrm{yr}}
+\begin{aligned}
+& 1.40 \times 10^{27}\ \mathrm{g\,s^{-1}}
+  \times \frac{1\,M_\odot}{1.99 \times 10^{33}\ \mathrm{g}} \\[0.8em]
+& \qquad \times \frac{3.156 \times 10^{7}\ \mathrm{s}}{1\ \mathrm{yr}}
   = 22\,M_\odot\,\mathrm{yr^{-1}}
+\end{aligned}
 $$
 
 About twenty Suns' worth of gas a year. In lecture 7 we found that one Sun a
@@ -446,18 +457,27 @@ up to the most massive black holes known.
 
 import math
 
-c, G, m_p, sigma_T = 2.99792456e10, 6.6732e-8, 1.6726e-24, 6.6524e-25
+c = 2.99792456e10     # cm s^-1
+G = 6.6732e-8         # cm^3 g^-1 s^-2
+m_p = 1.6726e-24      # g
+sigma_T = 6.6524e-25  # cm^2
 M_sun, L_sun, yr = 1.9891e33, 3.83e33, 3.156e7
 
-masses = [1.4, 10.0, 4.3e6, 1e9, 1e10]
+masses = [1.4, 10, 4.3e6, 1e9, 1e10]
 eta = 0.1
 
-print("  M (M_sun)    L_Edd (erg/s)   L_Edd (L_sun)   Mdot_Edd (g/s)   Mdot_Edd (M_sun/yr)")
+head = ["M", "L_Edd", "L_Edd", "Mdot_Edd", "Mdot_Edd"]
+unit = ["M_sun", "erg/s", "L_sun", "g/s", "M_sun/yr"]
+fmt = "{:>7} {:>9} {:>9} {:>9} {:>9}"
+print(fmt.format(*head))
+print(fmt.format(*unit))
 for m in masses:
-    L_edd = 4 * math.pi * c * G * m * M_sun * m_p / sigma_T
-    mdot_edd = L_edd / (eta * c**2)
-    print(f"  {m:9.3g}    {L_edd:11.3e}     {L_edd / L_sun:11.3e}     "
-          f"{mdot_edd:11.3e}      {mdot_edd * yr / M_sun:11.3e}")
+    M = m * M_sun
+    L_edd = 4 * math.pi * c * G * M * m_p / sigma_T
+    mdot = L_edd / (eta * c**2)
+    print(f"{m:7.3g} {L_edd:9.2e}",
+          f"{L_edd / L_sun:9.2e} {mdot:9.2e}",
+          f"{mdot * yr / M_sun:9.2e}")
 ```
 
 ### Turn the knobs
@@ -472,18 +492,27 @@ without touching the luminosity.
 
 import math
 
-c, G, m_p, sigma_T = 2.99792456e10, 6.6732e-8, 1.6726e-24, 6.6524e-25
+c = 2.99792456e10     # cm s^-1
+G = 6.6732e-8         # cm^3 g^-1 s^-2
+m_p = 1.6726e-24      # g
+sigma_T = 6.6524e-25  # cm^2
 M_sun, L_sun, yr = 1.9891e33, 3.83e33, 3.156e7
 
-masses = [1.4, 10.0, 4.3e6, 1e9, 1e10]  # <- edit this list
+masses = [1.4, 10, 4.3e6, 1e9, 1e10]  # <- edit this
 eta = 0.1  # <- edit this
 
-print("  M (M_sun)    L_Edd (erg/s)   L_Edd (L_sun)   Mdot_Edd (g/s)   Mdot_Edd (M_sun/yr)")
+head = ["M", "L_Edd", "L_Edd", "Mdot_Edd", "Mdot_Edd"]
+unit = ["M_sun", "erg/s", "L_sun", "g/s", "M_sun/yr"]
+fmt = "{:>7} {:>9} {:>9} {:>9} {:>9}"
+print(fmt.format(*head))
+print(fmt.format(*unit))
 for m in masses:
-    L_edd = 4 * math.pi * c * G * m * M_sun * m_p / sigma_T
-    mdot_edd = L_edd / (eta * c**2)
-    print(f"  {m:9.3g}    {L_edd:11.3e}     {L_edd / L_sun:11.3e}     "
-          f"{mdot_edd:11.3e}      {mdot_edd * yr / M_sun:11.3e}")
+    M = m * M_sun
+    L_edd = 4 * math.pi * c * G * M * m_p / sigma_T
+    mdot = L_edd / (eta * c**2)
+    print(f"{m:7.3g} {L_edd:9.2e}",
+          f"{L_edd / L_sun:9.2e} {mdot:9.2e}",
+          f"{mdot * yr / M_sun:9.2e}")
 ```
 
 :::
@@ -615,9 +644,9 @@ their light comes out as X-rays.
 | Photon momentum | $p = E/c$ | Light carries momentum, so it pushes |
 | Radiation force | $F_{\mathrm{rad}} = \sigma_T F/c$ | Acts on the electron; $\sigma_T$ is its target area |
 | Gravity | $F_{\mathrm{grav}} = GMm_p/r^2$ | Acts on the proton; the pair moves together |
-| Eddington luminosity | $L_{\mathrm{Edd}} = 4\pi c\,GMm_p/\sigma_T$ | $\approx 1.26 \times 10^{38}\,(M/M_\odot)\ \mathrm{erg\,s^{-1}}$; the same at every distance |
+| Eddington luminosity | $L_{\mathrm{Edd}} = 4\pi c\,GMm_p/\sigma_T$ | About $1.26 \times 10^{38}\ \mathrm{erg\,s^{-1}}$ for each solar mass; the same at every distance |
 | Feedback | $L_{\mathrm{acc}} < L_{\mathrm{Edd}}$ | Shining brighter pushes away the fuel |
-| Eddington accretion rate | $\dot M_{\mathrm{Edd}} = 4\pi GMm_p/\eta c\sigma_T$ | $\approx 2.2 \times 10^{-8}\,(M/M_\odot)(0.1/\eta)\,M_\odot\,\mathrm{yr^{-1}}$ |
+| Eddington accretion rate | $\dot M_{\mathrm{Edd}} = 4\pi GMm_p/\eta c\sigma_T$ | About $2.2 \times 10^{-8}\,M_\odot\,\mathrm{yr^{-1}}$ for each solar mass, at $\eta = 0.1$ |
 | Accreting neutron star | $T_b \approx 2 \times 10^7$ K, $T_s \approx 7.5 \times 10^{11}$ K | Photons from about 2 keV to 65 MeV |
 
 A black hole cannot shine brighter than its Eddington luminosity for long, and
