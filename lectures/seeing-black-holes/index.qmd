@@ -407,10 +407,6 @@ the subject of an upcoming lecture. This is that.
 
 :::
 
-::: {.content-visible when-format="pdf"}
-{{< include ../../in_class/lec06/exercises00.qmd >}}
-:::
-
 ## Doppler beaming
 
 Everything so far has been about *color*. A source moving toward you looks
@@ -595,6 +591,10 @@ It is bright on one side and faint everywhere else.
 5. The approaching side of a disk is measured to be 50 times brighter than the
    receding side. What is $\beta\sin i$? Can you determine $\beta$ from this
    measurement alone?
+:::
+
+::: {.content-visible when-format="pdf"}
+{{< include ../../in_class/lec06/exercises00.qmd >}}
 :::
 
 ## What a black hole looks like
