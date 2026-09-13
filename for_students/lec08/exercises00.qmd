@@ -1,0 +1,11 @@
+<!--
+Deliberately empty student-facing stub for in-class problem 00.
+
+The real problem lives at ../for_me/lec08/exercises00.qmd, outside this
+repository entirely. This file exists so that the include in
+lectures/eddington-limit/index.qmd always resolves and the student HTML
+builds on a fresh clone (a missing include target is fatal in Quarto and
+breaks *every* format, not just the PDF).
+
+Do not put anything here.
+-->

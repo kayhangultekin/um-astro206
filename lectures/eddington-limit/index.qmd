@@ -1,0 +1,648 @@
+---
+title: "Radiation Pressure and the Eddington Limit"
+subtitle: "ASTRO 206 — Black Holes · Lecture 8"
+author: "Kayhan Gültekin"
+date: "September 24"
+date-format: "MMMM D"
+# Dates are LECTURE dates -- when the class meets -- not publication dates.
+# Sourced from Canvas (Reading & Reflection 3233491 and the In-Class Problem
+# 3219316, both due 2026-09-24). A placeholder string renders as "Invalid Date".
+
+# Kernel pinning is deliberate and must stay in the DOCUMENT, not _quarto.yml:
+# Quarto silently ignores a project-level `jupyter:` and auto-selects a kernel.
+jupyter: python3
+
+# No `pyodide: packages:` block: the one live cell uses only the standard
+# library's `math`.
+---
+
+::: {.callout-note appearance="simple" icon=false}
+**Disclaimer.** These notes have not been subjected to the usual scrutiny
+reserved for formal publications. They may be distributed outside this class
+only with the permission of the instructor.
+:::
+
+{{< include ../../_figure-setup.qmd >}}
+
+Last time we found that gas falling into a black hole is the most efficient
+way we know of to turn mass into light, and we ended on a question: if you pour
+gas in faster and faster, does the black hole just get brighter and brighter?
+It does not. The light it makes pushes back on the gas that is trying to fall
+in, and at one particular luminosity, set by nothing but the mass of the black
+hole, the push wins. **This lecture finds that luminosity, what it means for how
+fast a black hole can eat, and what the light from accreting gas looks like.**
+
+## Light pushes
+
+Even though photons have no mass, they have momentum. In
+[lecture 3](../special-relativity/index.qmd#e-mc2) we used the fact that a
+photon of energy $E$ carries a momentum $p = E/c$. When a photon is absorbed or
+scattered by an atom or a particle, momentum is transferred. We are going to
+use this fact to derive the Eddington limit, and we will do it in steps.
+
+Consider completely ionized hydrogen uniformly surrounding an accreting black
+hole of mass $M$ that is radiating isotropically — equally in all directions —
+with a luminosity $L$. We are going to look at the effect on one proton and
+electron pair, and we are going to assume that they are "tied" to each other,
+which is a decent approximation. If the light pushed the electrons away and left
+the protons behind, the separated charges would pull back on each other
+enormously hard, so the pair moves as one.
+
+**Gravity pulls on the pair through the proton.** The proton is 1836 times as
+massive as the electron, so essentially all of the pair's weight is the
+proton's. The gravitational force on it at a distance $r$ from the black hole
+is just
+
+$$
+F_{\mathrm{grav}} = \frac{G M m_p}{r^2} .
+$$ {#eq-fgrav}
+
+**Light pushes on the pair through the electron.** The radiation flux at a
+distance $r$ is the one we met in
+[lecture 7](../accretion-efficiency/index.qmd#luminosity-and-flux),
+
+$$
+F = \frac{L}{4\pi r^2} .
+$$ {#eq-flux-again}
+
+The radiation interacts much more directly with the electron, because it has the
+smaller mass, which means that we use the **Thomson scattering cross-section**
+to describe the interaction between the light and the matter. A cross-section is
+an effective target area: how big the electron looks to a passing photon, for
+the purpose of scattering it. For an electron it is
+
+$$
+\sigma_T = 6.65 \times 10^{-25}\ \mathrm{cm^2} .
+$$
+
+The same area for a proton is smaller by a factor of $(m_e/m_p)^2$, about three
+parts in ten million, which is why the electron is the one that counts.
+
+The radiation force $F_{\mathrm{rad}}$, measured in dynes
+($\mathrm{g\,cm\,s^{-2}}$), is a function of $F$, $\sigma_T$ and $c$, each
+raised to the power $+1$ or $-1$ — no squaring, no square roots.
+
+::: {.callout-tip .resolution collapse="true" title="Use the units of $F$, $\sigma_T$ and $c$ to build a force"}
+Write out the units of each ingredient. A flux is an energy per second per
+square centimeter, and an erg is $\mathrm{g\,cm^2\,s^{-2}}$, so
+
+$$
+[F] = \frac{\mathrm{g\,cm^2\,s^{-2}}}{\mathrm{s\,cm^2}} = \mathrm{g\,s^{-3}},
+\qquad
+[\sigma_T] = \mathrm{cm^2},
+\qquad
+[c] = \mathrm{cm\,s^{-1}} .
+$$
+
+A dyne is $\mathrm{g\,cm\,s^{-2}}$. The grams can only come from $F$, so $F$
+appears to the power $+1$, bringing $\mathrm{g\,s^{-3}}$. Multiplying by
+$\sigma_T$ adds the $\mathrm{cm^2}$: $\mathrm{g\,cm^2\,s^{-3}}$. That is one
+centimeter too many and one second too few — exactly what dividing by
+$\mathrm{cm\,s^{-1}}$ fixes. So $c$ appears to the power $-1$:
+
+$$
+\left[\frac{\sigma_T F}{c}\right]
+  = \frac{\mathrm{cm^2} \times \mathrm{g\,s^{-3}}}{\mathrm{cm\,s^{-1}}}
+  = \mathrm{g\,cm\,s^{-2}} .
+$$
+
+No other combination of the three, each to the power $\pm1$, comes out as a
+force.
+:::
+
+After some playing around, you can see that it is
+
+$$
+F_{\mathrm{rad}} = \sigma_T\, \frac{F}{c} .
+$$ {#eq-frad}
+
+But let's think about it differently, though still dimensionally. Photons don't
+have mass, but they still have momentum, so they are going to transfer some
+momentum when they interact with matter. Obviously, the higher the flux, the
+more momentum the light will carry — more photons. The larger the area over
+which the photons interact with the electron, the larger the effect will be.
+Why the $c$? Well, that comes in because the momentum of a photon is
+$p = E/c$. Since flux is energy per unit area per unit time, if we divide by
+$c$, we get momentum per unit area per unit time, which is actually a
+**pressure**: momentum per unit time is force, and force per area is pressure.
+This is **radiation pressure**, and $\sigma_T$ is the area it pushes on.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-light-pushes}
+
+1. The Sun's flux at the Earth is
+   $F = 1.36 \times 10^{6}\ \mathrm{erg\,s^{-1}\,cm^{-2}}$.
+
+   a. What force does sunlight exert on one free electron at the Earth's
+      distance from the Sun?
+   b. How does that compare with the Sun's gravitational pull on a proton at
+      the same distance?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   **(a)** About $3.0 \times 10^{-29}$ dyn. **(b)** Gravity is
+   $9.9 \times 10^{-25}$ dyn, so the light's push is only
+   $3.0 \times 10^{-5}$ of the pull.
+   :::
+
+2. A $1\,M_\odot$ star becomes a red giant with a luminosity of $100\,L_\odot$
+   and a radius of $100\,R_\odot$. Suppose that the outer, very thin layer of
+   the star has a mass of $0.1\,M_\odot$ and absorbs all of the radiation
+   coming up through it. Remember that force is momentum per unit time.
+
+   a. How much momentum per second does the outer layer absorb?
+   b. Compare the force of the light on the outer layer with the gravitational
+      force exerted on it by the rest of the star.
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   **(a)** $L/c = 1.28 \times 10^{25}\ \mathrm{g\,cm\,s^{-2}}$ — a force of
+   $1.28 \times 10^{25}$ dyn. **(b)** Gravity from the remaining
+   $0.9\,M_\odot$ is $4.9 \times 10^{32}$ dyn, so the light's push is
+   $2.6 \times 10^{-8}$ of it. Absorbing *every* photon still does not come
+   close.
+   :::
+
+3. Gravity pulls on a proton 1836 times harder than on an electron, while light
+   pushes on an electron millions of times harder than on a proton. Explain why
+   it is still reasonable to treat the pair as a single particle that feels
+   both forces.
+
+:::
+
+## The Eddington limit
+
+::: {.panel-tabset .tracks}
+
+### Physical intuition
+
+The **Eddington limit** is the maximum luminosity a gravitationally bound
+object can have before it blows itself — or all the stuff accreting onto it —
+apart through radiation pressure.[It is named for Arthur Eddington, who worked
+out the same balance for the light pushing outward on the layers of massive
+stars.]{.aside .content-visible when-format="html"}
+
+The remarkable thing about it is that **it does not depend on distance**.
+Gravity weakens as $1/r^2$, and so does the flux, because light spreads out
+over a sphere of area $4\pi r^2$. Both forces therefore fall off at exactly the
+same rate, and their ratio is the same everywhere: if the light wins against
+gravity at one radius, it wins at every radius, and if it loses at one, it
+loses at all of them (@fig-forces).
+
+That makes the limit self-enforcing. If the accretion luminosity were *above*
+the Eddington luminosity, it would push the matter away and stop it from
+accreting. Then its luminosity would decrease, and it could accrete again. This
+is a **feedback**: a black hole that tries to shine brighter than the limit
+shuts off its own food supply.
+
+For the Sun, radiation pressure is nowhere near mattering. Its luminosity is
+about $3 \times 10^{-5}$ of its Eddington luminosity — the same number as the
+ratio of the two forces in the first exercise above, and for the same reason.
+
+### Mathematical explanation
+
+Put @eq-flux-again into @eq-frad:
+
+$$
+F_{\mathrm{rad}} = \frac{L\,\sigma_T}{4\pi c\, r^2} .
+$$ {#eq-frad-r}
+
+Now we want to see what happens when the radiation force is exactly equal to
+the gravitational force of @eq-fgrav:
+
+$$
+\frac{L\,\sigma_T}{4\pi c\, r^2} = \frac{G M m_p}{r^2} .
+$$
+
+Now solve for $L$ to see what luminosity would just balance gravity:
+
+$$
+L_{\mathrm{Edd}} = \frac{4\pi c\, G M m_p}{\sigma_T} .
+$$ {#eq-ledd}
+
+Notice that the $r^2$ terms canceled. It doesn't matter how far you are from
+the black hole.
+
+*Do the units make sense?* $c\,G M m_p$ has units
+$\mathrm{cm\,s^{-1}} \times \mathrm{cm^3\,g^{-1}\,s^{-2}} \times \mathrm{g}
+\times \mathrm{g} = \mathrm{g\,cm^4\,s^{-3}}$, and dividing by $\sigma_T$ in
+$\mathrm{cm^2}$ leaves $\mathrm{g\,cm^2\,s^{-3}}$, which is an erg per second.
+A luminosity is an energy per second, so yes.
+
+The assumptions behind it are worth saying out loud: spherically symmetric
+accretion of fully ionized hydrogen, and completely isotropic radiation. Put in
+the numbers and
+
+$$
+L_{\mathrm{Edd}} \approx 1.26 \times 10^{38}\,
+  \left(\frac{M}{M_\odot}\right)\ \mathrm{erg\,s^{-1}}
+  \approx 3.3 \times 10^{4}\,\left(\frac{M}{M_\odot}\right) L_\odot .
+$$ {#eq-ledd-num}
+
+The Eddington luminosity is simply proportional to the mass, so you can scale
+any Eddington luminosity by taking the mass in solar units and multiplying it
+by this number.
+
+:::
+
+```{python}
+#| label: fig-forces
+#| fig-cap: "The forces on one proton–electron pair around a $10\\,M_\\odot$ black hole. Gravity on the proton (solid blue) and the push of the black hole's light on the electron (orange) both fall off as $1/r^2$, so on these logarithmic axes they are parallel lines. At the Eddington luminosity the push equals the pull at every distance; brighter than that, light wins everywhere, and fainter, gravity does."
+#| fig-alt: "A log–log graph of force, in dynes, against distance from the black hole, in kilometers, from 100 to one million kilometers. Four straight parallel lines all slope down from upper left to lower right, each falling by a factor of one hundred for every factor of ten in distance. A solid blue line is gravity on the proton. An orange dashed line for radiation at the Eddington luminosity lies exactly on top of the blue line along its whole length. An orange dash-dot line for three times the Eddington luminosity lies above it, and an orange dotted line for three tenths of the Eddington luminosity lies below it, at a constant vertical separation everywhere, so no line ever crosses another."
+#| fig-height: 4.03
+
+fig, ax = plt.subplots(figsize=(6.5, 4.03))
+
+c, G, m_p, sigma_T = 2.99792456e10, 6.6732e-8, 1.6726e-24, 6.6524e-25
+M = 10 * 1.9891e33
+L_edd = 4 * np.pi * c * G * M * m_p / sigma_T
+
+r_km = np.logspace(2, 6, 200)
+r_cm = r_km * 1e5
+
+ax.loglog(r_km, G * M * m_p / r_cm**2, color=BLUE, linewidth=3.0, zorder=2,
+          label="gravity on the proton")
+for factor, style, label in ((3.0, "-.", r"light at $3\,L_{\mathrm{Edd}}$"),
+                             (1.0, "--", r"light at $L_{\mathrm{Edd}}$"),
+                             (0.3, ":", r"light at $0.3\,L_{\mathrm{Edd}}$")):
+    F_rad = sigma_T * factor * L_edd / (4 * np.pi * r_cm**2) / c
+    ax.loglog(r_km, F_rad, color=ORANGE, linestyle=style, zorder=3, label=label)
+
+ax.set_xlabel(r"distance from the black hole  $r$  (km)")
+ax.set_ylabel("force on one pair  (dyn)")
+ax.set_xlim(1e2, 1e6)
+ax.legend(loc="upper right")
+plt.show()
+```
+
+::: {.content-visible when-format="pdf"}
+{{< include ../../in_class/lec08/exercises00.qmd >}}
+:::
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-eddington}
+
+1. What is the Eddington luminosity of a $1.4\,M_\odot$ neutron star?
+
+   ::: {.callout-note .help-solution collapse="true" title="Solution"}
+   First turn the mass into grams, with a conversion fraction arranged so the
+   solar masses cancel:
+
+   $$
+   M = 1.4\,M_\odot \times \frac{1.99 \times 10^{33}\ \mathrm{g}}{1\,M_\odot}
+     = 2.78 \times 10^{33}\ \mathrm{g}
+   $$
+
+   Substitute into @eq-ledd with the units attached, and no arithmetic yet:
+
+   $$
+   L_{\mathrm{Edd}} = \frac{4\pi
+     \left(3.00 \times 10^{10}\ \mathrm{cm\,s^{-1}}\right)
+     \left(6.67 \times 10^{-8}\ \mathrm{cm^3\,g^{-1}\,s^{-2}}\right)
+     \left(2.78 \times 10^{33}\ \mathrm{g}\right)
+     \left(1.67 \times 10^{-24}\ \mathrm{g}\right)}
+     {6.65 \times 10^{-25}\ \mathrm{cm^2}}
+   $$
+
+   The units on top are
+   $\mathrm{cm\,s^{-1}} \times \mathrm{cm^3\,g^{-1}\,s^{-2}} \times
+   \mathrm{g} \times \mathrm{g} = \mathrm{g\,cm^4\,s^{-3}}$. Dividing by
+   $\mathrm{cm^2}$ leaves $\mathrm{g\,cm^2\,s^{-3}}$, an erg per second.
+   *Do the units make sense?* A luminosity is an energy per second, so yes.
+
+   $$
+   L_{\mathrm{Edd}} = 1.76 \times 10^{38}\ \mathrm{erg\,s^{-1}}
+   $$
+
+   As a check, @eq-ledd-num gives $1.4 \times 1.26 \times 10^{38}$, the same.
+   :::
+
+2. The most massive black holes in the centers of galaxies are about
+   $10^{8}$ to $10^{10}\,M_\odot$. What is the Eddington luminosity of a
+   $10^{8}\,M_\odot$ black hole? You should not need a calculator.
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   $1.26 \times 10^{46}\ \mathrm{erg\,s^{-1}}$, which is
+   $3.3 \times 10^{12}\,L_\odot$.
+   :::
+
+3. A student argues that gas close to a black hole must be blown away more
+   easily than gas far from it, because the light is so much more intense up
+   close. Is the student right that the light is more intense? Explain why the
+   student is nonetheless wrong about the gas.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+   Ask how the gravitational pull changes over the same change in distance.
+   :::
+
+4. Work out $L_\odot/L_{\mathrm{Edd}}$ for the Sun, and compare it with your
+   answer to part (b) of the sunlight exercise in the previous section. Why do
+   the two agree?
+
+:::
+
+## The Eddington accretion rate
+
+There is a related rate called the **Eddington accretion limit**, but there is
+a little nuance.
+
+Let's consider how much matter per unit time is flowing in toward the black
+hole: $\dot M$. In [lecture 7](../accretion-efficiency/index.qmd#the-luminosity-of-accretion)
+we wrote the luminosity this produces as
+
+$$
+L_{\mathrm{acc}} = \eta\, \dot M c^2 ,
+$$ {#eq-lacc-again}
+
+where $\eta$ is the radiative efficiency. We can solve that equation for
+$\dot M$,
+
+$$
+\dot M = \frac{L_{\mathrm{acc}}}{\eta c^2} ,
+$$
+
+and then recognize that $L_{\mathrm{acc}}$ has to be less than the Eddington
+luminosity of @eq-ledd, which gives a limit on $\dot M$:
+
+$$
+\dot M = \frac{L_{\mathrm{acc}}}{\eta c^2}
+  < \frac{4\pi G M m_p}{\eta\, c\, \sigma_T} \equiv \dot M_{\mathrm{Edd}} .
+$$ {#eq-mdot-edd}
+
+The nuance is the $\eta$. The limit on *luminosity* is fixed by the mass alone,
+but the limit on how fast gas can be fed in also depends on how efficiently
+that gas is turned into light. A black hole with a high efficiency reaches the
+Eddington luminosity on less gas, so it hits its ceiling sooner. Put in the
+numbers, scaled to the standard efficiency of 10%:
+
+$$
+\dot M_{\mathrm{Edd}} \approx 1.4 \times 10^{18}
+  \left(\frac{M}{M_\odot}\right)\left(\frac{0.1}{\eta}\right)\ \mathrm{g\,s^{-1}}
+  \approx 2.2 \times 10^{-8}
+  \left(\frac{M}{M_\odot}\right)\left(\frac{0.1}{\eta}\right)
+  M_\odot\,\mathrm{yr^{-1}} .
+$$ {#eq-mdot-edd-num}
+
+:::: {.callout-note .worked-example collapse="true" title="Worked example: the fastest a billion-solar-mass black hole can eat"}
+**The question.** A $10^9\,M_\odot$ black hole accretes with a radiative
+efficiency of 10%. What is the fastest it can accrete, in solar masses per
+year, without exceeding the Eddington luminosity?
+
+First the mass in grams, with the conversion written as a fraction so that the
+solar masses cancel:
+
+$$
+M = 10^{9}\,M_\odot \times \frac{1.99 \times 10^{33}\ \mathrm{g}}{1\,M_\odot}
+  = 1.99 \times 10^{42}\ \mathrm{g}
+$$
+
+Now substitute into @eq-mdot-edd with the units attached:
+
+$$
+\dot M_{\mathrm{Edd}} = \frac{4\pi
+  \left(6.67 \times 10^{-8}\ \mathrm{cm^3\,g^{-1}\,s^{-2}}\right)
+  \left(1.99 \times 10^{42}\ \mathrm{g}\right)
+  \left(1.67 \times 10^{-24}\ \mathrm{g}\right)}
+  {0.1 \left(3.00 \times 10^{10}\ \mathrm{cm\,s^{-1}}\right)
+  \left(6.65 \times 10^{-25}\ \mathrm{cm^2}\right)}
+$$
+
+On top, $\mathrm{cm^3\,g^{-1}\,s^{-2}} \times \mathrm{g} \times \mathrm{g} =
+\mathrm{g\,cm^3\,s^{-2}}$. On the bottom, $\mathrm{cm\,s^{-1}} \times
+\mathrm{cm^2} = \mathrm{cm^3\,s^{-1}}$ (the efficiency is a pure number). The
+cubic centimeters cancel and one power of the seconds cancels, leaving
+$\mathrm{g\,s^{-1}}$. *Do the units make sense?* An accretion rate is a mass
+per unit time, so yes.
+
+$$
+\dot M_{\mathrm{Edd}} = 1.40 \times 10^{27}\ \mathrm{g\,s^{-1}}
+$$
+
+Last, into solar masses per year, again with fractions arranged so the grams
+and the seconds cancel:
+
+$$
+1.40 \times 10^{27}\ \mathrm{g\,s^{-1}}
+  \times \frac{1\,M_\odot}{1.99 \times 10^{33}\ \mathrm{g}}
+  \times \frac{3.156 \times 10^{7}\ \mathrm{s}}{1\ \mathrm{yr}}
+  = 22\,M_\odot\,\mathrm{yr^{-1}}
+$$
+
+About twenty Suns' worth of gas a year. In lecture 7 we found that one Sun a
+year at this efficiency makes a trillion Suns of light, so this black hole, at
+its limit, shines at about twenty trillion — which is exactly its Eddington
+luminosity from @eq-ledd-num, as it must be.
+::::
+
+::: {.panel-tabset .tracks-from-numerical}
+
+### Numerical exploration
+
+Here are @eq-ledd and @eq-mdot-edd side by side, for objects from a neutron star
+up to the most massive black holes known.
+
+```{python}
+#| label: eddington-ladder
+
+import math
+
+c, G, m_p, sigma_T = 2.99792456e10, 6.6732e-8, 1.6726e-24, 6.6524e-25
+M_sun, L_sun, yr = 1.9891e33, 3.83e33, 3.156e7
+
+masses = [1.4, 10.0, 4.3e6, 1e9, 1e10]
+eta = 0.1
+
+print("  M (M_sun)    L_Edd (erg/s)   L_Edd (L_sun)   Mdot_Edd (g/s)   Mdot_Edd (M_sun/yr)")
+for m in masses:
+    L_edd = 4 * math.pi * c * G * m * M_sun * m_p / sigma_T
+    mdot_edd = L_edd / (eta * c**2)
+    print(f"  {m:9.3g}    {L_edd:11.3e}     {L_edd / L_sun:11.3e}     "
+          f"{mdot_edd:11.3e}      {mdot_edd * yr / M_sun:11.3e}")
+```
+
+### Turn the knobs
+
+Change the masses and the efficiency, and re-run. Notice that doubling the mass
+doubles everything, and that raising the efficiency lowers the accretion rate
+without touching the luminosity.
+
+```{pyodide}
+#| label: eddington-ladder-live
+#| autorun: false
+
+import math
+
+c, G, m_p, sigma_T = 2.99792456e10, 6.6732e-8, 1.6726e-24, 6.6524e-25
+M_sun, L_sun, yr = 1.9891e33, 3.83e33, 3.156e7
+
+masses = [1.4, 10.0, 4.3e6, 1e9, 1e10]  # <- edit this list
+eta = 0.1  # <- edit this
+
+print("  M (M_sun)    L_Edd (erg/s)   L_Edd (L_sun)   Mdot_Edd (g/s)   Mdot_Edd (M_sun/yr)")
+for m in masses:
+    L_edd = 4 * math.pi * c * G * m * M_sun * m_p / sigma_T
+    mdot_edd = L_edd / (eta * c**2)
+    print(f"  {m:9.3g}    {L_edd:11.3e}     {L_edd / L_sun:11.3e}     "
+          f"{mdot_edd:11.3e}      {mdot_edd * yr / M_sun:11.3e}")
+```
+
+:::
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-mdot-edd}
+
+1. TON 618 is one of the most massive black holes known, with a mass of about
+   $4 \times 10^{10}\,M_\odot$ and a luminosity of
+   $4 \times 10^{47}\ \mathrm{erg\,s^{-1}}$.
+
+   a. What fraction of its Eddington luminosity is that?
+   b. Assuming a radiative efficiency of 10%, how fast is it accreting, in
+      $\mathrm{g\,s^{-1}}$?
+   c. Convert your answer to part (b) to $M_\odot\,\mathrm{yr^{-1}}$.
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   **(a)** About 0.080, or 8%. **(b)** $4.45 \times 10^{27}\ \mathrm{g\,s^{-1}}$.
+   **(c)** $71\,M_\odot\,\mathrm{yr^{-1}}$.
+   :::
+
+2. Two black holes have the same mass and both accrete at their Eddington
+   rates. One is not spinning, with an efficiency of 5.7%; the other spins as
+   fast as possible, with an efficiency of 42%. Which is brighter? Which
+   swallows gas faster, and by what factor?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   They are equally bright: both shine at the same Eddington luminosity. The
+   non-spinning one swallows gas $42/5.7 \approx 7.4$ times faster, because it
+   needs that much more gas to make the same light.
+   :::
+
+3. A $10\,M_\odot$ black hole in an X-ray binary shines at
+   $10^{38}\ \mathrm{erg\,s^{-1}}$. What fraction of its Eddington luminosity is
+   that? Could it be accreting ten times faster than it is?
+
+:::
+
+## What accreting matter looks like
+
+What does the spectrum of electromagnetic radiation of an accreting object look
+like? We were able to discuss how much energy is released, but not how it looks.
+Let's consider two extreme possibilities for accretion onto a **neutron star**.
+This is easier than a black hole, because a neutron star has a surface for the
+gas to land on, at a radius $R \approx 10\ \mathrm{km}$. Take a typical mass of
+$1.4\,M_\odot$. Bright accreting neutron stars shine close to their Eddington
+luminosity, which by @eq-ledd-num is
+
+$$
+L \approx 1.8 \times 10^{38}\ \mathrm{erg\,s^{-1}} .
+$$
+
+**First extreme: the whole surface glows.** Suppose all of the energy is
+thermalized to some temperature $T_b$ and emitted from the entire surface of the
+star, like a blackbody. We use the blackbody luminosity from
+[lecture 7](../accretion-efficiency/index.qmd#blackbody-radiation-and-effective-temperature),
+$L = 4\pi R^2 \sigma T^4$, and solve for $T$ to get
+
+$$
+T_b = \left( \frac{L_{\mathrm{acc}}}{4 \pi R^2 \sigma} \right)^{1/4}
+  \approx 2 \times 10^{7}\ \mathrm{K} .
+$$ {#eq-tb}
+
+Pretty hot, huh? That's in the X-ray regime.
+
+**Second extreme: every particle hits a shock.** Now let's consider all the
+energy going into heating up each electron–proton pair. This happens by slamming
+the gas onto the surface of the star and having it stop very quickly. All of a
+sudden, the kinetic energy has to go somewhere, and it goes into a **shock**.
+We will take the difference between the gravitational potential energy at
+infinity (zero) and at the surface, and equate it to a shock energy of
+$3kT_s$ — a particle in a hot gas carries an average energy of $\tfrac32 kT$,
+and there are two particles in each pair — so that
+
+$$
+3 k T_s = \frac{G M m_p}{R} .
+$$ {#eq-ts}
+
+For a $1.4\,M_\odot$ neutron star, this is $T_s \approx 7.5 \times 10^{11}\
+\mathrm{K}$. This is in the gamma-ray regime.
+
+Astronomers usually quote temperatures like these as the energy $kT$, in
+kilo-electron volts ($1\ \mathrm{keV} = 1000\ \mathrm{eV} = 1.60 \times
+10^{-9}\ \mathrm{erg}$; the electron volt is from
+[lecture 3](../special-relativity/index.qmd#sec-exercises-emc2)). The two
+extremes bracket the photon energies:
+
+$$
+k T_b \approx 2\ \mathrm{keV} \;\le\; h\nu \;\le\; k T_s \approx 65\ \mathrm{MeV} .
+$$ {#eq-photon-range}
+
+Real accreting neutron stars sit somewhere between these extremes, and much of
+their light comes out as X-rays.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-accreting-matter}
+
+1. Check @eq-tb. Find $T_b$ for $L = 1.8 \times 10^{38}\ \mathrm{erg\,s^{-1}}$
+   and $R = 10\ \mathrm{km}$, and then give $kT_b$ in keV.
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   $T_b = 2.2 \times 10^{7}\ \mathrm{K}$, and $kT_b = 1.9\ \mathrm{keV}$.
+   :::
+
+2. A white dwarf has a mass of $1\,M_\odot$ and a radius equal to the Earth's.
+
+   a. What is the shock temperature $T_s$ for gas landing on it?
+   b. How many times cooler is that than for the $1.4\,M_\odot$ neutron star?
+      Which two properties of the star set the ratio?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   **(a)** $T_s = 8.4 \times 10^{8}\ \mathrm{K}$, or $kT_s \approx 72\ \mathrm{keV}$.
+   **(b)** About 890 times cooler. By @eq-ts, $T_s$ is proportional to $M/R$,
+   so the ratio is set by the mass and the radius together — how *compact*
+   the star is.
+   :::
+
+3. Why does the shock argument need the star to have a surface? What would be
+   different for gas falling into a black hole?
+
+:::
+
+## Summary
+
+| Quantity | Expression | What to remember |
+|---|---|---|
+| Photon momentum | $p = E/c$ | Light carries momentum, so it pushes |
+| Radiation force | $F_{\mathrm{rad}} = \sigma_T F/c$ | Acts on the electron; $\sigma_T$ is its target area |
+| Gravity | $F_{\mathrm{grav}} = GMm_p/r^2$ | Acts on the proton; the pair moves together |
+| Eddington luminosity | $L_{\mathrm{Edd}} = 4\pi c\,GMm_p/\sigma_T$ | $\approx 1.26 \times 10^{38}\,(M/M_\odot)\ \mathrm{erg\,s^{-1}}$; the same at every distance |
+| Feedback | $L_{\mathrm{acc}} < L_{\mathrm{Edd}}$ | Shining brighter pushes away the fuel |
+| Eddington accretion rate | $\dot M_{\mathrm{Edd}} = 4\pi GMm_p/\eta c\sigma_T$ | $\approx 2.2 \times 10^{-8}\,(M/M_\odot)(0.1/\eta)\,M_\odot\,\mathrm{yr^{-1}}$ |
+| Accreting neutron star | $T_b \approx 2 \times 10^7$ K, $T_s \approx 7.5 \times 10^{11}$ K | Photons from about 2 keV to 65 MeV |
+
+A black hole cannot shine brighter than its Eddington luminosity for long, and
+so it cannot swallow gas faster than its Eddington rate. Both limits are
+proportional to its mass: the bigger it gets, the faster it is allowed to grow.
+Next time we will follow that thought to its end, and ask how long it takes a
+small black hole to become a billion-solar-mass monster.
+
+<!--
+References block commented out: this lecture cites nothing yet, and an empty
+::: {#refs} renders a visible "References" heading over nothing. Uncomment on
+the first [@key]. Checklist, PLAYBOOK Section 3, step 6.
+
+:::: {.content-visible when-format="html"}
+## References {.unnumbered}
+
+::: {#refs}
+:::
+::::
+-->
+
+::: {.content-visible when-format="pdf"}
+
+```{=latex}
+\clearpage
+\tableofcontents
+```
+:::
