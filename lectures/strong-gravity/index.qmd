@@ -610,9 +610,6 @@ that a distant observer never sees an object cross the event horizon *and* that
 the object crosses it in finite time by its own clock. Your answer should not
 require one of the two observers to be mistaken.
 
-*(No solution given. This is the conceptual heart of the section, and it is
-exactly the kind of thing worth being able to say out loud.)*
-
 :::::
 
 ## Gravitational waves
@@ -786,9 +783,9 @@ noticing.
 Earth. If an identical system were ten times further away, what strain would it
 produce? *(Strain falls off as $1/d$, not as $1/d^2$.)*
 
-*(No solution given. But it is worth asking yourself why the answer is not
-$10^{-24}$, and what it implies about how much more volume of the universe each
-improvement in detector sensitivity opens up.)*
+It is worth asking yourself why the answer is not $10^{-24}$, and what that
+implies about how much more volume of the universe each improvement in detector
+sensitivity opens up.
 
 :::::
 
