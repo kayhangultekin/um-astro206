@@ -1,0 +1,746 @@
+---
+title: "Salpeter Time and Supermassive Black Hole Growth"
+subtitle: "ASTRO 206 — Black Holes · Lecture 9"
+author: "Kayhan Gültekin"
+date: "September 29"
+date-format: "MMMM D"
+# Dates are LECTURE dates -- when the class meets -- not publication dates.
+# Sourced from Canvas (Reading & Reflection 3233493 and the In-Class Problem
+# 3219317, both due 2026-09-29). A placeholder string renders as "Invalid Date".
+
+# Kernel pinning is deliberate and must stay in the DOCUMENT, not _quarto.yml:
+# Quarto silently ignores a project-level `jupyter:` and auto-selects a kernel.
+jupyter: python3
+
+# No `pyodide: packages:` block: the one live cell uses only the standard
+# library's `math`.
+---
+
+::: {.callout-note appearance="simple" icon=false}
+**Disclaimer.** These notes have not been subjected to the usual scrutiny
+reserved for formal publications. They may be distributed outside this class
+only with the permission of the instructor.
+:::
+
+{{< include ../../_figure-setup.qmd >}}
+
+Last time we found that a black hole cannot shine brighter than its Eddington
+luminosity for long, and so it cannot swallow gas faster than its Eddington
+rate — and that both limits grow in proportion to its mass. That last fact has
+a surprising consequence. A black hole that is allowed to eat faster the bigger
+it gets does not grow steadily. It grows exponentially, like money earning
+compound interest. **This lecture finds how fast a black hole can possibly
+grow, why a more efficient black hole grows more slowly, and why the most
+distant quasars force us to ask what black holes start out as.**
+
+## What actually crosses the horizon
+
+In astrophysics, we are often dealing with things that involve many complex
+processes at once. One way to deal with that is to consider bottlenecks in the
+processes, and timescales are good for that. We are going to find out how fast
+a black hole can possibly grow.
+
+Recall from [lecture 8](../eddington-limit/index.qmd#the-eddington-accretion-rate)
+that a black hole accreting as fast as it is allowed has an accretion
+luminosity equal to its Eddington luminosity:
+
+$$
+\eta\, \dot M c^2 = \frac{4\pi G c\, m_p M_{\mathrm{BH}}}{\sigma_T} .
+$$ {#eq-at-limit}
+
+Recall that $\eta$ is the fraction of the mass-energy coming in that goes into
+radiation.
+
+:::: {.callout-tip title="Ask yourself"}
+What actually crosses the horizon?
+
+::: {.content-visible when-format="pdf"}
+**The rest of it!** A fraction $1 - \eta$ of the mass that falls in.
+:::
+::::
+
+The energy that leaves as light came out of the mass of the gas, so it is mass
+the black hole never gets. The black hole grows only by what is left:
+
+$$
+\dot M_{\mathrm{BH}} = (1 - \eta)\, \dot M .
+$$ {#eq-mdot-bh}
+
+Up to now we have used $\dot M$ for the rate at which gas flows in toward the
+black hole, without asking how much of it the black hole keeps. Here we have to
+ask, because we are considering how much is leaving the system, which is
+important when a significant amount of mass-energy is being radiated away.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-crosses}
+
+1. A black hole is fed gas at $1\,M_\odot\,\mathrm{yr^{-1}}$.
+
+   a. If its radiative efficiency is 10%, how fast does its own mass grow?
+   b. How fast if it is spinning as fast as possible, with an efficiency of
+      42%?
+   c. In part (a), what becomes of the mass that does not cross the horizon?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   **(a)** $0.9\,M_\odot\,\mathrm{yr^{-1}}$. **(b)**
+   $0.58\,M_\odot\,\mathrm{yr^{-1}}$. **(c)** It leaves as light. The
+   $0.1\,M_\odot\,\mathrm{yr^{-1}}$ of rest mass energy is the trillion Suns'
+   worth of luminosity we found in lecture 7's worked example.
+   :::
+
+2. In lecture 8 we found that a $10^{9}\,M_\odot$ black hole with a radiative
+   efficiency of 10% can accrete at most about
+   $22\,M_\odot\,\mathrm{yr^{-1}}$. How fast can its own mass grow?
+
+:::
+
+## Growing at the Eddington limit
+
+::: {.panel-tabset .tracks}
+
+### Physical intuition
+
+The key is in @eq-at-limit: the fastest a black hole may be fed is proportional
+to its mass. Double the mass and you double the allowed feeding rate. So a
+black hole growing at its limit always gains the same *fraction* of its mass in
+the same time, whether it is ten Suns or a billion.
+
+That is exactly how money grows in a bank account that pays a fixed rate of
+interest. The interest each year is a fixed fraction of what is already in the
+account, so the more you have, the more you gain, and the balance grows faster
+and faster. Anything that grows by a fixed fraction of itself grows
+**exponentially**.
+
+For a black hole the clock is called the **Salpeter time**, $t_{\mathrm{S}}$:
+in each Salpeter time the mass grows by a factor of $e \approx 2.718$. For the
+standard efficiency of 10% it is about 50 million years. That sounds slow, but
+it compounds. In ten Salpeter times the mass grows by a factor of $e^{10}$,
+about 22,000; in twenty, by about 500 million.[It is named for Edwin Salpeter,
+whose 1964 paper on gas accreting onto massive objects [@salpeter1964] was
+among the first to argue that quasars are powered this
+way.]{.aside .content-visible when-format="html"}
+
+### Mathematical explanation
+
+Start from the Eddington accretion rate of lecture 8 and divide both sides by
+the mass. That gives the fastest rate at which a black hole can take in gas,
+as a fraction of its own mass:
+
+$$
+\dot m \equiv \frac{\dot M}{M} < \frac{4\pi G m_p}{\eta\, c\, \sigma_T} .
+$$ {#eq-mdot-norm}
+
+The right-hand side is the same for every black hole with the same efficiency,
+because the mass has gone. It has units of one over time, and its inverse,
+$\eta\, c\, \sigma_T / 4\pi G m_p$, is about 45 million years for
+$\eta = 0.1$: the time it would take a black hole to swallow its own mass at
+its current limit.
+
+Now let the black hole keep only $1 - \eta$ of that, as in @eq-mdot-bh. We can
+substitute in our expression for $\dot M$ and explicitly include the time
+derivatives to get this first-order ordinary differential equation:
+
+$$
+\frac{dM_{\mathrm{BH}}}{dt}
+  = \frac{4\pi (1 - \eta)}{\eta}\, \frac{m_p G}{c\, \sigma_T}\, M_{\mathrm{BH}} .
+$$ {#eq-growth}
+
+So we have an equation of the form
+
+$$
+\frac{dy}{dx} = a\, y
+$$
+
+for some constant $a$. That's an exponential solution!
+
+$$
+M_{\mathrm{BH}} = M_0 \exp\left[\frac{t}{t_{\mathrm{S}}}\right] ,
+$$ {#eq-exp}
+
+for some initial mass $M_0$, and where the Salpeter time is
+
+$$
+t_{\mathrm{S}} = \frac{\eta}{4\pi (1 - \eta)}\, \frac{c\, \sigma_T}{m_p G} .
+$$ {#eq-salpeter}
+
+This timescale is called an **e-folding** timescale because it is the time
+that it takes for the mass to grow by a factor of $e$.
+
+::: {.callout-tip .resolution collapse="true" title="Check that the exponential solves the growth equation"}
+Differentiate @eq-exp with respect to time. The derivative of
+$e^{t/t_{\mathrm{S}}}$ is $e^{t/t_{\mathrm{S}}}/t_{\mathrm{S}}$, so
+
+$$
+\frac{dM_{\mathrm{BH}}}{dt}
+  = \frac{M_0}{t_{\mathrm{S}}} \exp\left[\frac{t}{t_{\mathrm{S}}}\right]
+  = \frac{M_{\mathrm{BH}}}{t_{\mathrm{S}}} .
+$$
+
+That is @eq-growth, as long as $1/t_{\mathrm{S}}$ is the constant in front of
+$M_{\mathrm{BH}}$ there — which is exactly how @eq-salpeter defines it. And at
+$t = 0$ the exponential is 1, so the mass starts out at $M_0$, as it should.
+:::
+
+The units of $c\, \sigma_T / m_p G$ are $\mathrm{cm\,s^{-1}} \times
+\mathrm{cm^2} = \mathrm{cm^3\,s^{-1}}$ on top and $\mathrm{g} \times
+\mathrm{cm^3\,g^{-1}\,s^{-2}} = \mathrm{cm^3\,s^{-2}}$ on the bottom, which
+leaves $\mathrm{s}$; the efficiency is a pure number. *Do the units make
+sense?* A timescale is a time, so yes. Put in the numbers:
+
+$$
+t_{\mathrm{S}} \approx 450\ \mathrm{Myr} \times \frac{\eta}{1 - \eta} ,
+$$ {#eq-salpeter-num}
+
+where a Myr is a million years. For the standard efficiency of 10% that is
+50 Myr.
+
+### Numerical exploration
+
+Here is @eq-exp for a $10\,M_\odot$ seed growing at its limit for 500 million
+years, at several efficiencies.
+
+```{python}
+#| label: growth-ladder
+
+import math
+
+c = 2.99792456e10     # cm s^-1
+G = 6.6732e-8         # cm^3 g^-1 s^-2
+m_p = 1.6726e-24      # g
+sigma_T = 6.6524e-25  # cm^2
+Myr = 3.156e13        # s
+
+etas = [0.057, 0.1, 0.2, 0.42]
+M_0 = 10     # seed mass in M_sun
+t = 500      # growing time in Myr
+
+K = c * sigma_T / (4 * math.pi * m_p * G) / Myr
+print(f"seed {M_0} M_sun, growing for {t} Myr")
+fmt = "{:>6} {:>9} {:>9} {:>10}"
+print(fmt.format("eta", "t_S", "doubling", "final M"))
+print(fmt.format("", "(Myr)", "(Myr)", "(M_sun)"))
+for eta in etas:
+    t_S = K * eta / (1 - eta)
+    M = M_0 * math.exp(t / t_S)
+    print(f"{eta:6.3f} {t_S:9.1f}",
+          f"{t_S * math.log(2):9.1f} {M:10.2e}")
+```
+
+### Turn the knobs
+
+Change the efficiencies, the seed mass and the growing time, and re-run.
+Notice that changing the seed mass multiplies every final mass by the same
+factor, while a small change in efficiency makes an enormous change in the
+final mass.
+
+```{pyodide}
+#| label: growth-ladder-live
+#| autorun: false
+
+import math
+
+c = 2.99792456e10     # cm s^-1
+G = 6.6732e-8         # cm^3 g^-1 s^-2
+m_p = 1.6726e-24      # g
+sigma_T = 6.6524e-25  # cm^2
+Myr = 3.156e13        # s
+
+etas = [0.057, 0.1, 0.2, 0.42]  # <- edit this
+M_0 = 10     # seed mass in M_sun  # <- edit this
+t = 500      # growing time in Myr  # <- edit this
+
+K = c * sigma_T / (4 * math.pi * m_p * G) / Myr
+print(f"seed {M_0} M_sun, growing for {t} Myr")
+fmt = "{:>6} {:>9} {:>9} {:>10}"
+print(fmt.format("eta", "t_S", "doubling", "final M"))
+print(fmt.format("", "(Myr)", "(Myr)", "(M_sun)"))
+for eta in etas:
+    t_S = K * eta / (1 - eta)
+    M = M_0 * math.exp(t / t_S)
+    print(f"{eta:6.3f} {t_S:9.1f}",
+          f"{t_S * math.log(2):9.1f} {M:10.2e}")
+```
+
+:::
+
+:::: {.callout-note .worked-example collapse="true" title="Worked example: from ten Suns to a billion"}
+**The question.** How long does it take a $10\,M_\odot$ black hole to grow to
+$10^{9}\,M_\odot$, if it accretes at its Eddington limit the whole time with a
+radiative efficiency of 10%?
+
+First the Salpeter time. It needs the ratio $c\, \sigma_T / m_p G$ from
+@eq-salpeter. Substitute into its top and its bottom with the units attached,
+and no arithmetic yet:
+
+$$
+\begin{aligned}
+c\, \sigma_T &= \left(3.00 \times 10^{10}\ \mathrm{cm\,s^{-1}}\right)
+  \left(6.65 \times 10^{-25}\ \mathrm{cm^2}\right) \\
+m_p G &= \left(1.67 \times 10^{-24}\ \mathrm{g}\right)
+  \left(6.67 \times 10^{-8}\ \mathrm{cm^3\,g^{-1}\,s^{-2}}\right)
+\end{aligned}
+$$
+
+The top carries $\mathrm{cm\,s^{-1}} \times \mathrm{cm^2} =
+\mathrm{cm^3\,s^{-1}}$ and the bottom $\mathrm{g} \times
+\mathrm{cm^3\,g^{-1}\,s^{-2}} = \mathrm{cm^3\,s^{-2}}$. The cubic
+centimeters cancel, and $\mathrm{s^{-1}}$ divided by $\mathrm{s^{-2}}$ leaves
+$\mathrm{s}$. *Do the units make sense?* We are after a time, so yes.
+
+$$
+\frac{c\, \sigma_T}{m_p G}
+  = \frac{1.995 \times 10^{-14}\ \mathrm{cm^3\,s^{-1}}}
+         {1.114 \times 10^{-31}\ \mathrm{cm^3\,s^{-2}}}
+  = 1.79 \times 10^{17}\ \mathrm{s}
+$$
+
+The efficiency is a pure number, so
+
+$$
+t_{\mathrm{S}} = \frac{0.1}{4\pi\, (0.9)} \times 1.79 \times 10^{17}\ \mathrm{s}
+  = 1.58 \times 10^{15}\ \mathrm{s} ,
+$$
+
+and in millions of years, with the conversion fractions arranged so the
+seconds and the years cancel,
+
+$$
+\begin{aligned}
+t_{\mathrm{S}} &= 1.58 \times 10^{15}\ \mathrm{s}
+  \times \frac{1\ \mathrm{yr}}{3.156 \times 10^{7}\ \mathrm{s}} \\[0.8em]
+  &\qquad \times \frac{1\ \mathrm{Myr}}{10^{6}\ \mathrm{yr}}
+  = 50.2\ \mathrm{Myr} ,
+\end{aligned}
+$$
+
+which is the 50 Myr of @eq-salpeter-num.
+
+Next, solve @eq-exp for the time: divide both sides by $M_0$ and take the
+natural logarithm of both sides.
+
+$$
+t = t_{\mathrm{S}} \ln\left(\frac{M_{\mathrm{BH}}}{M_0}\right)
+$$
+
+The mass ratio is a pure number, because the solar masses cancel, and the
+logarithm of a pure number is a pure number. So $t$ comes out in the units of
+$t_{\mathrm{S}}$:
+
+$$
+\frac{M_{\mathrm{BH}}}{M_0} = \frac{10^{9}\,M_\odot}{10\,M_\odot} = 10^{8}
+$$
+
+$$
+\begin{aligned}
+t &= 50.2\ \mathrm{Myr} \times \ln\left(10^{8}\right)
+   = 50.2\ \mathrm{Myr} \times 18.4 \\[0.8em]
+  &= 924\ \mathrm{Myr} \times \frac{1\ \mathrm{Gyr}}{1000\ \mathrm{Myr}}
+   = 0.92\ \mathrm{Gyr}
+\end{aligned}
+$$
+
+where a Gyr is a billion years. Almost a billion years, even growing as fast as
+it is allowed the whole time. Doubling from ten Suns to twenty takes exactly as
+long as doubling from half a billion Suns to a billion, so most of that time is
+spent while the black hole is still small.
+::::
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-growing}
+
+1. What is the largest mass a $10\,M_\odot$ black hole can reach in
+   $10^{7}$ years, accreting at its Eddington limit with a radiative
+   efficiency of 10%?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   About $12\,M_\odot$. Ten million years is only a fifth of a Salpeter time.
+   :::
+
+2. Show that a black hole growing at its Eddington limit doubles its mass in a
+   time $t_{\mathrm{S}} \ln 2$, and evaluate that time for a radiative
+   efficiency of 10%.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+   Set $M_{\mathrm{BH}} = 2 M_0$ in @eq-exp and solve for $t$.
+   :::
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   About 35 Myr.
+   :::
+
+3. A $10\,M_\odot$ black hole and a $10^{9}\,M_\odot$ black hole both accrete
+   at their Eddington limits with the same radiative efficiency. Which one
+   doubles its mass first? Which one gains more solar masses while doing it?
+
+:::
+
+## Why efficiency slows growth
+
+It is clearly important to know $\eta$, then, because it sets the timescale for
+how fast a black hole can grow. Remember that $\eta$ is the *radiative*
+efficiency.
+
+::: {.callout-tip .resolution collapse="true" title="Decide whether a black hole grows faster with a high efficiency or a low one"}
+**Low.** The efficiency appears twice in @eq-salpeter, and both times it slows
+the black hole down.
+
+The first is the $1 - \eta$ of @eq-mdot-bh. The efficiency is how efficiently
+radiation is created, and $1 - \eta$ is how efficiently matter falls onto the
+horizon. A more efficient black hole sends more of what it eats back out as
+light and keeps less of it. Going from a non-spinning black hole to a maximally
+spinning one, the fraction it keeps falls from 94% to 58%.
+
+The second, and by far the bigger, is the $\eta$ on top, and it comes from the
+Eddington limit. The luminosity a black hole may reach is fixed by its mass
+alone, whatever its efficiency. A more efficient black hole reaches that
+luminosity on less gas, so it is allowed less gas — the nuance we met in
+[lecture 8](../eddington-limit/index.qmd#the-eddington-accretion-rate). Going
+from an efficiency of 5.7% to 42% cuts the allowed accretion rate by a factor
+of 7.4.
+
+Together they make the Salpeter time of a maximally spinning black hole about
+12 times longer than that of a non-spinning one.
+:::
+
+The major criterion for radiative efficiency is spin, as we saw in
+[lecture 7](../accretion-efficiency/index.qmd#where-falling-stops-paying-the-isco),
+so spin sets how fast a black hole can grow. Put lecture 7's efficiencies into
+@eq-salpeter-num:
+
+| spin | $\eta$ | $t_{\mathrm{S}}$ | doubling time |
+|---|---|---|---|
+| $a_* = -1$ | 3.8% | 18 Myr | 12 Myr |
+| $a_* = 0$ | 5.7% | 27 Myr | 19 Myr |
+| typical, spin unknown | 10% | 50 Myr | 35 Myr |
+| $a_* = +1$ | 42% | 330 Myr | 230 Myr |
+
+So the property that makes a spinning black hole the most efficient engine we
+know of also makes it the slowest-growing black hole. Over a few hundred
+million years the difference is enormous (@fig-growth).
+
+```{python}
+#| label: fig-growth
+#| fig-cap: "The same $10\\,M_\\odot$ seed, formed 186 million years after the Big Bang, growing at its Eddington limit with three different radiative efficiencies. The least efficient black hole grows fastest: at 5.7% its mass grows tenfold about every 63 million years, while at 42% it has grown to only about 46 Suns by the time the other reaches a billion. The star marks the quasar J0313−1806 of the next section; even the fastest of the three reaches that mass, at the open circle, 16 million years too late."
+#| fig-alt: "A graph of black hole mass in solar masses, on a logarithmic axis from 1 to 100 billion, against the age of the Universe in billions of years, from 0.15 to 0.8. Three curves start together at a dot marking a 10 solar mass seed at 0.186 billion years. A solid blue curve for a non-spinning black hole with 5.7 percent efficiency rises steeply as a straight line, passing a billion solar masses at about 0.69 billion years. A dashed green curve for 10 percent efficiency rises about half as steeply, reaching only a few hundred thousand solar masses by 0.69 billion years. A dash-dot orange curve for maximal spin with 42 percent efficiency is nearly flat, reaching less than a hundred solar masses by the right edge. A black star at 0.686 billion years and 1.6 billion solar masses, labeled J0313 minus 1806, sits just above the blue curve, with a dotted vertical line beneath it. A short horizontal line runs from the star to an open circle slightly to its right, where the blue curve reaches the same mass, labeled reaches it 16 Myr late."
+#| fig-height: 4.03
+
+fig, ax = plt.subplots(figsize=(6.5, 4.03))
+
+c, G, m_p, sigma_T = 2.99792456e10, 6.6732e-8, 1.6726e-24, 6.6524e-25
+Myr = 3.156e13
+K = c * sigma_T / (4 * np.pi * m_p * G) / Myr   # in Myr
+
+t_seed, M_seed = 0.186, 10.0      # Gyr, M_sun
+t_q, M_q = 0.686, 1.6e9           # J0313-1806
+t = np.linspace(t_seed, 0.80, 600)
+
+for eta, color, style, label in (
+        (1 - np.sqrt(8 / 9), BLUE, "-", r"not spinning, $\eta = 5.7\%$"),
+        (0.10, AQUA, "--", r"$\eta = 10\%$"),
+        (1 - np.sqrt(1 / 3), ORANGE, "-.", r"maximal spin, $\eta = 42\%$")):
+    t_S = K * eta / (1 - eta)
+    M = M_seed * np.exp((t - t_seed) * 1e3 / t_S)
+    ax.semilogy(t, np.where(M < 1e11, M, np.nan), color=color,
+                linestyle=style, linewidth=2.4, label=label, zorder=3)
+
+ax.plot([t_seed], [M_seed], marker="o", color=INK, markeredgecolor=SURFACE,
+        linestyle="none", zorder=4)
+ax.annotate(r"seed, $10\,M_\odot$", xy=(t_seed, M_seed), xytext=(8, -14),
+            textcoords="offset points", color=INK2, fontsize=10)
+
+ax.axvline(t_q, ymax=np.log10(M_q) / 11, color=MUTED, linestyle=":",
+           linewidth=1.2, zorder=2)
+ax.plot([t_q], [M_q], marker="*", markersize=17, color=INK,
+        markeredgecolor=SURFACE, linestyle="none", zorder=5)
+ax.annotate("J0313−1806", xy=(t_q, M_q), xytext=(-12, 6),
+            textcoords="offset points", ha="right", color=INK, fontsize=10)
+
+# Where the fastest (non-spinning) line reaches the quasar's mass: 16 Myr late.
+eta0 = 1 - np.sqrt(8 / 9)
+t_cross = t_seed + K * eta0 / (1 - eta0) * np.log(M_q / M_seed) / 1e3
+ax.plot([t_q, t_cross], [M_q, M_q], color=INK, linewidth=1.2, zorder=4)
+ax.plot([t_cross], [M_q], marker="o", markersize=6, color=SURFACE,
+        markeredgecolor=INK, markeredgewidth=1.4, linestyle="none", zorder=5)
+ax.annotate("reaches it\n16 Myr late", xy=(t_cross, M_q), xytext=(8, -30),
+            textcoords="offset points", ha="left", color=INK2, fontsize=10)
+
+ax.set_xlabel("age of the Universe  (billions of years)")
+ax.set_ylabel(r"black hole mass  ($M_\odot$)")
+ax.set_xlim(0.15, 0.80)
+ax.set_ylim(1, 1e11)
+ax.legend(loc="upper left")
+plt.show()
+```
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-efficiency}
+
+1. A $100\,M_\odot$ black hole accretes at its Eddington limit for
+   $10^{9}$ years.
+
+   a. What is its final mass if its radiative efficiency is 10%?
+   b. What is its final mass if its radiative efficiency is 42%, as for a
+      maximally spinning black hole? Explain in one or two sentences why this
+      answer is lower than the one in part (a).
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   **(a)** About $4.7 \times 10^{10}\,M_\odot$, twenty Salpeter times. If you
+   rounded $t_{\mathrm{S}}$ to 50 Myr you will get $4.9 \times 10^{10}$ — an
+   exponential magnifies small rounding. **(b)** About
+   $2 \times 10^{3}\,M_\odot$.
+   :::
+
+2. Two black holes grow at their Eddington limits for 300 million years. One is
+   not spinning, with $\eta = 5.7\%$; the other spins as fast as possible, with
+   $\eta = 42\%$. By what factor does each one's mass grow? Check your answers
+   with the Turn the knobs cell.
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   The non-spinning one by about $6 \times 10^{4}$; the spinning one by about
+   2.5.
+   :::
+
+:::
+
+## A billion Suns in half a billion years
+
+Some of the most distant quasars — brightly shining accreting black holes — are
+already enormous. The quasar J0313−1806 is at a redshift of $z = 7.642$, which
+means that we see it as it was 0.686 billion years after the beginning of the
+Universe. One measurement of its mass puts it at
+$1.6 \times 10^{9}\,M_\odot$.[Its discovery and its mass are reported
+in @wang2021.]{.aside .content-visible when-format="html"}
+
+We have reasons to think that the first "seed" black holes formed at about
+$z = 20$, when the Universe was 0.186 billion years old. So how small can this
+black hole have started, if it grew as fast as it is allowed to?
+
+:::: {.callout-note .worked-example collapse="true" title="Worked example: the smallest possible seed for J0313−1806"}
+**The question.** J0313−1806 had a mass of $1.6 \times 10^{9}\,M_\odot$ when
+the Universe was 0.686 billion years old. If its seed formed when the Universe
+was 0.186 billion years old and grew at its Eddington limit the whole time,
+with a radiative efficiency of 10%, what is the smallest mass the seed can have
+had?
+
+The black hole had
+
+$$
+\begin{aligned}
+t &= 0.686\ \mathrm{Gyr} - 0.186\ \mathrm{Gyr} = 0.500\ \mathrm{Gyr} \\[0.8em]
+  &= 0.500\ \mathrm{Gyr} \times \frac{1000\ \mathrm{Myr}}{1\ \mathrm{Gyr}}
+   = 500\ \mathrm{Myr}
+\end{aligned}
+$$
+
+to grow. Solve @eq-exp for the seed mass by multiplying both sides by
+$\exp\left[-t/t_{\mathrm{S}}\right]$:
+
+$$
+M_0 = M_{\mathrm{BH}} \exp\left[-\frac{t}{t_{\mathrm{S}}}\right]
+$$
+
+The exponent must be a pure number. Substitute with the units attached, using
+$t_{\mathrm{S}} = 50\ \mathrm{Myr}$ from @eq-salpeter-num:
+
+$$
+\frac{t}{t_{\mathrm{S}}} = \frac{500\ \mathrm{Myr}}{50\ \mathrm{Myr}}
+$$
+
+The millions of years cancel. *Do the units make sense?* An exponent has to be
+a pure number, and this is one, so yes.
+
+$$
+\begin{aligned}
+M_0 &= 1.6 \times 10^{9}\,M_\odot \times e^{-10.0} \\[0.8em]
+    &= 1.6 \times 10^{9}\,M_\odot \times 4.5 \times 10^{-5}
+     = 7.3 \times 10^{4}\,M_\odot
+\end{aligned}
+$$
+
+A seed of at least seventy thousand Suns — not the ten or so Suns of a black
+hole left behind by a dying star. And that is the most generous case, with the
+black hole accreting at exactly its limit, without a break, for half a billion
+years.
+::::
+
+::: {.content-visible when-format="pdf"}
+{{< include ../../in_class/lec09/exercises00.qmd >}}
+:::
+
+Starting from a seed of ten Suns, even a non-spinning black hole, the fastest
+grower in @fig-growth, reaches this mass 16 million years too late. Only the
+least efficient black holes grow fast enough to have a chance at all, and the
+least efficient black holes are the ones that spin slowly, or against the
+direction their gas orbits.
+
+**Rapid black hole growth requires low spin. Is that okay?** We will leave that
+as an open question.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-quasar}
+
+1. Suppose that J0313−1806's seed formed later, when the Universe was
+   0.300 billion years old. With the same assumptions as the worked example,
+   what is the smallest it can have been?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   About $7 \times 10^{5}\,M_\odot$, ten times heavier for starting
+   114 million years later.
+   :::
+
+2. The worked example assumed that the black hole grew at exactly its Eddington
+   limit, without a break, for the whole 500 Myr. Name two ways a real black
+   hole could fall short of that, and say which way each one moves the smallest
+   possible seed mass.
+
+:::
+
+## Where the seeds come from
+
+If the biggest black holes cannot be grown in time from the black holes that
+stars leave behind, then they must have started from something bigger, or grown
+faster than the Eddington limit allows. What a supermassive black hole started
+from is called its **seed**, and there are three main ideas for where seeds
+come from.
+
+1. **Light seeds: the remnants of the first stars.** The first generation of
+   stars, called Population III stars, formed from hydrogen and helium alone
+   and are thought to have been very massive. When they died they could have
+   left black holes of about $10^{2}\,M_\odot$.
+2. **The collapse of a dense star cluster.** In the crowded center of a young
+   galaxy, stars can collide and merge with one another, building up a single
+   very massive object that collapses to a black hole of about
+   $10^{3}\,M_\odot$.
+3. **Heavy seeds: direct collapse.** A huge cloud of gas collapses all at once
+   into a single supermassive star, or a "quasi-star", which leaves behind a
+   black hole of about $10^{5}\,M_\odot$ and skips the small-black-hole stage
+   entirely.
+
+Light seeds are theoretically easy to form, but how do they grow fast enough?
+Perhaps they grow faster than the Eddington limit for a while. Heavy seeds are
+more challenging theoretically: how does a cloud that massive avoid breaking
+into smaller parts early on? Maybe that only happens in rare cases.
+
+This is where the Salpeter time earns its keep. At the Eddington limit and an
+efficiency of 10%, the time needed to grow from each kind of seed to
+J0313−1806's $1.6 \times 10^{9}\,M_\odot$ is
+
+| seed | seed mass | e-foldings needed | time needed |
+|---|---|---|---|
+| light | $10^{2}\,M_\odot$ | 16.6 | 831 Myr |
+| star cluster | $10^{3}\,M_\odot$ | 14.3 | 716 Myr |
+| heavy | $10^{5}\,M_\odot$ | 9.7 | 485 Myr |
+
+and only 500 Myr was available. At that efficiency, only a heavy seed makes it.
+A light seed would need a lower efficiency — a black hole spinning slowly — or
+to grow faster than the Eddington limit for a while.
+
+How would we tell which idea is right? The smallest galaxies host the smallest
+black holes, which must be closer to the seed mass, and may tell us the
+dominant seeding mechanism. If seeds are light and common, nearly every galaxy,
+however small, should have a black hole, and the smallest galaxies should have
+small ones. If seeds are heavy and rare, many small galaxies should have no
+black hole at all, and the ones that do should have black holes no smaller than
+the seeds (@fig-seeding).[This way of posing the question follows the review
+by @greene2020.]{.aside .content-visible when-format="html"}
+
+```{python}
+#| label: fig-seeding
+#| fig-cap: "What the smallest galaxies could tell us about seeds, in a schematic simplified from Greene et al. (2020); the shapes are the point, not the exact numbers. (a) If seeds are light (solid blue), nearly every galaxy has a central black hole; if they are heavy and rare (dashed orange), many small galaxies have none. (b) Light seeds let black holes scale down with their galaxies, while heavy seeds leave the smallest galaxies with black holes no lighter than the seed."
+#| fig-alt: "Two schematic panels side by side, each with galaxy mass on a logarithmic horizontal axis from ten million to one hundred billion solar masses. Panel (a) plots the fraction of galaxies with a central black hole, from 0 to 1. A solid blue line for light seeds stays close to 1 at every galaxy mass, dipping only to about 0.9 for the smallest galaxies. A dashed orange line for heavy seeds rises in an S shape from near zero at the smallest galaxies to nearly 1 for galaxies above about ten billion solar masses, always staying below the blue line. Panel (b) plots black hole mass on a logarithmic axis from a thousand to one hundred million solar masses. A solid blue line for light seeds is straight and rises steadily, black hole mass growing in proportion to galaxy mass. A dashed orange line for heavy seeds follows the blue line for large galaxies but levels off at about one hundred thousand solar masses for small galaxies, staying above the blue line there."
+#| fig-height: 2.9
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(6.5, 2.9))
+fig.subplots_adjust(wspace=0.42)
+
+M_gal = np.logspace(7, 11, 300)
+x = np.log10(M_gal)
+
+ax1.plot(M_gal, 0.9 + 0.1 / (1 + np.exp(-(x - 8.0))), color=BLUE,
+         label="light seeds")
+ax1.plot(M_gal, 1 / (1 + np.exp(-2.2 * (x - 8.8))), color=ORANGE,
+         linestyle="--", label="heavy seeds")
+ax1.set_xscale("log")
+ax1.set_ylim(0, 1.05)
+ax1.set_xlabel(r"galaxy mass  ($M_\odot$)")
+ax1.set_ylabel("fraction with a black hole")
+ax1.set_title("(a)", loc="left")
+ax1.legend(loc="lower right", fontsize=10)
+
+light = 1e-3 * M_gal
+heavy = np.sqrt(light**2 + 1e5**2)
+ax2.loglog(M_gal, light, color=BLUE)
+ax2.loglog(M_gal, heavy, color=ORANGE, linestyle="--")
+ax2.set_ylim(1e3, 1e8)
+ax2.set_xlabel(r"galaxy mass  ($M_\odot$)")
+ax2.set_ylabel(r"black hole mass  ($M_\odot$)")
+ax2.set_title("(b)", loc="left")
+plt.show()
+```
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-seeds}
+
+1. What are the three main ideas for how the seeds of supermassive black holes
+   formed? For each of the three, give a one- or two-sentence description of
+   the idea.
+
+2. Suppose a $100\,M_\odot$ light seed forms when the Universe is 0.186 billion
+   years old and grows at *twice* its Eddington accretion rate, still with a
+   radiative efficiency of 10%.
+
+   a. What is its e-folding time?
+   b. Could it reach J0313−1806's mass of $1.6 \times 10^{9}\,M_\odot$ by the
+      time the Universe is 0.686 billion years old?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+   Doubling the accretion rate doubles the right-hand side of @eq-growth. What
+   does that do to the constant in front of $M_{\mathrm{BH}}$, and so to the
+   e-folding time?
+   :::
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   **(a)** Half the Salpeter time, about 25 Myr. **(b)** Yes. It reaches
+   $1.6 \times 10^{9}\,M_\odot$ after about 415 Myr, when the Universe is about
+   0.60 billion years old.
+   :::
+
+:::
+
+## Summary
+
+| Quantity | Expression | What to remember |
+|---|---|---|
+| What the black hole keeps | $\dot M_{\mathrm{BH}} = (1-\eta)\,\dot M$ | Mass that leaves as light is mass the black hole never gets |
+| Growth at the limit | $dM_{\mathrm{BH}}/dt \propto M_{\mathrm{BH}}$ | The allowed growth rate is proportional to the mass |
+| Exponential growth | $M_{\mathrm{BH}} = M_0\, e^{t/t_{\mathrm{S}}}$ | A factor of $e$ every Salpeter time |
+| Salpeter time | $t_{\mathrm{S}} \approx 450\ \mathrm{Myr} \times \eta/(1-\eta)$ | About 50 Myr for $\eta = 0.1$ |
+| Efficiency and spin | $t_{\mathrm{S}}$ rises with $\eta$ | A spinning black hole grows more slowly: 27 Myr not spinning, 330 Myr at maximal spin |
+| Seeds | light $\sim 10^{2}$, cluster $\sim 10^{3}$, heavy $\sim 10^{5}\,M_\odot$ | The earliest quasars need heavy seeds, low spin, or faster-than-Eddington growth |
+
+A black hole growing at its limit grows exponentially, on a clock set by its
+radiative efficiency, and that turns a question about the brightest distant
+quasars into a question about how black holes begin. We will come back to
+seeds when we look more closely at where supermassive black holes come from.
+Next time, a different way for black holes to grow and to announce themselves:
+merging, and the gravitational waves it makes.
+
+:::: {.content-visible when-format="html"}
+## References {.unnumbered}
+
+::: {#refs}
+:::
+::::
+
+::: {.content-visible when-format="pdf"}
+
+```{=latex}
+\clearpage
+\tableofcontents
+```
+:::
