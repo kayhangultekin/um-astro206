@@ -313,7 +313,7 @@ accumulates to
 
 $$
 \Delta t_{\mathrm{SR}} \approx -\tfrac{1}{2}\beta^2 \times 86{,}400\ \mathrm{s}
-                        = -7.2\ \mathrm{\mu s\ per\ day} ,
+                        = -7.2\ \mu\text{s per day} ,
 $$ {#eq-gpssr}
 
 with the minus sign meaning the moving clock falls behind.
@@ -327,7 +327,7 @@ difference between the two clocks comes out to
 $$
 \Delta t_{\mathrm{GR}} \approx \frac{GM_{\oplus}}{c^{2}}
    \left(\frac{1}{R_{\oplus}} - \frac{1}{a}\right) \times 86{,}400\ \mathrm{s}
-   = +45.7\ \mathrm{\mu s\ per\ day} ,
+   = +45.7\ \mu\text{s per day} ,
 $$ {#eq-gpsgr}
 
 with the plus sign meaning the satellite clock runs ahead of yours.
@@ -335,10 +335,10 @@ with the plus sign meaning the satellite clock runs ahead of yours.
 The two do not cancel. They do not even come close:
 
 $$
--7.2 + 45.7 = +38.5\ \mathrm{\mu s\ per\ day} .
+-7.2 + 45.7 = +38.5\ \mu\text{s per day} .
 $$
 
-Left uncorrected, that is a timing error of $38.5\ \mathrm{\mu s}$ after one
+Left uncorrected, that is a timing error of $38.5\ \mu\text{s}$ after one
 day, and multiplying by $c$ turns it into **11.5 kilometers of position error,
 accumulating every day.** The system would be useless within about two minutes
 of being switched on, and unusable by lunchtime.
@@ -363,7 +363,7 @@ the subject of an upcoming lecture. This is that.
 1. Work out the general-relativistic drift for yourself. Take
    $GM_{\oplus}/c^{2} = 0.443\ \mathrm{cm}$, the Earth's radius as
    $6.37 \times 10^{8}\ \mathrm{cm}$, and the orbit radius as
-   $2.66 \times 10^{9}\ \mathrm{cm}$, and confirm the $+45.7\ \mathrm{\mu s}$
+   $2.66 \times 10^{9}\ \mathrm{cm}$, and confirm the $+45.7\ \mu\text{s}$
    per day in @eq-gpsgr.
 
    ::: {.callout-note .help-solution collapse="true" title="Solution"}
@@ -391,7 +391,7 @@ the subject of an upcoming lecture. This is that.
 
    $$
    \Delta t_{\mathrm{GR}} = 5.29 \times 10^{-10} \times 86{,}400\ \mathrm{s}
-     = 4.57 \times 10^{-5}\ \mathrm{s} = 45.7\ \mathrm{\mu s}
+     = 4.57 \times 10^{-5}\ \mathrm{s} = 45.7\ \mu\text{s}
    $$
 
    Note which term dominates. The satellite is four times farther from the
