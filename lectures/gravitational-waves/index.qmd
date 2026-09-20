@@ -1,0 +1,1226 @@
+---
+title: "Gravitational Waves and the LIGO Discovery"
+subtitle: "ASTRO 206 — Black Holes · Lecture 10"
+author: "Kayhan Gültekin"
+date: "October 1"
+date-format: "MMMM D"
+# Dates are LECTURE dates -- when the class meets -- not publication dates.
+# Sourced from Canvas (Reading & Reflection 3233494 and the In-Class Problem
+# 3219318, both due 2026-10-01). A placeholder string renders as "Invalid Date".
+
+# Kernel pinning is deliberate and must stay in the DOCUMENT, not _quarto.yml:
+# Quarto silently ignores a project-level `jupyter:` and auto-selects a kernel.
+jupyter: python3
+
+# No `pyodide: packages:` block: the one live cell uses only the standard
+# library's `math`.
+---
+
+::: {.callout-note appearance="simple" icon=false}
+**Disclaimer.** These notes have not been subjected to the usual scrutiny
+reserved for formal publications. They may be distributed outside this class
+only with the permission of the instructor.
+:::
+
+{{< include ../../_figure-setup.qmd >}}
+
+Every black hole we have studied so far announced itself with light — a quasar
+outshining its galaxy, a star swinging around something invisible, gas heated
+until it glowed. Light is not the only signal a black hole can send. When two
+of them orbit each other and finally merge, they radiate energy directly into
+the geometry of spacetime, and for a fraction of a second a single pair of
+black holes can outshine every star in the observable universe in a form of
+radiation that passes straight through the Earth. **This lecture works out what
+a gravitational wave is, how large an effect it produces when it arrives, how
+we measure something that small, and why the frequency you listen at decides
+which black holes you can hear.**
+
+## Ripples in spacetime
+
+An accelerating electric charge radiates electromagnetic waves. General
+relativity says that an accelerating *mass* should do something analogous: a
+gravitational field that changes rapidly enough produces ripples in the
+curvature of spacetime, and those ripples travel outward at the speed of light.
+They are **gravitational waves**.
+
+The analogy is close, and worth drawing carefully, because the one place it
+breaks down is the important place. An electromagnetic wave is an oscillation
+of the electric and magnetic fields, and those fields live *in* spacetime.
+A gravitational wave is an oscillation *of* spacetime. There is no medium
+underneath it. What is waving is the thing that distances are measured with.
+
+### Why the lowest note is the quadrupole
+
+Electromagnetic radiation is usually produced by a **dipole**: separate a
+positive and a negative charge, shake them back and forth, and the changing
+dipole moment radiates. Gravity cannot do that, and the reason is a
+conservation law.
+
+Gravity has no negative mass, so the gravitational analogue of the total charge
+is the **total mass**, and the total mass of an isolated system does not
+change. A quantity that does not change cannot oscillate, so there is no
+monopole radiation. Go one step up and the gravitational analogue of the dipole
+moment turns out to be the total **momentum** of the system, and that does not
+change either. So there is no dipole radiation.
+
+The first moment that is free to vary is the next one, the **quadrupole**,
+which measures how the mass is *distributed* — roughly, how far the system
+departs from a sphere, and along which axis. So:
+
+> A system radiates gravitational waves only if its mass quadrupole moment
+> changes with time.
+
+::: {.callout-tip .resolution collapse="true" title="Think about what a perfectly spherical star does when it collapses"}
+It radiates no gravitational waves at all.
+
+A sphere that shrinks is still a sphere. Its mass is unchanged, its momentum is
+unchanged, and its quadrupole moment — which is a statement about departures
+from sphericity — is unchanged too. Every moment that could radiate is
+constant, so nothing is emitted, no matter how violent the collapse is or how
+much matter is involved.
+
+This is a real astrophysical constraint rather than a technicality. A
+supernova radiates gravitational waves only to the extent that its collapse is
+*lopsided*, which is why predicting the signal from one is so much harder than
+predicting the signal from a binary. A binary, by contrast, is about as far
+from spherical as a system can be, and it advertises the fact twice per orbit.
+:::
+
+### Two polarizations
+
+Because the source is a quadrupole, the wave it makes does something a light
+wave does not. A gravitational wave traveling toward you stretches space along
+one direction across your line of sight and squeezes it along the
+perpendicular direction, then reverses: squeeze where it stretched, stretch
+where it squeezed.
+
+Drop a ring of free particles in the path of one and watch. The ring flattens
+into an ellipse, returns to a circle, then flattens into an ellipse at right
+angles to the first. Nothing pushes the particles; the distances between them
+simply change, because the geometry between them is changing.
+
+There are two independent ways of doing this, called the two **polarizations**.
+The **plus** polarization, written $h_+$, stretches and squeezes along the
+horizontal and vertical axes. The **cross** polarization, $h_\times$, does the
+same thing along axes rotated by 45°. Any gravitational wave is a combination
+of the two, and the amounts of each depend on the orientation of the source.
+
+::: {.content-visible when-format="html"}
+[Note the 45°. The two polarizations of a light wave are at 90° to each other,
+because a light wave is built from a vector. A gravitational wave is built from
+a quadrupole, whose pattern repeats twice per full turn, so its two independent
+states are half as far apart.]{.aside}
+:::
+
+The numbers $h_+$ and $h_\times$ are the amplitude of the wave. They are
+*fractional* changes in length — the fraction by which the ring is stretched —
+so they are pure numbers, and as we are about to see they are extraordinarily
+small ones.
+
+### How the two kinds of radiation compare
+
+Nearly every instinct built up from doing astronomy with light has to be
+retuned for gravitational waves, and the table below is worth reading slowly.
+The differences are not incidental; each one changes what an observation can
+and cannot tell you.
+
+| | Electromagnetic waves | Gravitational waves |
+|---|---|---|
+| What is waving | fields, with spacetime as the medium | spacetime itself |
+| What produces them | incoherent superposition of many atoms and molecules | coherent motion of enormous masses |
+| Wavelength vs source | small compared with the source, so we get images | comparable to the source, so the sky position is poorly resolved |
+| Interaction with matter | absorbed, scattered and dispersed | almost none, and nothing shields them |
+| Frequencies | $10^{6}\ \mathrm{Hz}$ and up | $10^{4}\ \mathrm{Hz}$ and down |
+| What a detector measures | intensity, or amplitude at radio frequencies | amplitude, always |
+| Field of view | usually a small solid angle | very nearly the whole sky at once |
+
+Two of those rows deserve emphasis. **Nothing shields a gravitational wave.**
+Dust that hides the center of our Galaxy at visible wavelengths is completely
+transparent to them, and so is the matter of a collapsing stellar core, and so
+is the Earth — the wave that LIGO detected passed through the whole planet on
+its way from Louisiana to Washington without measurable loss. And **a
+gravitational-wave detector sees almost the entire sky at once**, which makes
+it less like a telescope than like a microphone. You do not point it. You turn
+it on and wait.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-ripples}
+
+1. Explain in two or three sentences why a single star spinning about its axis,
+   perfectly axisymmetric, emits no gravitational waves — while the same star
+   with a mountain on one side does.
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   An axisymmetric star spinning about its symmetry axis presents exactly the
+   same mass distribution at every instant, so its quadrupole moment is
+   constant in time and nothing is radiated. A mountain breaks the symmetry:
+   as the star turns, the departure from axisymmetry sweeps around with it, so
+   the quadrupole moment measured by a distant observer oscillates at the spin
+   frequency and the star radiates. This is a real search target — a pulsar
+   with a mountain a few centimeters high would be detectable.
+   :::
+
+2. The Earth orbiting the Sun is a binary system with a time-varying mass
+   quadrupole, so it must radiate gravitational waves. Without calculating
+   anything, list the three properties of the Earth–Sun system from the table
+   in this section that make the strain at a distant detector far too small to
+   measure, and say in each case whether that property is large or small.
+
+3. A gravitational wave arrives traveling straight down through your body, with
+   the plus polarization aligned so that it stretches you left-to-right.
+
+   a. What is happening to your height at that instant?
+   b. Half a period later, what is happening to your height?
+   c. Does the wave change your front-to-back thickness?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   **(a)** Your height is being squeezed, because the wave stretches along one
+   transverse direction and squeezes along the perpendicular transverse one.
+   **(b)** The two have swapped: your height is being stretched and your width
+   squeezed. **(c)** No. Front-to-back is along the direction the wave is
+   traveling, and gravitational waves are transverse — the distortion is
+   entirely across the line of propagation.
+   :::
+
+:::
+
+## The first evidence was indirect
+
+Gravitational waves were predicted in 1916 and not detected directly until
+2015. For most of that century the best evidence that they exist at all came
+from watching an orbit shrink.
+
+### Pulsars are excellent clocks
+
+A **pulsar** is a rapidly rotating neutron star with a strong magnetic field.
+Radiation streams out along the magnetic axis in two narrow beams, and because
+the magnetic axis is tilted away from the rotation axis, those beams sweep
+around the sky like a lighthouse. If one of them happens to cross the Earth, we
+see a pulse once per rotation.
+
+What makes a pulsar valuable is not the pulses but their regularity. A neutron
+star is a solar mass of material in a sphere about ten kilometers across, so
+its moment of inertia is enormous and there is almost nothing that can
+perturb its spin. Some pulsars keep time well enough to rival an atomic clock.
+
+### The Hulse–Taylor binary pulsar
+
+In 1974 Russell Hulse and Joseph Taylor found a pulsar whose pulse arrival
+times were not steady: they drifted early and late on a cycle of about eight
+hours [@hulse1975]. The explanation is that the pulsar is in orbit with another
+neutron star, and the drift is the changing light-travel time across the orbit.
+It was the first binary pulsar known, and it won them the 1993 Nobel Prize in
+Physics.
+
+The system's numbers are what make it useful:
+
+| Quantity | Value |
+|---|---|
+| Spin period | $59\ \mathrm{ms}$ — about 17 rotations per second |
+| Orbital period | $7.75\ \mathrm{hours}$ |
+| Orbital separation | roughly the radius of the Sun |
+| Orbital speed | of order $10^{-3}\,c$ |
+
+Two neutron stars, moving fast, close together, in a decidedly non-spherical
+configuration: a textbook time-varying quadrupole. General relativity therefore
+demands that the system radiate gravitational waves, lose orbital energy, and
+spiral inward — and a smaller orbit means a shorter period.
+
+Measuring a change in an eight-hour period directly would be hopeless. But the
+effect **accumulates**. If each orbit is a fraction of a millisecond short, the
+shortfall adds up orbit after orbit, and after a few years the pulsar arrives at
+closest approach measurably earlier than a constant period would predict.
+Plotting that accumulated shift against time gives a curve that bends away from
+the horizontal, and the shape of the bend is a prediction of general relativity
+with no adjustable parameters.
+
+The measurement has now been running for fifty years. Over the first thirty of
+them the accumulated shift reached about **40 seconds**, and it tracked the
+general-relativistic prediction the whole way.
+
+::: {.callout-tip .resolution collapse="true" title="Think about what happens to the orbital speed as the orbit loses energy"}
+The stars speed up.
+
+This feels wrong the first time. The system is losing energy, and things that
+lose energy usually slow down. But the total energy of a circular orbit, which
+you have already met,
+
+$$
+E = -\frac{G m_1 m_2}{2 a} ,
+$$
+
+is *negative*, and it becomes more negative as the separation $a$ shrinks. So
+radiating energy away makes $a$ smaller — and by Kepler's third law a smaller
+orbit is a faster one.
+
+Gravitationally bound systems behave like this generally: take energy out and
+they get hotter, faster and more tightly bound. It is the same reason the
+inspiral **accelerates** rather than settling down. As the orbit shrinks the
+stars move faster, which makes them radiate more strongly, which shrinks the
+orbit faster still. The process runs away, and the last few orbits before a
+merger take milliseconds.
+:::
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-indirect}
+
+1. The Hulse–Taylor pulsar spins once every $59\ \mathrm{ms}$ and orbits its
+   companion once every $7.75\ \mathrm{hours}$. How many times does it spin per
+   orbit?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   About $4.7 \times 10^{5}$ times. Converting the orbital period first, with
+   the fractions arranged so the hours and minutes cancel,
+
+   $$
+   7.75\ \mathrm{hr} \times \frac{3600\ \mathrm{s}}{1\ \mathrm{hr}}
+     = 2.79 \times 10^{4}\ \mathrm{s},
+   $$
+
+   and $2.79 \times 10^{4}\ \mathrm{s} / 0.059\ \mathrm{s} = 4.7 \times 10^{5}$,
+   a pure number as a ratio of two times must be. Every one of those half a
+   million pulses per orbit is a measurement, which is why the orbit is known
+   so precisely.
+   :::
+
+2. Explain, in three or four sentences, why a plot of the accumulated shift in
+   periastron time against year curves downward instead of following a straight
+   line. Your answer should distinguish between an orbit whose period is
+   constant but slightly mismeasured, and an orbit whose period is changing.
+
+3. Suppose a binary loses energy to gravitational waves at a constant rate.
+   Using $E = -Gm_1m_2/2a$, does the separation shrink at a constant rate, or
+   faster and faster, or more and more slowly? Explain your reasoning.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+   Rearrange for $a$ in terms of $E$, and ask what happens to $a$ when $E$
+   changes by a fixed amount, first when $a$ is large and then when $a$ is
+   small.
+   :::
+
+:::
+
+## How big is the effect
+
+Everything so far has been qualitative. To know whether a gravitational wave
+can be detected we need a number, and the quantity to put a number on is the
+**strain**.
+
+You met it in [lecture 5](../strong-gravity/index.qmd#gravitational-waves): the
+strain is the fractional change in the distance between two points,
+
+$$
+h = \frac{\Delta L}{L} .
+$$ {#eq-strain-10}
+
+Two freely floating masses a distance $L$ apart will be found a distance
+$L + \Delta L$ apart when the wave arrives. Strain is a pure number, it is what
+a detector actually measures, and everything in this lecture eventually reduces
+to estimating it.
+
+::: {.panel-tabset .tracks}
+
+### Physical intuition
+
+Three things should make the strain bigger, and all three are visible in the
+picture of two masses whirling around each other.
+
+**Bigger masses.** The quadrupole moment measures mass times the square of a
+size, so more mass means a larger quadrupole to begin with.
+
+**Higher velocities.** What radiates is not the quadrupole moment but its rate
+of *change*, twice over. A binary going around faster wrenches its mass
+distribution around faster, and the emission is extremely sensitive to this.
+
+**Nearby sources.** The amplitude falls off as one over the distance, not one
+over the distance squared. That is worth pausing on, because it is the opposite
+of the instinct built up from brightness. A detector measures the wave's
+*amplitude*, and amplitude goes as $1/r$; it is the *energy* that goes as
+$1/r^2$. The practical consequence is enormous: making a detector twice as
+sensitive lets it see twice as far, which is eight times the volume and so
+roughly eight times the event rate.
+
+Put those together and the ideal source is obvious: two very massive, very
+compact objects, orbiting very close to each other, as near to us as possible.
+Two compact objects — black holes or neutron stars — can get close together
+without touching, which ordinary stars cannot, and that is what lets them reach
+speeds approaching the speed of light while still in orbit. As they orbit they
+lose energy and angular momentum to gravitational waves, the orbit shrinks, the
+frequency climbs, and eventually they merge.
+
+### Mathematical explanation
+
+The quadrupole moment of a binary of two masses $M$ separated by a distance $R$
+is roughly
+
+$$
+Q \sim M R^2 ,
+$$
+
+and general relativity says that the strain a distant observer measures is set
+by the *second* time derivative of that, weakened by a factor $G/c^4$ and
+diluted by the distance $r$ to the source:
+
+$$
+h \sim \frac{G}{c^4 r}\, \ddot{Q} .
+$$
+
+The mass and the separation are fixed, so the time dependence is entirely in
+the orbital phase, and each time derivative brings down a factor of the angular
+frequency $\omega = 2\pi f_{\mathrm{orb}}$. Two derivatives give $\omega^2 =
+4\pi^2 f_{\mathrm{orb}}^2$, so
+
+$$
+h \approx \frac{4\pi^2 G M R^2 f_{\mathrm{orb}}^2}{c^4 r} .
+$$ {#eq-strain-binary}
+
+That is the expression on your constants sheet, and it is an order-of-magnitude
+estimate rather than an exact result — the true answer carries factors that
+depend on the orientation of the orbit and on where in the sky the source is.
+It gets the size right, which is what we need.
+
+**Look at $G/c^4$.** Numerically it is about
+$8 \times 10^{-50}\ \mathrm{s^2\,g^{-1}\,cm^{-1}}$. There is no way to make a
+laboratory source with enough mass moving fast enough to overcome a number that
+small, which is why every gravitational-wave source is astrophysical.
+
+#### Rewriting it with Kepler's third law
+
+Equation @eq-strain-binary has three variables describing the binary — $M$, $R$
+and $f_{\mathrm{orb}}$ — but they are not independent. Kepler's third law ties
+them together: for two masses $M$ in a circular orbit of separation $R$,
+
+$$
+R^3 = \frac{G (2M)}{4\pi^2 f_{\mathrm{orb}}^2} ,
+\qquad\text{so}\qquad
+R^2 = \left[ \frac{G (2M)}{4\pi^2 f_{\mathrm{orb}}^2} \right]^{2/3} .
+$$
+
+Substituting that into @eq-strain-binary and collecting the powers of
+$f_{\mathrm{orb}}$ — one factor of $f^{2}$ from the derivatives and a factor
+$f^{-4/3}$ from $R^2$ — gives
+
+$$
+h \propto \frac{G^{5/3} M^{5/3} f_{\mathrm{orb}}^{2/3}}{c^4 r} .
+$$ {#eq-strain-scaling}
+
+So, in words,
+
+$$
+\text{amplitude} \ \propto\
+  \frac{\mathrm{mass}^{5/3} \times \mathrm{frequency}^{2/3}}{\mathrm{distance}} .
+$$
+
+The mass dependence is far stronger than the frequency dependence, which is why
+the heaviest binaries dominate every band they can be seen in. The combination
+of the two masses that appears here when they are not equal is called the
+**chirp mass**, and it is the single best-measured property of a
+gravitational-wave source: the rate at which the frequency sweeps upward
+depends on it almost alone.
+
+That last fact has a remarkable consequence. The chirp gives you the mass; the
+mass and the frequency together give you the intrinsic amplitude through
+@eq-strain-scaling; comparing that with the amplitude you actually measure
+gives you the distance. A gravitational-wave source tells you how far away it
+is without any calibration against another object — no standard candle, no
+distance ladder. They are called **standard sirens**.
+
+### Numerical exploration
+
+Equation @eq-strain-binary applied to four binaries, spanning stellar-mass
+mergers through supermassive black holes. The separation for each is fixed by
+Kepler's third law from the mass and the orbital frequency, so each row is a
+self-consistent system.
+
+```{python}
+#| label: strain-ladder
+
+import math
+
+G = 6.6732e-8          # cm^3 g^-1 s^-2
+c = 2.99792456e10      # cm s^-1
+M_sun = 1.9891e33      # g
+pc = 3.0856e18         # cm
+
+# name, mass of EACH object (M_sun), orbital frequency (Hz), distance (Mpc)
+systems = [
+    ("neutron stars, 40 Mpc",   1.4,   590.0,       40.0),
+    ("GW150914",               32.5,   125.0,      410.0),
+    ("100 M_sun pair",         50.0,   100.0,      400.0),
+    ("supermassive pair",      5.0e8,    1.0e-9,   400.0),
+]
+
+fmt = "{:<24}{:>12}{:>12}{:>11}"
+print(fmt.format("system", "separation", "f_orb (Hz)", "strain"))
+for name, m, f, d in systems:
+    M, r = m * M_sun, d * 1e6 * pc
+    R = (G * 2 * M / (4 * math.pi**2 * f**2)) ** (1 / 3)      # Kepler
+    h = 4 * math.pi**2 * G * M * R**2 * f**2 / (c**4 * r)
+    sep = f"{R/1e5:.0f} km" if R < 1e17 else f"{R/pc:.3f} pc"
+    print(fmt.format(name, sep, f"{f:.3g}", f"{h:.2e}"))
+```
+
+The last row is the one to stare at. A pair of supermassive black holes
+produces a strain **ten thousand times larger** than the event LIGO detected,
+and LIGO cannot see it at all. Why not is the subject of the next section but
+one.
+
+### Turn the knobs
+
+Change the masses, the frequencies and the distances, and re-run. Try making
+the supermassive pair a hundred times closer, and then try moving GW150914 out
+to a redshift where such mergers were common.
+
+```{pyodide}
+#| label: strain-ladder-live
+#| autorun: false
+
+import math
+
+G = 6.6732e-8          # cm^3 g^-1 s^-2
+c = 2.99792456e10      # cm s^-1
+M_sun = 1.9891e33      # g
+pc = 3.0856e18         # cm
+
+# name, mass of EACH object (M_sun), orbital frequency (Hz), distance (Mpc)
+systems = [                                                   # <- edit this
+    ("neutron stars, 40 Mpc",   1.4,   590.0,       40.0),
+    ("GW150914",               32.5,   125.0,      410.0),
+    ("100 M_sun pair",         50.0,   100.0,      400.0),
+    ("supermassive pair",      5.0e8,    1.0e-9,   400.0),
+]
+
+fmt = "{:<24}{:>12}{:>12}{:>11}"
+print(fmt.format("system", "separation", "f_orb (Hz)", "strain"))
+for name, m, f, d in systems:
+    M, r = m * M_sun, d * 1e6 * pc
+    R = (G * 2 * M / (4 * math.pi**2 * f**2)) ** (1 / 3)      # Kepler
+    h = 4 * math.pi**2 * G * M * R**2 * f**2 / (c**4 * r)
+    sep = f"{R/1e5:.0f} km" if R < 1e17 else f"{R/pc:.3f} pc"
+    print(fmt.format(name, sep, f"{f:.3g}", f"{h:.2e}"))
+```
+
+:::
+
+:::: {.callout-note .worked-example collapse="true" title="Worked example: the strain from GW150914"}
+**The question.** Two black holes of about $32.5\,M_\odot$ each orbit one
+another 125 times per second at a distance of $410\ \mathrm{Mpc}$ from Earth.
+What strain do they produce here?
+
+The givens are the mass of each object, $M = 32.5\,M_\odot$, the orbital
+frequency $f_{\mathrm{orb}} = 125\ \mathrm{Hz}$, and the distance
+$r = 410\ \mathrm{Mpc}$. Equation @eq-strain-binary also needs the separation
+$R$, which is not given — so it has to come from Kepler's third law first.
+
+**The separation.** For two masses $M$ in a circular orbit,
+
+$$
+R^3 = \frac{G\,(2M)}{4\pi^2 f_{\mathrm{orb}}^2} .
+$$
+
+Substitute with the units attached, and no arithmetic yet. The total mass is
+
+$$
+2M = 65 \times 1.989 \times 10^{33}\ \mathrm{g}
+   = 1.29 \times 10^{35}\ \mathrm{g},
+$$
+
+so
+
+$$
+R^3 = \frac{\left(6.673 \times 10^{-8}\ \mathrm{cm^3\,g^{-1}\,s^{-2}}\right)
+            \left(1.29 \times 10^{35}\ \mathrm{g}\right)}
+           {4\pi^2 \left(125\ \mathrm{s^{-1}}\right)^2} .
+$$
+
+Cancel the units before touching the numbers. The grams cancel between $G$ and
+the mass, leaving $\mathrm{cm^3\,s^{-2}}$ on top; the bottom is
+$\mathrm{s^{-2}}$; so the inverse seconds squared cancel as well and we are
+left with $\mathrm{cm^3}$. *Do the units make sense?* We want a separation,
+which is a length, and the cube root of a volume is a length, so yes.
+
+$$
+R^3 = \frac{8.63 \times 10^{27}\ \mathrm{cm^3\,s^{-2}}}
+           {1.54 \times 10^{6}\ \mathrm{s^{-2}}}
+    = 5.59 \times 10^{21}\ \mathrm{cm^3} ,
+$$
+
+$$
+R = 1.77 \times 10^{7}\ \mathrm{cm} = 177\ \mathrm{km} .
+$$
+
+Two black holes of thirty-odd solar masses, 177 kilometers apart. For
+comparison, the Schwarzschild radius of a $65\,M_\odot$ black hole is about
+190 kilometers — so at this moment the two holes are nearly touching, and the
+merger is milliseconds away.
+
+**The strain.** Now @eq-strain-binary. The distance in centimeters, with the
+conversion fractions arranged so that the megaparsecs and parsecs cancel, is
+
+$$
+\begin{aligned}
+r &= 410\ \mathrm{Mpc}
+     \times \frac{10^{6}\ \mathrm{pc}}{1\ \mathrm{Mpc}}
+     \times \frac{3.086 \times 10^{18}\ \mathrm{cm}}{1\ \mathrm{pc}} \\[0.8em]
+  &= 1.27 \times 10^{27}\ \mathrm{cm} .
+\end{aligned}
+$$
+
+Substituting, with the units still attached:
+
+$$
+h \approx \frac{4\pi^2
+  \left(6.673\times10^{-8}\ \mathrm{cm^3\,g^{-1}\,s^{-2}}\right)
+  \left(6.46\times10^{34}\ \mathrm{g}\right)
+  \left(1.77\times10^{7}\ \mathrm{cm}\right)^2
+  \left(125\ \mathrm{s^{-1}}\right)^2}
+  {\left(3.00\times10^{10}\ \mathrm{cm\,s^{-1}}\right)^4
+  \left(1.27\times10^{27}\ \mathrm{cm}\right)} .
+$$
+
+Cancel the units. On top: $\mathrm{cm^3\,g^{-1}\,s^{-2}} \times \mathrm{g}
+\times \mathrm{cm^2} \times \mathrm{s^{-2}} = \mathrm{cm^5\,s^{-4}}$. On the
+bottom: $\mathrm{cm^4\,s^{-4}} \times \mathrm{cm} = \mathrm{cm^5\,s^{-4}}$.
+Everything cancels. *Do the units make sense?* Strain is a fractional change in
+length, which is a pure number, so yes — and if anything had survived we would
+know we had gone wrong before multiplying a single digit.
+
+$$
+h \approx \frac{6.74 \times 10^{46}}{1.03 \times 10^{69}}
+  = 6.6 \times 10^{-23} \cdot 10^{1.4}
+  \approx 1.5 \times 10^{-21} .
+$$
+
+The measured peak strain of GW150914 was about $10^{-21}$. An
+order-of-magnitude formula, three numbers read off a press release, and we land
+within a factor of two of the real measurement.
+::::
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-strain}
+
+1. Two neutron stars, each of mass $1.4\,M_\odot$, are in a circular orbit
+   $30\ \mathrm{km}$ apart. The system is $40\ \mathrm{Mpc}$ away.
+
+   a. Use Kepler's third law to find the orbital frequency, in Hz.
+   b. Use @eq-strain-binary to find the strain at Earth.
+   c. LIGO's arms are $4\ \mathrm{km}$ long. By how much does this wave change
+      the length of one arm? Compare it with the size of a proton, about
+      $10^{-13}\ \mathrm{cm}$.
+
+   ::: {.callout-note .help-solution collapse="true" title="Solution"}
+   **(a)** Kepler's third law in the form on the constants sheet uses
+   astronomical units, years and solar masses, so convert the separation first,
+   with the fraction arranged so that the centimeters cancel:
+
+   $$
+   \begin{aligned}
+   R &= 30\ \mathrm{km}
+        \times \frac{10^{5}\ \mathrm{cm}}{1\ \mathrm{km}}
+        \times \frac{1\ \mathrm{AU}}{1.496 \times 10^{13}\ \mathrm{cm}} \\[0.8em]
+     &= 2.005 \times 10^{-7}\ \mathrm{AU} .
+   \end{aligned}
+   $$
+
+   The total mass is $2 \times 1.4 = 2.8\,M_\odot$. Then
+
+   $$
+   \left(\frac{P}{1\ \mathrm{yr}}\right)^2
+     = \frac{(R/1\ \mathrm{AU})^3}{(M_{\mathrm{tot}}/M_\odot)}
+     = \frac{8.065 \times 10^{-21}}{2.8}
+     = 2.880 \times 10^{-21} ,
+   $$
+
+   a pure number on both sides, as it must be. Taking the square root,
+
+   $$
+   P = 5.367 \times 10^{-11}\ \mathrm{yr}
+       \times \frac{3.156 \times 10^{7}\ \mathrm{s}}{1\ \mathrm{yr}}
+     = 1.694 \times 10^{-3}\ \mathrm{s} ,
+   $$
+
+   so
+
+   $$
+   f_{\mathrm{orb}} = \frac{1}{P} = \boxed{590\ \mathrm{Hz}} .
+   $$
+
+   Two objects heavier than the Sun, going around each other 590 times a
+   second.
+
+   **(b)** Now @eq-strain-binary, with $M = 1.4\,M_\odot$ — the mass of *one*
+   of the two, which is what appears in that formula — and the distance
+   converted the same way as in the worked example,
+   $r = 40\ \mathrm{Mpc} = 1.234 \times 10^{26}\ \mathrm{cm}$. Substituting
+   with the units attached:
+
+   $$
+   h \approx \frac{4\pi^2
+     \left(6.673\times10^{-8}\ \mathrm{cm^3\,g^{-1}\,s^{-2}}\right)
+     \left(2.785\times10^{33}\ \mathrm{g}\right)
+     \left(3.0\times10^{6}\ \mathrm{cm}\right)^2
+     \left(590\ \mathrm{s^{-1}}\right)^2}
+     {\left(3.00\times10^{10}\ \mathrm{cm\,s^{-1}}\right)^4
+     \left(1.234\times10^{26}\ \mathrm{cm}\right)} .
+   $$
+
+   The units cancel exactly as they did in the worked example, leaving a pure
+   number — which is what a strain has to be. Then
+
+   $$
+   h \approx \frac{2.30 \times 10^{46}}{9.97 \times 10^{67}}
+     = \boxed{2.3 \times 10^{-22}} .
+   $$
+
+   **(c)** From @eq-strain-10, $\Delta L = h L$. The strain is a pure number,
+   so $\Delta L$ inherits the units of $L$ — a length, which is what a change
+   in arm length had better be. Converting the arm length,
+
+   $$
+   L = 4\ \mathrm{km} \times \frac{10^{5}\ \mathrm{cm}}{1\ \mathrm{km}}
+     = 4 \times 10^{5}\ \mathrm{cm} ,
+   $$
+
+   $$
+   \Delta L = \left(2.3 \times 10^{-22}\right)
+              \left(4 \times 10^{5}\ \mathrm{cm}\right)
+            = \boxed{9.2 \times 10^{-17}\ \mathrm{cm}} .
+   $$
+
+   As a fraction of a proton,
+
+   $$
+   \frac{\Delta L}{r_p}
+     = \frac{9.2 \times 10^{-17}\ \mathrm{cm}}{10^{-13}\ \mathrm{cm}}
+     = 9.2 \times 10^{-4} ,
+   $$
+
+   a pure number, as a ratio of two lengths must be. **About a thousandth of
+   the width of a proton** — which is exactly the sensitivity LIGO is built to
+   reach, and this system is not hypothetical. It is GW170817.
+   :::
+
+2. Two black holes orbit each other at some separation and frequency, producing
+   a strain $h$ at Earth. A second, identical pair orbits at the same
+   separation and frequency but each hole is twice as massive.
+
+   a. By what factor does the strain change, according to
+      @eq-strain-binary?
+   b. Such a pair cannot actually orbit at the same separation *and* the same
+      frequency. Which of the two would have to change, and why?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
+   For (a), only one factor in @eq-strain-binary contains the mass. For (b),
+   ask what Kepler's third law says about a heavier system at a fixed
+   separation.
+
+   The answers are a factor of 2, and the frequency — a heavier pair at the
+   same separation must orbit faster, by $\sqrt{2}$.
+   :::
+
+3. Improved mirrors make a detector twice as sensitive, so that it can now
+   register a strain half as large as before.
+
+   a. How much further away can it detect an identical source?
+   b. By what factor does the volume of space it surveys increase?
+   c. Assuming sources are spread uniformly through space, by what factor does
+      the detection rate increase?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   **(a)** Twice as far, since $h \propto 1/r$. **(b)** Eight times, since
+   volume goes as $r^3$. **(c)** Eight times. This is why a modest improvement
+   in detector sensitivity produces such a dramatic jump in the number of
+   events: the first LIGO observing run found three mergers, and recent runs
+   find them at better than one a week.
+   :::
+
+4. Using @eq-strain-scaling, compare two binaries at the same distance and the
+   same orbital frequency, one with ten times the mass of the other. Which
+   produces the larger strain, and by what factor?
+
+:::
+
+::: {.content-visible when-format="pdf"}
+{{< include ../../in_class/lec10/exercises00.qmd >}}
+:::
+
+## Catching a wave
+
+A strain of $10^{-21}$ over four kilometers is a displacement of about
+$4 \times 10^{-16}\ \mathrm{cm}$. Building an instrument that can measure that
+is the whole problem, and the solution is to stop trying to measure a length
+and measure a *difference* of two lengths instead.
+
+### Why the detector is an L
+
+Here is the difficulty with measuring a length directly: the ruler stretches
+too. If the wave stretches the arm by one part in $10^{21}$, and you compare
+the arm against a meter stick lying beside it, the meter stick is stretched by
+the same fraction and the comparison shows nothing.
+
+What saves the experiment is the fact from the first section — that a
+gravitational wave stretches one transverse direction while it **squeezes** the
+perpendicular one. So build two arms at right angles. When the wave arrives one
+arm gets longer while the other gets shorter, and the *difference* between them
+is what changes. That difference is a real, measurable quantity, and it is
+twice the change in either arm alone.
+
+That is why every ground-based gravitational-wave detector is an L.
+
+The comparison is done with light. A laser beam is split at the corner and sent
+down both arms, reflected back and forth between mirrors about 280 times so
+that each beam travels an effective path of roughly 1120 kilometers, then
+recombined. The arms are tuned so that the two beams cancel exactly when
+nothing is happening, and the detector sits in darkness. A passing wave changes
+the two path lengths by different amounts, the cancellation stops being
+perfect, and light appears at the output.
+
+![LIGO Hanford, in eastern Washington: one of the two American detectors. The
+two arms run away from the corner station at right angles, each four kilometers
+long, and the beam tubes are held under vacuum along their whole length. The
+second American installation is at Livingston, Louisiana, three thousand
+kilometers away. Photograph by the LIGO Laboratory; public
+domain.](../strong-gravity/ligo-hanford-aerial.jpg){#fig-ligo-10
+width="100%"
+fig-alt="Aerial photograph of a low white building complex in flat, dry
+scrubland. Two long straight enclosed tubes leave the building at right angles
+to each other and run to the horizon, one toward the upper left and one toward
+the upper right, each ending at a small outbuilding."}
+
+### Why there has to be more than one
+
+A single detector cannot distinguish a gravitational wave from a truck going
+past, a distant earthquake, or a mirror settling. The defense is to build the
+same instrument twice, three thousand kilometers apart, and require that a
+signal appear at both sites within the light-travel time between them — about
+ten milliseconds — with consistent amplitude and shape. Local disturbances fail
+that test immediately.
+
+More than two detectors buys something else: a **position on the sky**. The
+table in the first section noted that gravitational-wave detectors have almost
+no directional sensitivity, so the only handle on direction is the difference
+in arrival time between widely separated sites, which fixes the source onto a
+ring on the sky. Add a third site and the rings intersect. The global network
+is now LIGO Hanford and Livingston, Virgo in Italy, KAGRA in Japan, GEO600 in
+Germany, and LIGO-India under construction — and the reason for building
+detectors on four continents is almost entirely this.
+
+### GW150914
+
+On **14 September 2015**, both LIGO detectors recorded a signal — first at
+Livingston, and then, seven milliseconds later, at Hanford
+[@abbott2016]. It lasted about 200 milliseconds in the detectors' sensitive
+band.
+
+Matching the waveform against solutions of Einstein's equations identified it
+as the merger of two black holes of about $36\,M_\odot$ and $29\,M_\odot$,
+leaving a single black hole of about $62\,M_\odot$. Add those up: $36 + 29 =
+65$, and the remnant is 62. **About three solar masses were converted into
+energy** and radiated away as gravitational waves in a fraction of a second.
+
+![The GW150914 detection. The top row is the strain measured at each site, with
+Hanford's trace overlaid on Livingston's at the right to show how well they
+agree. The second row compares the measurement against a waveform computed from
+general relativity for two merging black holes — the theory curve was not
+fitted to the data by adjusting the physics, it was *predicted* from it. The
+third row is what is left over after subtracting the model, which is noise and
+nothing more. The bottom row shows frequency against time: the signal sweeps
+upward as the two holes spiral closer and faster, which is the chirp. Figure by
+[Rothwild](https://commons.wikimedia.org/wiki/File:LIGO_measurement_of_gravitational_waves_multilang.svg),
+used under [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/) and
+modified to show only the English
+labels.](../strong-gravity/gw150914-strain.png){#fig-gw150914-10
+width="100%"
+fig-alt="An eight-panel scientific figure in two columns headed Hanford,
+Washington and Livingston, Louisiana. The top three rows are line plots of
+strain against time: a jagged trace, then a smoother trace with a shaded
+uncertainty band around a matching model curve, then a flat noisy residual. The
+bottom row shows two dark spectrograms in which a bright yellow-green streak
+curves upward toward higher frequency at the right-hand end."}
+
+Look at the bottom row of @fig-gw150914-10, the **chirp**. The frequency climbs
+as the two black holes spiral inward, exactly as the Resolution callout in the
+Hulse–Taylor section said it must: energy leaves, the orbit shrinks, the
+orbital speed rises, and the emission gets stronger, which takes more energy
+out still. The last few orbits of a fifty-year-long inspiral take a fifth of a
+second.
+
+And because the rate of that sweep is fixed by the chirp mass, the shape of the
+curve in that panel is the mass measurement. The amplitude then gives the
+distance, through @eq-strain-scaling. The entire physical description of the
+event — two masses, a distance, a final mass and spin — is read off a signal
+that lasted a fifth of a second and moved the mirrors by a thousandth of a
+proton.
+
+::: {.content-visible when-format="html"}
+[Two years later, in August 2017, the network caught a *neutron-star* merger,
+GW170817, at about 40 Mpc [@abbott2017]. Because neutron stars are made of
+matter rather than pure geometry, this one also produced light: a gamma-ray
+burst two seconds later, and then an explosion that was followed by telescopes
+on every continent for weeks. It is the system you estimated the strain of in
+the first exercise of the previous section.]{.aside}
+:::
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-ligo}
+
+1. A gravitational wave arrives at Livingston, Louisiana and seven milliseconds
+   later at Hanford, Washington, which are $3000\ \mathrm{km}$ apart.
+
+   a. How long would light take to travel between the two sites?
+   b. What does your answer, compared with the measured 7 ms, tell you about
+      the direction the wave came from?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
+   The two sites are separated by $3 \times 10^{8}\ \mathrm{cm}$, and the wave
+   travels at $c$.
+
+   The answer to (a) is $10\ \mathrm{ms}$. For (b): since 7 ms is less than 10
+   ms, the wave did not travel along the line joining the two detectors. The
+   ratio $7/10$ fixes the cosine of the angle between the wave's direction and
+   that line, which places the source on a ring about $45°$ from the axis
+   through the two sites.
+   :::
+
+2. Explain, in three or four sentences, why comparing a detector arm against a
+   ruler lying beside it would not work, while comparing two perpendicular arms
+   against each other does.
+
+3. Suppose someone proposes to detect gravitational waves by building a single
+   detector twice as long instead of two detectors at different sites. Give one
+   thing this would improve and one thing it would not fix.
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   It would improve the raw signal: $\Delta L = hL$, so doubling $L$ doubles
+   the displacement to be measured for the same strain. It would not fix the
+   problem the second *site* exists to solve — telling a real signal from a
+   local disturbance, and getting any directional information at all. A longer
+   single detector is a better instrument and still cannot claim a detection on
+   its own.
+   :::
+
+:::
+
+## The gravitational-wave spectrum
+
+Radio waves and gamma rays are the same phenomenon at frequencies fourteen
+orders of magnitude apart, and no single instrument observes both. Gravitational
+waves cover an even wider range, and the same thing is true: the instrument is
+dictated by the frequency, and the frequency is dictated by the source.
+
+### What sets a binary's frequency
+
+The physics that fixes the band is Kepler's third law together with the fact
+that a binary cannot get closer than a few Schwarzschild radii before it
+merges. The Schwarzschild radius is proportional to the mass, so the smallest
+orbit a binary of mass $M$ can have is proportional to $M$ — and putting that
+separation into Kepler's third law gives a merger frequency
+
+$$
+f_{\mathrm{merge}} \propto \frac{c^3}{G M} .
+$$ {#eq-fmerge}
+
+**The frequency at which a binary merges is inversely proportional to its
+mass.** Two neutron stars merge at hundreds of hertz. Two $30\,M_\odot$ black
+holes merge at a few hundred hertz. Two billion-solar-mass black holes merge at
+around a **nanohertz** — one cycle every thirty years.
+
+That single scaling is why the gravitational-wave sky is divided into bands,
+and why each band is the exclusive property of a particular kind of source.
+
+### The bands
+
+| Band | Frequency | Instrument | Sources |
+|---|---|---|---|
+| Ground interferometers | $10$–$10^{3}\ \mathrm{Hz}$ | LIGO, Virgo, KAGRA | merging neutron stars and stellar-mass black holes |
+| Space interferometers | $10^{-4}$–$10^{-1}\ \mathrm{Hz}$ | LISA | massive black hole binaries, white dwarf binaries, stellar-mass objects spiraling into massive ones |
+| Pulsar timing | $10^{-9}$–$10^{-7}\ \mathrm{Hz}$ | NANOGrav and the other arrays | supermassive black hole binaries |
+| Primordial | $\sim 10^{-16}\ \mathrm{Hz}$ | the polarization of the cosmic microwave background | gravitational waves from inflation |
+
+Ground-based detectors have arms of kilometers and are limited at low
+frequencies by seismic noise — the ground itself moves more than the wave does.
+**LISA** will be three spacecraft in a triangle with arms of about 2.5 million
+kilometers, trailing the Earth around the Sun, where there is no ground to
+shake. It is led by ESA with NASA participation and is expected to launch in
+the mid-2030s. The bottom two rows of that table need no instrument built by
+anyone: they use the Galaxy, and the early universe, as the apparatus.
+
+::: {.callout-tip .resolution collapse="true" title="Think about why the loudest sources in the Universe are not the easiest to detect"}
+Run the numbers in the Numerical exploration tab again. A pair of supermassive
+black holes produces a strain of about $10^{-16}$ at the Earth — ten thousand
+times larger than GW150914, which is the most violent event ever recorded by a
+human instrument.
+
+LIGO cannot detect it, and never will, and the reason has nothing to do with
+sensitivity.
+
+A detector does not measure strain, exactly. It measures *changes* in strain,
+and it has to see several cycles to tell a wave from a slow drift. The
+supermassive pair takes **thirty years** to complete one orbit. Over the
+fraction of a second that a LIGO measurement is sensitive to, that wave is not
+a wave at all — it is a constant, and a constant stretch of both arms by the
+same fraction is invisible to an instrument built to measure a difference.
+
+To hear a thirty-year wave you need an experiment that runs for decades and a
+baseline much longer than four kilometers. Both of those are the subject of the
+next section.
+
+**The general lesson is worth keeping.** Amplitude is not detectability. What
+a detector can see is set by the match between the source's frequency and the
+instrument's band, and only after that by how loud the source is.
+:::
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-spectrum}
+
+1. Using @eq-fmerge and the fact that two $30\,M_\odot$ black holes merge at
+   around $300\ \mathrm{Hz}$, estimate the frequency at which two
+   $3 \times 10^{8}\,M_\odot$ black holes merge. Express your answer both in
+   hertz and as a period.
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   The mass ratio is $3\times10^{8}/30 = 10^{7}$, and the frequency scales as
+   $1/M$, so
+
+   $$
+   f = \frac{300\ \mathrm{Hz}}{10^{7}} = 3 \times 10^{-5}\ \mathrm{Hz} ,
+   $$
+
+   a period of $1/(3\times10^{-5}\ \mathrm{s^{-1}}) = 3.3\times10^{4}\
+   \mathrm{s}$, or about nine hours. Note where that lands: not in the
+   pulsar-timing band, but in LISA's. Supermassive binaries *merge* in LISA's
+   band and spend the preceding millions of years inspiraling in the
+   pulsar-timing band, which is why the two experiments see different stages of
+   the same population.
+   :::
+
+2. A detector can only identify a wave if it observes several full cycles.
+   Explain why this means a fifteen-year observing campaign cannot detect a
+   wave with a period of fifty years, no matter how strong the wave is.
+
+3. Rank these four systems by the gravitational-wave frequency they produce,
+   highest first, and say which instrument in the table would detect each: two
+   white dwarfs orbiting every five minutes; two neutron stars a moment before
+   merger; two supermassive black holes 0.05 parsecs apart; two
+   $30\,M_\odot$ black holes a moment before merger.
+
+4. A student says that because gravitational-wave amplitude falls off only as
+   $1/r$, while light falls off as $1/r^2$, gravitational-wave astronomy should
+   be *easier* than electromagnetic astronomy at large distances. Identify what
+   is right and what is wrong about this.
+
+:::
+
+## Listening with pulsars
+
+The nanohertz band cannot be reached by any instrument that can be built on or
+near the Earth: the wave's period is decades and its wavelength is tens of
+light-years. So the array is made out of the Galaxy instead.
+
+### One pulsar is a clock; many pulsars are a detector
+
+Start with a single millisecond pulsar. Its pulses arrive with extraordinary
+regularity, so we can build a model that predicts every pulse arrival time for
+years ahead, and then look at the **residuals** — the differences between when
+the pulses actually arrive and when the model says they should.
+
+A gravitational wave passing between us and the pulsar stretches and squeezes
+the intervening space, changing the distance the pulses must travel and so
+shifting their arrival times. The shift is of order the strain times the
+light-travel time, which for $h \sim 10^{-15}$ over a few thousand light-years
+comes out at tens of nanoseconds.
+
+The trouble is that nanosecond-scale wandering in a single pulsar's arrival
+times has a hundred explanations that are not gravitational waves: the pulsar's
+own rotation is not perfectly steady, the interstellar medium between us and it
+changes, our model of the Earth's own orbit is imperfect. One pulsar can never
+be convincing.
+
+**An array can.** Monitor dozens of millisecond pulsars scattered across the
+sky for decades, and a passing gravitational-wave background affects all of
+them — but not independently. The *same* wave passing the Earth imprints a
+correlated wobble on every pulsar's residuals, and the strength of that
+correlation depends only on the **angle between the two pulsars on the sky**.
+
+### The Hellings–Downs curve
+
+That correlation has a definite, calculable shape, derived by Ron Hellings and
+George Downs in 1983 [@hellings1983]. It comes out of the quadrupolar character
+of the waves — the same $+$ and $\times$ pattern from the first section, now
+averaged over all the directions a wave might come from — and the derivation is
+beyond what we will do here. What matters is the shape itself, and that you
+recognize what it is for.
+
+For two pulsars close together on the sky the correlation is strongly positive:
+a wave stretching the space toward one is stretching the space toward the other
+in much the same way. As the angle opens the correlation falls, crosses zero
+around 50°, and goes **negative** near 80°–90° — one pulsar's path is being
+stretched while the other's is squeezed. Then it rises again toward 180°, where
+two pulsars on opposite sides of the sky are partly correlated once more.
+
+That curve is the fingerprint. Instrumental errors, clock errors and errors in
+our model of the solar system all produce correlations too, but with completely
+different shapes — a clock error, for instance, correlates every pair equally
+regardless of angle. **Nothing but a background of gravitational waves produces
+the Hellings–Downs shape**, which is why finding it in the data is the
+detection.
+
+### What the arrays can hear
+
+The band a pulsar timing array is sensitive to is set by its observing
+campaign, not by any hardware. The longest wave you can identify is one that
+fits inside the total span of the data, and the shortest is one you sample
+often enough to resolve:
+
+$$
+f_{\mathrm{min}} = \frac{1}{T_{\mathrm{obs}}} ,
+\qquad
+f_{\mathrm{max}} \sim \frac{1}{2\,\Delta t} ,
+$$ {#eq-pta-band}
+
+where $T_{\mathrm{obs}}$ is the length of the campaign and $\Delta t$ the
+interval between observations. For a fifteen-year data set observed every
+couple of weeks, that is about $2\ \mathrm{nHz}$ to $400\ \mathrm{nHz}$ —
+precisely the band where supermassive black hole binaries inspiral.
+
+Note what @eq-pta-band implies: **the detector gets better simply by waiting.**
+Every year of additional data lowers $f_{\mathrm{min}}$ and improves the
+sensitivity across the whole band. There is no upgrade to install.
+
+### A background, not a source
+
+Almost every galaxy contains a supermassive black hole, and galaxies merge.
+When two galaxies merge their black holes sink to the center of the remnant,
+pair up, and eventually form a binary — and there have been enough galaxy
+mergers over the history of the universe that the sky should contain a great
+many such binaries at once.
+
+Their signals overlap. What a pulsar timing array sees is therefore not one
+source but a **background**: the summed hum of every inspiraling supermassive
+binary in the universe, in the way that a crowded room produces a roar rather
+than a conversation.
+
+That hum has a predictable spectrum. Each binary's strain grows as
+$f^{2/3}$ from @eq-strain-scaling, and the population's distribution in
+frequency follows from how fast gravitational radiation drives each one through
+the band. The result, worked through, is that the *power* in the timing
+residuals should fall as $f^{-13/3}$.
+
+**The North American Nanohertz Observatory for Gravitational Waves
+(NANOGrav)** has been monitoring millisecond pulsars with the Green Bank
+Telescope, Arecibo, the VLA and CHIME since 2004. In 2023 its fifteen-year data
+set reported evidence for exactly this background, with the Hellings–Downs
+correlation present at a significance of about three to four sigma
+[@agazie2023]. The measured spectrum of the timing residuals is consistent with
+the $f^{-13/3}$ expected from a population of supermassive binaries, though the
+uncertainties are still wide enough to admit other explanations, including
+gravitational waves from the early universe. Three to four sigma is evidence,
+not proof; the arrays are still accumulating data, and by @eq-pta-band that
+alone makes the result stronger every year.
+
+If it holds up, it is a measurement of the whole population of supermassive
+black hole binaries at once — a subject we will come back to when we look at
+how supermassive black holes and their galaxies grow together.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-pta}
+
+1. A pulsar timing array has been running for $T_{\mathrm{obs}} = 15$ years and
+   observes each pulsar every 14 days.
+
+   a. Find $f_{\mathrm{min}}$ and $f_{\mathrm{max}}$ from @eq-pta-band, in Hz.
+   b. What are the corresponding wave periods, in years and in days?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   **(a)** Converting the campaign length with the fraction arranged so the
+   years cancel,
+
+   $$
+   T_{\mathrm{obs}} = 15\ \mathrm{yr}
+     \times \frac{3.156 \times 10^{7}\ \mathrm{s}}{1\ \mathrm{yr}}
+     = 4.73 \times 10^{8}\ \mathrm{s} ,
+   $$
+
+   so $f_{\mathrm{min}} = 1/T_{\mathrm{obs}} = 2.1 \times 10^{-9}\ \mathrm{Hz}$,
+   or $2.1\ \mathrm{nHz}$. Likewise $2\,\Delta t = 28\ \mathrm{d} =
+   2.42 \times 10^{6}\ \mathrm{s}$, giving $f_{\mathrm{max}} =
+   4.1 \times 10^{-7}\ \mathrm{Hz}$, or about $410\ \mathrm{nHz}$.
+   **(b)** The periods are the campaign length and twice the cadence by
+   construction: 15 years and 28 days.
+   :::
+
+2. Explain why a pulsar timing array becomes more sensitive every year without
+   any change to the telescopes, and name the one thing about the band that
+   does *not* improve with time.
+
+3. Suppose a clock at the observatory runs slow by a slowly drifting amount.
+
+   a. Would this produce correlated residuals between pulsars?
+   b. How would the correlation depend on the angle between two pulsars on the
+      sky?
+   c. Why does this not masquerade as a gravitational-wave background?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   **(a)** Yes — every pulse from every pulsar is timed against the same clock,
+   so a clock error shifts all of them together. **(b)** Not at all: the shift
+   is identical for every pulsar regardless of where it is on the sky, so the
+   correlation is a flat line. **(c)** Because a flat correlation is not the
+   Hellings–Downs shape. The angular dependence is precisely what
+   distinguishes a gravitational-wave background from the errors that would
+   otherwise mimic it, and it is the reason the search is built around the
+   correlation rather than around any one pulsar's residuals.
+   :::
+
+4. A single supermassive binary $0.05\ \mathrm{pc}$ across produces a strain of
+   about $10^{-16}$ at $400\ \mathrm{Mpc}$, while the background NANOGrav
+   reports corresponds to a strain of roughly $10^{-15}$ summed over the whole
+   sky. Explain how the second number can be larger than the first when it is
+   made up of sources that are individually much fainter.
+
+:::
+
+## Summary
+
+| Idea | Expression | What to remember |
+|---|---|---|
+| What radiates | a time-varying mass **quadrupole** | mass and momentum are conserved, so there is no monopole or dipole radiation, and a spherical collapse emits nothing |
+| Strain | $h = \Delta L / L$ | a pure number; the fractional stretching of space, and what a detector measures |
+| Two polarizations | $h_+$ and $h_\times$, at 45° | stretch one transverse direction, squeeze the other, then reverse |
+| Strain from a binary | $h \approx 4\pi^2 G M R^2 f_{\mathrm{orb}}^2 / c^4 r$ | bigger for larger masses, faster orbits and nearer sources |
+| The same thing with Kepler | $h \propto M^{5/3} f_{\mathrm{orb}}^{2/3} / r$ | the chirp rate gives the mass, and the mass plus the amplitude give the distance — a standard siren |
+| Distance dependence | $h \propto 1/r$, not $1/r^2$ | twice the sensitivity is twice the range and eight times the event rate |
+| Detector geometry | two perpendicular arms | the wave squeezes one while stretching the other, so the *difference* is measurable when a single length is not |
+| Merger frequency | $f_{\mathrm{merge}} \propto c^3 / GM$ | heavier binaries merge at lower frequencies, which is what divides the spectrum into bands |
+| Pulsar timing band | $f_{\mathrm{min}} = 1/T_{\mathrm{obs}}$, $f_{\mathrm{max}} \sim 1/2\Delta t$ | about 2 to 400 nHz, and it improves just by waiting |
+| The signature | the Hellings–Downs curve | correlation between pulsars as a function of their angular separation; nothing else produces that shape |
+
+A century after they were predicted, gravitational waves have gone from an
+untestable consequence of general relativity to a working branch of
+observational astronomy, and the two ends of the spectrum are telling us about
+two different populations of black holes. Ground-based detectors now find
+stellar-mass mergers at better than one a week; pulsar timing arrays are
+closing in on the collective hum of supermassive binaries across the whole sky.
+Both of those populations have to come from somewhere. Next we turn to how
+stars live and die, and therefore to where stellar-mass black holes come from
+in the first place.
+
+:::: {.content-visible when-format="html"}
+## References {.unnumbered}
+
+::: {#refs}
+:::
+::::
+
+::: {.content-visible when-format="pdf"}
+
+```{=latex}
+\clearpage
+\tableofcontents
+```
+:::
