@@ -117,6 +117,97 @@ The numbers $h_+$ and $h_\times$ are the amplitude of the wave. They are
 so they are pure numbers, and as we are about to see they are extraordinarily
 small ones.
 
+::: {.content-visible when-format="html"}
+
+::: {#fig-polarization}
+
+```{=html}
+<div id="pol-fig" class="pol-figure">
+  <div class="pol-plot"></div>
+  <p class="pol-controls">
+    <button type="button" class="pol-play">Pause</button>
+  </p>
+</div>
+
+<style>
+.pol-figure {
+  margin: 1.6em 0 1.2em;
+  padding: 1em 1.1em .6em;
+  border: 1px solid #e1e0d9;
+  border-radius: 6px;
+  background: #fcfcfb;
+}
+.pol-svg { display: block; max-width: 560px; margin: 0 auto; }
+.pol-controls { margin: .2em 0 0; text-align: center; }
+.pol-play {
+  font: inherit; font-size: .85rem; padding: .22em .9em;
+  border: 1px solid #c3c2b7; border-radius: 4px;
+  background: #fff; color: #0b0b0b; cursor: pointer;
+}
+.pol-play:hover { background: #f4f4f2; }
+</style>
+
+<script type="module" src="polarization.js"></script>
+```
+
+A ring of free particles with a gravitational wave passing straight through it,
+traveling toward you out of the page. The dashed circle is where the particles
+would sit if no wave were passing. On the left is the **plus** polarization,
+$h_+$, which stretches and squeezes along the horizontal and vertical; on the
+right the **cross** polarization, $h_\times$, doing the same thing along axes
+rotated by 45°. Nothing is pushing the particles: each one is in free fall and
+feels no force at all. What changes is the distance between them. The
+distortion here is exaggerated by about twenty orders of magnitude — a real
+wave moves these dots by much less than the width of an atomic nucleus.
+
+:::
+
+:::
+
+::: {.content-visible when-format="pdf"}
+
+```{python}
+#| label: fig-polarization
+#| echo: false
+#| fig-cap: "A ring of free particles with a gravitational wave passing straight through it, traveling toward the reader out of the page, shown at five points through half a cycle. The dashed circle is where the particles would sit with no wave passing. The top row is the plus polarization, $h_+$, which stretches and squeezes along the horizontal and vertical; the bottom row is the cross polarization, $h_\\times$, doing the same along axes rotated by 45°. Nothing pushes the particles — each is in free fall and feels no force. What changes is the distance between them. The distortion is exaggerated by about twenty orders of magnitude."
+#| fig-alt: "Ten small panels in two rows of five. Each panel shows eighteen dots arranged around a dashed reference circle. Along the top row, labeled plus, the ring is an ellipse stretched horizontally, then less stretched, then a circle, then an ellipse stretched vertically, then more stretched still. Along the bottom row, labeled cross, the same sequence occurs but the ellipses are tilted at 45 degrees, stretched first along one diagonal and then along the other."
+#| fig-height: 3.1
+
+fig, axes = plt.subplots(2, 5, figsize=(6.2, 3.1))
+
+N, AMP = 18, 0.42
+th = np.linspace(0, 2 * np.pi, N, endpoint=False)
+x0, y0 = np.cos(th), np.sin(th)
+ring = np.linspace(0, 2 * np.pi, 200)
+
+for row, (mode, color, name) in enumerate(
+        (("plus", BLUE, "plus"), ("cross", ORANGE, "cross"))):
+    for col, frac in enumerate((0, 0.125, 0.25, 0.375, 0.5)):
+        ax = axes[row, col]
+        a = (AMP / 2) * np.cos(2 * np.pi * frac)
+        if mode == "plus":
+            x, y = x0 * (1 + a), y0 * (1 - a)
+        else:
+            x, y = x0 + a * y0, y0 + a * x0
+        ax.plot(np.cos(ring), np.sin(ring), "--", color=AXIS, linewidth=0.8)
+        ax.plot(x, y, "o", color=color, markersize=2.6, linestyle="none")
+        ax.set_xlim(-1.45, 1.45)
+        ax.set_ylim(-1.45, 1.45)
+        ax.set_aspect("equal")
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ax.grid(False)
+        for side in ax.spines.values():
+            side.set_visible(False)
+    axes[row, 0].set_ylabel(name, color=INK2, fontsize=10,
+                            rotation=0, ha="right", va="center", labelpad=10)
+
+plt.tight_layout()
+plt.show()
+```
+
+:::
+
 ### How the two kinds of radiation compare
 
 Nearly every instinct built up from doing astronomy with light has to be
