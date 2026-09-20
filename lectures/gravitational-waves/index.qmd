@@ -56,10 +56,10 @@ positive and a negative charge, shake them back and forth, and the changing
 dipole moment radiates. Gravity cannot do that, and the reason is a
 conservation law.
 
-Gravity has no negative mass, so the gravitational analogue of the total charge
+Gravity has no negative mass, so the gravitational analog of the total charge
 is the **total mass**, and the total mass of an isolated system does not
 change. A quantity that does not change cannot oscillate, so there is no
-monopole radiation. Go one step up and the gravitational analogue of the dipole
+monopole radiation. Go one step up and the gravitational analog of the dipole
 moment turns out to be the total **momentum** of the system, and that does not
 change either. So there is no dipole radiation.
 
@@ -310,7 +310,7 @@ The system's numbers are what make it useful:
 |---|---|
 | Spin period | $59\ \mathrm{ms}$ — about 17 rotations per second |
 | Orbital period | $7.75\ \mathrm{hours}$ |
-| Orbital separation | roughly the radius of the Sun |
+| Orbital separation | about three solar radii |
 | Orbital speed | of order $10^{-3}\,c$ |
 
 Two neutron stars, moving fast, close together, in a decidedly non-spherical
@@ -327,8 +327,46 @@ the horizontal, and the shape of the bend is a prediction of general relativity
 with no adjustable parameters.
 
 The measurement has now been running for fifty years. Over the first thirty of
-them the accumulated shift reached about **40 seconds**, and it tracked the
+them the accumulated shift reached **nearly 40 seconds**, and it tracked the
 general-relativistic prediction the whole way.
+
+```{python}
+#| label: fig-hulse
+#| fig-cap: "The general-relativistic prediction for the Hulse–Taylor binary pulsar, computed from a decaying orbital period of $\\dot P_b = -2.403 \\times 10^{-12}$ and an orbital period of $7.75$ hours. If the orbit did not decay, each periastron would arrive exactly one period after the last and the shift would stay on the flat dashed line. Because each orbit is about a tenth of a nanosecond shorter than the one before, the shortfall accumulates as a parabola: 39 seconds after thirty years, and more than a minute and a half after fifty. The measured shift follows this curve to about 0.2% [@weisberg2016] — which is a measurement of the energy the system is radiating as gravitational waves, made fifty years before anyone detected one directly."
+#| fig-alt: "A graph of the cumulative shift in periastron time in seconds, from zero down to minus one hundred and twenty, against year, from 1975 to 2025. A flat dashed gray line runs along zero, labeled as the prediction if the orbit did not decay. A solid blue curve starts at zero in 1975 and bends increasingly steeply downward, reaching about minus thirty-nine seconds in 2005, where a marker and a label note the value, and about minus one hundred and seven seconds by 2025."
+#| fig-height: 3.9
+
+fig, ax = plt.subplots(figsize=(6.2, 3.9))
+
+yr = 3.156e7                       # s
+P_b = 0.322997448918 * 86400       # orbital period, s
+P_dot = -2.40263e-12               # general-relativistic prediction
+
+t_yr = np.linspace(0, 50, 400)
+shift = 0.5 * P_dot * (t_yr * yr)**2 / P_b
+
+ax.axhline(0, color=AXIS, linewidth=1.2, linestyle="--", zorder=2)
+ax.annotate("if the orbit did not decay", (1975 + 2, 0),
+            textcoords="offset points", xytext=(0, 7), ha="left",
+            fontsize=9.5, color=MUTED, zorder=4)
+
+ax.plot(1975 + t_yr, shift, "-", color=BLUE, zorder=3)
+
+t_mark = 30.0
+s_mark = 0.5 * P_dot * (t_mark * yr)**2 / P_b
+ax.plot(1975 + t_mark, s_mark, "o", color=BLUE, markersize=7,
+        markeredgecolor=SURFACE, markeredgewidth=1.2, zorder=4)
+ax.annotate(f"{abs(s_mark):.0f} s after 30 years",
+            (1975 + t_mark, s_mark), textcoords="offset points",
+            xytext=(-8, 6), ha="right", fontsize=9.5, color=BLUE, zorder=5,
+            bbox=dict(facecolor=SURFACE, edgecolor="none", pad=1.5))
+
+ax.set_xlim(1975, 2025)
+ax.set_ylim(-120, 12)
+ax.set_xlabel("year")
+ax.set_ylabel("cumulative shift of periastron time (s)")
+plt.show()
+```
 
 ::: {.callout-tip .resolution collapse="true" title="Think about what happens to the orbital speed as the orbit loses energy"}
 The stars speed up.
@@ -376,10 +414,10 @@ merger take milliseconds.
    so precisely.
    :::
 
-2. Explain, in three or four sentences, why a plot of the accumulated shift in
-   periastron time against year curves downward instead of following a straight
-   line. Your answer should distinguish between an orbit whose period is
-   constant but slightly mismeasured, and an orbit whose period is changing.
+2. Explain, in three or four sentences, why the curve in @fig-hulse bends
+   downward instead of following a straight line. Your answer should
+   distinguish between an orbit whose period is constant but slightly
+   mismeasured, and an orbit whose period is changing.
 
 3. Suppose a binary loses energy to gravitational waves at a constant rate.
    Using $E = -Gm_1m_2/2a$, does the separation shrink at a constant rate, or
@@ -530,27 +568,31 @@ self-consistent system.
 
 import math
 
-G = 6.6732e-8          # cm^3 g^-1 s^-2
-c = 2.99792456e10      # cm s^-1
-M_sun = 1.9891e33      # g
-pc = 3.0856e18         # cm
+G = 6.6732e-8      # cm^3 g^-1 s^-2
+c = 2.99792456e10  # cm s^-1
+M_sun = 1.9891e33  # g
+pc = 3.0856e18     # cm
 
-# name, mass of EACH object (M_sun), orbital frequency (Hz), distance (Mpc)
+# each row: name, mass of ONE of the two objects
+# (M_sun), orbital frequency (Hz), distance (Mpc)
 systems = [
-    ("neutron stars, 40 Mpc",   1.4,   590.0,       40.0),
-    ("GW150914",               32.5,   125.0,      410.0),
-    ("100 M_sun pair",         50.0,   100.0,      400.0),
-    ("supermassive pair",      5.0e8,    1.0e-9,   400.0),
+    ("neutron stars", 1.4, 590.0, 40.0),
+    ("GW150914", 32.5, 75.0, 410.0),
+    ("stellar pair", 50.0, 100.0, 400.0),
+    ("supermassive", 5.0e8, 1.0e-9, 400.0),
 ]
 
-fmt = "{:<24}{:>12}{:>12}{:>11}"
-print(fmt.format("system", "separation", "f_orb (Hz)", "strain"))
+fmt = "{:<15}{:>11}{:>10}{:>10}"
+print(fmt.format("system", "separation",
+                 "f_orb", "strain"))
 for name, m, f, d in systems:
     M, r = m * M_sun, d * 1e6 * pc
-    R = (G * 2 * M / (4 * math.pi**2 * f**2)) ** (1 / 3)      # Kepler
-    h = 4 * math.pi**2 * G * M * R**2 * f**2 / (c**4 * r)
-    sep = f"{R/1e5:.0f} km" if R < 1e17 else f"{R/pc:.3f} pc"
-    print(fmt.format(name, sep, f"{f:.3g}", f"{h:.2e}"))
+    R = (G * 2*M / (4 * math.pi**2 * f**2))**(1/3)
+    h = 4*math.pi**2 * G*M * R**2 * f**2 / (c**4 * r)
+    sep = (f"{R/1e5:.0f} km" if R < 1e17
+           else f"{R/pc:.3f} pc")
+    print(fmt.format(name, sep,
+                     f"{f:.3g}", f"{h:.2e}"))
 ```
 
 The last row is the one to stare at. A pair of supermassive black holes
@@ -570,38 +612,42 @@ to a redshift where such mergers were common.
 
 import math
 
-G = 6.6732e-8          # cm^3 g^-1 s^-2
-c = 2.99792456e10      # cm s^-1
-M_sun = 1.9891e33      # g
-pc = 3.0856e18         # cm
+G = 6.6732e-8      # cm^3 g^-1 s^-2
+c = 2.99792456e10  # cm s^-1
+M_sun = 1.9891e33  # g
+pc = 3.0856e18     # cm
 
-# name, mass of EACH object (M_sun), orbital frequency (Hz), distance (Mpc)
-systems = [                                                   # <- edit this
-    ("neutron stars, 40 Mpc",   1.4,   590.0,       40.0),
-    ("GW150914",               32.5,   125.0,      410.0),
-    ("100 M_sun pair",         50.0,   100.0,      400.0),
-    ("supermassive pair",      5.0e8,    1.0e-9,   400.0),
+# each row: name, mass of ONE of the two objects
+# (M_sun), orbital frequency (Hz), distance (Mpc)
+systems = [                # <- edit this
+    ("neutron stars", 1.4, 590.0, 40.0),
+    ("GW150914", 32.5, 75.0, 410.0),
+    ("stellar pair", 50.0, 100.0, 400.0),
+    ("supermassive", 5.0e8, 1.0e-9, 400.0),
 ]
 
-fmt = "{:<24}{:>12}{:>12}{:>11}"
-print(fmt.format("system", "separation", "f_orb (Hz)", "strain"))
+fmt = "{:<15}{:>11}{:>10}{:>10}"
+print(fmt.format("system", "separation",
+                 "f_orb", "strain"))
 for name, m, f, d in systems:
     M, r = m * M_sun, d * 1e6 * pc
-    R = (G * 2 * M / (4 * math.pi**2 * f**2)) ** (1 / 3)      # Kepler
-    h = 4 * math.pi**2 * G * M * R**2 * f**2 / (c**4 * r)
-    sep = f"{R/1e5:.0f} km" if R < 1e17 else f"{R/pc:.3f} pc"
-    print(fmt.format(name, sep, f"{f:.3g}", f"{h:.2e}"))
+    R = (G * 2*M / (4 * math.pi**2 * f**2))**(1/3)
+    h = 4*math.pi**2 * G*M * R**2 * f**2 / (c**4 * r)
+    sep = (f"{R/1e5:.0f} km" if R < 1e17
+           else f"{R/pc:.3f} pc")
+    print(fmt.format(name, sep,
+                     f"{f:.3g}", f"{h:.2e}"))
 ```
 
 :::
 
 :::: {.callout-note .worked-example collapse="true" title="Worked example: the strain from GW150914"}
 **The question.** Two black holes of about $32.5\,M_\odot$ each orbit one
-another 125 times per second at a distance of $410\ \mathrm{Mpc}$ from Earth.
+another 75 times per second, at a distance of $410\ \mathrm{Mpc}$ from Earth.
 What strain do they produce here?
 
 The givens are the mass of each object, $M = 32.5\,M_\odot$, the orbital
-frequency $f_{\mathrm{orb}} = 125\ \mathrm{Hz}$, and the distance
+frequency $f_{\mathrm{orb}} = 75\ \mathrm{Hz}$, and the distance
 $r = 410\ \mathrm{Mpc}$. Equation @eq-strain-binary also needs the separation
 $R$, which is not given — so it has to come from Kepler's third law first.
 
@@ -612,40 +658,35 @@ R^3 = \frac{G\,(2M)}{4\pi^2 f_{\mathrm{orb}}^2} .
 $$
 
 Substitute with the units attached, and no arithmetic yet. The total mass is
-
-$$
-2M = 65 \times 1.989 \times 10^{33}\ \mathrm{g}
-   = 1.29 \times 10^{35}\ \mathrm{g},
-$$
-
-so
+$2M = 65 \times 1.989 \times 10^{33}\ \mathrm{g} = 1.293 \times 10^{35}\
+\mathrm{g}$, so
 
 $$
 R^3 = \frac{\left(6.673 \times 10^{-8}\ \mathrm{cm^3\,g^{-1}\,s^{-2}}\right)
-            \left(1.29 \times 10^{35}\ \mathrm{g}\right)}
-           {4\pi^2 \left(125\ \mathrm{s^{-1}}\right)^2} .
+            \left(1.293 \times 10^{35}\ \mathrm{g}\right)}
+           {4\pi^2 \left(75\ \mathrm{s^{-1}}\right)^2} .
 $$
 
 Cancel the units before touching the numbers. The grams cancel between $G$ and
 the mass, leaving $\mathrm{cm^3\,s^{-2}}$ on top; the bottom is
-$\mathrm{s^{-2}}$; so the inverse seconds squared cancel as well and we are
-left with $\mathrm{cm^3}$. *Do the units make sense?* We want a separation,
-which is a length, and the cube root of a volume is a length, so yes.
+$\mathrm{s^{-2}}$; so the inverse seconds squared cancel too and we are left
+with $\mathrm{cm^3}$. *Do the units make sense?* We want a separation, which is
+a length, and the cube root of a volume is a length, so yes.
 
 $$
-R^3 = \frac{8.63 \times 10^{27}\ \mathrm{cm^3\,s^{-2}}}
-           {1.54 \times 10^{6}\ \mathrm{s^{-2}}}
-    = 5.59 \times 10^{21}\ \mathrm{cm^3} ,
+R^3 = \frac{8.628 \times 10^{27}\ \mathrm{cm^3\,s^{-2}}}
+           {2.221 \times 10^{5}\ \mathrm{s^{-2}}}
+    = 3.885 \times 10^{22}\ \mathrm{cm^3} ,
 $$
 
 $$
-R = 1.77 \times 10^{7}\ \mathrm{cm} = 177\ \mathrm{km} .
+R = 3.39 \times 10^{7}\ \mathrm{cm} = 339\ \mathrm{km} .
 $$
 
-Two black holes of thirty-odd solar masses, 177 kilometers apart. For
-comparison, the Schwarzschild radius of a $65\,M_\odot$ black hole is about
-190 kilometers — so at this moment the two holes are nearly touching, and the
-merger is milliseconds away.
+Two black holes of thirty-odd solar masses, 339 kilometers apart. The
+Schwarzschild radius of a $65\,M_\odot$ black hole is 192 kilometers, so the
+two are separated by less than two Schwarzschild radii and the merger is
+milliseconds away.
 
 **The strain.** Now @eq-strain-binary. The distance in centimeters, with the
 conversion fractions arranged so that the megaparsecs and parsecs cancel, is
@@ -655,39 +696,68 @@ $$
 r &= 410\ \mathrm{Mpc}
      \times \frac{10^{6}\ \mathrm{pc}}{1\ \mathrm{Mpc}}
      \times \frac{3.086 \times 10^{18}\ \mathrm{cm}}{1\ \mathrm{pc}} \\[0.8em]
-  &= 1.27 \times 10^{27}\ \mathrm{cm} .
+  &= 1.265 \times 10^{27}\ \mathrm{cm} .
 \end{aligned}
 $$
 
-Substituting, with the units still attached:
+Substituting, with the units still attached, and taking the top and the bottom
+of @eq-strain-binary one at a time so that neither runs off the page:
 
 $$
-h \approx \frac{4\pi^2
-  \left(6.673\times10^{-8}\ \mathrm{cm^3\,g^{-1}\,s^{-2}}\right)
-  \left(6.46\times10^{34}\ \mathrm{g}\right)
-  \left(1.77\times10^{7}\ \mathrm{cm}\right)^2
-  \left(125\ \mathrm{s^{-1}}\right)^2}
-  {\left(3.00\times10^{10}\ \mathrm{cm\,s^{-1}}\right)^4
-  \left(1.27\times10^{27}\ \mathrm{cm}\right)} .
+\begin{aligned}
+G M &= \left(6.673 \times 10^{-8}\ \mathrm{cm^3\,g^{-1}\,s^{-2}}\right) \\[0.8em]
+    &\qquad \times \left(6.465 \times 10^{34}\ \mathrm{g}\right) \\[0.8em]
+R^2 f_{\mathrm{orb}}^2
+    &= \left(3.39 \times 10^{7}\ \mathrm{cm}\right)^2
+       \left(75\ \mathrm{s^{-1}}\right)^2 \\[0.8em]
+c^4 r &= \left(3.00 \times 10^{10}\ \mathrm{cm\,s^{-1}}\right)^4
+         \left(1.265 \times 10^{27}\ \mathrm{cm}\right)
+\end{aligned}
 $$
 
-Cancel the units. On top: $\mathrm{cm^3\,g^{-1}\,s^{-2}} \times \mathrm{g}
-\times \mathrm{cm^2} \times \mathrm{s^{-2}} = \mathrm{cm^5\,s^{-4}}$. On the
-bottom: $\mathrm{cm^4\,s^{-4}} \times \mathrm{cm} = \mathrm{cm^5\,s^{-4}}$.
-Everything cancels. *Do the units make sense?* Strain is a fractional change in
+Cancel the units. The first line carries $\mathrm{cm^3\,g^{-1}\,s^{-2}} \times
+\mathrm{g} = \mathrm{cm^3\,s^{-2}}$, the second $\mathrm{cm^2\,s^{-2}}$, and
+the two together make $\mathrm{cm^5\,s^{-4}}$. The third carries
+$\mathrm{cm^4\,s^{-4}} \times \mathrm{cm} = \mathrm{cm^5\,s^{-4}}$ as well, so
+everything cancels. *Do the units make sense?* Strain is a fractional change in
 length, which is a pure number, so yes — and if anything had survived we would
 know we had gone wrong before multiplying a single digit.
 
 $$
-h \approx \frac{6.74 \times 10^{46}}{1.03 \times 10^{69}}
-  = 6.6 \times 10^{-23} \cdot 10^{1.4}
-  \approx 1.5 \times 10^{-21} .
+\begin{aligned}
+G M &= 4.314 \times 10^{27}\ \mathrm{cm^3\,s^{-2}} , \\[0.8em]
+R^2 f_{\mathrm{orb}}^2 &= 6.452 \times 10^{18}\ \mathrm{cm^2\,s^{-2}} , \\[0.8em]
+c^4 r &= 1.022 \times 10^{69}\ \mathrm{cm^5\,s^{-4}} ,
+\end{aligned}
+$$
+
+so that the whole top of @eq-strain-binary is
+
+$$
+4\pi^2 \left(G M\right)\left(R^2 f_{\mathrm{orb}}^2\right)
+  = 1.099 \times 10^{48}\ \mathrm{cm^5\,s^{-4}} ,
+$$
+
+and therefore
+
+$$
+h \approx \frac{1.099 \times 10^{48}}{1.022 \times 10^{69}}
+  = 1.1 \times 10^{-21} .
 $$
 
 The measured peak strain of GW150914 was about $10^{-21}$. An
-order-of-magnitude formula, three numbers read off a press release, and we land
-within a factor of two of the real measurement.
+order-of-magnitude formula and three numbers read off a press release land
+within about ten percent of the real measurement.
+
+**One honest caveat.** At a separation of less than two Schwarzschild radii,
+Newton's law of gravity and Kepler's third law are being used far outside the
+regime where they are exact. That they still work this well is a happy accident
+of how the errors fall; the real analysis of GW150914 used waveforms computed
+from full general relativity, as @fig-gw150914-10 shows. The estimate is worth
+making anyway, because it tells you the *size* of the thing to be measured
+before you commit to building a four-kilometer instrument.
 ::::
+
 
 ::: {.content-visible when-format="html"}
 
@@ -719,18 +789,22 @@ within a factor of two of the real measurement.
    The total mass is $2 \times 1.4 = 2.8\,M_\odot$. Then
 
    $$
+   \begin{aligned}
    \left(\frac{P}{1\ \mathrm{yr}}\right)^2
-     = \frac{(R/1\ \mathrm{AU})^3}{(M_{\mathrm{tot}}/M_\odot)}
-     = \frac{8.065 \times 10^{-21}}{2.8}
-     = 2.880 \times 10^{-21} ,
+     &= \frac{(R/1\ \mathrm{AU})^3}{(M_{\mathrm{tot}}/M_\odot)} \\[0.8em]
+     &= \frac{8.065 \times 10^{-21}}{2.8}
+      = 2.880 \times 10^{-21} ,
+   \end{aligned}
    $$
 
    a pure number on both sides, as it must be. Taking the square root,
 
    $$
-   P = 5.367 \times 10^{-11}\ \mathrm{yr}
-       \times \frac{3.156 \times 10^{7}\ \mathrm{s}}{1\ \mathrm{yr}}
-     = 1.694 \times 10^{-3}\ \mathrm{s} ,
+   \begin{aligned}
+   P &= 5.367 \times 10^{-11}\ \mathrm{yr}
+        \times \frac{3.156 \times 10^{7}\ \mathrm{s}}{1\ \mathrm{yr}} \\[0.8em]
+     &= 1.694 \times 10^{-3}\ \mathrm{s} ,
+   \end{aligned}
    $$
 
    so
@@ -749,20 +823,25 @@ within a factor of two of the real measurement.
    with the units attached:
 
    $$
-   h \approx \frac{4\pi^2
-     \left(6.673\times10^{-8}\ \mathrm{cm^3\,g^{-1}\,s^{-2}}\right)
-     \left(2.785\times10^{33}\ \mathrm{g}\right)
-     \left(3.0\times10^{6}\ \mathrm{cm}\right)^2
-     \left(590\ \mathrm{s^{-1}}\right)^2}
-     {\left(3.00\times10^{10}\ \mathrm{cm\,s^{-1}}\right)^4
-     \left(1.234\times10^{26}\ \mathrm{cm}\right)} .
+   \begin{aligned}
+   G M &= 6.673\times10^{-8}\ \mathrm{cm^3\,g^{-1}\,s^{-2}} \\[0.8em]
+       &\qquad \times \left(2.785\times10^{33}\ \mathrm{g}\right) \\[0.8em]
+       &= 1.859 \times 10^{26}\ \mathrm{cm^3\,s^{-2}} , \\[0.8em]
+   R^2 f_{\mathrm{orb}}^2
+       &= \left(3.0\times10^{6}\ \mathrm{cm}\right)^2
+          \left(590\ \mathrm{s^{-1}}\right)^2 \\[0.8em]
+       &= 3.133 \times 10^{18}\ \mathrm{cm^2\,s^{-2}} , \\[0.8em]
+   c^4 r &= \left(3.00\times10^{10}\ \mathrm{cm\,s^{-1}}\right)^4 \\[0.8em]
+         &\qquad \times \left(1.234\times10^{26}\ \mathrm{cm}\right) \\[0.8em]
+         &= 9.968 \times 10^{67}\ \mathrm{cm^5\,s^{-4}} .
+   \end{aligned}
    $$
 
    The units cancel exactly as they did in the worked example, leaving a pure
    number — which is what a strain has to be. Then
 
    $$
-   h \approx \frac{2.30 \times 10^{46}}{9.97 \times 10^{67}}
+   h \approx \frac{2.299 \times 10^{46}}{9.968 \times 10^{67}}
      = \boxed{2.3 \times 10^{-22}} .
    $$
 
@@ -776,9 +855,11 @@ within a factor of two of the real measurement.
    $$
 
    $$
-   \Delta L = \left(2.3 \times 10^{-22}\right)
-              \left(4 \times 10^{5}\ \mathrm{cm}\right)
-            = \boxed{9.2 \times 10^{-17}\ \mathrm{cm}} .
+   \begin{aligned}
+   \Delta L &= \left(2.3 \times 10^{-22}\right)
+               \left(4 \times 10^{5}\ \mathrm{cm}\right) \\[0.8em]
+            &= \boxed{9.2 \times 10^{-17}\ \mathrm{cm}} .
+   \end{aligned}
    $$
 
    As a fraction of a proton,
@@ -1262,10 +1343,10 @@ plt.show()
 That curve is the fingerprint. Instrumental errors, clock errors and errors in
 our model of the solar system all produce correlations too, but with completely
 different shapes — a drifting observatory clock, for instance, correlates every
-pair by the same amount regardless of angle, which is the dashed line in
-@fig-hellings-downs. **Nothing but a background of gravitational waves produces
-the Hellings–Downs shape**, which is why finding it in the data is the
-detection.
+pair by the same amount regardless of angle, which is the dashed line
+in @fig-hellings-downs. **Nothing but a background of gravitational waves
+produces the Hellings–Downs shape**, which is why finding it in the data is
+the detection.
 
 ### What the arrays can hear
 
