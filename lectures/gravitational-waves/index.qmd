@@ -252,28 +252,6 @@ it on and wait.
    with a mountain a few centimeters high would be detectable.
    :::
 
-2. The Earth orbiting the Sun is a binary system with a time-varying mass
-   quadrupole, so it must radiate gravitational waves. Without calculating
-   anything, list the three properties of the Earth–Sun system from the table
-   in this section that make the strain at a distant detector far too small to
-   measure, and say in each case whether that property is large or small.
-
-3. A gravitational wave arrives traveling straight down through your body, with
-   the plus polarization aligned so that it stretches you left-to-right.
-
-   a. What is happening to your height at that instant?
-   b. Half a period later, what is happening to your height?
-   c. Does the wave change your front-to-back thickness?
-
-   ::: {.callout-note .help-answer collapse="true" title="Answer"}
-   **(a)** Your height is being squeezed, because the wave stretches along one
-   transverse direction and squeezes along the perpendicular transverse one.
-   **(b)** The two have swapped: your height is being stretched and your width
-   squeezed. **(c)** No. Front-to-back is along the direction the wave is
-   traveling, and gravitational waves are transverse — the distortion is
-   entirely across the line of propagation.
-   :::
-
 :::
 
 ## The first evidence was indirect
@@ -514,6 +492,24 @@ It gets the size right, which is what we need.
 $8 \times 10^{-50}\ \mathrm{s^2\,g^{-1}\,cm^{-1}}$. There is no way to make a
 laboratory source with enough mass moving fast enough to overcome a number that
 small, which is why every gravitational-wave source is astrophysical.
+
+#### Orbital frequency is not wave frequency
+
+One piece of bookkeeping, because the two are easy to confuse and the formula
+above wants a particular one. A binary is symmetric under half a turn — swap
+the two objects and the mass distribution is unchanged — so its quadrupole
+returns to where it started **twice** per orbit, and it therefore radiates at
+*twice* the orbital frequency:
+
+$$
+f_{\mathrm{GW}} = 2 f_{\mathrm{orb}} .
+$$ {#eq-fgw}
+
+Detector sensitivities are always quoted as gravitational-wave frequencies,
+because that is what the instrument sees. Equation @eq-strain-binary, and the
+constants sheet, are written in $f_{\mathrm{orb}}$, because that is what
+Kepler's third law gives you. **Keep track of which one you are holding**: a
+pair of neutron stars orbiting 590 times a second is heard by LIGO at 1180 Hz.
 
 #### Rewriting it with Kepler's third law
 
@@ -893,7 +889,9 @@ before you commit to building a four-kilometer instrument.
    same separation must orbit faster, by $\sqrt{2}$.
    :::
 
-3. Improved mirrors make a detector twice as sensitive, so that it can now
+3. Let's see how an improvement in gravitational-wave detector instrumentation
+   can improve our ability to detect sources. Suppose that we can improve the
+   detector's mirrors to make it twice as sensitive. That is, it can now
    register a strain half as large as before.
 
    a. How much further away can it detect an identical source?
@@ -1112,72 +1110,6 @@ and why each band is the exclusive property of a particular kind of source.
 | Space interferometers | $10^{-4}$–$10^{-1}\ \mathrm{Hz}$ | LISA | massive black hole binaries, white dwarf binaries, stellar-mass objects spiraling into massive ones |
 | Pulsar timing | $10^{-9}$–$10^{-7}\ \mathrm{Hz}$ | NANOGrav and the other arrays | supermassive black hole binaries |
 | Primordial | $\sim 10^{-16}\ \mathrm{Hz}$ | the polarization of the cosmic microwave background | gravitational waves from inflation |
-
-One bookkeeping point before reading that table against @fig-spectrum. A binary
-is symmetric under half a turn — swap the two objects and the mass distribution
-is unchanged — so its quadrupole returns to where it started **twice** per
-orbit, and it radiates at twice the orbital frequency,
-$f_{\mathrm{GW}} = 2 f_{\mathrm{orb}}$. Detector bands are always quoted as
-gravitational-wave frequencies, so that is what the horizontal axis below
-carries.
-
-```{python}
-#| label: fig-spectrum
-#| fig-cap: "The gravitational-wave sky, computed from @eq-strain-binary for four equal-mass binaries, all placed at 400 Mpc. Each track is an inspiral: as the pair spirals in, the frequency climbs and the strain rises with it as $f^{2/3}$, until the two objects merge at the marked point. Heavier binaries sit higher — a pair of billion-solar-mass black holes is a hundred million times louder than a pair of neutron stars — and end further to the left, because a heavier binary merges at a lower frequency. That is why each shaded band belongs to one kind of source. Note where the heaviest track ends: between the pulsar-timing and space bands, so arrays catch supermassive binaries during their long inspiral rather than at merger."
-#| fig-alt: "A log-log graph of gravitational-wave strain, from ten to the minus twenty-four up to ten to the minus thirteen, against gravitational-wave frequency in hertz, from one nanohertz to ten kilohertz. Three vertical shaded bands are labeled, left to right: pulsar timing from about two to four hundred nanohertz, space interferometers from ten to the minus four to ten to the minus one hertz, and ground interferometers from ten to two thousand hertz. Four parallel straight tracks rise gently to the right with the same shallow slope, each ending in a filled dot. The lowest and rightmost, labeled one point four solar masses each, ends inside the ground band at a strain near three times ten to the minus twenty-three. Above it, a track labeled thirty solar masses each ends at the left edge of the ground band near six times ten to the minus twenty-two. Far higher and to the left, a track labeled one million solar masses each ends inside the space band near two times ten to the minus seventeen. Highest of all, a track labeled one billion solar masses each passes through the pulsar timing band and ends just to its right, near two times ten to the minus fourteen."
-#| fig-height: 4.2
-
-fig, ax = plt.subplots(figsize=(6.2, 4.2))
-
-G, c = 6.6732e-8, 2.99792456e10          # cgs
-M_sun, pc = 1.9891e33, 3.0856e18
-r = 400e6 * pc                            # a common distance for all four
-
-def inspiral(m_each, decades=2.8):
-    """Strain against GW frequency for an equal-mass binary, up to merger."""
-    M = m_each * M_sun
-    R_merge = 6 * G * (2 * M) / c**2      # a few Schwarzschild radii
-    f_merge = np.sqrt(G * (2 * M) / R_merge**3) / (2 * np.pi)
-    f_orb = np.logspace(np.log10(f_merge) - decades, np.log10(f_merge), 200)
-    R = (G * (2 * M) / (4 * np.pi**2 * f_orb**2)) ** (1 / 3)
-    h = 4 * np.pi**2 * G * M * R**2 * f_orb**2 / (c**4 * r)
-    return 2 * f_orb, h                   # f_GW = 2 f_orb
-
-bands = [("Pulsar\ntiming", 2e-9, 4e-7),
-         ("Space\n(LISA)", 1e-4, 1e-1),
-         ("Ground\n(LIGO)", 1e1, 2e3)]
-for name, lo, hi in bands:
-    ax.axvspan(lo, hi, color="#edece6", zorder=0)
-    ax.text(np.sqrt(lo * hi), 4e-13, name, ha="center", va="top",
-            fontsize=9.5, color=INK2, zorder=5)
-
-tracks = [(1.4,   BLUE,   "-",   r"$1.4\,M_\odot$ each"),
-          (30,    AQUA,   "--",  r"$30\,M_\odot$ each"),
-          (1e6,   ORANGE, "-.",  r"$10^{6}\,M_\odot$ each"),
-          (1e9,   INK2,   ":",   r"$10^{9}\,M_\odot$ each")]
-for m, color, style, label in tracks:
-    f, h = inspiral(m)
-    ax.plot(f, h, style, color=color, zorder=3)
-    ax.plot(f[-1], h[-1], "o", color=color, markersize=7,
-            markeredgecolor=SURFACE, markeredgewidth=1.2, zorder=4)
-    # Label above the START of each track: the tracks rise to the right, so
-    # text placed above the left end sits clear of its own line.
-    # The tracks rise to the right, so a label placed above the left end is
-    # crossed by its own line further along; the backing box masks that.
-    ax.annotate(label, (f[0], h[0]), textcoords="offset points",
-                xytext=(2, 9), ha="left", va="bottom",
-                fontsize=9.5, color=color, zorder=6,
-                bbox=dict(facecolor=SURFACE, edgecolor="none", pad=1.5))
-
-ax.set_xscale("log")
-ax.set_yscale("log")
-ax.set_xlim(1e-9, 1e4)
-ax.set_ylim(1e-25, 1e-12)
-ax.set_xlabel(r"gravitational-wave frequency  $f_{\mathrm{GW}}$  (Hz)")
-ax.set_ylabel(r"strain  $h$  at 400 Mpc")
-ax.grid(which="major", axis="both")
-plt.show()
-```
 
 Ground-based detectors have arms of kilometers and are limited at low
 frequencies by seismic noise — the ground itself moves more than the wave does.
@@ -1436,30 +1368,6 @@ how supermassive black holes and their galaxies grow together.
 2. Explain why a pulsar timing array becomes more sensitive every year without
    any change to the telescopes, and name the one thing about the band that
    does *not* improve with time.
-
-3. Suppose a clock at the observatory runs slow by a slowly drifting amount.
-
-   a. Would this produce correlated residuals between pulsars?
-   b. How would the correlation depend on the angle between two pulsars on the
-      sky?
-   c. Why does this not masquerade as a gravitational-wave background?
-
-   ::: {.callout-note .help-answer collapse="true" title="Answer"}
-   **(a)** Yes — every pulse from every pulsar is timed against the same clock,
-   so a clock error shifts all of them together. **(b)** Not at all: the shift
-   is identical for every pulsar regardless of where it is on the sky, so the
-   correlation is a flat line. **(c)** Because a flat correlation is not the
-   Hellings–Downs shape. The angular dependence is precisely what
-   distinguishes a gravitational-wave background from the errors that would
-   otherwise mimic it, and it is the reason the search is built around the
-   correlation rather than around any one pulsar's residuals.
-   :::
-
-4. A single supermassive binary $0.05\ \mathrm{pc}$ across produces a strain of
-   about $10^{-16}$ at $400\ \mathrm{Mpc}$, while the background NANOGrav
-   reports corresponds to a strain of roughly $10^{-15}$ summed over the whole
-   sky. Explain how the second number can be larger than the first when it is
-   made up of sources that are individually much fainter.
 
 :::
 
