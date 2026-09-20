@@ -941,6 +941,72 @@ and why each band is the exclusive property of a particular kind of source.
 | Pulsar timing | $10^{-9}$–$10^{-7}\ \mathrm{Hz}$ | NANOGrav and the other arrays | supermassive black hole binaries |
 | Primordial | $\sim 10^{-16}\ \mathrm{Hz}$ | the polarization of the cosmic microwave background | gravitational waves from inflation |
 
+One bookkeeping point before reading that table against @fig-spectrum. A binary
+is symmetric under half a turn — swap the two objects and the mass distribution
+is unchanged — so its quadrupole returns to where it started **twice** per
+orbit, and it radiates at twice the orbital frequency,
+$f_{\mathrm{GW}} = 2 f_{\mathrm{orb}}$. Detector bands are always quoted as
+gravitational-wave frequencies, so that is what the horizontal axis below
+carries.
+
+```{python}
+#| label: fig-spectrum
+#| fig-cap: "The gravitational-wave sky, computed from @eq-strain-binary for four equal-mass binaries, all placed at 400 Mpc. Each track is an inspiral: as the pair spirals in, the frequency climbs and the strain rises with it as $f^{2/3}$, until the two objects merge at the marked point. Heavier binaries sit higher — a pair of billion-solar-mass black holes is a hundred million times louder than a pair of neutron stars — and end further to the left, because a heavier binary merges at a lower frequency. That is why each shaded band belongs to one kind of source. Note where the heaviest track ends: between the pulsar-timing and space bands, so arrays catch supermassive binaries during their long inspiral rather than at merger."
+#| fig-alt: "A log-log graph of gravitational-wave strain, from ten to the minus twenty-four up to ten to the minus thirteen, against gravitational-wave frequency in hertz, from one nanohertz to ten kilohertz. Three vertical shaded bands are labeled, left to right: pulsar timing from about two to four hundred nanohertz, space interferometers from ten to the minus four to ten to the minus one hertz, and ground interferometers from ten to two thousand hertz. Four parallel straight tracks rise gently to the right with the same shallow slope, each ending in a filled dot. The lowest and rightmost, labeled one point four solar masses each, ends inside the ground band at a strain near three times ten to the minus twenty-three. Above it, a track labeled thirty solar masses each ends at the left edge of the ground band near six times ten to the minus twenty-two. Far higher and to the left, a track labeled one million solar masses each ends inside the space band near two times ten to the minus seventeen. Highest of all, a track labeled one billion solar masses each passes through the pulsar timing band and ends just to its right, near two times ten to the minus fourteen."
+#| fig-height: 4.2
+
+fig, ax = plt.subplots(figsize=(6.2, 4.2))
+
+G, c = 6.6732e-8, 2.99792456e10          # cgs
+M_sun, pc = 1.9891e33, 3.0856e18
+r = 400e6 * pc                            # a common distance for all four
+
+def inspiral(m_each, decades=2.8):
+    """Strain against GW frequency for an equal-mass binary, up to merger."""
+    M = m_each * M_sun
+    R_merge = 6 * G * (2 * M) / c**2      # a few Schwarzschild radii
+    f_merge = np.sqrt(G * (2 * M) / R_merge**3) / (2 * np.pi)
+    f_orb = np.logspace(np.log10(f_merge) - decades, np.log10(f_merge), 200)
+    R = (G * (2 * M) / (4 * np.pi**2 * f_orb**2)) ** (1 / 3)
+    h = 4 * np.pi**2 * G * M * R**2 * f_orb**2 / (c**4 * r)
+    return 2 * f_orb, h                   # f_GW = 2 f_orb
+
+bands = [("Pulsar\ntiming", 2e-9, 4e-7),
+         ("Space\n(LISA)", 1e-4, 1e-1),
+         ("Ground\n(LIGO)", 1e1, 2e3)]
+for name, lo, hi in bands:
+    ax.axvspan(lo, hi, color="#edece6", zorder=0)
+    ax.text(np.sqrt(lo * hi), 4e-13, name, ha="center", va="top",
+            fontsize=9.5, color=INK2, zorder=5)
+
+tracks = [(1.4,   BLUE,   "-",   r"$1.4\,M_\odot$ each"),
+          (30,    AQUA,   "--",  r"$30\,M_\odot$ each"),
+          (1e6,   ORANGE, "-.",  r"$10^{6}\,M_\odot$ each"),
+          (1e9,   INK2,   ":",   r"$10^{9}\,M_\odot$ each")]
+for m, color, style, label in tracks:
+    f, h = inspiral(m)
+    ax.plot(f, h, style, color=color, zorder=3)
+    ax.plot(f[-1], h[-1], "o", color=color, markersize=7,
+            markeredgecolor=SURFACE, markeredgewidth=1.2, zorder=4)
+    # Label above the START of each track: the tracks rise to the right, so
+    # text placed above the left end sits clear of its own line.
+    # The tracks rise to the right, so a label placed above the left end is
+    # crossed by its own line further along; the backing box masks that.
+    ax.annotate(label, (f[0], h[0]), textcoords="offset points",
+                xytext=(2, 9), ha="left", va="bottom",
+                fontsize=9.5, color=color, zorder=6,
+                bbox=dict(facecolor=SURFACE, edgecolor="none", pad=1.5))
+
+ax.set_xscale("log")
+ax.set_yscale("log")
+ax.set_xlim(1e-9, 1e4)
+ax.set_ylim(1e-25, 1e-12)
+ax.set_xlabel(r"gravitational-wave frequency  $f_{\mathrm{GW}}$  (Hz)")
+ax.set_ylabel(r"strain  $h$  at 400 Mpc")
+ax.grid(which="major", axis="both")
+plt.show()
+```
+
 Ground-based detectors have arms of kilometers and are limited at low
 frequencies by seismic noise — the ground itself moves more than the wave does.
 **LISA** will be three spacecraft in a triangle with arms of about 2.5 million
@@ -1058,15 +1124,55 @@ recognize what it is for.
 
 For two pulsars close together on the sky the correlation is strongly positive:
 a wave stretching the space toward one is stretching the space toward the other
-in much the same way. As the angle opens the correlation falls, crosses zero
-around 50°, and goes **negative** near 80°–90° — one pulsar's path is being
-stretched while the other's is squeezed. Then it rises again toward 180°, where
-two pulsars on opposite sides of the sky are partly correlated once more.
+in much the same way. As the angle opens the correlation falls, crosses zero at
+49°, and reaches a **negative** minimum at 82° — there one pulsar's path is
+being stretched while the other's is squeezed, so their timing residuals move
+in opposite directions. Past 122° it is positive again, rising toward 180°,
+where two pulsars on opposite sides of the sky are partly correlated once more.
+
+```{python}
+#| label: fig-hellings-downs
+#| fig-cap: "The Hellings–Downs curve: the expected correlation between two pulsars' timing residuals, as a function of the angle between them on the sky, for a background of gravitational waves. It is positive for close pairs, crosses zero at 49°, reaches a minimum of $-0.15$ at 82°, and turns positive again beyond 122°. The dashed line is what a drifting observatory clock would produce instead — every pair correlated by the same amount, whatever the angle. The two shapes are nothing alike, and that is the whole basis of the search: the detection is the *shape*, not the size of any one pulsar's wobble."
+#| fig-alt: "A graph of correlation strength against the angle between two pulsars on the sky, from 0 to 180 degrees. A solid blue curve starts at 0.5 at zero degrees, falls steeply, crosses zero near 49 degrees, reaches a shallow minimum of about minus 0.15 near 82 degrees, then rises again, crossing zero near 122 degrees and reaching about 0.25 at 180 degrees. Three small open markers sit on the curve at the two zero crossings and the minimum, each labeled with its angle. A horizontal dashed orange line lies well above at a constant value of 0.3 across the whole range, labeled as the flat correlation a clock error would produce. A thin horizontal line marks zero."
+#| fig-height: 3.7
+
+fig, ax = plt.subplots(figsize=(6.2, 3.7))
+
+theta = np.linspace(0.05, 180, 800)
+x = (1 - np.cos(np.radians(theta))) / 2
+gamma = 1.5 * x * np.log(x) - x / 4 + 0.5
+
+ax.axhline(0, color=AXIS, linewidth=0.9, zorder=1)
+ax.plot(theta, gamma, "-", color=BLUE, zorder=3,
+        label="gravitational-wave background")
+ax.plot([0], [0.5], "o", color=BLUE, markersize=6,
+        markeredgecolor=SURFACE, markeredgewidth=1.2, zorder=4)
+
+ax.plot([0, 180], [0.3, 0.3], "--", color=ORANGE, zorder=2,
+        label="a drifting clock, for comparison")
+
+for th, note in ((49.3, "49°"), (82.5, "82°"), (121.8, "122°")):
+    xx = (1 - np.cos(np.radians(th))) / 2
+    gg = 1.5 * xx * np.log(xx) - xx / 4 + 0.5
+    ax.plot(th, gg, "o", markerfacecolor=SURFACE, markeredgecolor=BLUE,
+            markeredgewidth=1.4, markersize=6, zorder=5)
+    ax.annotate(note, (th, gg), textcoords="offset points", xytext=(0, -14),
+                ha="center", fontsize=9.5, color=INK2, zorder=5)
+
+ax.set_xlim(0, 180)
+ax.set_ylim(-0.32, 0.62)
+ax.set_xticks([0, 30, 60, 90, 120, 150, 180])
+ax.set_xlabel("angle between the two pulsars on the sky (degrees)")
+ax.set_ylabel("correlation strength")
+ax.legend(loc="upper right")
+plt.show()
+```
 
 That curve is the fingerprint. Instrumental errors, clock errors and errors in
 our model of the solar system all produce correlations too, but with completely
-different shapes — a clock error, for instance, correlates every pair equally
-regardless of angle. **Nothing but a background of gravitational waves produces
+different shapes — a drifting observatory clock, for instance, correlates every
+pair by the same amount regardless of angle, which is the dashed line in
+@fig-hellings-downs. **Nothing but a background of gravitational waves produces
 the Hellings–Downs shape**, which is why finding it in the data is the
 detection.
 
