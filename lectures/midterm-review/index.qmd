@@ -1,0 +1,526 @@
+---
+title: "Midterm Review"
+subtitle: "ASTRO 206 — Black Holes · Review of lectures 1–10"
+author: "Kayhan Gültekin"
+date: "October 6"
+date-format: "MMMM D"
+# Dates are LECTURE dates -- when the class meets -- not publication dates.
+# The review meeting is Tue Oct 6 (Canvas module "Midterm Checkpoint", Oct 6 & 8).
+# This page is deliberately NOT numbered: numbering it would shift lectures
+# 11-24, whose numbers are already used on Canvas and in the Lecture Index.
+
+# Kernel pinning is deliberate and must stay in the DOCUMENT, not _quarto.yml:
+# Quarto silently ignores a project-level `jupyter:` and auto-selects a kernel.
+jupyter: python3
+
+# No code cells, no figures, no citations -- so no figure-setup include and no
+# References block.
+---
+
+::: {.callout-note appearance="simple" icon=false}
+**Disclaimer.** These notes have not been subjected to the usual scrutiny
+reserved for formal publications. They may be distributed outside this class
+only with the permission of the instructor.
+:::
+
+<!-- Every problem on this page is NEW writing by the assistant (2026-09-21),
+     under Kayhan's rulings: at least one related practice item per exam item,
+     full solutions for all. None is a copy of an exam item. Provenance, and
+     which exam item each one shadows, live in the PRIVATE tree only
+     (for_me/midterm/PLAN.md) -- never here. -->
+
+::: {.content-visible when-format="pdf"}
+**Plan for the class.** Work problem 15 at the board, then students work the
+rest in groups. Every solution on this page prints expanded in this copy.
+:::
+
+The first ten lectures built one argument. A black hole is what you get when
+gravity wins completely (lectures 1 and 2); understanding it needs special
+relativity (lecture 3) and then general relativity (lectures 4 and 5); what we
+actually see of one is light, shifted and beamed (lecture 6); and the light
+comes from matter falling in, which sets how bright a black hole can be and how
+fast it can grow (lectures 7 to 9). Lecture 10 added a second messenger that is
+not light at all. **This page collects the ideas in one place and gives you
+problems that pull them together.**
+
+## The exam
+
+<!-- This section is an EXCEPTION to HOUSE_STYLE.md Section 5 ("no remarks
+     about what will be on the exam"), made by Kayhan for this page only,
+     2026-09-21. It states the exam's shape, never its items. -->
+
+The midterm is on **Thursday, October 8**, in class, and covers lectures 1–10.
+
+| part | questions | points each | points |
+|---|---|---|---|
+| Multiple choice | 7 | 3 | 21 |
+| Short answer, 3–4 sentences each | 3 | 5 | 15 |
+| Calculations | 3 | 15 | 45 |
+| A calculation that combines several lectures | 1 | 20 | 20 |
+| **Total** | | | **101** |
+
+- **You have 80 minutes.** Bring something to write with and a calculator
+  (but not any programs on it), and nothing else.
+- **The course constants and formulae sheet is printed on the exam** — the same
+  sheet you already have. The solutions on this page use its values.
+- **How the calculations are graded**, from the exam's own instructions:
+
+  > You can get most of the points for the numerical questions even without
+  > getting a final numerical answer. Putting concepts together and showing
+  > quantitatively how you could get a numerical answer gets you a lot of
+  > points. Showing that you have the right units gets you more.
+
+The practice problems below follow the same four parts, in the same order.
+
+## The ideas, lecture by lecture
+
+- **Lecture 1.** [Escape velocity](../scales-and-schwarzschild/index.qmd#escape-velocity)
+  and [the Schwarzschild radius](../scales-and-schwarzschild/index.qmd#the-schwarzschild-radius),
+  $r_S = 2GM/c^2$.
+- **Lecture 2.** [The no-hair theorem](../spinning-bhs-and-tidal/index.qmd#the-no-hair-theorem);
+  [spinning black holes](../spinning-bhs-and-tidal/index.qmd#spinning-black-holes) —
+  the horizon, the ergosphere and the ISCO, and how each depends on $a_*$;
+  [tidal forces](../spinning-bhs-and-tidal/index.qmd#tidal-forces),
+  $F_t = 2GMms/d^3$.
+- **Lecture 3.** [Time dilation](../special-relativity/index.qmd#time-dilation),
+  [length contraction](../special-relativity/index.qmd#length-contraction) and
+  why it happens [only along the direction of motion](../special-relativity/index.qmd#why-length-contraction-only-happens-along-the-direction-of-motion),
+  and the [relativistic Doppler shift](../special-relativity/index.qmd#relativistic-doppler-shift-of-light).
+- **Lecture 4.** Gravity as geometry, and [the classic tests](../general-relativity/index.qmd#the-classic-tests)
+  of general relativity.
+- **Lecture 5.** [Gravitational redshift](../strong-gravity/index.qmd#gravitational-redshift),
+  [gravitational time dilation](../strong-gravity/index.qmd#gravitational-time-dilation),
+  and a first look at [gravitational waves](../strong-gravity/index.qmd#gravitational-waves).
+- **Lecture 6.** [Light as a wave](../seeing-black-holes/index.qmd#light-is-a-wave)
+  ($c = \lambda\nu$, $E = h\nu$), [the Doppler shift](../seeing-black-holes/index.qmd#the-doppler-shift-recalled)
+  and [Doppler beaming](../seeing-black-holes/index.qmd#doppler-beaming).
+- **Lecture 7.** [Where falling stops paying: the ISCO](../accretion-efficiency/index.qmd#where-falling-stops-paying-the-isco),
+  [the luminosity of accretion](../accretion-efficiency/index.qmd#the-luminosity-of-accretion),
+  $L = \eta\dot M c^2$, and [blackbody radiation](../accretion-efficiency/index.qmd#blackbody-radiation-and-effective-temperature).
+- **Lecture 8.** [The Eddington limit](../eddington-limit/index.qmd#the-eddington-limit),
+  [the Eddington accretion rate](../eddington-limit/index.qmd#the-eddington-accretion-rate),
+  and [what accreting matter looks like](../eddington-limit/index.qmd#what-accreting-matter-looks-like).
+- **Lecture 9.** [Growing at the Eddington limit](../black-hole-growth/index.qmd#growing-at-the-eddington-limit)
+  and [why efficiency slows growth](../black-hole-growth/index.qmd#why-efficiency-slows-growth).
+- **Lecture 10.** [How big the effect of a gravitational wave is](../gravitational-waves/index.qmd#how-big-is-the-effect),
+  and [the first, indirect evidence](../gravitational-waves/index.qmd#the-first-evidence-was-indirect).
+
+## Multiple choice
+
+**Problem 1.** According to the no-hair theorem, which quantities completely
+describe a black hole once it has settled down?
+
+a. Its mass alone
+b. Its mass and its spin
+c. Its mass, its spin and its electric charge
+d. Its mass, its spin, its electric charge and what it formed from
+
+:::: {.callout-tip .help-solution collapse="true" title="Solution"}
+**(c).** Mass, spin (angular momentum) and charge are the only three numbers a
+settled black hole keeps. Everything else about what fell in — whether it was
+hydrogen or iron, a star or a cloud of gas — is the "hair" the theorem says a
+black hole does not have. That is exactly why (d) is wrong.
+::::
+
+**Problem 2.** Radio waves and X-rays both travel at the speed of light.
+Compared with a radio photon, an X-ray photon has
+
+a. a longer wavelength and a higher energy
+b. a shorter wavelength and a lower frequency
+c. a shorter wavelength, a higher frequency and a higher energy
+d. the same energy, because both travel at $c$
+
+:::: {.callout-tip .help-solution collapse="true" title="Solution"}
+**(c).** Wavelength, frequency and photon energy are locked together:
+$c = \lambda\nu$ says a shorter wavelength means a higher frequency, and
+$E = h\nu$ says a higher frequency means a higher energy. Traveling at $c$ says
+nothing about the energy, which rules out (d).
+::::
+
+**Problem 3.** A probe falls toward a black hole, sending out a radio pulse
+once every second by its own clock. As the probe nears the horizon, a distant
+observer receives the pulses
+
+a. closer together, and shifted to shorter wavelengths
+b. closer together, and shifted to longer wavelengths
+c. farther apart, and shifted to shorter wavelengths
+d. farther apart, and shifted to longer wavelengths
+
+:::: {.callout-tip .help-solution collapse="true" title="Solution"}
+**(d).** Deep in the black hole's gravity the probe's clock runs slow as seen
+from far away, so its once-a-second pulses arrive farther and farther apart.
+The radio waves themselves are clocks too, so the same effect stretches their
+wavelength: gravitational redshift. (The probe is also moving away from the
+observer, and its Doppler shift works in the same direction.)
+::::
+
+**Problem 4.** A gravitational-wave detector can just measure a strain of
+$10^{-22}$. A particular kind of merger produces a strain of $10^{-21}$ at Earth
+when it happens $100\ \mathrm{Mpc}$ away. Out to what distance could the
+detector see an identical merger?
+
+a. $100\ \mathrm{Mpc}$
+b. $316\ \mathrm{Mpc}$
+c. $1000\ \mathrm{Mpc}$
+d. $10\,000\ \mathrm{Mpc}$
+
+:::: {.callout-tip .help-solution collapse="true" title="Solution"}
+**(c).** Strain falls off as $1/d$, so to shrink it by a factor of 10 the
+merger has to be 10 times farther away. Answer (b) is what you get from
+$1/d^2$, which is how *flux* falls off, not strain.
+::::
+
+**Problem 5.** Which of these statements about the ergosphere is true?
+
+a. It lies inside the event horizon.
+b. It exists only around a spinning black hole.
+c. It is a perfect sphere.
+d. Inside it, light aimed against the black hole's spin travels against the
+   spin.
+
+:::: {.callout-tip .help-solution collapse="true" title="Solution"}
+**(b).** The ergosphere is where frame dragging forces everything, even light,
+to move with the spin — so it needs a spin, and (d) is exactly backward. It
+lies *outside* the horizon, touching it only at the poles, which rules out (a),
+and it is flattened rather than spherical, which rules out (c).
+::::
+
+**Problem 6.** Steve flies past Alex at $0.8c$, holding a meter stick
+*perpendicular* to his direction of motion. Which of these do Steve and Alex
+agree on?
+
+a. The length of the meter stick
+b. The time between two ticks of Steve's watch
+c. The length of Steve's spaceship
+d. None of the above
+
+:::: {.callout-tip .help-solution collapse="true" title="Solution"}
+**(a).** Length contraction happens only along the direction of motion, and the
+stick is held across it, so both measure one meter. The ship lies along the
+motion, so Alex measures it contracted (c); and Alex measures Steve's watch
+running slow (b).
+::::
+
+**Problem 7.** A person stands near one of four black holes. Where is the
+tidal stretching across the person largest?
+
+a. $1000\ \mathrm{km}$ from a $10\,M_\odot$ black hole
+b. $2000\ \mathrm{km}$ from a $10\,M_\odot$ black hole
+c. $1000\ \mathrm{km}$ from a $20\,M_\odot$ black hole
+d. $2000\ \mathrm{km}$ from a $20\,M_\odot$ black hole
+
+:::: {.callout-tip .help-solution collapse="true" title="Solution"}
+**(c).** The tidal force goes as $M/d^3$ for a person of fixed size. Doubling
+the mass doubles it; doubling the distance cuts it by a factor of 8. So the
+larger mass at the smaller distance wins, and (b) is the weakest of the four.
+::::
+
+**Problem 8.** Two astronauts fall feet first through the event horizons of two
+black holes, one of $10\,M_\odot$ and one of $10^6\,M_\odot$. Compared with the
+tidal stretching at the smaller black hole's horizon, the stretching at the
+larger one's horizon is
+
+a. $10^{10}$ times smaller
+b. $10^{5}$ times smaller
+c. the same
+d. $10^{10}$ times larger
+
+:::: {.callout-tip .help-solution collapse="true" title="Solution"}
+**(a).** At the horizon $d = r_S \propto M$, so the tidal force goes as
+$M/r_S^3 \propto M/M^3 = 1/M^2$. The larger black hole is $10^5$ times more
+massive, so the stretching is $(10^5)^2 = 10^{10}$ times *gentler*. Bigger
+black hole, gentler crossing.
+::::
+
+## Short answer
+
+**Problem 9.** Two black holes have the same mass and both accrete at their
+Eddington limits. One is not spinning ($\eta = 5.7\%$); the other spins as fast
+as possible, with its gas orbiting in the same direction as the spin
+($\eta = 42\%$). Which one grows faster, and why? Roughly how many times
+faster?
+
+:::: {.callout-tip .help-solution collapse="true" title="Solution"}
+**The non-spinning one.** Both are held to the same luminosity, the Eddington
+luminosity, which depends only on the mass. The efficient black hole makes that
+luminosity out of less gas, so it is allowed to accrete less; and of the gas it
+does accrete, it sends a larger fraction away as light instead of keeping it as
+mass. Both effects are in the Salpeter time,
+$t_S \propto \eta/(1-\eta)$:
+
+$$
+\frac{t_S(42\%)}{t_S(5.7\%)} = \frac{0.42/0.58}{0.057/0.943} \approx 12 .
+$$
+
+The non-spinning black hole's Salpeter time is about 12 times shorter, so it grows about 12 times faster.
+::::
+
+**Problem 10.** The spectral lines of a white dwarf are found at slightly longer
+wavelengths than the same lines measured in a laboratory, even after the star's
+motion toward or away from us has been corrected for. Explain how this tests
+general relativity, and why the effect is much larger for a white dwarf than
+for the Sun.
+
+:::: {.callout-tip .help-solution collapse="true" title="Solution"}
+General relativity predicts **gravitational redshift**: light climbing out of a
+gravitational well arrives at longer wavelength, equivalently, clocks deep in
+the well — including the atoms emitting the lines — run slow as seen from far
+away. The size of the shift is set by $r_S/R$, how compact the star is. A white
+dwarf has about the Sun's mass packed into a radius about a hundred times
+smaller, so $r_S/R$, and with it the redshift, is about a hundred times larger.
+::::
+
+**Problem 11.** The Eddington luminosity,
+$L_{\mathrm{Edd}} = 4\pi c G M m_p/\sigma_T$, contains the *proton's* mass but
+the *electron's* cross section. Explain why.
+
+:::: {.callout-tip .help-solution collapse="true" title="Solution"}
+The Eddington luminosity is where the outward push of light on the gas balances
+the inward pull of gravity. Gravity pulls on the gas through its mass, and
+nearly all the mass of an electron–proton pair is the proton's. Light pushes on
+the gas through scattering, and the electron scatters light far more
+effectively than the proton, so its Thomson cross section sets the push. The
+electrical attraction between them keeps each electron and proton together, so
+the push on one and the pull on the other act on the same pair.
+::::
+
+## Calculations
+
+**Problem 12.** Alex's spaceship shines a laser whose light is $600\ \mathrm{nm}$
+in the ship's own frame. Steve, watching from far away, measures it at
+$300\ \mathrm{nm}$. Is the ship approaching Steve or receding from him, and how
+fast is it going?
+
+:::: {.callout-tip .help-solution collapse="true" title="Solution"}
+The light arrives at a *shorter* wavelength, blueshifted, so **the ship is
+approaching.** For an approaching source the relativistic Doppler shift is
+
+$$
+\frac{\lambda_{\mathrm{obs}}}{\lambda_{\mathrm{emit}}}
+  = \left(\frac{1 - \beta}{1 + \beta}\right)^{1/2} .
+$$
+
+*Do the units make sense?* Both sides are ratios of pure numbers, so the units
+pass straight through. Setting the ratio to $300/600 = 1/2$ and squaring,
+
+$$
+\frac{1 - \beta}{1 + \beta} = \frac{1}{4}
+\quad\Rightarrow\quad 4 - 4\beta = 1 + \beta
+\quad\Rightarrow\quad \beta = 0.6 .
+$$
+
+The ship approaches at $0.6c$.
+::::
+
+**Problem 13.** A neutron star has a mass of $2.0\,M_\odot$ and a radius of
+$12\ \mathrm{km}$.
+
+a. Light leaves its surface with a wavelength of $400\ \mathrm{nm}$. At what
+   wavelength does a distant observer see it?
+b. How small would a star of any mass have to be, as a multiple of its own
+   Schwarzschild radius, for light from its surface to arrive at *twice* its
+   emitted wavelength?
+
+:::: {.callout-tip .help-solution collapse="true" title="Solution"}
+**(a)** First the Schwarzschild radius, substituting with the units attached
+and writing the mass conversion as a fraction:
+
+$$
+M = 2.0\,M_\odot \times \frac{1.9891 \times 10^{33}\ \mathrm{g}}{1\,M_\odot}
+  = 3.978 \times 10^{33}\ \mathrm{g}
+$$
+
+$$
+\begin{aligned}
+r_S &= \frac{2GM}{c^2} \\[0.8em]
+  &= \frac{2\left(6.6732 \times 10^{-8}\ \mathrm{cm^3\,g^{-1}\,s^{-2}}\right)
+          \left(3.978 \times 10^{33}\ \mathrm{g}\right)}
+         {\left(2.998 \times 10^{10}\ \mathrm{cm\,s^{-1}}\right)^2}
+\end{aligned}
+$$
+
+The units are $\mathrm{cm^3\,g^{-1}\,s^{-2}} \times \mathrm{g} \div
+\mathrm{cm^2\,s^{-2}} = \mathrm{cm}$. *Do the units make sense?* A radius is a
+length, so yes. Then $r_S = 5.91 \times 10^{5}\ \mathrm{cm} = 5.91\
+\mathrm{km}$, and with $R = 12\ \mathrm{km}$, $r_S/R = 0.492$. The observed
+wavelength is
+
+$$
+\lambda_{\mathrm{obs}} = \frac{\lambda_{\mathrm{emit}}}{\sqrt{1 - r_S/R}}
+  = \frac{400\ \mathrm{nm}}{\sqrt{1 - 0.492}} = 561\ \mathrm{nm} .
+$$
+
+**(b)** Twice the wavelength means $\sqrt{1 - r_S/R} = 1/2$, so
+$1 - r_S/R = 1/4$ and $R = \tfrac{4}{3}\,r_S$. The star would have to be only a
+third larger than its own Schwarzschild radius — far more compact than any
+neutron star.
+::::
+
+**Problem 14.** Alex's spaceship is $50\ \mathrm{m}$ long when measured at rest.
+As it flies past, Steve measures it to be $40\ \mathrm{m}$ long. How fast is it
+moving relative to Steve?
+
+:::: {.callout-tip .help-solution collapse="true" title="Solution"}
+The rest length is the proper length, and a moving ship is contracted:
+$L = L_0/\gamma$. So $\gamma = 50\ \mathrm{m}/40\ \mathrm{m} = 1.25$; the
+meters cancel, and a Lorentz factor is a pure number, so the units make sense.
+Then
+
+$$
+\beta = \sqrt{1 - \frac{1}{\gamma^2}} = \sqrt{1 - 0.64} = 0.6 ,
+$$
+
+and the ship moves at $0.6c$.
+::::
+
+## Putting it all together
+
+These two problems need several lectures at once, like the exam's 20-point
+calculation. Getting the concepts to fit together matters more than the final
+number.
+
+**Problem 15.**
+
+:::: {.callout-note .worked-example collapse="true" title="Worked example: how hot is gas falling into a stellar-mass black hole?"}
+**The question.** A non-spinning black hole of $10\,M_\odot$ is accreting at
+its Eddington limit. (a) At what rate is it accreting mass, in solar masses per
+year? (b) Estimate the temperature of the glowing gas by assuming that its
+whole luminosity is radiated as a blackbody from a sphere the size of its ISCO.
+(c) At what wavelength does that blackbody peak, and what kind of light is
+that?
+
+**What the problem needs, and where it comes from.** A non-spinning black hole
+has radiative efficiency $\eta = 5.7\%$ and $r_{\mathrm{ISCO}} = 3r_S$
+([lecture 7](../accretion-efficiency/index.qmd#where-falling-stops-paying-the-isco)).
+"At its Eddington limit" means $L = L_{\mathrm{Edd}}$
+([lecture 8](../eddington-limit/index.qmd#the-eddington-limit)). Accretion
+turns mass into light by $L = \eta\dot M c^2$, and a blackbody sphere obeys
+$L = 4\pi R^2 \sigma T^4$ ([lecture 7](../accretion-efficiency/index.qmd#blackbody-radiation-and-effective-temperature)).
+
+**The luminosity.** With
+$M = 10\,M_\odot \times (1.9891 \times 10^{33}\ \mathrm{g}/1\,M_\odot)
+= 1.989 \times 10^{34}\ \mathrm{g}$,
+
+$$
+\begin{aligned}
+L_{\mathrm{Edd}} = {} & \frac{4\pi c G M m_p}{\sigma_T} \\[0.8em]
+  = {} & 4\pi \left(2.998 \times 10^{10}\ \mathrm{cm\,s^{-1}}\right) \\[0.8em]
+  & \times \left(6.6732 \times 10^{-8}\ \mathrm{cm^3\,g^{-1}\,s^{-2}}\right)
+          \left(1.989 \times 10^{34}\ \mathrm{g}\right) \\[0.8em]
+  & \times \frac{1.6726 \times 10^{-24}\ \mathrm{g}}
+         {6.6524 \times 10^{-25}\ \mathrm{cm^2}} .
+\end{aligned}
+$$
+
+Across all four lines, the top carries $\mathrm{cm\,s^{-1}} \times \mathrm{cm^3\,g^{-1}\,s^{-2}}
+\times \mathrm{g} \times \mathrm{g} = \mathrm{g\,cm^4\,s^{-3}}$, and dividing
+by $\mathrm{cm^2}$ leaves $\mathrm{g\,cm^2\,s^{-3}}$. *Do the units make
+sense?* That is an erg per second, a luminosity, so yes.
+
+$$
+L_{\mathrm{Edd}} = 1.26 \times 10^{39}\ \mathrm{erg\,s^{-1}}
+$$
+
+**(a) The accretion rate.** Solving $L = \eta\dot M c^2$ for $\dot M$,
+
+$$
+\dot M = \frac{L}{\eta c^2}
+  = \frac{1.26 \times 10^{39}\ \mathrm{g\,cm^2\,s^{-3}}}
+         {0.057\left(2.998 \times 10^{10}\ \mathrm{cm\,s^{-1}}\right)^2} .
+$$
+
+The $\mathrm{cm^2}$ cancel and two of the three inverse seconds cancel, leaving
+$\mathrm{g\,s^{-1}}$ — a mass per unit time, which is what an accretion rate
+is. So $\dot M = 2.45 \times 10^{19}\ \mathrm{g\,s^{-1}}$, and converting,
+
+$$
+\begin{aligned}
+& 2.45 \times 10^{19}\ \mathrm{g\,s^{-1}}
+  \times \frac{3.156 \times 10^{7}\ \mathrm{s}}{1\ \mathrm{yr}} \\[0.8em]
+& \times \frac{1\,M_\odot}{1.9891 \times 10^{33}\ \mathrm{g}}
+  = 3.9 \times 10^{-7}\,M_\odot\,\mathrm{yr^{-1}} .
+\end{aligned}
+$$
+
+**(b) The temperature.** The Schwarzschild radius is
+$r_S = 2GM/c^2 = 2.95 \times 10^{6}\ \mathrm{cm}$, about $30\ \mathrm{km}$, so
+the sphere has $R = 3r_S = 8.86 \times 10^{6}\ \mathrm{cm}$. Solving the
+blackbody luminosity gives $T = \left(L/4\pi R^2 \sigma\right)^{1/4}$.
+The denominator first:
+
+$$
+\begin{aligned}
+4\pi R^2 \sigma = {} & 4\pi \left(8.86 \times 10^{6}\ \mathrm{cm}\right)^2 \\[0.8em]
+  & \times \left(5.6696 \times 10^{-5}\ \mathrm{erg\,cm^{-2}\,K^{-4}\,s^{-1}}\right) \\[0.8em]
+  = {} & 5.59 \times 10^{10}\ \mathrm{erg\,s^{-1}\,K^{-4}} ,
+\end{aligned}
+$$
+
+where the square centimeters cancel. Then
+
+$$
+T = \left(\frac{1.26 \times 10^{39}\ \mathrm{erg\,s^{-1}}}
+     {5.59 \times 10^{10}\ \mathrm{erg\,s^{-1}\,K^{-4}}}\right)^{1/4} .
+$$
+
+The ergs and the seconds cancel, leaving $\mathrm{K^4}$, and the fourth root is
+kelvin. *Do the units make sense?* A temperature, so yes. Then
+$T = 1.2 \times 10^{7}\ \mathrm{K}$.
+
+**(c) The peak.** From Wien's law,
+$\lambda_{\max} = (0.290\ \mathrm{cm\,K})/(1.2 \times 10^{7}\ \mathrm{K})
+= 2.4 \times 10^{-8}\ \mathrm{cm} = 0.24\ \mathrm{nm}$. **X-rays** — which is
+why accreting stellar-mass black holes are found with X-ray telescopes.
+
+Notice what the efficiency did: it set the accretion rate in (a) and dropped out
+of (b) entirely. The temperature depends only on the luminosity and the size.
+::::
+
+**Problem 16.** A $10^6\,M_\odot$ black hole spins as fast as possible, but the
+gas around it orbits *against* the spin, so its ISCO is at $4.5r_S$ and its
+radiative efficiency is $3.8\%$. It shines at 10% of its Eddington luminosity.
+
+a. At what rate is it accreting mass, in solar masses per year?
+b. Using the same blackbody-sphere estimate as problem 15, how hot is the gas,
+   and where does its light peak?
+c. Compare your temperature with problem 15's. Why is gas around the heavier
+   black hole *cooler*?
+
+:::: {.callout-tip .help-solution collapse="true" title="Solution"}
+The units work exactly as in problem 15, so only the numbers are shown here.
+
+With $M = 1.989 \times 10^{39}\ \mathrm{g}$, the Eddington luminosity is
+$1.26 \times 10^{44}\ \mathrm{erg\,s^{-1}}$ — $10^5$ times problem 15's,
+because it is proportional to the mass — and 10% of it is
+$L = 1.26 \times 10^{43}\ \mathrm{erg\,s^{-1}}$.
+
+**(a)** The accretion rate is $\dot M = L/\eta c^2 = 3.68 \times 10^{23}\ \mathrm{g\,s^{-1}}
+= 5.8 \times 10^{-3}\,M_\odot\,\mathrm{yr^{-1}}$.
+
+**(b)** The Schwarzschild radius is $r_S = 2.95 \times 10^{11}\ \mathrm{cm}$, so
+$R = 4.5r_S = 1.33 \times 10^{12}\ \mathrm{cm}$, and
+$T = (L/4\pi R^2\sigma)^{1/4} = 3.2 \times 10^{5}\ \mathrm{K}$. The peak is at
+$\lambda_{\max} = 9\ \mathrm{nm}$, in the extreme ultraviolet.
+
+**(c)** It is cooler by a factor of about 40. The luminosity grows in proportion
+to the mass, but the radiating area grows as the *square* of the mass, because
+$R \propto r_S \propto M$. So the luminosity per unit area — which is what sets
+the temperature — goes down as the black hole gets heavier: at a fixed fraction
+of Eddington, $T \propto M^{-1/4}$. The lower Eddington fraction and the larger
+ISCO make it cooler still.
+::::
+
+## Summary
+
+- **Lectures 1–2:** the Schwarzschild radius, $r_S = 2GM/c^2$, sets every black-hole length scale; spin
+  moves the horizon and the ISCO inward and opens an ergosphere; tidal forces
+  go as $M/d^3$, and at the horizon as $1/M^2$.
+- **Lecture 3:** moving clocks run slow, moving lengths contract along the
+  motion only, and light from an approaching source is blueshifted.
+- **Lectures 4–5:** gravity is curved spacetime, tested by bending light,
+  precessing orbits, and clocks and light that lose energy climbing out of a
+  gravitational well.
+- **Lectures 6–9:** falling matter turns a fraction $\eta$ of its rest mass into
+  light; the Eddington limit caps the luminosity and so the growth rate; a
+  higher efficiency means slower growth.
+- **Lecture 10:** gravitational-wave strain falls as $1/d$, not $1/d^2$.
