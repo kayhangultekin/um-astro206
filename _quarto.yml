@@ -22,6 +22,7 @@ project:
     - lectures/black-hole-growth/index.qmd
     - lectures/gravitational-waves/index.qmd
     - lectures/midterm-review/index.qmd
+    - lectures/star-formation/index.qmd
   # No `resources:` entry for fonts/ is needed. Quarto follows the url()
   # references in the theme SCSS and copies those files next to the compiled
   # CSS itself. Adding fonts/ here published a SECOND copy at _site/fonts/,
@@ -87,6 +88,8 @@ website:
             text: "Gravitational waves and LIGO"
           - href: lectures/midterm-review/index.qmd
             text: "Midterm review"
+          - href: lectures/star-formation/index.qmd
+            text: "Star formation and the main sequence"
 
 format:
   live-html:

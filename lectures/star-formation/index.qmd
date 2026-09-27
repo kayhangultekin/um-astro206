@@ -1,0 +1,505 @@
+---
+title: "Star Formation, the Jeans Mass and the Main Sequence"
+subtitle: "ASTRO 206 — Black Holes · Lecture 11"
+author: "Kayhan Gültekin"
+date: "October 13"
+date-format: "MMMM D"
+# Dates are LECTURE dates -- when the class meets -- not publication dates.
+# Sourced from Canvas (Reading & Reflection 3233496 and the In-Class Problem
+# 3219320, both due 2026-10-13). A placeholder string renders as "Invalid Date".
+
+# Kernel pinning is deliberate and must stay in the DOCUMENT, not _quarto.yml:
+# Quarto silently ignores a project-level `jupyter:` and auto-selects a kernel.
+jupyter: python3
+
+# No `pyodide: packages:` block: this page has no live cells.
+---
+
+::: {.callout-note appearance="simple" icon=false}
+**Disclaimer.** These notes have not been subjected to the usual scrutiny
+reserved for formal publications. They may be distributed outside this class
+only with the permission of the instructor.
+:::
+
+{{< include ../../_figure-setup.qmd >}}
+
+Every stellar-mass black hole was once a star, so before we can ask how black
+holes are made we need to know how stars are made, and how massive they can be.
+The story turns out to be the one this course keeps telling: **gravity pulling
+inward against a pressure pushing outward.** In a cold gas cloud the pressure
+is the thermal motion of the gas, and gravity wins only if the cloud is massive
+enough. In the smallest stars it is a quantum-mechanical pressure that stops
+the collapse before the star can ignite. In the largest it is the pressure of
+the star's own light. Later in the course we will meet the one case where no
+pressure is enough.
+
+## How to read this lecture
+
+**The main reading for this lecture is Kutner, Chapter 15**, which is in the
+Canvas Files under *Reading Material*. These notes do two jobs: they cover the
+three topics Kutner's chapter does not — the HR diagram, how small and how
+large a star can be, and how many stars of each mass are born — and they give
+you exercises on all of it.
+
+### The readings
+
+| Kutner section | read it for |
+|:---|:---|
+| §15.1 Gravitational binding | the Jeans length and Jeans mass, the free-fall time, and what rotation does to a collapse |
+| §15.3 Molecular clouds and star formation | why stars form in cold, dense molecular clouds |
+| §15.5 Protostars | where a collapsing cloud's luminosity comes from, and how a protostar moves across the HR diagram |
+| §15.6.4 T Tauri stars | what a very young star looks like |
+| §15.2 *(optional)* | the open questions, including the first mention of the initial mass function |
+
+You can skip §15.4 and §15.6.1–15.6.3.
+
+Two things to know while you read §15.1. **Kutner derives the Jeans length
+with a factor $15/8\pi$ in it (his equation 15.2), and then drops that factor
+as close to unity**, which is fine for an estimate. The Jeans mass on your
+constants sheet keeps it,
+$M_J = \tfrac{4\pi}{3}\left(15\,kT/8\pi G m\right)^{3/2}\rho^{-1/2}$, and
+the two forms differ by about a factor of two in the Jeans mass. **In this
+course, use the form on the constants sheet.** And **$m$ in that formula is
+the mass of one gas particle.** In atomic gas that
+is a hydrogen atom, $m \approx m_p$. In a molecular cloud the hydrogen is bound
+into H$_2$ molecules, so each particle has about twice that mass.
+
+## Stars on the HR diagram
+
+Lecture 7 showed that a star radiates close to a blackbody, so its luminosity
+is set by its radius and its surface temperature,
+$L = 4\pi R^2 \sigma T^4$
+([Blackbody radiation and effective temperature](../accretion-efficiency/index.qmd#blackbody-radiation-and-effective-temperature)).
+Stars' surface temperatures run from about 3,000 to 10,000 K and beyond. The
+**Hertzsprung–Russell diagram**, or HR diagram, plots each star's luminosity
+against its surface temperature.
+
+Two of its conventions trip everyone up the first time. **Temperature
+increases to the left**, and both axes are logarithmic, so the diagram spans a
+factor of more than ten in temperature and a factor of $10^{11}$ in luminosity.
+
+![The Hertzsprung–Russell diagram. Each star's luminosity, compared with the Sun's, is plotted against its surface temperature, which increases to the left. Most stars lie on the main sequence, the diagonal band from hot and luminous at upper left to cool and faint at lower right. Giants and supergiants lie above it and white dwarfs below it. Credit: [ESO](https://www.eso.org/public/images/eso0728c/), used under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).](eso0728c.jpg){#fig-hr fig-alt="A Hertzsprung–Russell diagram on a black background. The vertical axis is luminosity compared with the Sun, from ten to the minus five at the bottom to ten to the six at the top. The horizontal axis is surface temperature, running from about forty thousand degrees at the left to about two thousand five hundred at the right, above a color bar that goes from blue at the hot end through white and yellow to red at the cool end. A diagonal band labeled main sequence runs from blue stars at the upper left down to small red stars at the lower right; the Sun is marked on it near luminosity one and about six thousand degrees, and a small red star labeled AB Doradus C sits near its faint end. Large yellow and red stars labeled giants sit above the main sequence at the cool side, and very large stars labeled supergiants run across the top. A pale band labeled white dwarfs lies below the main sequence at the lower left."}
+
+**Most stars fall on the main sequence**, the diagonal band from upper left to
+lower right. Those are the stars in their hydrogen-burning stage, which is most
+of a star's life, and that is why most stars are found there. A star's position
+along the main sequence is set almost entirely by its mass: the more massive
+stars are hotter and more luminous, at the upper left.
+
+The rest of the diagram can be read with the blackbody formula alone. Solve
+$L = 4\pi R^2 \sigma T^4$ for the radius, and compare with the Sun, and the
+$4\pi\sigma$ cancels:
+
+$$
+\frac{R}{R_\odot} = \left(\frac{L}{L_\odot}\right)^{1/2}
+                    \left(\frac{T_\odot}{T}\right)^{2} .
+$$ {#eq-radius-ratio}
+
+- **Giants and supergiants** are more luminous than main-sequence stars of the
+  same temperature. At fixed $T$ more luminosity can only mean more surface,
+  so they are larger, which is where the names come from.
+- **White dwarfs** are less luminous than main-sequence stars of the same
+  temperature, so they are smaller. They are the subject of the next lecture.
+
+Because the radius goes as $T^{-2}$ at fixed luminosity, a star does not need to
+be much cooler to be much larger. That is the reason the upper right of the
+diagram is full of enormous stars.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-hr}
+
+1. A red supergiant has a surface temperature of $3500\ \mathrm{K}$ and a
+   luminosity of $10^{5}\,L_\odot$. What is its radius, in solar radii and in
+   astronomical units? Take the Sun's surface temperature to be
+   $5770\ \mathrm{K}$.
+
+   ::: {.callout-note .help-solution collapse="true" title="Solution"}
+   Use @eq-radius-ratio with the values attached. Both factors are ratios of
+   like quantities — solar luminosities over solar luminosities, kelvins over
+   kelvins — so the units cancel inside each bracket before any arithmetic:
+
+   $$
+   \frac{R}{R_\odot}
+     = \left(\frac{10^{5}\,L_\odot}{1\,L_\odot}\right)^{1/2}
+       \left(\frac{5770\ \mathrm{K}}{3500\ \mathrm{K}}\right)^{2} .
+   $$
+
+   *Do the units make sense?* The right-hand side is a pure number, and the
+   left-hand side is a radius divided by a radius, so yes. Now the numbers:
+   $(10^{5})^{1/2} = 316.2$ and $(1.649)^{2} = 2.718$, so
+
+   $$
+   R = 316.2 \times 2.718\,R_\odot = 860\,R_\odot .
+   $$
+
+   To get astronomical units, convert through centimeters, arranging each
+   fraction so that the unit you are leaving cancels:
+
+   $$
+   \begin{aligned}
+   R &= 860\,R_\odot
+        \times \frac{6.96 \times 10^{10}\ \mathrm{cm}}{1\,R_\odot} \\[0.8em]
+     &\qquad \times \frac{1\ \mathrm{AU}}{1.496 \times 10^{13}\ \mathrm{cm}} \\[0.8em]
+     &= 4.0\ \mathrm{AU} .
+   \end{aligned}
+   $$
+
+   Put this star where the Sun is and its surface would lie beyond the
+   asteroid belt, most of the way out to Jupiter.
+   :::
+
+2. A white dwarf has a surface temperature of $10{,}000\ \mathrm{K}$ and a
+   luminosity of $10^{-3}\,L_\odot$. How large is it, compared with the Earth?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   $R = 0.0105\,R_\odot$, which is $7.3 \times 10^{8}\ \mathrm{cm}$, or about
+   $1.1$ Earth radii. A star with roughly the mass of the Sun, the size of the
+   Earth.
+   :::
+
+3. Two stars have the same luminosity, and one is twice as hot as the other.
+   How do their radii compare? Where do they sit, relative to each other, on
+   the HR diagram?
+
+:::
+
+## How small and how big a star can be
+
+A star is a ball of gas in which the inward pull of gravity is balanced by an
+outward pressure. That balance cannot be struck at every mass, and the two
+ends of the mass range fail for different reasons.
+
+### The low-mass end
+
+To shine as a star, an object has to get hot enough at its center for nuclear
+fusion to start. A collapsing ball of gas heats up as it contracts, so the
+question is whether it gets hot enough before something stops the contraction.
+**Below about $0.08\,M_\odot$ it does not.** The center is squeezed so hard that
+a new kind of pressure, **electron degeneracy pressure**, holds the object up
+before the core is hot enough for fusion. We will return to degeneracy
+pressure in the next lecture; for now it is enough that it does not need the
+gas to be hot.
+
+Objects below this limit are **brown dwarfs**. They glow faintly from the heat
+of their formation and cool forever. The limit, $0.08\,M_\odot$, is about 80
+times the mass of Jupiter, and a brown dwarf is in many ways closer to a very
+large Jupiter than to a star.
+
+### The high-mass end
+
+**The most massive stars known were born with a few hundred solar masses.** The
+record holder, R136a1 in the Large Magellanic Cloud, is estimated to have been
+born with 250 to 320 $M_\odot$ [@bestenlehner2020]; a later measurement puts its
+present mass nearer 200 $M_\odot$, after much of it has been blown away
+[@kalari2022].
+
+What sets the limit is **radiation pressure**. A massive star is supported
+more and more by the pressure of its own light rather than by the gas, because
+adding mass makes nuclear fusion in the core more intense, and the luminosity
+climbs much faster than the mass does. Past a few hundred solar masses the
+light pushes on the outer layers hard enough to drive them off.
+
+This is the Eddington limit from lecture 8, turning up somewhere other than a
+black hole. There it capped how bright gas falling onto a black hole could be;
+here it caps how bright, and so how massive, a star can be. The real limit
+is a little more complicated than the Eddington luminosity alone, because a
+star's luminosity depends on its mass in a non-linear way, but the physics is
+the same: **light pushing outward, gravity pulling inward.**
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-limits}
+
+1. A brown dwarf has a mass of $0.05\,M_\odot$. How many times the mass of
+   Jupiter is that? Take Jupiter's mass to be $1.898 \times 10^{30}\ \mathrm{g}$.
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   About 52 Jupiter masses.
+   :::
+
+2. We derived the Eddington limit for gas falling onto a black hole. Explain
+   why the same argument applies to the outer layers of a very massive star.
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   The argument never used anything about the object at the center except its
+   mass and its luminosity. It compares the outward push of radiation on the
+   electrons in a parcel of gas with the inward pull of gravity on the protons.
+   A parcel in the outer layers of a star feels both forces in exactly the same
+   way. If the star's own luminosity exceeds the Eddington luminosity for its
+   mass, the light pushes the parcel outward harder than gravity holds it in,
+   and the outer layers are driven off.
+   :::
+
+3. What kind of pressure holds each of these up against gravity?
+
+   a. a molecular cloud that is not collapsing
+   b. the Sun
+   c. a star of $200\,M_\odot$
+   d. a brown dwarf
+
+:::
+
+## How many stars of each mass are born
+
+When a cloud fragments into stars, it does not make them all at the same mass.
+The distribution of masses stars are born with is called the **initial mass
+function**, or IMF — "initial" because a star's mass changes as it ages and
+loses gas, and it is the birth mass that decides its fate. It was first
+measured by Edwin Salpeter in 1955 [@salpeter1955], the same Salpeter whose name
+is on the black-hole growth time in lecture 9.
+
+```{python}
+#| label: fig-imf
+#| fig-cap: "How many stars of each mass are born, out of every 1000 stars between $0.08\\,M_\\odot$ and $150\\,M_\\odot$, using the initial mass function of @kroupa2001. Note the logarithmic scale: three stars in four are born less massive than half the Sun. The orange bars are the stars born above about $8\\,M_\\odot$, which will end their lives as neutron stars or black holes: about six in every thousand."
+#| fig-alt: "A bar chart with a logarithmic vertical axis, number of stars born per thousand, from 1 to 1000. Six bars for ranges of mass at birth in solar masses. From 0.08 to 0.5, about 761. From 0.5 to 1, about 142. From 1 to 2, about 58. From 2 to 8, about 33. These four bars are blue. From 8 to 20, about 4.5, and from 20 to 150, about 1.8; these two bars are orange and labeled as future neutron stars and black holes."
+#| fig-height: 3.8
+
+fig, ax = plt.subplots(figsize=(6.2, 3.8))
+
+
+def kroupa(m):
+    """Kroupa (2001) IMF, dN/dM up to a constant."""
+    return np.where(m < 0.5, (m / 0.5)**-1.3, (m / 0.5)**-2.3)
+
+
+def count(a, b):
+    m = np.logspace(np.log10(a), np.log10(b), 20001)
+    return np.trapezoid(kroupa(m), m)
+
+
+edges = [0.08, 0.5, 1, 2, 8, 20, 150]
+total = count(edges[0], edges[-1])
+per_1000 = [1000 * count(a, b) / total for a, b in zip(edges[:-1], edges[1:])]
+labels = [f"{a:g}–{b:g}" for a, b in zip(edges[:-1], edges[1:])]
+colors = [BLUE] * 4 + [ORANGE] * 2
+
+x = np.arange(len(per_1000))
+ax.bar(x, per_1000, width=0.7, color=colors, zorder=3)
+for xi, n in zip(x, per_1000):
+    ax.annotate(f"{n:.0f}" if n >= 10 else f"{n:.1f}", (xi, n),
+                textcoords="offset points", xytext=(0, 3), ha="center",
+                fontsize=9.5, color=INK2, zorder=4)
+
+ax.annotate("future neutron stars\nand black holes", (4.5, 12),
+            ha="center", fontsize=9.5, color=ORANGE, zorder=4)
+
+ax.set_yscale("log")
+ax.set_ylim(1, 2000)
+ax.set_xticks(x, labels)
+ax.set_xlabel(r"mass at birth ($M_\odot$)")
+ax.set_ylabel("stars born per 1000")
+ax.grid(axis="y", color=GRID, zorder=0)
+ax.set_axisbelow(True)
+plt.show()
+```
+
+**Nature makes small stars far more often than large ones.** About three stars
+in four are born with less than half the mass of the Sun, and only about six
+in a thousand are born above roughly $8\,M_\odot$ (@fig-imf). Those few are the
+ones that matter most for this course: they end their lives as neutron stars
+and black holes, which is where the next few lectures are going.
+
+Rare is not the same as unimportant. Those six stars in a thousand carry about
+a quarter of all the mass that goes into stars, and they are so luminous that
+they outshine everything else in a young star cluster.
+
+Above about a solar mass the IMF is close to a power law, with the number of
+stars per unit mass falling off as $M^{-2.35}$. That is Salpeter's slope. It
+means that there are about $2^{1.35} = 2.5$ times fewer stars born between
+$2M$ and $4M$ than between $M$ and $2M$, whatever mass $M$ you start from.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-imf}
+
+1. A young cluster forms 10,000 stars. Using @fig-imf, about how many of them
+   will end their lives as neutron stars or black holes?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   About 63 — the two orange bars add to 6.3 per thousand.
+   :::
+
+2. For a Salpeter IMF, the number of stars born with masses between $M_1$ and
+   $M_2$ is proportional to $M_1^{-1.35} - M_2^{-1.35}$. How many times more
+   stars are born between $1$ and $2\,M_\odot$ than between $10$ and
+   $20\,M_\odot$?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
+   Write both differences out and take their ratio. Both ranges run from a
+   mass to twice that mass, so the factor $1 - 2^{-1.35}$ appears in both and
+   cancels, and what is left is a single power of ten. The answer is
+   $10^{1.35} = 22$.
+   :::
+
+3. Most stars are born less massive than the Sun, yet stars born above
+   $8\,M_\odot$ carry about a quarter of all the mass that goes into stars. How
+   can both be true?
+
+:::
+
+## Exercises on the reading
+
+::: {.content-visible when-format="html"}
+
+These go with Kutner Chapter 15. The first four are ours; the list after them
+points to questions and problems in Kutner's own chapter.
+
+### Section 15.1 — gravitational binding
+
+1. A non-rotating molecular cloud core has a uniform mass density
+   $\rho = 9.0 \times 10^{-19}\ \mathrm{g\,cm^{-3}}$, a temperature of
+   $12\ \mathrm{K}$ and a radius of $0.1\ \mathrm{pc}$. Its hydrogen is
+   molecular, so take the mass of one gas particle to be $m = 2 m_p$.
+
+   a. What is its Jeans length, in parsecs?
+   b. What is its Jeans mass, in solar masses?
+   c. Will this cloud collapse? Show why or why not.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
+   For part (c), compare the cloud's own mass, $\tfrac43 \pi R^3 \rho$, with
+   the Jeans mass — or, equivalently, its radius with the Jeans length. The
+   answers are $R_J = 0.023\ \mathrm{pc}$ and $M_J = 0.65\,M_\odot$. The cloud
+   holds $56\,M_\odot$, far above its Jeans mass, and it is four times larger
+   than its Jeans length, so it will collapse — and, as Kutner explains, it
+   will fragment rather than collapse into a single star.
+   :::
+
+2. What is the free-fall time of the cloud in exercise 1, in years? Use
+   $t_{\mathrm{ff}} = (G\rho)^{-1/2}$, from the constants sheet.
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   About $1.3 \times 10^{5}$ years.
+   :::
+
+3. A second cloud core has the same temperature, density and radius as the one
+   in exercise 1, but it is rotating rapidly. Will it collapse more quickly or
+   more slowly than the first, if at all? Why?
+
+### Section 15.5 — protostars
+
+4. Suppose the whole cloud in exercise 1 collapsed into a single star of
+   $55\,M_\odot$ with a radius of $20\,R_\odot$. (Exercise 1 says it would
+   really fragment, but go with it.)
+
+   a. How much gravitational energy is released in the collapse, in ergs? Treat
+      the star as a uniform sphere.
+   b. If that energy were radiated over one free-fall time (exercise 2), what
+      would the average luminosity be, in solar luminosities?
+
+   ::: {.callout-note .help-solution collapse="true" title="Solution"}
+   **(a)** A uniform sphere has gravitational potential energy
+   $U = -\tfrac35 G M^2 / R$. Collapsing from a size of $0.1\ \mathrm{pc}$ to
+   $20\,R_\odot$ releases the difference between the two, but the starting
+   value is smaller by the ratio of the radii, which is
+   $20\,R_\odot / 0.1\ \mathrm{pc} = 4.5 \times 10^{-6}$, so only the final
+   one matters.
+
+   Convert the mass and radius first, with each fraction arranged so the solar
+   unit cancels:
+
+   $$
+   \begin{aligned}
+   M &= 55\,M_\odot \times \frac{1.989 \times 10^{33}\ \mathrm{g}}{1\,M_\odot} \\[0.8em]
+     &= 1.094 \times 10^{35}\ \mathrm{g} , \\[0.8em]
+   R &= 20\,R_\odot \times \frac{6.960 \times 10^{10}\ \mathrm{cm}}{1\,R_\odot} \\[0.8em]
+     &= 1.392 \times 10^{12}\ \mathrm{cm} .
+   \end{aligned}
+   $$
+
+   Substitute with the units attached:
+
+   $$
+   \begin{aligned}
+   E &= \frac35 \,
+        \left(6.673 \times 10^{-8}\ \mathrm{cm^3\,g^{-1}\,s^{-2}}\right) \\[0.8em]
+     &\qquad \times \frac{\left(1.094 \times 10^{35}\ \mathrm{g}\right)^2}
+                          {1.392 \times 10^{12}\ \mathrm{cm}} .
+   \end{aligned}
+   $$
+
+   The units are $\mathrm{cm^3\,g^{-1}\,s^{-2}} \times \mathrm{g^2} /
+   \mathrm{cm} = \mathrm{g\,cm^2\,s^{-2}}$. *Do the units make sense?* That is
+   an erg, and we want an energy, so yes. Now the numbers:
+
+   $$
+   E = 3.4 \times 10^{50}\ \mathrm{erg} .
+   $$
+
+   **(b)** The free-fall time from exercise 2 is $1.29 \times 10^{5}$ years,
+   which in seconds is
+
+   $$
+   \begin{aligned}
+   t &= 1.29 \times 10^{5}\ \mathrm{yr}
+        \times \frac{3.156 \times 10^{7}\ \mathrm{s}}{1\ \mathrm{yr}} \\[0.8em]
+     &= 4.08 \times 10^{12}\ \mathrm{s} .
+   \end{aligned}
+   $$
+
+   The average luminosity is the energy divided by the time,
+
+   $$
+   \begin{aligned}
+   L &= \frac{3.4 \times 10^{50}\ \mathrm{erg}}{4.08 \times 10^{12}\ \mathrm{s}}
+      = 8.4 \times 10^{37}\ \mathrm{erg\,s^{-1}} \\[0.8em]
+     &= 8.4 \times 10^{37}\ \mathrm{erg\,s^{-1}}
+        \times \frac{1\,L_\odot}{3.83 \times 10^{33}\ \mathrm{erg\,s^{-1}}} \\[0.8em]
+     &= 2.2 \times 10^{4}\,L_\odot .
+   \end{aligned}
+   $$
+
+   Tens of thousands of suns, from gravity alone, before any fusion has
+   started. Most of it comes out in the infrared, from deep inside a dusty
+   cloud, which is why Kutner says protostars are best found in the infrared.
+   :::
+
+### From Kutner, Chapter 15
+
+These are Kutner's own end-of-chapter exercises, listed by the section they go
+with.
+
+| section | Questions | Problems |
+|:---|:---|:---|
+| §15.1 | 15.1, 15.3, 15.6, 15.7 | 15.3, 15.5, 15.6 |
+| §15.3 | | 15.4 |
+| §15.5 | | 15.13 |
+| §15.6.4 | 15.18 | |
+
+:::
+
+::: {.content-visible when-format="pdf"}
+{{< include ../../in_class/lec11/exercises00.qmd >}}
+:::
+
+## Summary
+
+| idea | result | why it matters |
+|:---|:---|:---|
+| The HR diagram | luminosity against surface temperature, hot to the left | most stars lie on the main sequence, where position is set by mass |
+| Radius from $L$ and $T$ | $R/R_\odot = (L/L_\odot)^{1/2} (T_\odot/T)^2$ | giants are big and white dwarfs are small, from the blackbody formula alone |
+| Low-mass limit | about $0.08\,M_\odot$ | below it, degeneracy pressure stops the collapse before fusion starts: brown dwarfs |
+| High-mass limit | a few hundred $M_\odot$ | radiation pressure — the Eddington limit, applied to a star |
+| Initial mass function | three stars in four below $0.5\,M_\odot$ | only about six in a thousand are born heavy enough to become neutron stars or black holes |
+
+Every limit in this lecture is a contest between gravity and a pressure: the
+thermal pressure of the gas in a cloud, the degeneracy pressure of the
+electrons in a brown dwarf, the pressure of light in the most massive stars.
+Next time we take the degeneracy pressure seriously, because it is what holds
+up a white dwarf, and because working out the most it can ever hold up is the
+first step toward a black hole.
+
+:::: {.content-visible when-format="html"}
+## References {.unnumbered}
+
+::: {#refs}
+:::
+::::
+
+::: {.content-visible when-format="pdf"}
+
+```{=latex}
+\clearpage
+\tableofcontents
+```
+:::
