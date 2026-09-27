@@ -23,6 +23,7 @@ project:
     - lectures/gravitational-waves/index.qmd
     - lectures/midterm-review/index.qmd
     - lectures/star-formation/index.qmd
+    - lectures/white-dwarfs/index.qmd
   # No `resources:` entry for fonts/ is needed. Quarto follows the url()
   # references in the theme SCSS and copies those files next to the compiled
   # CSS itself. Adding fonts/ here published a SECOND copy at _site/fonts/,
@@ -90,6 +91,8 @@ website:
             text: "Midterm review"
           - href: lectures/star-formation/index.qmd
             text: "Star formation and the main sequence"
+          - href: lectures/white-dwarfs/index.qmd
+            text: "White dwarfs and the Chandrasekhar limit"
 
 format:
   live-html:

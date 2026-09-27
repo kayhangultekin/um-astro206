@@ -1,0 +1,489 @@
+---
+title: "Degenerate Matter, White Dwarfs and the Chandrasekhar Limit"
+subtitle: "ASTRO 206 — Black Holes · Lecture 12"
+author: "Kayhan Gültekin"
+date: "October 15"
+date-format: "MMMM D"
+# Dates are LECTURE dates -- when the class meets -- not publication dates.
+# Sourced from Canvas (Reading & Reflection 3233497 and the In-Class Problem
+# 3219322, both due 2026-10-15). A placeholder string renders as "Invalid Date".
+
+# Kernel pinning is deliberate and must stay in the DOCUMENT, not _quarto.yml:
+# Quarto silently ignores a project-level `jupyter:` and auto-selects a kernel.
+jupyter: python3
+
+# No `pyodide: packages:` block: this page has no live cells.
+---
+
+::: {.callout-note appearance="simple" icon=false}
+**Disclaimer.** These notes have not been subjected to the usual scrutiny
+reserved for formal publications. They may be distributed outside this class
+only with the permission of the instructor.
+:::
+
+{{< include ../../_figure-setup.qmd >}}
+
+Last time we met a pressure that does not need heat: the electron degeneracy
+pressure that stops a brown dwarf from collapsing before it can ignite. This
+time we take it seriously, because it is what holds up a **white dwarf**, the
+object most stars leave behind when they die. Degeneracy pressure behaves
+unlike any pressure we have met so far. It does not care about temperature, so
+a white dwarf can cool forever without shrinking. **The more massive a white
+dwarf is, the smaller it is.** And because nothing can move faster than light,
+there is a **largest mass** that degeneracy pressure can ever hold up. That
+limit, the Chandrasekhar mass, is the first step on the road from stars to
+black holes.
+
+## How to read this lecture
+
+**The main reading for this lecture is Kutner, Chapter 10, Section 10.4**,
+which is in the Canvas Files under *Reading Material*, both as a PDF and as an
+accessible Word document. These notes do three jobs: they say where a white
+dwarf comes from, they draw out two consequences that Kutner's section contains
+but does not dwell on — that heavier white dwarfs are smaller, and that above
+the Chandrasekhar mass nothing we have met so far can stop a collapse — and
+they give you exercises on all of it.
+
+### The readings
+
+| Kutner section | read it for |
+|:---|:---|
+| §10.4.1 Electron degeneracy | where degeneracy pressure comes from, and why it depends on density but not on temperature |
+| §10.4.2 Properties of white dwarfs | how dense white dwarfs are, the mass–radius relation, and why they take so long to cool |
+| §10.4.3 Relativistic effects | why there is a maximum mass, the Chandrasekhar limit |
+| §10.1.1 and §10.3 *(optional)* | how a star like the Sun gets from the main sequence to a white dwarf: the red giant stage and the planetary nebula |
+
+You can skip §10.1.2 and §10.2.
+
+Two things to know while you read. **Kutner writes $h/2\pi$ throughout**, and
+so does your constants sheet; it is the same constant physicists often write
+as $\hbar$. And **Kutner's mass–radius relation, his equation 10.14, gets the
+way a white dwarf's size depends on its mass right, but the number it gives is
+far too small.** Use it for how the radius *scales*, not for the radius itself.
+There is more on this below, in [The heavier, the smaller](#sec-heavier).
+
+## Where a white dwarf comes from
+
+A star spends most of its life on the main sequence, fusing hydrogen into
+helium in its core. When the hydrogen in the core runs out, the core contracts
+and heats up, and the star's outer layers swell until it becomes a **red
+giant**. In a star like the Sun the core eventually gets hot enough to fuse
+helium into carbon and oxygen, and when that fuel runs out too, the core
+contracts once more. **It never gets hot enough for the next stage of fusion.**
+
+Meanwhile the swollen outer layers are only loosely held by gravity, and the
+star drives them off. The expanding shell of gas is lit up by the hot core it
+leaves behind, and we see it as a **planetary nebula** — a name left over from
+how these clouds looked in small telescopes, with nothing to do with planets.
+What is left in the middle is the bare core: carbon and oxygen, typically a
+little over half the mass of the Sun, about as big as the Earth, very hot, and with no fusion
+going on inside it. **That is a white dwarf.**
+
+Kutner puts the dividing line at about $5\,M_\odot$.
+More recent measurements, which match white dwarfs in star clusters to the
+stars they came from, trace white dwarfs back to stars born with as much as
+$7.5\,M_\odot$ [@cummings2018], and the usual round number today is about
+$8\,M_\odot$. Lecture 11's initial mass function says that covers all but
+about six stars in every thousand.
+
+Nothing is left to heat the core, and nothing is left to make new heat. So
+what stops it from contracting forever? Gas pressure cannot: the thermal
+pressure of a gas is $P = nkT$, and a star that is not making energy is losing
+it, so $T$ can only fall. The answer is a pressure that does not depend on
+temperature at all.
+
+## A pressure that ignores temperature
+
+Kutner §10.4.1 builds degeneracy pressure from two pieces of quantum mechanics.
+The **exclusion principle** says that no two electrons can be in the same
+state, so in a dense gas most of the electrons are forced into states of high
+momentum, far above what their temperature alone would give them. The
+**uncertainty principle** says the same thing another way: squeeze the
+electrons close together, and the spread in their momenta has to grow. Fast
+electrons push hard on whatever they hit, and that push is **degeneracy
+pressure**.
+
+Two features of Kutner's result, his equation 10.11, carry this whole lecture.
+
+- **It depends on density and not on temperature.** Squeeze the gas and the
+  pressure rises; cool it and nothing happens. That is the opposite of a gas
+  in an ordinary star.
+- **It rises steeply with density**, as
+
+  $$
+  P_{\mathrm{deg}} \propto \rho^{5/3} .
+  $$ {#eq-pdeg}
+
+  This holds as long as the electrons move slowly compared with light. Kutner
+  §10.4.3 shows what changes when they do not.
+
+::: {.callout-tip .resolution collapse="true" title="Think about what happens to a white dwarf's size as it cools"}
+Nothing happens to it. A white dwarf is held up by degeneracy pressure, which
+does not depend on temperature, so as it radiates away its heat and cools, its
+size stays the same. It fades and reddens at a fixed radius. Compare a normal
+star, which is held up by thermal pressure: if it could not replace the energy
+it radiates, it would have to contract.
+:::
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-pressure}
+
+1. Sirius B, the white dwarf companion of the brightest star in the sky, has a
+   mass of $1.018\,M_\odot$ and a radius of $0.008098\,R_\odot$
+   [@bond2017eri]. What is its average density? What mass of it would fill a
+   teaspoon, about $5\ \mathrm{cm^3}$?
+
+   ::: {.callout-note .help-solution collapse="true" title="Solution"}
+   The average density is the mass divided by the volume of a sphere,
+   $\rho = M / \tfrac43 \pi R^3$. Convert the mass and radius to grams and
+   centimeters first, arranging each fraction so that the solar unit cancels:
+
+   $$
+   \begin{aligned}
+   M &= 1.018\,M_\odot
+        \times \frac{1.9891 \times 10^{33}\ \mathrm{g}}{1\,M_\odot} \\[0.8em]
+     &= 2.025 \times 10^{33}\ \mathrm{g} , \\[0.8em]
+   R &= 0.008098\,R_\odot
+        \times \frac{6.9598 \times 10^{10}\ \mathrm{cm}}{1\,R_\odot} \\[0.8em]
+     &= 5.636 \times 10^{8}\ \mathrm{cm} .
+   \end{aligned}
+   $$
+
+   Now substitute, with the units attached and no arithmetic yet:
+
+   $$
+   \rho = \frac{2.025 \times 10^{33}\ \mathrm{g}}
+               {\tfrac43 \pi \left(5.636 \times 10^{8}\ \mathrm{cm}\right)^{3}} .
+   $$
+
+   The units are $\mathrm{g} / \mathrm{cm^3}$. *Do the units make sense?* A
+   density is a mass per volume, so yes. Now the numbers: the volume is
+   $7.499 \times 10^{26}\ \mathrm{cm^3}$, so
+
+   $$
+   \rho = 2.7 \times 10^{6}\ \mathrm{g\,cm^{-3}} .
+   $$
+
+   A teaspoon holds
+
+   $$
+   \begin{aligned}
+   5\ \mathrm{cm^3} \times 2.7 \times 10^{6}\ \mathrm{g\,cm^{-3}}
+     &= 1.35 \times 10^{7}\ \mathrm{g} \\[0.8em]
+     &= 1.35 \times 10^{7}\ \mathrm{g}
+        \times \frac{1\ \mathrm{t}}{10^{6}\ \mathrm{g}} \\[0.8em]
+     &= 13.5\ \mathrm{t} ,
+   \end{aligned}
+   $$
+
+   where t is a metric ton. A teaspoon of Sirius B weighs about as much as
+   two elephants. Its radius, $5{,}600\ \mathrm{km}$, is a little smaller than
+   the Earth's.
+   :::
+
+2. Kutner estimates the momentum of an electron in a degenerate gas as
+   $p \approx (h/2\pi)\, n_e^{1/3}$, where $n_e$ is the number of electrons
+   per cubic centimeter. The electrons are moving at close to the speed of
+   light once $p$ reaches about $m_e c$.
+
+   a. At what electron density does that happen?
+   b. What mass density is that, for carbon or oxygen, which have one electron
+      for every two nucleons? Use $\rho = 2 m_p n_e$.
+   c. How does it compare with the average density of Sirius B, from
+      exercise 1?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
+   Set $(h/2\pi)\, n_e^{1/3} = m_e c$ and solve for $n_e$ by cubing both sides.
+   The answers are $n_e = 1.7 \times 10^{31}\ \mathrm{cm^{-3}}$ and
+   $\rho = 5.8 \times 10^{7}\ \mathrm{g\,cm^{-3}}$, about 20 times Sirius B's
+   average density. Sirius B's center is several times denser than its
+   average, so its electrons are well on the way to moving at the speed of
+   light — which will matter in [Why there is a largest mass](#sec-chandrasekhar).
+   :::
+
+3. The Sun's core is at about $1.5 \times 10^{7}\ \mathrm{K}$ and a white
+   dwarf's interior at about $10^{7}\ \mathrm{K}$, much the same. Why, then, is
+   the Sun's core held up by thermal pressure and a white dwarf by degeneracy
+   pressure?
+
+:::
+
+::: {.content-visible when-format="pdf"}
+{{< include ../../in_class/lec12/exercises00.qmd >}}
+:::
+
+## The heavier, the smaller {#sec-heavier}
+
+Pile more mass onto an ordinary star and it gets bigger. Pile more mass onto a
+white dwarf and it gets **smaller**. The reason is that degeneracy pressure can
+only answer extra weight by being squeezed to a higher density.
+
+A star in balance needs enough pressure at its center to hold up the weight of
+everything above it. For a star of mass $M$ and radius $R$, the pressure it
+needs goes as $G M^2 / R^4$, and its density goes as $M / R^3$. Set the pressure
+from @eq-pdeg equal to the pressure needed, and the radius and mass have to be
+related by
+
+$$
+R \propto M^{-1/3} .
+$$ {#eq-mr}
+
+That is the content of Kutner's equation 10.14, with the constants stripped
+away. With slow electrons, doubling a white dwarf's mass shrinks it by a factor of
+$2^{1/3} = 1.26$, to about four fifths of its size.
+
+```{python}
+#| label: fig-mass-radius
+#| fig-cap: "The radius of a white dwarf against its mass. The dashed orange line is @eq-mr, the relation for electrons moving slowly compared with light. The solid blue line includes the effect of the electrons approaching the speed of light, using the approximation of @nauenberg1972; it falls to zero radius at the Chandrasekhar mass. The dots are three nearby white dwarfs whose masses are measured from their orbits in binary systems and whose radii are measured from their light [@bond2017eri]. The dotted gray line along the bottom is Kutner's equation 10.14 taken literally. All curves are for a white dwarf of carbon and oxygen."
+#| fig-alt: "A line chart of white dwarf radius in kilometers, from 0 to 16,000, against mass in solar masses, from 0.2 to 1.6. A dashed orange curve falls slowly from about 15,000 kilometers at 0.2 solar masses to about 7,800 at 1.45. A solid blue curve starts on top of the dashed one at low mass, bends below it above about half a solar mass, and falls steeply to zero radius at 1.45 solar masses, where a vertical gray line is labeled Chandrasekhar mass. A horizontal dotted line at about 6,400 kilometers is labeled Earth's radius. Three black dots lie close to the blue curve: 40 Eri B at 0.57 solar masses and about 9,100 kilometers, Procyon B at 0.59 and about 8,600, and Sirius B at 1.02 and about 5,600. A dotted gray line labeled Kutner equation 10.14 runs along the bottom of the chart, at a few hundred kilometers."
+#| fig-height: 4.0
+
+fig, ax = plt.subplots(figsize=(6.2, 4.0))
+
+R_SUN_KM = 6.9598e5          # his constants sheet, in km
+R_EARTH_KM = 6378.17
+MU_E = 2.0                   # carbon and oxygen: two nucleons per electron
+M_CH = 5.816 / MU_E**2       # Nauenberg (1972), in solar masses
+
+
+def r_nauenberg(m):
+    """Zero-temperature white dwarf radius in km, Nauenberg (1972)."""
+    x = m / M_CH
+    return 0.0225 / MU_E * x**(-1/3) * np.sqrt(1 - x**(4/3)) * R_SUN_KM
+
+
+def r_slow(m):
+    """The same, with the electrons treated as slow: R proportional to M^(-1/3)."""
+    return 0.0225 / MU_E * (m / M_CH)**(-1/3) * R_SUN_KM
+
+
+# Kutner's equation 10.14 (with the corrected 4 pi^2), his constants sheet
+h, m_e, m_p, G = 6.6262e-27, 9.1096e-28, 1.6726e-24, 6.6732e-8
+M_SUN = 1.9891e33
+K_1014 = 2 * h**2 / (4 * np.pi**2 * m_e) * (0.5 / (4 * m_p))**(5/3) / G
+
+
+def r_kutner(m):
+    return K_1014 / (m * M_SUN)**(1/3) / 1e5
+
+
+m = np.linspace(0.2, M_CH, 600)
+ax.plot(m, r_slow(m), color=ORANGE, ls="--", zorder=3,
+        label=r"electrons slow, $R \propto M^{-1/3}$")
+ax.plot(m, r_nauenberg(m), color=BLUE, zorder=4,
+        label="electrons approaching light speed")
+ax.plot(m, r_kutner(m), color=MUTED, ls=":", zorder=3)
+ax.annotate("Kutner eq. 10.14", (0.95, r_kutner(0.95)),
+            textcoords="offset points", xytext=(0, 5),
+            fontsize=9.5, color=MUTED)
+
+ax.axhline(R_EARTH_KM, color=MUTED, ls=":", lw=1.2, zorder=2)
+ax.annotate("Earth's radius", (0.21, R_EARTH_KM), textcoords="offset points",
+            xytext=(0, 4), fontsize=9.5, color=MUTED)
+
+ax.axvline(M_CH, color=AXIS, lw=1.2, zorder=2)
+ax.annotate("Chandrasekhar\nmass", (M_CH, 10800), textcoords="offset points",
+            xytext=(-6, 0), ha="right", fontsize=9.5, color=INK2)
+
+# Bond, Bergeron & Bedard (2017), Table 1: mass (Msun), radius (Rsun)
+stars = {"40 Eri B": (0.573, 0.01308), "Procyon B": (0.592, 0.01232),
+         "Sirius B": (1.018, 0.008098)}
+offsets = {"40 Eri B": (-8, 6), "Procyon B": (8, -12), "Sirius B": (8, 4)}
+for name, (mass, rad) in stars.items():
+    ax.plot(mass, rad * R_SUN_KM, "o", color=INK, markersize=6, zorder=5)
+    ax.annotate(name, (mass, rad * R_SUN_KM), textcoords="offset points",
+                xytext=offsets[name], ha="right" if offsets[name][0] < 0 else "left",
+                fontsize=9.5, color=INK, zorder=5)
+
+ax.set_xlim(0.2, 1.6)
+ax.set_ylim(0, 16000)
+ax.set_xlabel(r"mass ($M_\odot$)")
+ax.set_ylabel("radius (km)")
+ax.legend(loc="upper center", fontsize=9.5)
+plt.show()
+```
+
+@fig-mass-radius shows the relation, and three real white dwarfs that follow
+it. At low mass the two curves agree. At higher mass they part, because the
+electrons in a heavy white dwarf are squeezed so hard that they approach the
+speed of light, and then the white dwarf shrinks faster still. That is the
+subject of the next section.
+
+::: {.callout-warning .textbook-watch title="Textbook watch (Kutner): equation 10.14 gives the right scaling and the wrong size"}
+Put $1\,M_\odot$ into Kutner's equation 10.14 and it gives a radius of about
+$400\ \mathrm{km}$ — some fifteen to twenty times smaller than the Earth-sized
+white dwarf of his own Example 10.2, a page earlier. The
+scaling, $R \propto M^{-1/3}$, is right. The number is not, and the reason is an
+approximation Kutner makes on the way: he sets the pressure from the **average**
+density of the star. The center of a white dwarf is about six times denser
+than its average, and because the pressure goes as $\rho^{5/3}$, the center can
+push about twenty times harder than the average density suggests. **So use
+equation 10.14 for how the radius changes with mass, and take the radius
+itself from a measured white dwarf**, like the ones in @fig-mass-radius.
+:::
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-heavier}
+
+1. Use @eq-mr to predict how the radius of Sirius B ($1.018\,M_\odot$) should
+   compare with that of 40 Eri B ($0.573\,M_\odot$). The measured radii are
+   $0.008098\,R_\odot$ and $0.01308\,R_\odot$. Is Sirius B smaller than the
+   prediction or larger? Using @fig-mass-radius, explain why.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
+   Take the ratio of the two versions of @eq-mr, so the unknown constant
+   cancels. The prediction is $R_{\mathrm{Sirius\,B}} / R_{\mathrm{40\,Eri\,B}}
+   = (1.018/0.573)^{-1/3} = 0.83$; the measured ratio is $0.62$. Sirius B is
+   smaller than @eq-mr predicts, because at its mass the electrons are already
+   moving fast enough for relativity to matter, and the solid curve in
+   @fig-mass-radius has bent below the dashed one.
+   :::
+
+2. According to @eq-mr, by what factor would a white dwarf's mass have to grow
+   for its radius to halve? A typical white dwarf has $0.6\,M_\odot$. What
+   mass does @eq-mr say it would need to reach half its radius, and what is
+   wrong with that answer?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   Eight times: $R \propto M^{-1/3}$, so halving $R$ takes $2^3 = 8$ times the
+   mass, which would be $4.8\,M_\odot$ — far above the Chandrasekhar mass,
+   where no white dwarf can exist. @eq-mr assumes the electrons stay slow, and
+   in a heavy white dwarf they do not. In @fig-mass-radius the real curve
+   reaches half the radius of a $0.6\,M_\odot$ white dwarf at only about
+   $1.15\,M_\odot$.
+   :::
+
+3. A white dwarf and a main-sequence star each gain a little mass. Which of
+   them gets bigger, and which gets smaller? Explain the difference in terms
+   of what kind of pressure holds each one up.
+
+:::
+
+## Why there is a largest mass {#sec-chandrasekhar}
+
+As a white dwarf gets heavier and smaller, its electrons are squeezed closer
+together and pushed to higher momenta, until they are moving at close to the
+speed of light. Then something changes. An electron's momentum can keep
+growing, but its speed cannot pass $c$, so it cannot hit the walls of its
+container any more often. The pressure still rises with density, but more
+slowly: Kutner §10.4.3 shows that it goes as
+
+$$
+P_{\mathrm{deg}} \propto \rho^{4/3}
+$$ {#eq-pdeg-rel}
+
+instead of $\rho^{5/3}$.
+
+That small change in the exponent has a large consequence. With the pressure
+of @eq-pdeg-rel, **the radius drops out of the balance altogether**, which
+Kutner shows on the way to his equation 10.17. There is only one mass at which
+the balance can hold. A white dwarf lighter than that can find a radius where
+its pressure holds it up. A white dwarf heavier than that cannot: squeezing it
+smaller raises the pressure it has, but it raises the pressure it needs by just
+as much, so it never catches up. **Gravity wins, and the star collapses.**
+
+That mass is the **Chandrasekhar mass**,
+
+$$
+M_{\mathrm{Ch}} \approx 1.4\,M_\odot .
+$$ {#eq-mch}
+
+The exact number depends on details of the calculation — Kutner quotes
+$1.44\,M_\odot$, and the simplest careful calculation gives $1.46\,M_\odot$ —
+so the round number astronomers use is $1.4\,M_\odot$. It depends on what the white dwarf is made of, through
+the number of nucleons per electron: the value here is for helium, carbon and
+oxygen, which all have two.
+
+Subrahmanyan Chandrasekhar found the limit in 1930, at the age of 19, working
+out the calculation on the ship taking him from India to graduate school in
+England [@chandrasekhar1931]. It is the solid curve of @fig-mass-radius
+reaching zero radius: no white dwarf is found above it, and none can exist.
+
+### What happens above the limit
+
+Kutner defers this to his next chapter, and so will we, but the outline is
+worth having now, because it is where this course has been heading. The core of
+a very massive star is built up, fusion stage by fusion stage, until it is
+iron, and once an iron core grows past the Chandrasekhar mass, electron
+degeneracy pressure cannot hold it. It collapses in about a second. What
+catches it, if anything does, is a new pressure: **neutron degeneracy
+pressure**, the same physics with neutrons in place of electrons, and the
+result is a **neutron star**. Neutron stars have a maximum mass too. **Above
+that there is no pressure we know of that can stop the collapse, and the
+result is a black hole.** Those are the next two lectures.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-chandrasekhar}
+
+1. A white dwarf of $1.4\,M_\odot$, just under the limit, has a radius of about
+   $1{,}800\ \mathrm{km}$. What is its Schwarzschild radius, and how many times
+   larger than that is the white dwarf?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   $r_S = 4.1\ \mathrm{km}$, so the white dwarf is about 430 times larger than
+   its own Schwarzschild radius. Even at the Chandrasekhar mass a white dwarf
+   is nowhere near being a black hole: when it collapses, it has a long way to
+   fall.
+   :::
+
+2. Kutner's equation 10.17 shows that the Chandrasekhar mass goes as
+   $(Z/A)^2$, the square of the number of electrons per nucleon. For carbon
+   and oxygen $Z/A = 1/2$, which gives $1.44\,M_\odot$. What is the
+   Chandrasekhar mass for a core of iron-56, which has 26 protons and 30
+   neutrons?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   About $1.24\,M_\odot$. Iron has fewer electrons per nucleon than carbon, so
+   there are fewer electrons to share the load, and the limit is lower.
+   :::
+
+3. Explain, without equations, why the fact that electrons cannot travel
+   faster than light leads to a maximum mass for a white dwarf.
+
+:::
+
+::: {.content-visible when-format="html"}
+
+## Exercises on the reading
+
+These are Kutner's own end-of-chapter exercises for Section 10.4.
+
+| section | Questions | Problems |
+|:---|:---|:---|
+| §10.4.1 | 10.4, 10.5 | 10.11 |
+| §10.4.2 | | 10.10, 10.13 |
+
+:::
+
+## Summary
+
+| idea | result | why it matters |
+|:---|:---|:---|
+| Where white dwarfs come from | the bare core of a star born with less than about $8\,M_\odot$ | nearly every star ends this way |
+| Degeneracy pressure | $P_{\mathrm{deg}} \propto \rho^{5/3}$, independent of temperature | a white dwarf holds its size while it cools forever |
+| Mass and radius | $R \propto M^{-1/3}$ | heavier white dwarfs are smaller |
+| The Chandrasekhar mass | $M_{\mathrm{Ch}} \approx 1.4\,M_\odot$ | when the electrons approach $c$, $P_{\mathrm{deg}} \propto \rho^{4/3}$, and above this mass no radius can hold the star up |
+
+Every star in this course so far has been a contest between gravity and a
+pressure, and in every case the pressure could win by the star changing its
+size. The Chandrasekhar mass is the first case where it cannot. Next time we
+follow the stars that are too massive to end as white dwarfs, to the collapse
+of their cores and the supernovae that follow.
+
+:::: {.content-visible when-format="html"}
+## References {.unnumbered}
+
+::: {#refs}
+:::
+::::
+
+::: {.content-visible when-format="pdf"}
+
+```{=latex}
+\clearpage
+\tableofcontents
+```
+:::
