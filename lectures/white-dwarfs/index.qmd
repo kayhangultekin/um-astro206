@@ -321,6 +321,10 @@ than its average, and because the pressure goes as $\rho^{5/3}$, the center can
 push about twenty times harder than the average density suggests. **So use
 equation 10.14 for how the radius changes with mass, and take the radius
 itself from a measured white dwarf**, like the ones in @fig-mass-radius.
+
+**An early version of the course constants sheet has a typo in this relation**:
+it prints $h^2/4\pi m_e$ where $h^2/4\pi^2 m_e$ belongs, which makes the radius
+it gives larger by a factor of $\pi$. If your copy has $4\pi$ there, correct it.
 :::
 
 ::: {.content-visible when-format="html"}
