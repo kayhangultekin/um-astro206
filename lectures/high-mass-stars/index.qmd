@@ -42,7 +42,8 @@ outer layers into space as a **supernova remnant**.
 ## How to read this lecture
 
 **The main reading for this lecture is Kutner, Chapter 11, Section 11.1**,
-which is in the Canvas Files under *Reading Material*. It is short: two
+which is in the Canvas Files under *Reading Material*, both as a PDF and as
+an accessible Word document. It is short: two
 subsections, on the core of a high-mass star and on supernova remnants. These
 notes do three jobs. They follow the star's last stages as far as iron, they
 draw out what Kutner's section leaves for you to see (why the sequence has to
