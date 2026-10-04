@@ -1,0 +1,454 @@
+---
+title: "How High-Mass Stars Die: Core Collapse and Supernova Remnants"
+subtitle: "ASTRO 206 — Black Holes · Lecture 13"
+author: "Kayhan Gültekin"
+date: "October 22"
+date-format: "MMMM D"
+# Dates are LECTURE dates -- when the class meets -- not publication dates.
+# Sourced from Canvas (Reading & Reflection 3233498 and the In-Class Problem
+# 3219323, both due 2026-10-22). A placeholder string renders as "Invalid Date".
+
+# Kernel pinning is deliberate and must stay in the DOCUMENT, not _quarto.yml:
+# Quarto silently ignores a project-level `jupyter:` and auto-selects a kernel.
+jupyter: python3
+
+# No `pyodide: packages:` block: this page has no live cells.
+---
+
+::: {.callout-note appearance="simple" icon=false}
+**Disclaimer.** These notes have not been subjected to the usual scrutiny
+reserved for formal publications. They may be distributed outside this class
+only with the permission of the instructor.
+:::
+
+{{< include ../../_figure-setup.qmd >}}
+
+Last time we found that there is a largest mass that electron degeneracy
+pressure can hold up, and that above it nothing we had met could stop a
+collapse. This time we meet the stars that run into that limit. A star born
+with more than about $8\,M_\odot$ does not end as a white dwarf. It keeps
+fusing, stage after stage, each faster than the last, until its core is iron
+and there is nothing left to burn. Then the core collapses in about a second
+and the star explodes. **The collapse turns the core into a neutron star, or,
+if it is heavy enough, into a black hole**, and the explosion hurls the star's
+outer layers into space as a **supernova remnant**.
+
+## How to read this lecture
+
+**The main reading for this lecture is Kutner, Chapter 11, Section 11.1**,
+which is in the Canvas Files under *Reading Material*. It is short: two
+subsections, on the core of a high-mass star and on supernova remnants. These
+notes do three jobs. They follow the star's last stages as far as iron, they
+draw out what Kutner's section leaves for you to see (why the sequence has to
+stop at iron, and how much energy a collapse releases), and they give you
+exercises on all of it.
+
+### The readings
+
+| Kutner section | read it for |
+|:---|:---|
+| §11.1.1 Core evolution of high mass stars | why an iron core cannot be supported, the collapse, and the explosion |
+| §11.1.2 Supernova remnants | what is left after the explosion, and what it does to the gas around it |
+| §9.2.2 Binding energy *(optional, and Fig 9.3)* | the curve that explains why fusion stops at iron |
+| §10.1.2 High mass stars *(optional, and Fig 10.3)* | how a high-mass star leaves the main sequence, and the shells of its core |
+| §9.2.4 and §9.3 *(optional)* | why fusing heavier nuclei needs a hotter core, and the CNO cycle |
+
+Everything in Chapter 11 from Section 11.2 on is about neutron stars and
+pulsars. That is the next lecture.
+
+One thing to know while you read. **Kutner's dividing line between low-mass
+and high-mass stars is about $5\,M_\odot$**; the number astronomers use today,
+which these notes use, is about $8\,M_\odot$, as in lecture 12.
+
+## A star that keeps going
+
+The early life of a high-mass star looks like a faster version of what we saw
+in lecture 11 and lecture 12. It fuses hydrogen in its core, then in a shell
+around the core as the core contracts, then fuses helium in the core as the
+outer layers swell into a supergiant. The difference comes at the next step.
+**A low-mass star never gets hot enough to fuse carbon.** Carbon nuclei have six
+protons each, so they repel each other far more strongly than hydrogen nuclei
+do, and fusing them takes a temperature of about 600 million kelvin. In a
+low-mass star the core stops contracting first, held up by electron degeneracy
+pressure. **In a high-mass star the core is heavier, so it is squeezed harder,
+and it gets there.** Carbon fusion starts, and the core holds its size once
+more.
+
+Each fuel then runs out in turn, and each time the core contracts, heats up and
+lights the next one: carbon, then neon, then oxygen, then silicon. Each stage
+burns in a shell around the core, so the star becomes layered like an onion,
+with the heaviest ashes at the center. Each stage also lasts much less time
+than the one before it.
+
+| fuel | time it lasts, roughly |
+|:---|:---|
+| hydrogen | 10 million years |
+| helium | 1 million years |
+| carbon | 1000 years |
+| neon | 10 years |
+| oxygen | 1 year |
+| silicon | 1 day |
+
+: Approximate lifetimes of the fusion stages in a very massive star. The numbers are good to an order of magnitude and vary with the star's mass. {#tbl-stages}
+
+```{python}
+#| label: fig-burning
+#| fig-cap: "How long each stage of fusion lasts in a very massive star, on a logarithmic scale; the longest and the shortest stage differ by nearly ten orders of magnitude. The final stage, silicon, lasts about a day."
+#| fig-alt: "A horizontal bar chart with a logarithmic horizontal axis, time in years, from one thousandth to one billion. Six bars, from top to bottom: hydrogen, 10 million years; helium, 1 million years; carbon, 1000 years; neon, about 10 years; oxygen, about 1 year; silicon, about 1 day. Each bar is shorter than the one above it, and each is labeled at its right end with its duration. The silicon bar is shaded orange and the others blue."
+#| fig-height: 3.2
+
+fig, ax = plt.subplots(figsize=(6.2, 3.2))
+
+stages = ["hydrogen", "helium", "carbon", "neon", "oxygen", "silicon"]
+years = np.array([1e7, 1e6, 1e3, 10, 1, 1 / 365.25])
+labels = ["10 million years", "1 million years", "1000 years",
+          "about 10 years", "about 1 year", "about 1 day"]
+LEFT = 1e-3
+y = np.arange(len(stages))[::-1]
+colors = [BLUE] * 5 + [ORANGE]
+
+ax.barh(y, years - LEFT, left=LEFT, color=colors, height=0.62, zorder=3)
+ax.set_xscale("log")
+ax.set_xlim(LEFT, 1e9)
+ax.set_yticks(y, stages)
+for yi, t, lab in zip(y, years, labels):
+    ax.annotate(lab, (t, yi), textcoords="offset points", xytext=(6, 0),
+                va="center", fontsize=9.5, color=INK2)
+ax.set_xlabel("time (years)")
+ax.grid(axis="y", visible=False)
+ax.tick_params(axis="y", length=0)
+plt.show()
+```
+
+@fig-burning shows how fast the end comes. The star spends nearly all of its
+life, and nearly all of its fuel, on hydrogen. The last stage, which builds the
+iron core, is over in a day.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-stages}
+
+1. Use @tbl-stages to find how many times longer the hydrogen stage lasts than
+   the silicon stage. Then say, in one sentence, why a person watching the star
+   would have no warning.
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   The hydrogen stage lasts 10 million years and the silicon stage about one
+   day, so the ratio is \frac{10^{7}\ \mathrm{yr}}{1\ \mathrm{d}}
+   \times \frac{365\ \mathrm{d}}{1\ \mathrm{yr}} \approx 4 \times 10^{9}$. The surface of the star, which is
+   all anyone can see, does not know what the core is doing until the very
+   end.
+   :::
+
+:::
+
+## Why fusion stops at iron
+
+Each stage of fusion in @tbl-stages releases less energy per unit of fuel than the one before,
+and then, at iron, the process runs out entirely. The reason is in the
+**binding energy** of nuclei. The binding energy of a nucleus is the work it
+takes to pull it apart into separate protons and neutrons; the binding energy
+per nucleon tells you how tightly the average nucleon is held. Kutner's
+Fig 9.3 plots it against the number of nucleons, and it is a curve you can read
+the whole story from. It climbs steeply for the lightest nuclei, reaches a peak
+near iron-56, and then falls slowly for the heavy ones.
+
+Fusion releases energy when it moves nuclei up that curve, toward tighter
+binding. Everything lighter than iron is on the climbing side, so fusing two
+light nuclei gives energy back. **Iron-56 sits at the top.** Fusing iron into
+something heavier moves it down the curve, so the reaction needs energy put in
+rather than giving any out. Splitting iron does the same. Iron is the end of
+the line for a star because it is the ash that cannot be burned.
+
+::: {.callout-tip .resolution collapse="true" title="Think about what happens to the core when its fuel is iron"}
+A star's core is held up by pressure, and the pressure is kept up by the heat
+that fusion makes. Iron fusion makes no heat; it would use heat up. So once the
+core is iron, nothing replaces the energy the star radiates. The core starts to
+cool, its thermal pressure falls, and gravity has nothing to oppose it but
+degeneracy pressure. That is the question for the next section.
+:::
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-iron}
+
+1. Fusing hydrogen into helium releases about 0.7% of the rest-mass energy of
+   the hydrogen. What is that in MeV per nucleon, given that a proton's rest
+   energy is $938\ \mathrm{MeV}$? Reading from Kutner's Fig 9.3, helium-4 has a
+   binding energy of about $7.1\ \mathrm{MeV}$ per nucleon and iron-56 about
+   $8.8\ \mathrm{MeV}$ per nucleon. How much more energy per nucleon could be
+   released by taking helium all the way to iron? Express the second as a
+   fraction of the first.
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   Hydrogen to helium releases $0.007 \times 938\ \mathrm{MeV} \approx
+   6.6\ \mathrm{MeV}$ per nucleon. Helium to iron could release
+   $8.8 - 7.1 = 1.7\ \mathrm{MeV}$ per nucleon more, which is about a quarter as
+   much, and it comes in several steps. So each later fuel has less energy to
+   give than hydrogen did, and the star is using it up faster, which fits the
+   lifetimes in @tbl-stages.
+   :::
+
+2. Fusing two iron-56 nuclei takes energy. So does splitting one. Use Kutner's
+   Fig 9.3 to explain why both are true.
+
+:::
+
+## The core collapses
+
+Silicon burning in a shell around the center adds iron to the core, and the
+iron core grows. It has no fusion to hold it up, and it is dense enough that
+it is held up the way a white dwarf is, by electron degeneracy pressure.
+Lecture 12 told us the limit: **an iron core that grows past about
+$1.4\,M_\odot$ is more than electron degeneracy pressure can support.**
+
+What happens next goes quickly, and it does not stop where a white dwarf's
+collapse would. As the core shrinks, its density rises until the electrons
+have so much energy that they can be captured by the protons in the iron
+nuclei, turning each pair into a neutron and a neutrino,
+
+$$
+\mathrm{e}^{-} + \mathrm{p} \;\to\; \mathrm{n} + \nu_{\mathrm{e}} .
+$$ {#eq-capture}
+
+This is **neutronization**, and it speeds the collapse up. Every capture
+removes an electron, and the electrons were the source of the pressure. The
+neutrinos hardly interact with matter at all, so they leave the core directly,
+and they carry energy away with them. Kutner adds that the iron nuclei are also
+broken apart, which is another reaction that absorbs energy rather than
+releasing it. The core runs away: it has nothing to oppose it, and in about a
+second its radius shrinks from thousands of kilometers to tens.
+
+A new pressure stops it. The core is now almost entirely neutrons, and
+neutrons obey the exclusion principle just as electrons do. **Neutron
+degeneracy pressure** is the same physics as the electron pressure of lecture
+12, with neutrons in place of electrons, and it can hold up a core of up to a
+few solar masses. The result is a **neutron star**, about 10 to 20 kilometers
+across. If the core is heavier than about $3\,M_\odot$, nothing we know of can
+hold it, and it becomes a **black hole**.
+
+The core stops suddenly, and the material falling in behind it meets something
+hard. Kutner describes the material bouncing back, and the neutrinos pushing on
+the dense gas around the core to help drive it outward. **How that works in
+detail is not completely understood**, and it is still being worked out with
+some of the largest computer simulations ever run. What is certain is the
+outcome: most of the star's mass is blown away. This is a **type II
+supernova**.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-collapse}
+
+1. How many electrons must be captured by protons to turn an iron-56 core of
+   $1.4\,M_\odot$ into neutrons? Count each nucleon as having the mass of a
+   proton, and remember that iron-56 has 26 protons among its 56 nucleons.
+
+   ::: {.callout-note .help-solution collapse="true" title="Solution"}
+   **The question.** How many electron captures, @eq-capture, does it take to
+   convert every proton in a $1.4\,M_\odot$ iron-56 core into a neutron?
+
+   Each capture uses up one proton, so the number of captures is the number of
+   protons. The number of nucleons is the core's mass divided by the mass of one
+   nucleon, and $26/56$ of the nucleons are protons. Substitute, with the units
+   attached and no arithmetic yet:
+
+   $$
+   N_{\mathrm{p}}
+     = \frac{26}{56}
+       \times \frac{1.4\,M_\odot}{1.6726 \times 10^{-24}\ \mathrm{g}}
+       \times \frac{1.9891 \times 10^{33}\ \mathrm{g}}{1\,M_\odot} .
+   $$
+
+   Now cancel the units, still touching no numbers: the solar masses cancel,
+   leaving grams over grams, which cancel too. What is left has no units at all.
+   *Do the units make sense?* We were counting particles, and a count is a pure
+   number, so yes. Only now the arithmetic:
+
+   $$
+   N_{\mathrm{p}} = \frac{26}{56} \times 1.665 \times 10^{57}
+     = 7.7 \times 10^{56} .
+   $$
+
+   About $8 \times 10^{56}$ electrons have to be captured, so about $8 \times
+   10^{56}$ neutrinos are made this way. It is a rough count: a real core is not
+   pure iron-56, and not every proton is converted. But the number of
+   neutrinos is of order $10^{56}$ to $10^{57}$, and it explains why the
+   neutrinos can carry away so much.
+   :::
+
+2. The core of a high-mass star near the Chandrasekhar mass is roughly the size
+   of a $1.4\,M_\odot$ white dwarf, about $1{,}800\ \mathrm{km}$. It collapses to
+   a neutron star of radius $12\ \mathrm{km}$ in about one second. What is the
+   average speed of the edge of the core during the collapse, and what fraction
+   of the speed of light is that? Is the actual speed at the end larger or
+   smaller than the average?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   The edge falls $1{,}800 - 12 = 1{,}788\ \mathrm{km}$ in about one second, an
+   average of about $1{,}800\ \mathrm{km\,s^{-1}}$, or about 0.6% of the speed
+   of light. A collapse speeds up as it goes, because gravity gets stronger as
+   the core shrinks, so the speed near the end is much larger than the average.
+   :::
+
+:::
+
+::: {.content-visible when-format="pdf"}
+{{< include ../../in_class/lec13/exercises00.qmd >}}
+:::
+
+## What we see: supernovae and their remnants
+
+A type II supernova is bright. Kutner's Fig 11.1 shows one in a distant galaxy
+that is almost as bright as the whole galaxy. After a rapid brightening, it
+fades over a few months. Yet the light is a very small part of the explosion.
+About 1% of the energy becomes the kinetic energy of the shell of ejected
+material and about 0.1% becomes light. **Nearly all of the rest escapes as
+neutrinos**, which is why it matters that the star we are describing, unlike
+the Sun, makes them in such numbers.
+
+We have caught this once. On 23 February 1987 a star exploded in the Large
+Magellanic Cloud, a small galaxy next to ours, 168,000 light-years away.
+Detectors in a mine in Ohio and in another in Japan recorded about twenty
+neutrinos in a few seconds, **hours before the light of the explosion was
+first seen** [@hirata1987; @bionta1987]. It is the one direct observation we
+have of a core collapsing, and of the neutrino burst we just described.
+
+The ejected material is a **supernova remnant**. In a young remnant we can
+watch it expand, and in an older one we see a glowing shell, like the Veil
+Nebula or Cassiopeia A in Kutner's Fig 11.3. The most-studied remnant is the
+Crab Nebula, the debris of a supernova that people saw in the year 1054
+(Fig 11.5). Much of its light is **synchrotron radiation**, which Kutner explains in
+his Fig 11.4: electrons moving close to the speed of light spiral around
+magnetic field lines and radiate as they turn. Synchrotron light is polarized
+and has a distinctive spectrum, and the Crab gives it off at every wavelength
+from radio to gamma rays. The electrons should lose their energy and fade
+within a short time, yet the Crab still shines after a thousand years. **What
+keeps it going is a neutron star at its center**, which is the subject of the
+next lecture.
+
+Supernova remnants have another job. They throw into space the products of all
+the fusion we described above, along with the elements made in the explosion
+itself, and mix them into the gas that forms the next generation of stars. This
+is why stars that formed recently in the history of our galaxy have more heavy
+elements than the oldest ones do. **Much of the oxygen you breathe was made in
+stars like this one.**
+
+::: {.callout-warning .textbook-watch title="Textbook watch (Kutner): supernovae are not the only source of the heaviest elements"}
+Kutner, and many sources, say that the explosion makes elements much heavier
+than iron. Supernovae make a great many elements, at least up to iron. For the
+heaviest ones, such as gold, the picture has changed. In 2017 the gravitational-wave detectors caught two neutron stars
+merging, the event GW170817 of lecture 10, and the light that followed it
+matched what we expect from freshly made heavy elements [@kasen2017]. **How
+much of the heaviest material comes from mergers and how much from supernovae
+is still being worked out.**
+:::
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-remnants}
+
+1. SN 1987A is 168,000 light-years away. When did the star explode? The
+   neutrinos reached the detectors hours before the light, though both had
+   traveled the same distance. What does that tell you about when each of them
+   left the star?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   It exploded 168,000 years before we saw it, because the light took 168,000
+   years to arrive. Neutrinos barely interact with matter, so they left the
+   collapsing core at once. The light was made by the explosion, which has to
+   reach the star's surface before the light can get out, and that takes hours.
+   They did not leave at the same time: the neutrinos left hours earlier.
+   :::
+
+2. Kutner says about $10^{53}\ \mathrm{erg}$ of energy is released in a type II
+   supernova, and about 0.1% of it comes out as light. If that light is emitted
+   over 30 days, what is the average luminosity, in solar luminosities? How does
+   that compare with a small galaxy of ten billion stars like the Sun?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   The light carries $10^{50}\ \mathrm{erg}$, and 30 days is $2.6 \times
+   10^{6}\ \mathrm{s}$, so the average luminosity is about
+   $3.9 \times 10^{43}\ \mathrm{erg\,s^{-1}}$, which is $1.0 \times 10^{10}\,
+   L_\odot$ with $L_\odot = 3.83 \times 10^{33}\ \mathrm{erg\,s^{-1}}$. That is
+   as bright as ten billion Suns, from a single star, which is why Kutner's
+   Fig 11.1 can show a supernova rivaling its whole galaxy.
+   :::
+
+3. Stars that formed recently have more heavy elements than stars that formed
+   long ago. Explain why, using what a supernova does to the gas around it.
+
+:::
+
+## If you want to go further
+
+None of this section is needed for what comes before or after. It covers what
+sits underneath the stages of fusion described above, and Kutner's optional
+sections in the readings table go with it.
+
+**Why a high-mass star makes energy faster.** A star like the Sun fuses
+hydrogen through the proton–proton chain. In a high-mass star the core is
+squeezed to a higher temperature, and hydrogen can fuse through a second route,
+the **CNO cycle**, in which hydrogen nuclei fuse onto carbon, nitrogen and
+oxygen nuclei that are already there. Carbon is a **catalyst**: it takes part in
+the reactions and is returned at the end, so it is not used up. Only a trace is
+needed, about 2% of the core's mass, and earlier generations of stars can
+make it by the triple-alpha process. The cycle does not release more energy for each
+helium nucleus made; it makes them faster, so the star radiates more energy each
+second. This is why high-mass stars are so much more luminous than low-mass
+ones, and why they live so briefly on the main sequence. Kutner covers the cycle
+in §9.3 and Fig 9.6.
+
+**Why the stages take higher and higher temperatures.** Two nuclei fuse only if
+they get close enough for the strong nuclear force to take over, and they repel
+each other electrically on the way in. A carbon nucleus has six protons and an
+oxygen nucleus eight, so the barrier is much higher than for two protons, and
+the core has to be much hotter. Kutner makes the estimate for two protons in
+§9.2.4. The same argument, with more charge, is why carbon fusion starts at 600
+million kelvin and silicon fusion at billions.
+
+**The layered core.** Kutner's Fig 10.3 draws the shells of a high-mass star:
+an iron core, with shells of silicon, oxygen, neon, carbon, helium and hydrogen
+around it, each burning at the boundary of the shell beneath.
+
+::: {.content-visible when-format="html"}
+
+## Exercises on the reading
+
+These are Kutner's own end-of-chapter exercises for Section 11.1.
+
+| section | Questions | Problems |
+|:---|:---|:---|
+| §11.1 | 11.1 | 11.1 |
+
+:::
+
+## Summary
+
+| idea | result | why it matters |
+|:---|:---|:---|
+| Stars above about $8\,M_\odot$ | fuse carbon, neon, oxygen and silicon in turn, each stage shorter than the last | the star ends with an inert iron core, built in the last day |
+| Why iron | iron-56 has the highest binding energy per nucleon | fusing or splitting iron takes energy, so fusion cannot hold up the core |
+| Core collapse | above $\approx 1.4\,M_\odot$, electrons are captured: $\mathrm{e}^{-} + \mathrm{p} \to \mathrm{n} + \nu_{\mathrm{e}}$ | the collapse runs away until neutron degeneracy stops it, in about a second |
+| The outcome | a neutron star, or a black hole above about $3\,M_\odot$ | the second and third compact objects of this course |
+| Supernova and remnant | about 1% of the energy to motion, 0.1% to light, the rest to neutrinos | the heavy elements are mixed into the gas that makes new stars |
+
+Every star we have followed so far ended up with a pressure that could hold it
+up, even if it took the strange physics of degeneracy. The stars in this lecture
+are the first whose cores are beyond the reach of the electrons. Next time we
+look at what the collapse leaves behind when it succeeds: the neutron star, and
+the pulsars that give it away.
+
+:::: {.content-visible when-format="html"}
+## References {.unnumbered}
+
+::: {#refs}
+:::
+::::
+
+::: {.content-visible when-format="pdf"}
+
+```{=latex}
+\clearpage
+\tableofcontents
+```
+:::
