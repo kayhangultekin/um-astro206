@@ -1,0 +1,591 @@
+---
+title: "Neutron Stars and Pulsars"
+subtitle: "ASTRO 206 — Black Holes · Lecture 14"
+author: "Kayhan Gültekin"
+date: "October 27"
+date-format: "MMMM D"
+# Dates are LECTURE dates -- when the class meets -- not publication dates.
+# Sourced from Canvas (Reading & Reflection 3233499 and the In-Class Problem
+# 3219324, both due 2026-10-27). A placeholder string renders as "Invalid Date".
+
+# Kernel pinning is deliberate and must stay in the DOCUMENT, not _quarto.yml:
+# Quarto silently ignores a project-level `jupyter:` and auto-selects a kernel.
+jupyter: python3
+
+# No `pyodide: packages:` block: this page has no live cells.
+---
+
+::: {.callout-note appearance="simple" icon=false}
+**Disclaimer.** These notes have not been subjected to the usual scrutiny
+reserved for formal publications. They may be distributed outside this class
+only with the permission of the instructor.
+:::
+
+{{< include ../../_figure-setup.qmd >}}
+
+Last time a high-mass star built an iron core, the core collapsed in about a
+second, and neutron degeneracy pressure stopped the collapse. This time we look
+at what is left: **a neutron star**, a ball of neutrons with more mass than the
+Sun and about the size of a city. Nobody expected to see one, because something
+so small would be far too faint. Then in 1967 a radio telescope picked up a
+signal that ticked like a clock, and the argument that followed showed that it
+could only be a spinning neutron star. That argument is the heart of this
+lecture. It ends with a question that matters for the rest of the course: how
+heavy can a neutron star be before it, too, collapses into a black hole?
+
+## How to read this lecture
+
+**The main reading for this lecture is Kutner, Chapter 11, Sections 11.2,
+11.3 and 11.5**, which are in the Canvas Files under *Reading Material*, both
+as a PDF and as an accessible Word document. They pick up where last time's
+reading stopped. These notes do three jobs. They put neutron stars beside the
+white dwarfs of lecture 12, they work through the argument from the pulses to
+the neutron star in more detail than Kutner does, and they give you exercises
+on all of it.
+
+### The readings
+
+| Kutner section | read it for |
+|:---|:---|
+| §11.2.1 Neutron degeneracy pressure | why the collapse stops, and what a neutron star is like (Examples 11.1–11.3) |
+| §11.2.2 and §11.2.3 Rotation; magnetic fields | why a neutron star spins fast and has a strong magnetic field |
+| §11.3.1 and §11.3.2 Discovery; what are pulsars? | the 1967 discovery, and why pulsars must be spinning neutron stars |
+| §11.3.3 Period changes | why pulsars slow down, and where the energy goes (Example 11.4) |
+| §11.5 Stellar black holes | the largest mass a neutron star can have; read it with the box at the end of these notes |
+| §11.4 Pulsars as probes *(optional)* | how the pulses measure the gas between us and the pulsar |
+
+## Neutron stars and white dwarfs
+
+A neutron star and a white dwarf are the same kind of object at two very
+different densities. Each is what is left of a star's core, each has stopped
+fusing, and each is held up by degeneracy pressure rather than by heat. The
+difference is in which particles do the holding.
+
+| | white dwarf | neutron star |
+|:---|:---|:---|
+| left by a star of | less than about $8\,M_\odot$ | about 8 to $20\,M_\odot$ |
+| mass | up to $1.4\,M_\odot$ | about $1.4\,M_\odot$, and up to about $2\,M_\odot$ |
+| radius | about Earth's: Sirius B is $5{,}600\ \mathrm{km}$ | 10 to $15\ \mathrm{km}$, the size of a city |
+| average density | about $10^{6}\ \mathrm{g\,cm^{-3}}$ | a few times $10^{14}\ \mathrm{g\,cm^{-3}}$ |
+| held up by | electron degeneracy pressure | neutron degeneracy pressure |
+
+: White dwarfs and neutron stars side by side. The white dwarf column is lecture 12's. {#tbl-compare}
+
+**A neutron star is as dense as an atomic nucleus.** Kutner's Example 11.1
+makes the comparison directly: the neutrons are packed nearly as close as they
+can go. A neutron star is, in a real sense, one enormous nucleus, held together
+by gravity instead of by the nuclear force.
+
+The table also says something less obvious. **Neutron degeneracy pressure is
+weaker than electron degeneracy pressure at the same density**, because the
+pressure of a degenerate gas goes inversely as the mass of its particles, and a
+neutron is about 1,800 times heavier than an electron. So a neutron star can
+only hold itself up by being far denser than a white dwarf, which is why the
+collapse runs all the way down from thousands of kilometers to tens before it
+stops. Kutner works this out in §11.2.1.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-compare}
+
+1. A neutron star has a mass of $2.3\,M_\odot$ and a radius of $11\ \mathrm{km}$.
+   How many times denser is it, on average, than lead, which has a density of
+   $11.34\ \mathrm{g\,cm^{-3}}$? What is the escape speed from its surface, as a
+   fraction of the speed of light?
+
+   ::: {.callout-note .help-solution collapse="true" title="Solution"}
+   **The question.** What is the average density of a $2.3\,M_\odot$,
+   $11\ \mathrm{km}$ neutron star, compared with lead, and how fast must
+   something move to escape from its surface?
+
+   First the mass and radius in grams and centimeters, each conversion written
+   so that the unwanted unit cancels:
+
+   $$
+   \begin{aligned}
+   M &= 2.3\,M_\odot \times \frac{1.9891 \times 10^{33}\ \mathrm{g}}{1\,M_\odot}
+      \\[0.8em] &= 4.575 \times 10^{33}\ \mathrm{g} , \\[0.8em]
+   R &= 11\ \mathrm{km} \times \frac{10^{5}\ \mathrm{cm}}{1\ \mathrm{km}}
+      = 1.1 \times 10^{6}\ \mathrm{cm} .
+   \end{aligned}
+   $$
+
+   The density is the mass over the volume of a sphere. Substitute with the
+   units attached and no arithmetic yet:
+
+   $$
+   \rho = \frac{M}{\tfrac{4}{3}\pi R^3}
+        = \frac{4.575 \times 10^{33}\ \mathrm{g}}
+               {\tfrac{4}{3}\pi \left(1.1 \times 10^{6}\ \mathrm{cm}\right)^3} .
+   $$
+
+   The units are grams over cubic centimeters. *Do the units make sense?* A
+   density is a mass per volume, so yes. Now the numbers: the volume is
+   $5.58 \times 10^{18}\ \mathrm{cm^3}$, so
+
+   $$
+   \rho = 8.2 \times 10^{14}\ \mathrm{g\,cm^{-3}} ,
+   $$
+
+   and compared with lead,
+
+   $$
+   \frac{\rho}{\rho_{\mathrm{lead}}}
+     = \frac{8.2 \times 10^{14}\ \mathrm{g\,cm^{-3}}}{11.34\ \mathrm{g\,cm^{-3}}}
+     = 7.2 \times 10^{13} .
+   $$
+
+   The ratio of two densities is a pure number, as it should be. **The neutron
+   star is about seventy trillion times denser than lead.**
+
+   For the escape speed, substitute into $v_{\mathrm{esc}} = (2GM/R)^{1/2}$:
+
+   $$
+   \begin{aligned}
+   v_{\mathrm{esc}} = \Bigg( & \frac{2 \times 6.6732 \times 10^{-8}\
+       \mathrm{cm^{3}\,g^{-1}\,s^{-2}}}{1.1 \times 10^{6}\ \mathrm{cm}} \\[0.8em]
+     & \times 4.575 \times 10^{33}\ \mathrm{g} \Bigg)^{1/2} .
+   \end{aligned}
+   $$
+
+   Inside the bracket, $\mathrm{cm^{3}\,g^{-1}\,s^{-2}} \times \mathrm{g} /
+   \mathrm{cm} = \mathrm{cm^{2}\,s^{-2}}$, and its square root is
+   $\mathrm{cm\,s^{-1}}$. *Do the units make sense?* A speed, so yes. Then
+   $v_{\mathrm{esc}} = 2.36 \times 10^{10}\ \mathrm{cm\,s^{-1}}$, and dividing by
+   $c = 3.00 \times 10^{10}\ \mathrm{cm\,s^{-1}}$ gives **0.79**. To leave this
+   star you would need to move at nearly 80% of the speed of light.
+   :::
+
+2. Use @tbl-compare and the numbers for Sirius B in lecture 12
+   ($1.018\,M_\odot$, $0.008098\,R_\odot$) to find how many times denser a
+   neutron star of $1.4\,M_\odot$ and $12\ \mathrm{km}$ is than Sirius B, on
+   average.
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   The neutron star's average density is $3.8 \times 10^{14}\
+   \mathrm{g\,cm^{-3}}$ and Sirius B's is $2.7 \times 10^{6}\
+   \mathrm{g\,cm^{-3}}$, so the neutron star is about $1.4 \times 10^{8}$ times
+   denser.
+   :::
+
+:::
+
+## Why the pulses mean a neutron star
+
+In 1967 Jocelyn Bell, a graduate student working with Antony Hewish at
+Cambridge, was looking at a radio telescope's paper chart record when she
+noticed a signal that did not belong. Looked at closely, it was a train of
+sharp pulses, one every $1.337\ \mathrm{s}$, as regular as a clock
+[@hewish1968]. Each pulse lasted only about
+$0.04\ \mathrm{s}$. The source was half-jokingly named *LGM-1*, for "little
+green men", until more were found in other parts of the sky. Today it is called
+a **pulsar**, and more than three thousand are known [@manchester2005]. Kutner
+tells the story in §11.3.1.
+
+::: {.content-visible when-format="html"}
+[The 1974 Nobel Prize in Physics went to Hewish, along with Martin Ryle, and
+not to Bell. She is now Dame Jocelyn Bell Burnell.]{.aside}
+:::
+
+What makes a pulse that regular and that sharp? The argument has two steps, and
+each one uses only what we already know.
+
+**The pulse width limits the size.** A source cannot switch on and off faster
+than light can cross it. Suppose the whole surface of a star brightened at
+once. Light from the near side would reach us first and light from the edges
+later, so the pulse we see would be smeared out over the time light takes to
+cross the star. A pulse of length $\Delta t$ must therefore come from a region
+no bigger than about $c\,\Delta t$. For $0.04\ \mathrm{s}$ that is about
+$12{,}000\ \mathrm{km}$, which already rules out any ordinary star. Pulsars
+have since been found with pulses a thousandth of a second long, and those come
+from regions a few hundred kilometers across at most.
+
+**The period limits the density.** The regularity says that the clock is a
+rotation: the star spins, and something on it sweeps past us once a turn.
+Kutner explains in §11.3.2 why the other candidates, a star that pulsates or two
+stars in orbit, do not work. But a star cannot spin arbitrarily fast. The
+material at its equator is moving in a circle, and gravity has to supply the
+acceleration that keeps it there, $v^2/r$. If the star spins so fast that
+$v^2/r$ is more than gravity can supply, the material flies off and the star
+comes apart. So a spinning star of mass $M$ and radius $r$ holds together only
+if
+
+$$
+\frac{v^2}{r} < \frac{GM}{r^2} ,
+$$ {#eq-breakup-condition}
+
+where $v$ is the speed of its equator. Each turn carries the equator once
+around the star, so $v = 2\pi r/P$ for a star that spins once every $P$
+seconds.
+
+::: {.content-visible when-format="pdf"}
+{{< include ../../in_class/lec14/exercises00.qmd >}}
+:::
+
+Putting $v = 2\pi r/P$ into @eq-breakup-condition and dividing the mass by the
+volume of the star gives a condition on the star's average density alone:
+
+$$
+\rho > \frac{3\pi}{G P^2} .
+$$ {#eq-rho-min}
+
+This is a **lower** limit. The faster a star spins, the denser it has to be to
+hold itself together, and the mass and the radius do not have to be known
+separately. @fig-breakup shows the limit against the period, with real pulsars
+on it. Even the first pulsar, at $1.337\ \mathrm{s}$, needs an average density
+of about $8 \times 10^{7}\ \mathrm{g\,cm^{-3}}$, about thirty times Sirius B's;
+a white dwarf as dense as Sirius B could spin no faster than once every seven
+seconds. The Crab pulsar spins about thirty times a second and needs
+$10^{11}\ \mathrm{g\,cm^{-3}}$, more than any white dwarf can reach. The fastest
+pulsar known spins 716 times a second [@hessels2006], and it needs nearly
+$10^{14}\ \mathrm{g\,cm^{-3}}$. **Only a neutron star is dense enough.**
+
+```{python}
+#| label: fig-breakup
+#| fig-cap: "The smallest average density a star can have and still hold together, @eq-rho-min, against how fast it spins. Below the line, a star spinning with that period would fly apart. The dots are five real pulsars, on the line at their own periods; the horizontal lines are the average densities of the Sun, of the white dwarf Sirius B and of a typical neutron star. Pulsar periods from the Australia Telescope National Facility's pulsar database [@manchester2005]."
+#| fig-alt: "A line chart with logarithmic axes. The horizontal axis is the rotation period in seconds, from one two-thousandth of a second to twenty seconds. The vertical axis is average density in grams per cubic centimeter, from one tenth to ten to the sixteenth. A straight blue line falls from upper left to lower right; the region below it is shaded and labeled the star flies apart. Three dashed horizontal lines are labeled, from bottom to top: the Sun's average density, about 1.4; Sirius B, a white dwarf, about 2.7 million; and a neutron star of 1.4 solar masses and 12 kilometers, about 4 times ten to the fourteenth. Five orange dots sit on the blue line: the first pulsar at 1.34 seconds, Vela at 0.089, the Crab at 0.033, PSR B1937+21 at 0.0016, and the fastest known pulsar at 0.0014 seconds. Every dot lies above the Sirius B line, and the two fastest lie just below the neutron-star line."
+#| fig-height: 4.2
+
+G = 6.6732e-8          # cm^3 g^-1 s^-2, the course constants sheet
+MSUN, RSUN = 1.9891e33, 6.9598e10
+
+def rho_min(P):
+    return 3 * np.pi / (G * P**2)
+
+def mean_density(m_sun, r_cm):
+    return m_sun * MSUN / (4 / 3 * np.pi * r_cm**3)
+
+fig, ax = plt.subplots(figsize=(6.2, 4.2))
+
+P = np.logspace(np.log10(5e-4), np.log10(20), 200)
+ax.plot(P, rho_min(P), color=BLUE, lw=2, zorder=3)
+ax.fill_between(P, 1e-1, rho_min(P), color=BLUE, alpha=0.08, lw=0)
+ax.text(0.9, 3e2, "the star flies apart", color=BLUE, fontsize=10,
+        ha="center", va="center")
+
+refs = [("the Sun", mean_density(1.0, RSUN)),
+        ("Sirius B, a white dwarf", mean_density(1.018, 0.008098 * RSUN)),
+        (r"a neutron star, 1.4 $M_\odot$ and 12 km", mean_density(1.4, 12e5))]
+# The Sun and Sirius B are labeled at the left, clear of the pulsars; the
+# neutron-star line is labeled at the right, clear of the steep part of the curve.
+for (label, rho), x, ha in zip(refs, (5e-4, 5e-4, 20), ("left", "left", "right")):
+    ax.axhline(rho, color=INK2, lw=0.9, ls="--", zorder=2)
+    ax.annotate(label, (x, rho), textcoords="offset points",
+                xytext=(4 if ha == "left" else -4, 4),
+                ha=ha, va="bottom", fontsize=9.5, color=INK2)
+
+# Periods from the ATNF pulsar database, v2.6.1 (Manchester et al. 2005).
+pulsars = [("first pulsar", 1.337302, (8, 4), "left"),
+           ("Vela", 0.089328, (8, 4), "left"),
+           ("Crab", 0.033392, (8, 4), "left"),
+           ("PSR B1937+21", 0.001558, (8, -12), "left"),
+           ("fastest known", 0.001396, (8, 4), "left")]
+for name, p, off, ha in pulsars:
+    ax.plot(p, rho_min(p), "o", color=ORANGE, ms=6, mec=INK, mew=0.5, zorder=4)
+    ax.annotate(name, (p, rho_min(p)), textcoords="offset points", xytext=off,
+                ha=ha, fontsize=9.5, color=INK)
+
+ax.set_xscale("log")
+ax.set_yscale("log")
+ax.set_xlim(5e-4, 20)
+ax.set_ylim(1e-1, 1e16)
+ax.set_xlabel(r"rotation period $P$ (s)")
+ax.set_ylabel(r"average density $\rho$ (g cm$^{-3}$)")
+plt.show()
+```
+
+The two steps together rule out everything but a neutron star: the pulse width
+says the source is small, and the period says it is dense. A neutron star had
+been predicted in the 1930s and then set aside as unobservable. **The pulsars
+were the first neutron stars ever seen.**
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-pulses}
+
+1. The first pulsar's pulses last about $0.04\ \mathrm{s}$. How large can the
+   region making them be? Compare your answer with the diameter of the Sun
+   and with the diameter of Sirius B ($R = 5{,}640\ \mathrm{km}$). Does the
+   pulse width alone rule out a white dwarf? What about a pulse $0.001\
+   \mathrm{s}$ long?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   About $c \times 0.04\ \mathrm{s} = 12{,}000\ \mathrm{km}$. The Sun is
+   $1.4$ million kilometers across, so it is ruled out by a factor of more than
+   a hundred. Sirius B is $11{,}300\ \mathrm{km}$ across, just inside the limit,
+   so the first pulsar's pulse width alone does **not** rule out a white dwarf;
+   it takes the period, @eq-rho-min, to do that. A $0.001\ \mathrm{s}$ pulse
+   gives $300\ \mathrm{km}$, which rules out every white dwarf.
+   :::
+
+2. Starting from @eq-breakup-condition and $v = 2\pi r/P$, show that a star
+   spinning with period $P$ must have an average density greater than
+   $3\pi/GP^2$. Then find that density for a star that spins once every
+   millisecond.
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   The density must be more than $1.4 \times 10^{14}\ \mathrm{g\,cm^{-3}}$,
+   about the density of a neutron star.
+   :::
+
+:::
+
+## Spinning up and squeezing the field
+
+Kutner's §11.2.2 and §11.2.3 explain why a newborn neutron star should spin
+fast and carry a strong magnetic field. Both come from something being
+conserved while the core shrinks.
+
+**Spin.** A shrinking core keeps its angular momentum, $J = I\omega$, where
+$\omega = 2\pi/P$ and the moment of inertia is $I = \tfrac{2}{5}MR^2$ for a
+uniform sphere. With the mass fixed, $R^2/P$ stays constant, so
+$P \propto R^2$: **the period shrinks as the square of the radius.** A core
+that collapses from thousands of kilometers to about ten shrinks by a factor of
+a hundred or more, so it spins tens of thousands of times faster. It is a
+figure skater pulling in their arms, taken to an extreme. Kutner's estimate in
+§11.2.2, which starts from the Sun's angular momentum, gives a period of about a
+millisecond, close to the fastest a neutron star can spin at all.
+
+**Magnetic field.** The gas in a star conducts electricity so well that the
+magnetic field is dragged along with it: the field is *frozen* into the gas,
+and the magnetic flux through the star, the field strength times the area,
+stays fixed as it shrinks. So
+
+$$
+B R^2 = \text{constant} ,
+$$ {#eq-flux}
+
+and **the field grows as the square of the shrinkage**, the same factor as the
+spin. The fields of most pulsars, worked out from how fast they slow down, are
+about $10^{12}$ gauss, a trillion times the Earth's.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-spinup}
+
+1. A main-sequence star of $16\,M_\odot$ has a radius of $10^{6}\ \mathrm{km}$
+   and a magnetic field of $100\ \mathrm{G}$ at its magnetic pole. It collapses
+   to a neutron star of $2.5\,M_\odot$ and radius $10\ \mathrm{km}$. What is the
+   neutron star's field, if the magnetic flux through its surface is conserved?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   The field would be $10^{12}\ \mathrm{G}$. The radius shrinks by a factor of $10^{5}$, so the
+   field grows by $10^{10}$. The masses do not enter.
+   :::
+
+2. Suppose the Sun, which spins once every 25 days, were squeezed to a radius
+   of $12\ \mathrm{km}$ without losing any mass or angular momentum, and stayed
+   a uniform sphere. What would its period be? Use @eq-rho-min to decide
+   whether it would hold together.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
+   Use $P \propto R^2$, with $R_\odot = 6.9598 \times 10^{10}\ \mathrm{cm}$, and
+   then compare the average density of $1\,M_\odot$ in a $12\ \mathrm{km}$
+   sphere with the smallest density that period allows.
+
+   The period would be $0.64\ \mathrm{ms}$, or about 1,600 turns a second. The
+   star's average density would be $2.7 \times 10^{14}\ \mathrm{g\,cm^{-3}}$,
+   less than the $3.4 \times 10^{14}\ \mathrm{g\,cm^{-3}}$ that period needs,
+   **so it would fly apart.** A real collapsing core must lose much of its
+   angular momentum on the way down, and real pulsars are born spinning more
+   slowly than this.
+   :::
+
+:::
+
+## The lighthouse, and what keeps the Crab shining
+
+A neutron star does not flash on and off. It shines all the time, in two narrow
+beams, and we see a pulse each time a beam sweeps across us, as a ship sees a
+lighthouse. Kutner's Fig 11.10 shows the picture. The beams come out along the
+**magnetic axis**, which is tilted away from the axis the star spins around,
+just as the Earth's magnetic poles are not at its geographic poles. As the star
+turns, its enormous magnetic field turns with it, and a moving magnetic field
+makes an electric field. Near the surface that electric field is strong enough
+to tear charged particles off the star and accelerate them along the field
+lines toward the magnetic poles, where they radiate in a narrow beam.
+
+A lighthouse has a consequence. **The beams only sweep out a cone on the sky,
+and if the Earth is not on that cone, we never see the pulsar at all.** The
+pulsars we know are only the fraction of neutron stars whose beams happen to
+cross us.
+
+### Pulsars slow down
+
+The energy in those beams has to come from somewhere, and it comes from the
+spin. A spinning star has kinetic energy $E = \tfrac12 I\omega^2$, which with
+$\omega = 2\pi/P$ is $E = 2\pi^2 I/P^2$. Every pulsar is slowing down, so its
+period grows a little every second, at a rate we write $\dot P$. Differentiating
+$E$ gives the rate at which the star loses its spin energy,
+
+$$
+\frac{\mathrm{d}E}{\mathrm{d}t} = -\,\frac{4\pi^2 I\,\dot P}{P^3} .
+$$ {#eq-spindown}
+
+Kutner reaches the same result in another form, his equation 11.15, and uses it
+in Example 11.4. The minus sign says the energy is decreasing. The rate
+$\dot P$ is a tiny number, a time per time, so it has no units.
+
+Lecture 13 ended with a puzzle. The Crab Nebula shines in synchrotron light,
+which needs electrons moving close to the speed of light, and those electrons
+should have lost their energy long ago. Yet the nebula still shines, nearly a
+thousand years after the supernova. **At its center is a pulsar**, the bright
+spot in @fig-crab, and @eq-spindown tells us whether it can be the power
+supply.
+
+![The Crab Nebula, the remnant of the supernova seen in 1054, in a composite of an X-ray image from the Chandra X-ray Observatory (blue) and a visible-light image from the Hubble Space Telescope (red). The pulsar is the bright point near the center. The rings and jets around it, seen in X-rays, are where its outflow of particles meets the nebula. Credit: X-ray, NASA/CXC/ASU/J. Hester et al.; optical, NASA/HST/ASU/J. Hester et al. Public domain, via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Chandra-crab.jpg).](crab-chandra-hubble.jpg){#fig-crab fig-alt="A square color image of a glowing cloud on a black, star-speckled background. Red and magenta wisps of gas fill most of the frame. In the middle is a paler blue-white haze, and near its center a bright point of light sits inside a set of faint, tilted, nested rings, with a fainter streak extending from it. A few stars with spikes of light are scattered over the image."}
+
+::: {.callout-note .worked-example collapse="true" title="Worked example: the power of the Crab pulsar"}
+**The question.** The Crab pulsar spins once every $P = 0.0334\ \mathrm{s}$
+and slows down at $\dot P = 4.21 \times 10^{-13}$ [@manchester2005]. Taking a
+moment of inertia of $I = 10^{45}\ \mathrm{g\,cm^2}$, typical for a neutron
+star, at what rate is it losing its spin energy? Is that enough to keep the
+nebula shining, which Kutner puts at about $3 \times 10^{38}\
+\mathrm{erg\,s^{-1}}$?
+
+Substitute into @eq-spindown with the units attached, leaving out the minus
+sign since we want the rate of loss:
+
+$$
+\left| \frac{\mathrm{d}E}{\mathrm{d}t} \right|
+  = \frac{4\pi^2 \times 10^{45}\ \mathrm{g\,cm^2} \times 4.21 \times 10^{-13}}
+         {\left(0.0334\ \mathrm{s}\right)^3} .
+$$
+
+Before any arithmetic, the units: $\dot P$ has none, so we have
+$\mathrm{g\,cm^2} / \mathrm{s^3} = \mathrm{g\,cm^2\,s^{-2}} \times
+\mathrm{s^{-1}}$, which is ergs per second. *Do the units make sense?* We want a
+rate of energy loss, a power, so yes. Now the numbers. The bottom is
+$3.72 \times 10^{-5}\ \mathrm{s^3}$, so
+
+$$
+\left| \frac{\mathrm{d}E}{\mathrm{d}t} \right|
+  = 4.5 \times 10^{38}\ \mathrm{erg\,s^{-1}} ,
+$$
+
+about a hundred thousand times the luminosity of the Sun. **That is more than
+the nebula gives off**, so the slowing pulsar can pay for all of it, with some
+to spare. The slow-down of one star twenty kilometers across powers a nebula
+about ten light-years across.
+:::
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-spindown}
+
+1. The Crab pulsar's spin energy is $E = 2\pi^2 I/P^2$. Use the numbers in the
+   worked example to find how long it would take to lose all of that energy at
+   today's rate, $E \big/ |\mathrm{d}E/\mathrm{d}t|$. Kutner calls this the
+   pulsar's lifetime in Example 11.4. Compare it with the time since the
+   supernova was seen, in 1054.
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   The spin energy is $E = 1.8 \times 10^{49}\ \mathrm{erg}$, and dividing by
+   $4.5 \times 10^{38}\ \mathrm{erg\,s^{-1}}$ gives $4.0 \times 10^{10}\
+   \mathrm{s}$, about 1,260 years. Algebraically it is just $P/2\dot P$. The
+   supernova was seen 972 years ago, so the two agree to within about 30%. The
+   number is a useful estimate of a pulsar's age, and astronomers call it the
+   *characteristic age*.
+   :::
+
+2. Explain why there must be many more neutron stars in our galaxy than the
+   pulsars that have been found, even counting only the ones close enough to
+   detect.
+
+:::
+
+## How heavy can a neutron star be?
+
+Neutron degeneracy pressure has a limit, just as electron degeneracy pressure
+does, and for the same reason: pile on enough mass and the particles are
+squeezed until they move close to the speed of light, and then the pressure
+cannot keep up with gravity. Above that mass, **no pressure we know of can hold
+the star up.** It collapses past its own Schwarzschild radius and becomes a
+black hole, the object of the first half of this course, now made by an
+ordinary dying star.
+
+A neutron star is already not far from that edge. A $1.4\,M_\odot$ neutron
+star has a Schwarzschild radius of about $4\ \mathrm{km}$, a third of its radius,
+so it is the most compact object we know of that is not a black hole.
+
+::: {.callout-warning .textbook-watch title="Textbook watch (Kutner): the maximum mass of a neutron star is lower than §11.5 says"}
+Kutner gives the largest mass of a neutron star as about $3\,M_\odot$, and
+perhaps as much as $8\,M_\odot$. Measurements made since point lower. One of
+the heaviest neutron stars with a precisely measured mass, the pulsar
+PSR J0740+6620, is $2.08 \pm 0.07\,M_\odot$ [@fonseca2021], so the maximum is
+at least that. The merging neutron stars of GW170817, from lecture 10, have
+been used to argue that it is not much more, about $2.2\,M_\odot$
+[@margalit2017]. The exact number is still debated, but **the maximum mass of a
+neutron star is now thought to be a little above $2\,M_\odot$**, not 3 and
+certainly not 8.
+:::
+
+## If you want to go further
+
+None of this section is needed for what comes before or after.
+
+**Inside a neutron star.** Kutner's Fig 11.7 shows the structure: a solid crust
+about a kilometer thick, made of nuclei such as iron, over an interior of
+neutrons that flow without any friction, a **superfluid**. The atmosphere above
+the crust is about a centimeter thick.
+
+**Glitches.** Every so often a pulsar suddenly speeds up a little and then goes
+on slowing down. Kutner's Fig 11.12 marks them for the Crab. One explanation is
+a starquake: the crust cracks, settles a fraction of a centimeter smaller and,
+keeping its angular momentum, spins faster. Kutner works out how small a change
+it takes in Example 11.5.
+
+**Pulsars as probes.** A radio pulse travels through the thin gas between the
+stars, and its free electrons slow the longer wavelengths more than the shorter
+ones. So each pulse arrives a little later at long wavelengths than at short
+ones, and the delay measures how much gas the pulse crossed. That is Kutner's
+§11.4.
+
+::: {.content-visible when-format="html"}
+
+## Exercises on the reading
+
+These are Kutner's own end-of-chapter exercises for Sections 11.2 to 11.5.
+
+| section | Questions | Problems |
+|:---|:---|:---|
+| §11.2 Neutron stars | 11.3 | 11.2, 11.3, 11.4, 11.5, 11.6, 11.7, 11.14, 11.15 |
+| §11.3 Pulsars | 11.2, 11.4 | 11.8, 11.9, 11.10, 11.11, 11.12, 11.13 |
+
+In Problem 11.3, the relation as printed is missing the radius: its left side
+should read $M^{1/3}R$, not $M^{1/3}$.
+
+:::
+
+## Summary
+
+| idea | result | why it matters |
+|:---|:---|:---|
+| A neutron star | about $1.4\,M_\odot$ in a sphere 10 to $15\ \mathrm{km}$ across, as dense as a nucleus | the second compact object, held up by neutron degeneracy pressure |
+| The pulse width | a pulse of length $\Delta t$ comes from a region no larger than $c\,\Delta t$ | the source is small |
+| The period | a star spinning with period $P$ needs $\rho > 3\pi/GP^2$ | only a neutron star is dense enough for the pulsars |
+| Spin-up and flux freezing | $P \propto R^2$ and $B \propto 1/R^2$ as the core shrinks | why pulsars spin fast and have fields of about $10^{12}\ \mathrm{G}$ |
+| Spin-down | $\mathrm{d}E/\mathrm{d}t = -4\pi^2 I\dot P/P^3$ | the Crab pulsar powers the Crab Nebula |
+| The maximum mass | a little above $2\,M_\odot$ | anything heavier left by a collapse is a black hole |
+
+A white dwarf is held up by electrons and a neutron star by neutrons. Above a
+little more than two solar masses, nothing is left to do the job, and the
+course arrives at its subject: a black hole made by a star. A lone black hole
+gives off no light, though, so finding one takes a companion. Next time we look
+at stars in close pairs, where one star can feed gas to a white dwarf, a
+neutron star or a black hole, and the gas lights up as it falls.
+
+:::: {.content-visible when-format="html"}
+## References {.unnumbered}
+
+::: {#refs}
+:::
+::::
+
+::: {.content-visible when-format="pdf"}
+
+```{=latex}
+\clearpage
+\tableofcontents
+```
+:::
