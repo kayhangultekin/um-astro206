@@ -84,6 +84,15 @@ only hold itself up by being far denser than a white dwarf, which is why the
 collapse runs all the way down from thousands of kilometers to tens before it
 stops. Kutner works this out in §11.2.1.
 
+Why a lecture on neutron stars in a course about black holes? **The largest
+mass a neutron star can have is the smallest mass a black hole made by a dying
+star can have**, so when we find a dark, compact object in a binary and weigh
+it, that limit, at the end of these notes, is what tells us which of the two it
+is. And neutron stars keep turning up as tools: as pulsars they are the clocks
+of the pulsar timing arrays of lecture 10, which listen for pairs of
+supermassive black holes, and their collisions with each other and with black
+holes are among the events LIGO detects.
+
 ::: {.content-visible when-format="html"}
 
 ### Exercises {#sec-exercises-compare}
@@ -526,8 +535,11 @@ None of this section is needed for what comes before or after.
 
 **Inside a neutron star.** Kutner's Fig 11.7 shows the structure: a solid crust
 about a kilometer thick, made of nuclei such as iron, over an interior of
-neutrons that flow without any friction, a **superfluid**. The atmosphere above
-the crust is about a centimeter thick.
+neutrons that flow without any friction, a **superfluid**. At the base of the
+crust, where it gives way to the core, the nuclei are thought to be squeezed so
+close that they merge into long rods, flat sheets, tubes and bubbles, shapes
+that have earned the name **nuclear pasta**: spaghetti, lasagna, gnocchi. Lisa Drummond's astrobites post is a readable introduction
+[@drummond2017]. The atmosphere above the crust is about a centimeter thick.
 
 **Glitches.** Every so often a pulsar suddenly speeds up a little and then goes
 on slowing down. Kutner's Fig 11.12 marks them for the Crab. One explanation is
