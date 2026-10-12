@@ -12,7 +12,8 @@ date-format: "MMMM D"
 # Quarto silently ignores a project-level `jupyter:` and auto-selects a kernel.
 jupyter: python3
 
-# No `pyodide: packages:` block: this page has no live cells.
+# No `pyodide: packages:` block: the one live cell needs numpy and matplotlib
+# only, which are inside Pyodide's default dependency closure.
 ---
 
 ::: {.callout-note appearance="simple" icon=false}
@@ -152,7 +153,11 @@ outer layers stick out past the lobe and pour through $L_1$.
    $3.844 \times 10^{5}\ \mathrm{km}$ apart. Find the point on the line between
    them where their gravity is equal. How far is it from the Earth?
 
-   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   ::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
+   A mass $M$ pulls on a mass $m$ a distance $r$ away with the gravitational
+   force $F = GMm/r^2$. Write that force for the Earth and for the Moon acting
+   on the same small mass at the same point, and set the two equal.
+
    At $346{,}000\ \mathrm{km}$ from the Earth, nine-tenths of the way to the
    Moon. The true $L_1$, which also counts the centrifugal push in the turning
    frame, is $326{,}000\ \mathrm{km}$ from the Earth.
@@ -472,13 +477,36 @@ have to be shown:
 * **It is heavier than a neutron star can be.** That is the maximum mass of
   [lecture 14](../neutron-stars/index.qmd), a little above $2\,M_\odot$.
 
-The weighing uses the companion, which we can see. Its spectral lines shift back
-and forth as it orbits, by the Doppler effect of lecture 3, and two numbers come
-out of the shifts: the orbital period $P$, and the **semi-amplitude** $K$, the
-largest speed toward or away from us. We see only the part of the orbital
-speed along our line of sight, $K = v \sin i$, where $i$ is the inclination of
-the orbit, $90^\circ$ if we see it edge-on. Combining these with Kepler's third
-law gives the **mass function**,
+::: {.panel-tabset .tracks}
+
+### Physical intuition
+
+The weighing uses the companion, which we can see. As the two stars orbit,
+the companion swings toward us and away from us, and its spectral lines shift
+back and forth by the Doppler effect of lecture 3. Two numbers come out of the
+shifts: the orbital period $P$, and the **semi-amplitude** $K$, the largest
+speed toward or away from us.
+
+**A heavier partner swings the companion harder.** At a given period, a
+heavier unseen object means a wider orbit and a faster companion, so $P$ and
+$K$ together weigh it. Two things blur the answer, and both blur it the same
+way. We see only the part of the companion's motion along our line of sight:
+an orbit seen edge-on shows all of its speed, one seen face-on shows none of
+it. And the companion has mass of its own, so both stars circle their shared
+center of mass, and part of the pull that sets the orbit is the companion's.
+**Both can only hide mass, never add it.** So the Doppler shifts give a
+*minimum* mass for the unseen object, and the real mass is at least that.
+
+That is enough when the minimum is already more than any neutron star can
+have, as it is for A0620-00. When it is not, as for Cyg X-1, whose companion is
+a massive supergiant that is hard to swing around, the case needs the
+companion's mass and the tilt of the orbit as well.
+
+### Mathematical explanation
+
+The tilt of the orbit is its **inclination** $i$, $90^\circ$ if we see it
+edge-on, and we see the companion's orbital speed $v$ as $K = v \sin i$.
+Combining this with Kepler's third law gives the **mass function**,
 
 $$
 f = \frac{P K^3}{2\pi G} = \frac{(M_x \sin i)^3}{(M_x + M_c)^2} ,
@@ -488,18 +516,11 @@ where $M_x$ is the mass of the unseen object and $M_c$ that of the companion we
 see. The left side is measured. The right side involves the masses we want and
 the inclination, which is usually hard to measure.
 
-**The mass function is a lower limit on $M_x$.** On the right side, $\sin i$ is
-never more than 1 and $M_x + M_c$ is always more than $M_x$, so
-$M_x > f$ whatever the inclination and whatever the companion's mass. If $f$
-alone is bigger than any neutron star can be, the unseen object is a black hole,
-and nothing else needs to be known.
-
-::: {.callout-tip .resolution collapse="true" title="How to derive the mass function"}
-Let the companion orbit the center of mass at radius $a_c$ while the two stars
-are a distance $a$ apart. The center of mass sits where $M_c a_c = M_x a_x$, so
-$a_c = a\,M_x/(M_x + M_c)$. The companion goes once around a circle of
-radius $a_c$ in time $P$, so its speed is $v = 2\pi a_c/P$, and we see
-$K = v \sin i$. Cubing,
+**How to derive it.** Let the companion orbit the center of mass at radius
+$a_c$ while the two stars are a distance $a$ apart. The center of mass sits
+where $M_c a_c = M_x a_x$, so $a_c = a\,M_x/(M_x + M_c)$. The companion goes
+once around a circle of radius $a_c$ in time $P$, so its speed is
+$v = 2\pi a_c/P$, and we see $K = v \sin i$. Cubing,
 
 $$
 K^3 = \left(\frac{2\pi}{P}\right)^3 a^3\,
@@ -516,6 +537,197 @@ $$
 which rearranges to @eq-massfn. Check the units of the left side of
 @eq-massfn: $\mathrm{s} \times \mathrm{cm^{3}\,s^{-3}}$ divided by
 $\mathrm{cm^{3}\,g^{-1}\,s^{-2}}$ is grams, a mass, as the right side is.
+
+**The mass function is a lower limit on $M_x$.** On the right side, $\sin i$ is
+never more than 1 and $M_x + M_c$ is always more than $M_x$, so
+$M_x > f$ whatever the inclination and whatever the companion's mass. If $f$
+alone is bigger than any neutron star can be, the unseen object is a black hole,
+and nothing else needs to be known.
+
+### Numerical exploration
+
+@fig-mass-incl solves @eq-massfn for the mass of the unseen object at every
+inclination, for two real X-ray binaries and one made-up one. For a given mass
+function, the smaller the inclination, the heavier the unseen object has to be.
+A0620-00 is above the neutron-star limit everywhere. Cyg X-1 has a small mass
+function, $0.25\,M_\odot$, so its curve alone does not settle the question;
+the dot, at its measured inclination, does. The made-up binary could hold a
+black hole if we see its orbit nearly face-on, or a neutron star or even a
+white dwarf if we see it nearly edge-on.
+
+```{python}
+#| label: fig-mass-incl
+#| fig-cap: "The mass of the unseen object in two X-ray binaries and one made-up one against the inclination of the orbit, from @eq-massfn. For A0620-00 the companion's mass is taken as 6% of the black hole's [@neilsen2008]; for Cyg X-1 the companion is $40.6\\,M_\\odot$ and the dot marks the measured inclination, $27.5^\\circ$, and mass, $21.2\\,M_\\odot$ [@millerjones2021]. The made-up binary has a period of 1 day, a semi-amplitude of $100\\ \\mathrm{km\\,s^{-1}}$ and a $1\\,M_\\odot$ companion. The gray band is the largest mass a neutron star can have, from lecture 14. The two real curves stay above it at every inclination; the made-up one crosses it."
+#| fig-alt: "A line chart. The horizontal axis is the orbital inclination in degrees, from 15 to 90, where 90 means seen edge-on. The vertical axis is the mass of the unseen object in solar masses, on a logarithmic scale marked 0.5, 1, 2, 5, 10, 20, 50, 100 and 200. A horizontal gray band near 2 solar masses is labeled the largest mass of a neutron star. Three curves fall from upper left to lower right and level off toward 90 degrees. The solid blue curve, A0620-00, falls from about 180 at 15 degrees to about 3 at 90 degrees, and is labeled below the curve. The solid orange curve, Cyg X-1, falls from about 45 at 15 degrees to about 8.4 at 90 degrees, and an orange dot sits on it at 27.5 degrees and 21 solar masses, labeled measured just below and to its left. A dashed green curve, labeled made-up binary at its right end, falls from about 8 at 15 degrees through the gray band near 27 degrees to about 0.7 at 90 degrees. The blue and orange curves stay above the gray band everywhere."
+#| fig-height: 4.0
+
+G = 6.6732e-8          # cm^3 g^-1 s^-2, the course constants sheet
+MSUN = 1.9891e33
+HOUR, DAY = 3600.0, 86400.0
+
+def mass_function(P, K_kms):
+    return P * (K_kms * 1e5)**3 / (2 * np.pi * G) / MSUN
+
+def unseen_mass(f, sin_i, m_comp):
+    # Solve (M sin i)^3 / (M + m_comp)^2 = f for M by bisection; the left
+    # side grows with M, so the root is unique.
+    lo, hi = 1e-3, 1e4
+    for _ in range(200):
+        mid = 0.5 * (lo + hi)
+        if (mid * sin_i)**3 / (mid + m_comp)**2 < f:
+            lo = mid
+        else:
+            hi = mid
+    return 0.5 * (lo + hi)
+
+# A made-up binary to compare with the two real ones.
+P_days = 1.0           # orbital period, in days
+K_kms = 100.0          # the companion's semi-amplitude, in km/s
+m_comp = 1.0           # the companion's mass, in solar masses
+
+inc = np.linspace(15, 90, 301)
+sin_i = np.sin(np.radians(inc))
+
+# A0620-00: P from McClintock & Remillard (1986), K and q = 0.060 from
+# Neilsen et al. (2008). With M_c = q M_x the solution is closed-form.
+f_a0620 = mass_function(7.75 * HOUR, 435.4)
+m_a0620 = f_a0620 * (1 + 0.060)**2 / sin_i**3
+
+# Cyg X-1: P, K, the companion's mass and the inclination from
+# Miller-Jones et al. (2021), Table 1.
+f_cyg = mass_function(5.60 * DAY, 75.21)
+m_cyg = np.array([unseen_mass(f_cyg, s, 40.6) for s in sin_i])
+i_cyg = 27.51
+m_cyg_meas = unseen_mass(f_cyg, np.sin(np.radians(i_cyg)), 40.6)
+
+f_made_up = mass_function(P_days * DAY, K_kms)
+m_made_up = np.array([unseen_mass(f_made_up, s, m_comp) for s in sin_i])
+print(f"made-up binary: mass function {f_made_up:.3f} solar masses")
+
+fig, ax = plt.subplots(figsize=(5.8, 4.0))
+ax.axhspan(2.0, 2.3, color=MUTED, alpha=0.35, lw=0, zorder=1)
+ax.text(88, 2.45, "the largest mass of a neutron star", ha="right",
+        va="bottom", fontsize=9.5, color=INK2)
+
+ax.plot(inc, m_a0620, color=BLUE, lw=2, zorder=3)
+ax.plot(inc, m_cyg, color=ORANGE, lw=2, zorder=3)
+ax.plot(inc, m_made_up, color=AQUA, lw=2, ls="--", zorder=3)
+ax.plot(i_cyg, m_cyg_meas, "o", color=ORANGE, ms=7, mec=INK, mew=0.5, zorder=4)
+ax.annotate("measured", (i_cyg, m_cyg_meas), textcoords="offset points",
+            xytext=(-8, -14), ha="right", fontsize=9.5, color=INK)
+ax.text(36, 4.0, "A0620-00", color=BLUE, fontsize=10.5, ha="left")
+ax.text(62, 14.0, "Cyg X-1", color=ORANGE, fontsize=10.5, ha="left")
+ax.annotate("made-up binary", (inc[-1], m_made_up[-1]),
+            textcoords="offset points", xytext=(-4, -14), ha="right",
+            fontsize=10.5, color=AQUA)
+
+ax.set_yscale("log")
+ax.set_xlim(15, 90)
+ax.set_ylim(0.3, 200)
+ax.set_xticks([15, 30, 45, 60, 75, 90])
+ax.set_yticks([0.5, 1, 2, 5, 10, 20, 50, 100, 200])
+ax.set_yticklabels(["0.5", "1", "2", "5", "10", "20", "50", "100", "200"])
+ax.minorticks_off()
+ax.set_xlabel(r"inclination $i$ (degrees)")
+ax.set_ylabel(r"mass of the unseen object ($M_\odot$)")
+plt.show()
+```
+
+### Turn the knobs
+
+::: {.content-visible when-format="pdf"}
+Students have a live, editable version of this cell in the web notes —
+remind them to try it.
+:::
+
+::: {.content-visible when-format="html"}
+
+Same plot, but editable: change the period, the semi-amplitude and the
+companion's mass of the made-up binary on the three marked lines, run the cell,
+and watch its dashed curve move. The cell also prints the mass function.
+
+```{pyodide}
+#| autorun: false
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+BLUE, ORANGE, AQUA = "#2a78d6", "#eb6834", "#1baf7a"
+INK, INK2, MUTED = "#0b0b0b", "#52514e", "#898781"
+
+G = 6.6732e-8          # cm^3 g^-1 s^-2, the course constants sheet
+MSUN = 1.9891e33
+HOUR, DAY = 3600.0, 86400.0
+
+def mass_function(P, K_kms):
+    return P * (K_kms * 1e5)**3 / (2 * np.pi * G) / MSUN
+
+def unseen_mass(f, sin_i, m_comp):
+    # Solve (M sin i)^3 / (M + m_comp)^2 = f for M by bisection; the left
+    # side grows with M, so the root is unique.
+    lo, hi = 1e-3, 1e4
+    for _ in range(200):
+        mid = 0.5 * (lo + hi)
+        if (mid * sin_i)**3 / (mid + m_comp)**2 < f:
+            lo = mid
+        else:
+            hi = mid
+    return 0.5 * (lo + hi)
+
+# A made-up binary to compare with the two real ones.
+P_days = 1.0           # orbital period, in days  # <- edit this
+K_kms = 100.0          # the companion's semi-amplitude, in km/s  # <- edit this
+m_comp = 1.0           # the companion's mass, in solar masses  # <- edit this
+
+inc = np.linspace(15, 90, 301)
+sin_i = np.sin(np.radians(inc))
+
+# A0620-00: P from McClintock & Remillard (1986), K and q = 0.060 from
+# Neilsen et al. (2008). With M_c = q M_x the solution is closed-form.
+f_a0620 = mass_function(7.75 * HOUR, 435.4)
+m_a0620 = f_a0620 * (1 + 0.060)**2 / sin_i**3
+
+# Cyg X-1: P, K, the companion's mass and the inclination from
+# Miller-Jones et al. (2021), Table 1.
+f_cyg = mass_function(5.60 * DAY, 75.21)
+m_cyg = np.array([unseen_mass(f_cyg, s, 40.6) for s in sin_i])
+i_cyg = 27.51
+m_cyg_meas = unseen_mass(f_cyg, np.sin(np.radians(i_cyg)), 40.6)
+
+f_made_up = mass_function(P_days * DAY, K_kms)
+m_made_up = np.array([unseen_mass(f_made_up, s, m_comp) for s in sin_i])
+print(f"made-up binary: mass function {f_made_up:.3f} solar masses")
+
+fig, ax = plt.subplots(figsize=(5.8, 4.0))
+ax.axhspan(2.0, 2.3, color=MUTED, alpha=0.35, lw=0, zorder=1)
+ax.text(88, 2.45, "the largest mass of a neutron star", ha="right",
+        va="bottom", fontsize=9.5, color=INK2)
+
+ax.plot(inc, m_a0620, color=BLUE, lw=2, zorder=3)
+ax.plot(inc, m_cyg, color=ORANGE, lw=2, zorder=3)
+ax.plot(inc, m_made_up, color=AQUA, lw=2, ls="--", zorder=3)
+ax.plot(i_cyg, m_cyg_meas, "o", color=ORANGE, ms=7, mec=INK, mew=0.5, zorder=4)
+ax.annotate("measured", (i_cyg, m_cyg_meas), textcoords="offset points",
+            xytext=(-8, -14), ha="right", fontsize=9.5, color=INK)
+ax.text(36, 4.0, "A0620-00", color=BLUE, fontsize=10.5, ha="left")
+ax.text(62, 14.0, "Cyg X-1", color=ORANGE, fontsize=10.5, ha="left")
+ax.annotate("made-up binary", (inc[-1], m_made_up[-1]),
+            textcoords="offset points", xytext=(-4, -14), ha="right",
+            fontsize=10.5, color=AQUA)
+
+ax.set_yscale("log")
+ax.set_xlim(15, 90)
+ax.set_ylim(0.3, 200)
+ax.set_xticks([15, 30, 45, 60, 75, 90])
+ax.set_yticks([0.5, 1, 2, 5, 10, 20, 50, 100, 200])
+ax.set_yticklabels(["0.5", "1", "2", "5", "10", "20", "50", "100", "200"])
+ax.minorticks_off()
+ax.set_xlabel(r"inclination $i$ (degrees)")
+ax.set_ylabel(r"mass of the unseen object ($M_\odot$)")
+plt.show()
+```
+:::
+
 :::
 
 ::: {.callout-note .worked-example collapse="true" title="Worked example: the black hole in A0620-00"}
@@ -563,77 +775,6 @@ companion's own mass only raises the number: it is about 6% of the black hole's,
 which puts the lower limit at $3.1\,M_\odot$ [@neilsen2008].
 :::
 
-For a given mass function, the smaller the inclination, the heavier the unseen
-object has to be, and @fig-mass-incl shows how much. A0620-00 is above the
-neutron-star limit everywhere. Cyg X-1, the first black hole candidate, has a
-small mass function, $0.25\,M_\odot$, because its companion is a supergiant
-of about $40\,M_\odot$ that is hard to swing around; there it is the companion's
-mass and the inclination that make the case.
-
-```{python}
-#| label: fig-mass-incl
-#| fig-cap: "The mass of the unseen object in two X-ray binaries against the inclination of the orbit, from @eq-massfn. For A0620-00 the companion's mass is taken as 6% of the black hole's [@neilsen2008]; for Cyg X-1 the companion is $40.6\\,M_\\odot$ and the dot marks the measured inclination, $27.5^\\circ$, and mass, $21.2\\,M_\\odot$ [@millerjones2021]. The gray band is the largest mass a neutron star can have, from lecture 14. Both curves stay above it at every inclination."
-#| fig-alt: "A line chart. The horizontal axis is the orbital inclination in degrees, from 15 to 90, where 90 means seen edge-on. The vertical axis is the mass of the unseen object in solar masses, on a logarithmic scale marked 1, 2, 5, 10, 20, 50, 100 and 200. A horizontal gray band near 2 solar masses is labeled the largest mass of a neutron star. Two curves fall from upper left to lower right and level off toward 90 degrees. The blue curve, A0620-00, falls from about 180 at 15 degrees to about 3 at 90 degrees, and is labeled below the curve. The orange curve, Cyg X-1, falls from about 45 at 15 degrees to about 8.4 at 90 degrees, and an orange dot sits on it at 27.5 degrees and 21 solar masses, labeled measured just below and to its left. Both curves stay above the gray band everywhere."
-#| fig-height: 4.0
-
-G = 6.6732e-8          # cm^3 g^-1 s^-2, the course constants sheet
-MSUN = 1.9891e33
-HOUR, DAY = 3600.0, 86400.0
-
-def mass_function(P, K_kms):
-    return P * (K_kms * 1e5)**3 / (2 * np.pi * G) / MSUN
-
-def unseen_mass(f, sin_i, m_comp):
-    # Solve (M sin i)^3 / (M + m_comp)^2 = f for M by bisection; the left
-    # side grows with M, so the root is unique.
-    lo, hi = 1e-3, 1e4
-    for _ in range(200):
-        mid = 0.5 * (lo + hi)
-        if (mid * sin_i)**3 / (mid + m_comp)**2 < f:
-            lo = mid
-        else:
-            hi = mid
-    return 0.5 * (lo + hi)
-
-inc = np.linspace(15, 90, 301)
-sin_i = np.sin(np.radians(inc))
-
-# A0620-00: P from McClintock & Remillard (1986), K and q = 0.060 from
-# Neilsen et al. (2008). With M_c = q M_x the solution is closed-form.
-f_a0620 = mass_function(7.75 * HOUR, 435.4)
-m_a0620 = f_a0620 * (1 + 0.060)**2 / sin_i**3
-
-# Cyg X-1: P, K, the companion's mass and the inclination from
-# Miller-Jones et al. (2021), Table 1.
-f_cyg = mass_function(5.60 * DAY, 75.21)
-m_cyg = np.array([unseen_mass(f_cyg, s, 40.6) for s in sin_i])
-i_cyg = 27.51
-m_cyg_meas = unseen_mass(f_cyg, np.sin(np.radians(i_cyg)), 40.6)
-
-fig, ax = plt.subplots(figsize=(5.8, 4.0))
-ax.axhspan(2.0, 2.3, color=MUTED, alpha=0.35, lw=0, zorder=1)
-ax.text(88, 2.45, "the largest mass of a neutron star", ha="right",
-        va="bottom", fontsize=9.5, color=INK2)
-
-ax.plot(inc, m_a0620, color=BLUE, lw=2, zorder=3)
-ax.plot(inc, m_cyg, color=ORANGE, lw=2, zorder=3)
-ax.plot(i_cyg, m_cyg_meas, "o", color=ORANGE, ms=7, mec=INK, mew=0.5, zorder=4)
-ax.annotate("measured", (i_cyg, m_cyg_meas), textcoords="offset points",
-            xytext=(-8, -14), ha="right", fontsize=9.5, color=INK)
-ax.text(46, 4.6, "A0620-00", color=BLUE, fontsize=10.5, ha="left")
-ax.text(62, 14.0, "Cyg X-1", color=ORANGE, fontsize=10.5, ha="left")
-
-ax.set_yscale("log")
-ax.set_xlim(15, 90)
-ax.set_ylim(1, 200)
-ax.set_xticks([15, 30, 45, 60, 75, 90])
-ax.set_yticks([1, 2, 5, 10, 20, 50, 100, 200])
-ax.set_yticklabels(["1", "2", "5", "10", "20", "50", "100", "200"])
-ax.minorticks_off()
-ax.set_xlabel(r"inclination $i$ (degrees)")
-ax.set_ylabel(r"mass of the unseen object ($M_\odot$)")
-plt.show()
-```
 
 ::: {.callout-warning .textbook-watch title="Textbook watch (Kutner): Cyg X-1 is heavier than §12.4 says"}
 Kutner's best estimate for the unseen object in Cyg X-1 is $8\,M_\odot$, with
@@ -667,6 +808,19 @@ too; lecture 14's box has the modern value, a little above $2\,M_\odot$.
 2. Explain why a measured mass function of $0.25\,M_\odot$ cannot by itself
    prove that the unseen object in Cyg X-1 is a black hole, when a mass
    function of $2.76\,M_\odot$ can for A0620-00.
+
+3. In the *Turn the knobs* tab above, the made-up binary's curve crosses the
+   neutron-star band, so from its mass function alone we cannot tell what its
+   unseen object is. Keep its period at 1 day and its companion at
+   $1\,M_\odot$, and change its semi-amplitude until something interesting
+   happens: find the smallest $K$ for which the curve stays above the band at
+   every inclination. What, then, has a measurement of $K$ told you?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   About $220\ \mathrm{km\,s^{-1}}$. Above that, the unseen object is heavier
+   than any neutron star even if the orbit is seen exactly edge-on, so it must
+   be a black hole whatever the inclination turns out to be.
+   :::
 
 :::
 
