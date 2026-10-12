@@ -337,8 +337,7 @@ merge**. The other is how close to the limit the star has to get. Neither
 changes the main point: a type Ia supernova is a white dwarf that explodes by
 fusion, not a core that collapses.
 
-::: {.callout-warning .textbook-watch title="Textbook watch (Kutner): what makes a type I supernova"}
-Kutner's §12.2 says the white dwarf goes over the Chandrasekhar limit and
+Read Kutner's §12.2 with two differences in mind. He says the white dwarf goes over the Chandrasekhar limit and
 *collapses*, and that the energy of the collapse drives the nuclear reactions.
 In the modern picture there is no collapse: the carbon ignites as the white
 dwarf *approaches* the limit, and the fusion alone destroys the star
@@ -348,7 +347,6 @@ not by what causes them. Only type Ia is an exploding white dwarf. Types Ib and
 Ic, one of which is on his own Fig 12.6, are the cores of massive stars that
 lost their hydrogen before they collapsed, like the core-collapse supernovae
 of lecture 13.
-:::
 
 ::: {.content-visible when-format="html"}
 
