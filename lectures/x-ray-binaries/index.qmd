@@ -1,0 +1,743 @@
+---
+title: "X-ray Binaries"
+subtitle: "ASTRO 206 — Black Holes · Lecture 15"
+author: "Kayhan Gültekin"
+date: "October 29"
+date-format: "MMMM D"
+# Dates are LECTURE dates -- when the class meets -- not publication dates.
+# Sourced from Canvas (Reading & Reflection 3234219 and the In-Class Problem
+# 3219325, both due 2026-10-29). A placeholder string renders as "Invalid Date".
+
+# Kernel pinning is deliberate and must stay in the DOCUMENT, not _quarto.yml:
+# Quarto silently ignores a project-level `jupyter:` and auto-selects a kernel.
+jupyter: python3
+
+# No `pyodide: packages:` block: this page has no live cells.
+---
+
+::: {.callout-note appearance="simple" icon=false}
+**Disclaimer.** These notes have not been subjected to the usual scrutiny
+reserved for formal publications. They may be distributed outside this class
+only with the permission of the instructor.
+:::
+
+{{< include ../../_figure-setup.qmd >}}
+
+Last time ended with a problem. A black hole left by a dying star gives off no
+light of its own, so on its own it is invisible. But about half of all stars
+are in pairs, and a white dwarf, a neutron star or a black hole that has a
+companion close enough can pull gas off it. The gas falls, heats up and shines,
+much of it in X-rays: the same compact object that would be dark on its own
+becomes one of the brightest things in the sky. This lecture is about those
+pairs: how the gas gets from one star to the other, what happens when it lands
+on a white dwarf or a neutron star, and how we weigh the unseen partner well
+enough to say that **some of them are black holes**.
+
+## How to read this lecture
+
+**The main reading for this lecture is Kutner, Chapter 12, Sections 12.1 to
+12.4**, which is in the Canvas Files under *Reading Material*. It is short and
+it covers this whole lecture. These notes do three jobs. They make Kutner's
+picture of how gas moves between two stars quantitative, they connect what
+falls onto a white dwarf or a neutron star to lectures 7, 8, 12 and 14, and
+they work through how a black hole in a binary is weighed, which Kutner does
+in words and we do in numbers. They also correct two things in the chapter
+that are wrong or out of date, and they give you exercises on all of it.
+
+### The readings
+
+| Kutner section | read it for |
+|:---|:---|
+| §12.1 Close binaries | Roche lobes, the Lagrangian points, and the three kinds of close binary (Figs 12.1 to 12.3) |
+| §12.2 Systems with white dwarfs | accretion disks, the energy of infalling gas (Example 12.1), novae and type I supernovae |
+| §12.3 Neutron stars in close binary systems | how a pair survives a supernova, X-ray pulsars such as Her X-1, millisecond pulsars, the binary pulsar; read it with the box in these notes |
+| §12.4 Systems with black holes | Cyg X-1, LMC X-3 and A0620-00, and how the mass of an unseen companion is found; read it with the box in these notes |
+| §12.5 An unusual object: SS 433 *(optional)* | a binary that shoots out two jets at a quarter of the speed of light |
+
+## Roche lobes
+
+When two stars orbit close together, each pulls harder on the near side of the
+other than on the far side. Lecture 2 called this a tidal force. It stretches
+each star along the line joining them and, over time, makes each star spin once
+per orbit, always keeping the same face toward its partner, as the Moon does
+toward the Earth. Kutner explains why in §12.1.
+
+To see where the gas on each star can go, it helps to ride along with the
+binary: use a frame that turns once per orbit, in which both stars stand still.
+In that frame, a parcel of gas feels the gravity of both stars and, because the
+frame is turning, a "centrifugal" push outward from the center of mass. Kutner's
+Fig 12.1 draws the surfaces on which these three effects add up to the same
+potential energy. Close to either star its own gravity dominates, and the
+surfaces are nearly spheres around it. Farther out, the two stars' surfaces
+meet.
+
+**The surface on which they meet is a figure eight, and each half of it is a
+Roche lobe.** Gas inside a star's Roche lobe belongs to that star. The point
+where the two lobes touch is the **inner Lagrangian point**, $L_1$, where the
+pulls of the two stars and the centrifugal push cancel exactly. Gas that
+reaches $L_1$ from one side can cross to the other without anything pushing it
+back: it is the one gate between the two stars.
+
+::: {.content-visible when-format="html"}
+[$L_1$ is not quite the point where the two stars' gravity is equal, because
+the centrifugal push in the turning frame also counts. Exercise 2 below shows
+by how much, for the Earth and the Moon.]{.aside}
+:::
+
+There are five Lagrangian points in all, $L_1$ to $L_5$, but $L_1$ is the one
+that matters here. Kutner's Fig 12.3 sorts close binaries by how full the lobes
+are:
+
+* **detached**: each star is well inside its own lobe, and nothing flows;
+* **semidetached**: one star exactly fills its lobe, and gas spills through
+  $L_1$ onto the other star;
+* **contact**: both stars fill their lobes and share an envelope.
+
+The X-ray binaries are semidetached. How big is the lobe? The shape is
+complicated, but its size has a simple and accurate approximation. For the
+lighter star in a binary, of mass $M_2$, orbiting a heavier one of mass $M_1$
+at a separation $a$, a sphere with the same volume as its Roche lobe has radius
+
+$$
+r_L \approx 0.462\, a \left( \frac{M_2}{M_1 + M_2} \right)^{1/3} ,
+$$ {#eq-roche}
+
+which is good to about 2% when $M_2$ is less than about $0.8\,M_1$
+[@paczynski1971]. The separation is set by Kepler's third law from
+[lecture 10](../gravitational-waves/index.qmd), with $P$ the orbital period:
+
+$$
+a^3 = \frac{G\,(M_1 + M_2)\,P^2}{4\pi^2} .
+$$ {#eq-kepler}
+
+::: {.content-visible when-format="pdf"}
+{{< include ../../in_class/lec15/exercises00.qmd >}}
+:::
+
+Put @eq-kepler into the cube of @eq-roche. The total mass $M_1 + M_2$ cancels,
+and what is left says that a star exactly filling its Roche lobe has an average
+density
+
+$$
+\begin{aligned}
+\rho = \frac{M_2}{\tfrac43 \pi r_L^3}
+     &\approx \frac{3\pi}{(0.462)^3\, G P^2} \\[0.8em]
+     &\approx 110\ \mathrm{g\,cm^{-3}} \left( \frac{P}{1\ \mathrm{h}} \right)^{-2} .
+\end{aligned}
+$$ {#eq-rho-roche}
+
+This is the same shape as last lecture's limit on a spinning star,
+$\rho > 3\pi/GP^2$, made about ten times larger by the factor $1/(0.462)^3$,
+and **it depends on the orbital period alone**. Neither mass appears, so the
+period of a binary tells you directly how dense the star feeding it must be.
+A period of a few hours needs a dense, compact star near the bottom of the main
+sequence; a period of days needs a giant. In a star less dense than this, the
+outer layers stick out past the lobe and pour through $L_1$.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-roche}
+
+1. Use @eq-rho-roche to find the orbital period at which a star like the Sun,
+   with an average density of $1.41\ \mathrm{g\,cm^{-3}}$, would exactly fill
+   its Roche lobe. Does the answer depend on what it orbits?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   About $8.9$ hours. No: as long as the Sun is the lighter of the two, the
+   period alone sets the density, whatever the other star is.
+   :::
+
+2. The Earth has a mass of $5.977 \times 10^{27}\ \mathrm{g}$ and the Moon
+   $7.35 \times 10^{25}\ \mathrm{g}$, and they are
+   $3.844 \times 10^{5}\ \mathrm{km}$ apart. Find the point on the line between
+   them where their gravity is equal. How far is it from the Earth?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   At $346{,}000\ \mathrm{km}$ from the Earth, nine-tenths of the way to the
+   Moon. The true $L_1$, which also counts the centrifugal push in the turning
+   frame, is $326{,}000\ \mathrm{km}$ from the Earth.
+   :::
+
+3. A compact object is in a binary with a red giant. If the red giant is bigger
+   than its Roche lobe, then:
+
+   a. it is almost certainly fusing hydrogen by the CNO cycle in its core.
+   b. radiation will come out of its magnetic poles as charged particles
+      spiral around magnetic field lines, making synchrotron radiation.
+   c. its total mass is below the Chandrasekhar limit.
+   d. matter can flow from the red giant onto the compact object.
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   **d.** Gas outside the giant's Roche lobe no longer belongs to it, and it
+   spills through $L_1$ toward the compact object.
+   :::
+
+:::
+
+## Feeding a compact object
+
+Gas can get from an ordinary star to a compact one in two ways.
+
+* **Through $L_1$.** A star that fills its Roche lobe pours gas through the
+  gate. This is **Roche-lobe overflow**. It is how a low-mass companion, a
+  star like the Sun or smaller, feeds its partner, and it usually starts when
+  the companion swells into a giant or when the orbit shrinks.
+* **By a wind.** Massive, hot stars blow off a strong wind in all directions,
+  whether or not they fill their lobes, and a compact object orbiting inside
+  that wind sweeps up some of it. This is how a massive companion, more than
+  about five solar masses, usually feeds its partner.
+
+| | name |
+|:---|:---|
+| compact object is a white dwarf | **cataclysmic variable**, the home of novae |
+| compact object is a neutron star | neutron-star X-ray binary, or X-ray pulsar |
+| compact object is a black hole | black-hole X-ray binary |
+| companion is heavier than about $5\,M_\odot$ | **high-mass X-ray binary**, usually fed by a wind |
+| companion is lighter than about $5\,M_\odot$ | **low-mass X-ray binary**, usually fed through $L_1$ |
+
+: Close binaries with a compact object, named by what the compact object is and by what feeds it. {#tbl-classes}
+
+In 2023, 169 high-mass and 349 low-mass X-ray binaries were known in our
+Galaxy [@neumann2023; @avakyan2023], and more than a thousand cataclysmic
+variables.
+
+**Gas does not fall straight in.** The two stars are orbiting each other, so the
+gas coming through $L_1$ is moving sideways as it falls, and it has far too
+much angular momentum to hit a target as small as a white dwarf, let alone a
+neutron star. Instead it goes into orbit, and the orbiting gas spreads into a
+flat **accretion disk** (Kutner's Fig 12.4). Friction in the disk lets the gas
+creep inward a little at a time, heating it as it goes. How a disk works, and
+how hot it gets at each radius, is the subject of the next lecture.
+
+**How bright is it?** Kutner's equation 12.1 gives the luminosity of gas
+falling from radius $r_1$ to $r_2$ as the whole drop in potential energy,
+$GM\dot M\,(1/r_2 - 1/r_1)$, and calls it an upper limit. In
+[lecture 7](../accretion-efficiency/index.qmd) we said gas in a disk radiates
+only *half* of that, $GM\dot M/2r$, because the other half goes into orbital
+motion. Both are right. Gas that ends its trip on the **surface** of a white
+dwarf or a neutron star has to stop, and its orbital energy comes out too, where
+the disk meets the star. So with a surface of radius $R$,
+
+$$
+L \approx \frac{GM\dot M}{R} ,
+$$ {#eq-lacc-surface}
+
+twice the disk alone. Gas falling into a black hole has no surface to hit, and
+that half crosses the horizon with it. [Lecture 8](../eddington-limit/index.qmd)
+showed why gas landing on a neutron star comes out as X-rays, and why no
+steady source can shine much above its Eddington luminosity, about
+$1.26 \times 10^{38}\ \mathrm{erg\,s^{-1}}$ for each solar mass.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-feeding}
+
+1. Gas reaches a $1.4\,M_\odot$ neutron star of radius $12\ \mathrm{km}$ at a
+   rate of $10^{-9}\,M_\odot\,\mathrm{yr^{-1}}$. Use @eq-lacc-surface to find
+   its luminosity, in $\mathrm{erg\,s^{-1}}$ and in solar luminosities. Then do
+   the same for a $1\,M_\odot$ white dwarf with the radius of the Earth,
+   $6.378 \times 10^{8}\ \mathrm{cm}$, fed at the same rate. What fraction of
+   its Eddington luminosity is the neutron star giving off?
+
+   ::: {.callout-note .help-solution collapse="true" title="Solution"}
+   **The question.** How bright is gas landing on a neutron star, and on a
+   white dwarf, when it arrives at $10^{-9}\,M_\odot\,\mathrm{yr^{-1}}$?
+
+   First the accretion rate in grams per second. Each conversion is written so
+   the unwanted unit cancels:
+
+   $$
+   \begin{aligned}
+   \dot M &= 10^{-9}\,\frac{M_\odot}{\mathrm{yr}}
+     \times \frac{1.9891 \times 10^{33}\ \mathrm{g}}{1\,M_\odot} \\[0.8em]
+     &\quad \times \frac{1\ \mathrm{yr}}{3.156 \times 10^{7}\ \mathrm{s}} \\[0.8em]
+     &= 6.30 \times 10^{16}\ \mathrm{g\,s^{-1}} .
+   \end{aligned}
+   $$
+
+   The neutron star's mass is
+   $1.4 \times 1.9891 \times 10^{33}\ \mathrm{g} = 2.785 \times 10^{33}\
+   \mathrm{g}$ and its radius $12\ \mathrm{km} \times 10^{5}\ \mathrm{cm}/1\
+   \mathrm{km} = 1.2 \times 10^{6}\ \mathrm{cm}$. Substitute into
+   @eq-lacc-surface with the units attached:
+
+   $$
+   \begin{aligned}
+   L = \Bigg( & \frac{6.6732 \times 10^{-8}\ \mathrm{cm^{3}\,g^{-1}\,s^{-2}}}
+                {1.2 \times 10^{6}\ \mathrm{cm}} \\[0.8em]
+     & \times 2.785 \times 10^{33}\ \mathrm{g}
+       \times 6.30 \times 10^{16}\ \mathrm{g\,s^{-1}} \Bigg) .
+   \end{aligned}
+   $$
+
+   The units are $\mathrm{cm^{3}\,g^{-1}\,s^{-2}} \times \mathrm{g} \times
+   \mathrm{g\,s^{-1}} / \mathrm{cm} = \mathrm{g\,cm^{2}\,s^{-3}}$, which is
+   $\mathrm{erg\,s^{-1}}$. *Do the units make sense?* A luminosity is energy
+   per second, so yes. Now the numbers:
+
+   $$
+   \begin{aligned}
+   L &= 9.8 \times 10^{36}\ \mathrm{erg\,s^{-1}}
+     \times \frac{1\,L_\odot}{3.826 \times 10^{33}\ \mathrm{erg\,s^{-1}}}
+     \\[0.8em]
+     &= 2{,}600\,L_\odot .
+   \end{aligned}
+   $$
+
+   The neutron star's Eddington luminosity is
+   $1.4 \times 1.26 \times 10^{38} = 1.76 \times 10^{38}\ \mathrm{erg\,s^{-1}}$,
+   so it is shining at **about 6% of its Eddington luminosity**.
+
+   The white dwarf has the same $G$ and $\dot M$, a mass $1/1.4$ as large and
+   a radius $6.378 \times 10^{8}/1.2 \times 10^{6} = 530$ times larger, so its
+   luminosity is $9.8 \times 10^{36} / (1.4 \times 530)
+   = 1.3 \times 10^{34}\ \mathrm{erg\,s^{-1}}$, or **about $3\,L_\odot$**.
+   The same trickle of gas gives off nearly a thousand times more energy
+   falling onto the neutron star, because it falls so much deeper.
+   :::
+
+2. Explain why gas coming through $L_1$ forms a disk instead of falling straight
+   onto the compact object.
+
+:::
+
+## White dwarfs: novae and type Ia supernovae
+
+A white dwarf in a cataclysmic variable collects hydrogen from its companion.
+The hydrogen settles on the surface in a thin layer, squeezed by the white
+dwarf's gravity, and grows hotter and denser at its base as more piles on. When
+it gets hot enough, the hydrogen fuses all at once, in a runaway, and blows the
+layer off. That is a **nova**: the system brightens by 5 to 15 magnitudes, to
+about $10^{5}\,L_\odot$, for a few weeks, and throws off about
+$10^{-5}\,M_\odot$ of gas. "Nova" is Latin for *new*, since the system can go
+from too faint to see to a bright star overnight; Chinese astronomers called
+such stars *guest stars*. Kutner's Fig 12.5 shows the debris of one. **The white
+dwarf survives**, the companion keeps feeding it, and some novae recur after
+tens or hundreds of years.
+
+A **type Ia supernova** is the other end of the same story, and it destroys the
+white dwarf. In [lecture 12](../white-dwarfs/index.qmd) we found that no white
+dwarf can be heavier than the Chandrasekhar mass, about $1.4\,M_\odot$. A white
+dwarf made of carbon and oxygen that is pushed close to that mass becomes hot
+and dense enough at its center for **carbon** to ignite, and in a degenerate
+star the burning cannot stop itself: the pressure does not respond to the heat,
+so the star does not expand and cool. The burning runs through the whole star
+in about a second, turning much of it into nickel, and releases more energy
+than holds the star together. The white dwarf is blown completely apart,
+leaving nothing behind, and for a few weeks it shines at about
+$10^{10}\,L_\odot$, as bright as a whole galaxy. The radioactive nickel decays
+to cobalt and then to iron, which is what keeps the light curve shining for
+months (Kutner's Fig 12.6), and type Ia supernovae have made much of the iron
+in the Universe.
+
+Two things are still argued about [@maoz2014]. One is whether the white dwarf
+usually grows by feeding from an ordinary companion, as described here, or
+whether many type Ia supernovae come instead from **two white dwarfs that
+merge**. The other is how close to the limit the star has to get. Neither
+changes the main point: a type Ia supernova is a white dwarf that explodes by
+fusion, not a core that collapses.
+
+::: {.callout-warning .textbook-watch title="Textbook watch (Kutner): what makes a type I supernova"}
+Kutner's §12.2 says the white dwarf goes over the Chandrasekhar limit and
+*collapses*, and that the energy of the collapse drives the nuclear reactions.
+In the modern picture there is no collapse: the carbon ignites as the white
+dwarf *approaches* the limit, and the fusion alone destroys the star
+[@maoz2014]. Kutner also puts all type I supernovae down to white dwarfs, but
+the "I" and "II" sort supernovae by their spectra (type I show no hydrogen),
+not by what causes them. Only type Ia is an exploding white dwarf. Types Ib and
+Ic, one of which is on his own Fig 12.6, are the cores of massive stars that
+lost their hydrogen before they collapsed, like the core-collapse supernovae
+of lecture 13.
+:::
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-novae}
+
+1. A nova shines at about $10^{5}\,L_\odot$ for about 30 days. How much energy
+   does it give off? If all of the $10^{-5}\,M_\odot$ of hydrogen it throws off
+   were fused, at 0.7% of its rest-mass energy (lecture 7), how much energy
+   would that release? What fraction of the hydrogen actually needs to fuse?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   The nova gives off about $1.0 \times 10^{45}\ \mathrm{erg}$. Fusing all of
+   the ejected hydrogen would release $1.3 \times 10^{47}\ \mathrm{erg}$, so
+   less than 1% of it needs to fuse.
+   :::
+
+2. A white dwarf can go off as a nova many times, but as a type Ia supernova
+   only once. Explain why.
+
+:::
+
+## Neutron stars in binaries
+
+Before a binary can contain a neutron star, one of its stars has to have gone
+off as a supernova, and that is enough to break most pairs apart. The more
+massive star goes first, and it throws off most of its mass in a moment, far
+faster than the orbit can adjust. The two stars are left with the same speeds
+and the same separation they had a moment before, but with much less mass to
+hold them together. **A binary that suddenly loses more than half of its total
+mass flies apart.** If the exploding star of mass $m_1$ leaves a remnant of mass
+$m$, and its companion has mass $m_2$, the pair stays bound only if
+
+$$
+m + m_2 > \tfrac12\,(m_1 + m_2) .
+$$ {#eq-survive}
+
+Kutner's §12.3 tells this story. The stars thrown loose this way are the
+**runaway stars**, moving through the Galaxy far faster than their neighbors.
+So a neutron star still in a binary needs an explanation, and Kutner gives
+three: some pairs are lucky, some had already moved mass from the exploding
+star onto its companion before the explosion, and some neutron stars may have
+been white dwarfs that were fed past the Chandrasekhar mass and collapsed
+quietly.
+
+::: {.callout-warning .textbook-watch title="Textbook watch (Kutner): equation 12.2 is not right"}
+Kutner's equation 12.2, $m = m_1 / [2 + (m_2/m_1)]$, is meant to be the
+remnant mass at which the pair just comes apart. The correct condition is
+@eq-survive, which gives $m = (m_1 - m_2)/2$. The two agree when the companion
+is much lighter than the exploding star, the case Kutner goes on to discuss, but
+not otherwise: for $m_1 = 2\,M_\odot$ and $m_2 = 1\,M_\odot$, Kutner's version
+gives $0.8\,M_\odot$ and the correct answer is $0.5\,M_\odot$. The difference
+comes from counting the motion of the whole pair through space as energy that
+could pull the two stars apart, which it cannot. Problem 12.6 asks you to
+derive equation 12.2; derive @eq-survive instead.
+:::
+
+When a neutron star in a surviving binary is later fed by its companion, it
+becomes an **X-ray binary**. Kutner's example is Her X-1, which pulses in X-rays
+every $1.24\ \mathrm{s}$ as the neutron star spins and is eclipsed every 1.7
+days as its companion passes in front. The magnetic field of
+[lecture 14](../neutron-stars/index.qmd) channels the infalling gas onto the
+magnetic poles, so the X-rays come from two hot spots that sweep past us as the
+star turns: a pulsar powered by falling gas rather than by its own spin.
+
+**Feeding also spins the neutron star up.** Gas arriving from the inner edge of
+the disk is in orbit, so it brings angular momentum with it, and over hundreds
+of millions of years it can wind a neutron star up to hundreds of turns a
+second. This is where the **millisecond pulsars** come from [@alpar1982],
+including the fastest one known, the 716 times a second of lecture 14. Most of
+them are still in binaries, and the companion that spun them up is often a
+white dwarf by now. They are said to be *recycled*: old, slowed-down pulsars
+brought back to life. Because they spin so fast and slow down so little, they
+are the best clocks in the Galaxy, which is why the pulsar timing arrays of
+lecture 10 use them. That lecture also has the most famous neutron-star binary,
+the Hulse–Taylor pulsar, whose orbit is shrinking just as fast as general
+relativity says gravitational waves should make it.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-ns}
+
+1. A $15\,M_\odot$ star in a circular orbit with a $5\,M_\odot$ companion
+   explodes and leaves a $1.4\,M_\odot$ neutron star. Does the pair stay
+   together? How heavy would the companion have to be for it to stay bound?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
+   Compare the mass left after the explosion with half the mass before it,
+   @eq-survive, and then solve the same inequality for $m_2$.
+
+   Before, the pair weighed $20\,M_\odot$; afterward it weighs $6.4\,M_\odot$,
+   less than half, **so it flies apart.** It stays bound only if the companion
+   is heavier than $m_1 - 2m = 12.2\,M_\odot$.
+   :::
+
+2. Gas reaching the surface of a neutron star from the inner edge of its disk
+   carries an angular momentum of $\sqrt{GMR}$ for every gram. A neutron star
+   of $1.4\,M_\odot$ and radius $12\ \mathrm{km}$, with $I = \tfrac25 MR^2$,
+   starts out barely spinning. How much mass must it swallow to spin once every
+   $1.5\ \mathrm{ms}$? How long does that take at
+   $10^{-9}\,M_\odot\,\mathrm{yr^{-1}}$?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
+   The star needs an angular momentum $J = I\omega$, with $\omega = 2\pi/P$.
+   Divide it by the angular momentum each gram brings.
+
+   It needs $J = 6.7 \times 10^{48}\ \mathrm{g\,cm^2\,s^{-1}}$, and each gram
+   brings $1.5 \times 10^{16}\ \mathrm{cm^2\,s^{-1}}$, so it must swallow
+   $4.5 \times 10^{32}\ \mathrm{g}$, about $0.23\,M_\odot$. At
+   $10^{-9}\,M_\odot\,\mathrm{yr^{-1}}$ that takes about 230 million years.
+   :::
+
+:::
+
+## Weighing the unseen companion
+
+How would we know that the compact object in an X-ray binary is a black hole?
+We cannot see it, but we can see what it does to its companion. Two things
+have to be shown:
+
+* **It is small.** X-rays that flicker in a few thousandths of a second come
+  from a region no bigger than light crosses in that time, the argument of
+  lecture 14's pulses, so the object is far smaller than any ordinary star.
+* **It is heavier than a neutron star can be.** That is the maximum mass of
+  [lecture 14](../neutron-stars/index.qmd), a little above $2\,M_\odot$.
+
+The weighing uses the companion, which we can see. Its spectral lines shift back
+and forth as it orbits, by the Doppler effect of lecture 3, and two numbers come
+out of the shifts: the orbital period $P$, and the **semi-amplitude** $K$, the
+largest speed toward or away from us. We see only the part of the orbital
+speed along our line of sight, $K = v \sin i$, where $i$ is the inclination of
+the orbit, $90^\circ$ if we see it edge-on. Combining these with Kepler's third
+law gives the **mass function**,
+
+$$
+f = \frac{P K^3}{2\pi G} = \frac{(M_x \sin i)^3}{(M_x + M_c)^2} ,
+$$ {#eq-massfn}
+
+where $M_x$ is the mass of the unseen object and $M_c$ that of the companion we
+see. The left side is measured. The right side involves the masses we want and
+the inclination, which is usually hard to measure.
+
+**The mass function is a lower limit on $M_x$.** On the right side, $\sin i$ is
+never more than 1 and $M_x + M_c$ is always more than $M_x$, so
+$M_x > f$ whatever the inclination and whatever the companion's mass. If $f$
+alone is bigger than any neutron star can be, the unseen object is a black hole,
+and nothing else needs to be known.
+
+::: {.callout-tip .resolution collapse="true" title="How to derive the mass function"}
+Let the companion orbit the center of mass at radius $a_c$ while the two stars
+are a distance $a$ apart. The center of mass sits where $M_c a_c = M_x a_x$, so
+$a_c = a\,M_x/(M_x + M_c)$. The companion goes once around a circle of
+radius $a_c$ in time $P$, so its speed is $v = 2\pi a_c/P$, and we see
+$K = v \sin i$. Cubing,
+
+$$
+K^3 = \left(\frac{2\pi}{P}\right)^3 a^3\,
+      \frac{M_x^3}{(M_x + M_c)^3}\, \sin^3 i .
+$$
+
+Now use @eq-kepler for $a^3$, with $M_1 + M_2 = M_x + M_c$. One factor of the
+total mass cancels, and so does one factor of $2\pi/P$:
+
+$$
+K^3 = \frac{2\pi G}{P}\, \frac{(M_x \sin i)^3}{(M_x + M_c)^2} ,
+$$
+
+which rearranges to @eq-massfn. Check the units of the left side of
+@eq-massfn: $\mathrm{s} \times \mathrm{cm^{3}\,s^{-3}}$ divided by
+$\mathrm{cm^{3}\,g^{-1}\,s^{-2}}$ is grams, a mass, as the right side is.
+:::
+
+::: {.callout-note .worked-example collapse="true" title="Worked example: the black hole in A0620-00"}
+**The question.** The X-ray binary A0620-00, which flared up as an X-ray nova
+in 1975, has an orbital period of $P = 7.75$ hours [@mcclintock1986]. Its
+companion, an orange dwarf star, moves with a semi-amplitude of
+$K = 435.4\ \mathrm{km\,s^{-1}}$ [@neilsen2008]. What is the mass function,
+and is the unseen object a black hole?
+
+First the period and the speed in seconds and centimeters per second:
+
+$$
+\begin{aligned}
+P &= 7.75\ \mathrm{h} \times \frac{3600\ \mathrm{s}}{1\ \mathrm{h}}
+   = 2.79 \times 10^{4}\ \mathrm{s} , \\[0.8em]
+K &= 435.4\ \frac{\mathrm{km}}{\mathrm{s}}
+     \times \frac{10^{5}\ \mathrm{cm}}{1\ \mathrm{km}}
+   = 4.354 \times 10^{7}\ \mathrm{cm\,s^{-1}} .
+\end{aligned}
+$$
+
+Substitute into @eq-massfn with the units attached:
+
+$$
+f = \frac{2.79 \times 10^{4}\ \mathrm{s} \times
+          \left(4.354 \times 10^{7}\ \mathrm{cm\,s^{-1}}\right)^3}
+         {2\pi \times 6.6732 \times 10^{-8}\ \mathrm{cm^{3}\,g^{-1}\,s^{-2}}} .
+$$
+
+The units on top are $\mathrm{s} \times \mathrm{cm^{3}\,s^{-3}} =
+\mathrm{cm^{3}\,s^{-2}}$, and dividing by $\mathrm{cm^{3}\,g^{-1}\,s^{-2}}$
+leaves grams. *Do the units make sense?* The mass function is a mass, so yes.
+Now the numbers: the top is $2.30 \times 10^{27}$ and the bottom
+$4.19 \times 10^{-7}$, so
+
+$$
+f = 5.49 \times 10^{33}\ \mathrm{g}
+    \times \frac{1\,M_\odot}{1.9891 \times 10^{33}\ \mathrm{g}}
+  = 2.76\,M_\odot .
+$$
+
+**The unseen object weighs at least $2.76\,M_\odot$, at any inclination**, and
+that is already more than any neutron star can weigh. It is a black hole. The
+companion's own mass only raises the number: it is about 6% of the black hole's,
+which puts the lower limit at $3.1\,M_\odot$ [@neilsen2008].
+:::
+
+For a given mass function, the smaller the inclination, the heavier the unseen
+object has to be, and @fig-mass-incl shows how much. A0620-00 is above the
+neutron-star limit everywhere. Cyg X-1, the first black hole candidate, has a
+small mass function, $0.25\,M_\odot$, because its companion is a supergiant
+of about $40\,M_\odot$ that is hard to swing around; there it is the companion's
+mass and the inclination that make the case.
+
+```{python}
+#| label: fig-mass-incl
+#| fig-cap: "The mass of the unseen object in two X-ray binaries against the inclination of the orbit, from @eq-massfn. For A0620-00 the companion's mass is taken as 6% of the black hole's [@neilsen2008]; for Cyg X-1 the companion is $40.6\\,M_\\odot$ and the dot marks the measured inclination, $27.5^\\circ$, and mass, $21.2\\,M_\\odot$ [@millerjones2021]. The gray band is the largest mass a neutron star can have, from lecture 14. Both curves stay above it at every inclination."
+#| fig-alt: "A line chart. The horizontal axis is the orbital inclination in degrees, from 15 to 90, where 90 means seen edge-on. The vertical axis is the mass of the unseen object in solar masses, on a logarithmic scale marked 1, 2, 5, 10, 20, 50, 100 and 200. A horizontal gray band near 2 solar masses is labeled the largest mass of a neutron star. Two curves fall from upper left to lower right and level off toward 90 degrees. The blue curve, A0620-00, falls from about 180 at 15 degrees to about 3 at 90 degrees, and is labeled below the curve. The orange curve, Cyg X-1, falls from about 45 at 15 degrees to about 8.4 at 90 degrees, and an orange dot sits on it at 27.5 degrees and 21 solar masses, labeled measured just below and to its left. Both curves stay above the gray band everywhere."
+#| fig-height: 4.0
+
+G = 6.6732e-8          # cm^3 g^-1 s^-2, the course constants sheet
+MSUN = 1.9891e33
+HOUR, DAY = 3600.0, 86400.0
+
+def mass_function(P, K_kms):
+    return P * (K_kms * 1e5)**3 / (2 * np.pi * G) / MSUN
+
+def unseen_mass(f, sin_i, m_comp):
+    # Solve (M sin i)^3 / (M + m_comp)^2 = f for M by bisection; the left
+    # side grows with M, so the root is unique.
+    lo, hi = 1e-3, 1e4
+    for _ in range(200):
+        mid = 0.5 * (lo + hi)
+        if (mid * sin_i)**3 / (mid + m_comp)**2 < f:
+            lo = mid
+        else:
+            hi = mid
+    return 0.5 * (lo + hi)
+
+inc = np.linspace(15, 90, 301)
+sin_i = np.sin(np.radians(inc))
+
+# A0620-00: P from McClintock & Remillard (1986), K and q = 0.060 from
+# Neilsen et al. (2008). With M_c = q M_x the solution is closed-form.
+f_a0620 = mass_function(7.75 * HOUR, 435.4)
+m_a0620 = f_a0620 * (1 + 0.060)**2 / sin_i**3
+
+# Cyg X-1: P, K, the companion's mass and the inclination from
+# Miller-Jones et al. (2021), Table 1.
+f_cyg = mass_function(5.60 * DAY, 75.21)
+m_cyg = np.array([unseen_mass(f_cyg, s, 40.6) for s in sin_i])
+i_cyg = 27.51
+m_cyg_meas = unseen_mass(f_cyg, np.sin(np.radians(i_cyg)), 40.6)
+
+fig, ax = plt.subplots(figsize=(5.8, 4.0))
+ax.axhspan(2.0, 2.3, color=MUTED, alpha=0.35, lw=0, zorder=1)
+ax.text(88, 2.45, "the largest mass of a neutron star", ha="right",
+        va="bottom", fontsize=9.5, color=INK2)
+
+ax.plot(inc, m_a0620, color=BLUE, lw=2, zorder=3)
+ax.plot(inc, m_cyg, color=ORANGE, lw=2, zorder=3)
+ax.plot(i_cyg, m_cyg_meas, "o", color=ORANGE, ms=7, mec=INK, mew=0.5, zorder=4)
+ax.annotate("measured", (i_cyg, m_cyg_meas), textcoords="offset points",
+            xytext=(-8, -14), ha="right", fontsize=9.5, color=INK)
+ax.text(46, 4.6, "A0620-00", color=BLUE, fontsize=10.5, ha="left")
+ax.text(62, 14.0, "Cyg X-1", color=ORANGE, fontsize=10.5, ha="left")
+
+ax.set_yscale("log")
+ax.set_xlim(15, 90)
+ax.set_ylim(1, 200)
+ax.set_xticks([15, 30, 45, 60, 75, 90])
+ax.set_yticks([1, 2, 5, 10, 20, 50, 100, 200])
+ax.set_yticklabels(["1", "2", "5", "10", "20", "50", "100", "200"])
+ax.minorticks_off()
+ax.set_xlabel(r"inclination $i$ (degrees)")
+ax.set_ylabel(r"mass of the unseen object ($M_\odot$)")
+plt.show()
+```
+
+::: {.callout-warning .textbook-watch title="Textbook watch (Kutner): Cyg X-1 is heavier than §12.4 says"}
+Kutner's best estimate for the unseen object in Cyg X-1 is $8\,M_\odot$, with
+a companion of about $15\,M_\odot$, though his Problem 12.9 and his Fig 12.2
+use a companion of $33\,M_\odot$, which gives about $17$. The modern answer is
+higher than all of these. A better distance to Cyg X-1, measured by radio
+astrometry, made the companion more luminous and so more massive,
+$40.6\,M_\odot$, and the black hole $21.2 \pm 2.2\,M_\odot$ [@millerjones2021].
+Kutner's limit of about $3\,M_\odot$ for a neutron star appears in this section
+too; lecture 14's box has the modern value, a little above $2\,M_\odot$.
+:::
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-weigh}
+
+1. The companion of Cyg X-1 orbits every $5.60$ days with a semi-amplitude of
+   $75.21\ \mathrm{km\,s^{-1}}$ [@millerjones2021]. Find the mass function.
+   Then, taking the companion's mass to be $40.6\,M_\odot$ and the inclination
+   $27.5^\circ$, find the mass of the black hole.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
+   For the second part there is no neat formula: put trial values of $M_x$ into
+   the right side of @eq-massfn, say 10, 20 and $30\,M_\odot$, and narrow in on
+   the one that matches the mass function.
+
+   The mass function is $0.247\,M_\odot$, and the black hole is about
+   $21\,M_\odot$.
+   :::
+
+2. Explain why a measured mass function of $0.25\,M_\odot$ cannot by itself
+   prove that the unseen object in Cyg X-1 is a black hole, when a mass
+   function of $2.76\,M_\odot$ can for A0620-00.
+
+:::
+
+## If you want to go further
+
+None of this section is needed for what comes before or after.
+
+**A better Roche lobe.** @eq-roche is only good when the star is the lighter of
+the two. Eggleton's approximation, $r_L/a = 0.49\,q^{2/3} / [0.6\,q^{2/3} +
+\ln(1 + q^{1/3})]$ with $q = M_2/M_1$, is good to about 1% for any mass ratio
+[@eggleton1983]. In Cyg X-1 the companion is the heavier star, and it fills
+about 96% of its Roche lobe [@millerjones2021], while the black hole feeds on
+its wind.
+
+**SS 433.** Kutner's §12.5 describes a binary whose compact object shoots out
+two jets of gas at $0.26c$, in a cone that swings around every 164 days. The
+spectral lines from both jets are shifted toward the red on average by about
+$12{,}000\ \mathrm{km\,s^{-1}}$, even though one jet is coming toward us. That
+offset is time dilation, from lecture 3: clocks moving at $0.26c$ run slow by
+$\gamma = 1.036$, whichever way they are moving.
+
+::: {.content-visible when-format="html"}
+
+## Exercises on the reading
+
+These are Kutner's own end-of-chapter exercises for Chapter 12.
+
+| section | Questions | Problems |
+|:---|:---|:---|
+| §12.1 Close binaries | 12.1 | 12.1, 12.2 |
+| §12.2 Systems with white dwarfs | 12.2 | 12.5 |
+| §12.3 Neutron stars in close binary systems | 12.3, 12.4, 12.5, 12.6 | 12.3, 12.4, 12.6, 12.7, 12.8 |
+| §12.4 Systems with black holes | 12.7 | 12.9 |
+
+Problem 12.6 asks you to derive Kutner's equation 12.2, which is not right; see
+the box in *Neutron stars in binaries*. Problem 12.9 uses a $33\,M_\odot$
+companion for Cyg X-1, where the text uses $15\,M_\odot$.
+
+:::
+
+## Summary
+
+| idea | result | why it matters |
+|:---|:---|:---|
+| Roche lobes | each star owns a lobe; gas crosses only at $L_1$ | how one star can feed another |
+| Filling the lobe | $\rho \approx 110\ \mathrm{g\,cm^{-3}}\,(P/1\ \mathrm{h})^{-2}$ | the period alone says how dense the feeding star is |
+| Feeding | through $L_1$ (low-mass companions) or by a wind (high-mass ones), then a disk | the gas cannot fall straight in |
+| Brightness | $L \approx GM\dot M/R$ with a surface, half that without | a neutron star or white dwarf radiates the disk's half and the landing |
+| White dwarfs | novae fuse a surface layer; a type Ia supernova destroys the star | a white dwarf cannot pass the Chandrasekhar mass |
+| Neutron stars | a pair survives the supernova only if it keeps half its mass; feeding spins the star up | X-ray pulsars and millisecond pulsars |
+| Weighing | $f = PK^3/2\pi G = (M_x \sin i)^3/(M_x + M_c)^2$ is a lower limit on $M_x$ | A0620-00 and Cyg X-1 are black holes |
+
+Gas from an ordinary star turns a dark compact object into an X-ray source, and
+the ordinary star's orbit lets us weigh it. Above a little more than two solar
+masses, it is a black hole. The gas does not fall in directly, though: it
+spirals in through a disk, and next time we look at how that disk works, how hot
+it gets, and what its light tells us about the black hole at its center.
+
+:::: {.content-visible when-format="html"}
+## References {.unnumbered}
+
+::: {#refs}
+:::
+::::
+
+::: {.content-visible when-format="pdf"}
+
+```{=latex}
+\clearpage
+\tableofcontents
+```
+:::
