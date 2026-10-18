@@ -566,11 +566,6 @@ hot as @eq-disk-temp says the inner edge is.
    reaches all the way down to its surface. What is the temperature of the
    disk at the surface of the star, and what is $kT$ in keV?
 
-   ::: {.callout-note .help-answer collapse="true" title="Answer"}
-   $9.9 \times 10^{6}\ \mathrm{K}$, peaking at $0.29\ \mathrm{nm}$, with
-   $kT = 0.85\ \mathrm{keV}$: X-rays again.
-   :::
-
 3. How far from the $10\,M_\odot$ black hole of the worked example is the disk
    at $6000\ \mathrm{K}$, the temperature of the Sun's surface? Give the
    answer in Schwarzschild radii and in solar radii.
