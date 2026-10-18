@@ -27,6 +27,7 @@ project:
     - lectures/high-mass-stars/index.qmd
     - lectures/neutron-stars/index.qmd
     - lectures/x-ray-binaries/index.qmd
+    - lectures/accretion-disks/index.qmd
   # No `resources:` entry for fonts/ is needed. Quarto follows the url()
   # references in the theme SCSS and copies those files next to the compiled
   # CSS itself. Adding fonts/ here published a SECOND copy at _site/fonts/,
@@ -102,6 +103,8 @@ website:
             text: "Neutron stars and pulsars"
           - href: lectures/x-ray-binaries/index.qmd
             text: "X-ray binaries"
+          - href: lectures/accretion-disks/index.qmd
+            text: "Accretion disks"
 
 format:
   live-html:
