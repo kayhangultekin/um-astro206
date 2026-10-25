@@ -1,0 +1,1045 @@
+---
+title: "Galaxies and Dark Matter"
+subtitle: "ASTRO 206 — Black Holes · Lecture 17"
+author: "Kayhan Gültekin"
+date: "November 5"
+date-format: "MMMM D"
+# Dates are LECTURE dates -- when the class meets -- not publication dates.
+# Sourced from Canvas (Reading & Reflection 3234221 and the In-Class Problem
+# 3219327, both due 2026-11-05). A placeholder string renders as "Invalid Date".
+
+# Kernel pinning is deliberate and must stay in the DOCUMENT, not _quarto.yml:
+# Quarto silently ignores a project-level `jupyter:` and auto-selects a kernel.
+jupyter: python3
+
+# No `pyodide: packages:` block: the one live cell needs numpy and matplotlib
+# only, which are inside Pyodide's default dependency closure.
+---
+
+::: {.callout-note appearance="simple" icon=false}
+**Disclaimer.** These notes have not been subjected to the usual scrutiny
+reserved for formal publications. They may be distributed outside this class
+only with the permission of the instructor.
+:::
+
+{{< include ../../_figure-setup.qmd >}}
+
+```{python}
+#| label: galaxy-functions
+#| include: false
+
+# The course constants sheet, used by every figure on this page.
+G, MSUN, PC = 6.6732e-8, 1.9891e33, 3.0856e18
+KPC, KMS = 1e3 * PC, 1e5
+
+# A simple model of the Milky Way. Masses in solar masses, lengths in kpc,
+# from Bland-Hawthorn & Gerhard (2016): black hole; nuclear star cluster
+# (Hernquist, half-mass radius 4.2 pc); bulge (Hernquist, a = 0.5 kpc, our
+# choice of shape); stellar disk (5e10 of stars in all, less the bulge's
+# 1.5e10; exponential, scale length 2.6 kpc); cold gas (exponential, twice
+# the stellar scale length); dark halo (NFW, 1.3e12 inside 282 kpc, c = 16).
+# Disks are treated as if their mass were spherically arranged.
+MW = dict(bh=4.0e6, nsc=(1.8e7, 4.2e-3 / (1 + np.sqrt(2))),
+          bulge=(1.5e10, 0.5), stars=(3.5e10, 2.6), gas=(1.3e10, 5.2),
+          halo=(1.3e12, 16, 282))
+
+
+def hernquist(M, a, r):
+    return M * r**2 / (r + a)**2
+
+
+def exp_disk(M, h, r):
+    return M * (1 - (1 + r / h) * np.exp(-r / h))
+
+
+def nfw(M_vir, c, r_vir, r):
+    f = lambda x: np.log(1 + x) - x / (1 + x)
+    return M_vir * f(r * c / r_vir) / f(c)
+
+
+def enclosed(r):
+    """Mass inside r (kpc) of each part of the model, in solar masses."""
+    return dict(bh=np.full_like(r, MW["bh"]),
+                nsc=hernquist(*MW["nsc"], r),
+                bulge=hernquist(*MW["bulge"], r),
+                stars=exp_disk(*MW["stars"], r),
+                gas=exp_disk(*MW["gas"], r),
+                halo=nfw(*MW["halo"], r))
+
+
+def v_circ(M_sun, r_kpc):
+    """Circular speed in km/s around M_sun solar masses inside r_kpc."""
+    return np.sqrt(G * M_sun * MSUN / (r_kpc * KPC)) / KMS
+```
+
+Nearly every large galaxy that we can see well enough to check has a
+supermassive black hole at its center, and from here to the end of the course the black holes we study live
+there. So before we meet them, we meet their homes. This lecture is about what
+galaxies are, how they are arranged, and how we weigh them, and the weighing
+turns up the biggest surprise in the whole of astronomy: **most of the mass in
+a galaxy is not in anything we can see.** The tool is one we already have.
+Orbits around a black hole told us its mass; orbits around the center of a
+galaxy tell us the galaxy's.
+
+## How to read this lecture
+
+**These notes are the reading for this lecture**; the textbook chapters in
+Canvas do not cover galaxies. The lecture has one idea at its center, and it
+is worth holding onto from the start:
+
+> **How fast something orbits tells you how much mass is inside its orbit.**
+
+It is the same balance between gravity and circular motion that lecture 16
+used for gas in an accretion disk, and that lecture 15 used to weigh the black
+holes in X-ray binaries. Here it weighs a galaxy, one radius at a time.
+*Galaxies* introduces what we are weighing. *Weighing a galaxy* builds the
+tool. *Rotation curves that do not fall* applies it and finds the dark matter.
+*The Milky Way, from its black hole out* puts our own black hole in its place
+among everything else. *Weighing galaxies without a disk* does the same job for
+galaxies and clusters of galaxies that do not rotate, and *What is dark
+matter?* asks what we have found.
+
+## Galaxies
+
+A **galaxy** is a gravitationally bound system of stars, gas, dust and, as we
+will see, a great deal of something else. Ours, the Milky Way, has more than a
+hundred billion stars and is about $30\ \mathrm{kpc}$ across (lecture 1). Galaxies
+come in three broad shapes.
+
+**Spirals** have two components. A thin, flat, rotating **disk** holds stars
+of all ages, along with gas and dust; new stars form in it, mostly along the
+spiral arms, and the young, hot, blue ones make the arms stand out. A round
+**spheroidal** component, made of a central **bulge** and a faint, much larger
+**halo** around the whole galaxy, holds old stars, with little gas and few
+young stars. The Milky Way is a spiral, with a bar across its middle.
+
+**Ellipticals** are all spheroid and no disk: round or football-shaped, smooth,
+and red-yellow, because their stars are old and few new ones are forming. They
+have very little cool gas or dust, but many of them are filled with hot,
+ionized gas that glows in X-rays. An elliptical looks like the bulge and halo of
+a spiral with the disk taken away.
+
+**Irregulars** fit neither shape. They are often small, often gas-rich, and
+often forming stars quickly, which shows up as a prevalence of massive, blue
+stars.
+
+Edwin Hubble sorted galaxies by shape a century ago [@hubble1926] and drew the
+sequence as a tuning fork (@fig-tuning-fork): ellipticals along the handle,
+from round to elongated, and the spirals on two prongs, ordinary and barred,
+from big bulges and tightly wound arms to small bulges and loose arms. Moving
+from the handle toward the ends of the prongs, galaxies go from **spheroid
+dominated** to **disk dominated**, and from red and quiet to blue and forming
+stars.
+
+![The Hubble tuning fork, made from Hubble Space Telescope images of nearby
+galaxies. Ellipticals run along the handle on the left, from round to
+elongated. The fork divides at the lenticular galaxies, which have a disk but
+no spiral arms; ordinary spirals are on the upper prong and barred spirals on
+the lower one. The galaxies were chosen for their appearance, and are not
+shown to scale. Credit: [NASA, ESA, M.
+Kornmesser](https://esahubble.org/images/heic1315b/), [CC BY
+4.0](https://creativecommons.org/licenses/by/4.0/), used
+unmodified.](tuning-fork-heic1315b.jpg){#fig-tuning-fork width="100%"
+fig-alt="Twelve square images of galaxies on a dark starry background, joined
+by thin lines into the shape of a tuning fork lying on its side. Four
+yellowish, smooth, featureless galaxies form the handle on the left, from a
+round one to an elongated one. From the fourth, the line splits into two
+prongs that run to the right. The upper prong has four spiral galaxies with
+bright centers and bluish arms, wound tightly at first and more loosely
+further right. The lower prong has four barred spirals, each with a straight
+bright bar across its center and arms trailing from the ends of the bar. The
+word Today is in the top right corner."}
+
+Galaxies are not scattered evenly through space. Most are in **groups** of up
+to a few dozen, like the Local Group that the Milky Way shares with the
+Andromeda galaxy and M33. Some are in **clusters** of hundreds to thousands of
+galaxies. Spirals are common in groups; ellipticals are far more common in the
+dense middles of big clusters.
+
+Looking far away is looking back in time, because light takes time to reach
+us. The deepest images taken show thousands of galaxies in a patch of sky
+smaller than a grain of sand held at arm's length, many of them seen as they
+were more than twelve billion years ago. The galaxies of the early universe
+were smaller, more irregular and closer together. The universe has expanded
+since, and a volume holding a fixed amount of matter today held it in a volume
+$(1+z)^3$ times smaller when the light we see at redshift $z$ left it. **Big
+galaxies were built by small ones merging**, which is what astronomers mean by
+a *hierarchical* universe, and it is part of why the most massive ellipticals,
+the products of many mergers, sit in the centers of the richest clusters. It
+will matter to us later in the course, because when galaxies merge, so do
+their central black holes.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-galaxies}
+
+1. An elliptical galaxy is red-yellow and has almost no cool gas. A spiral's
+   arms are blue and full of gas and dust. Which of the two is forming stars
+   now, and how do its colors tell you?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+   Massive stars are hot and blue, and they live only a few million years
+   (lecture 13). Stars form out of cool gas (lecture 11).
+   :::
+
+2. Light from a galaxy at redshift $z = 6$ left it when the universe was much
+   denser. By what factor was the average density of matter higher then than
+   now? By what factor was the typical distance between galaxies smaller?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   The density was $(1+z)^3 = 7^3 = 343$ times higher, and distances were
+   $1+z = 7$ times smaller.
+   :::
+
+3. Spirals are common in small groups and ellipticals in the centers of rich
+   clusters. Using what this section says about how galaxies grow, suggest a
+   reason.
+
+:::
+
+## Weighing a galaxy
+
+::: {.panel-tabset .tracks}
+
+### Physical intuition
+
+A planet, a star or a cloud of gas moving in a circle is being held on that
+circle by gravity, and the faster it goes, the stronger the pull it needs.
+Measure how fast something orbits and how far it is from the center, and you
+know how strong the pull is, which tells you how much mass is pulling. **Only
+the mass inside the orbit counts.** Matter spread evenly in a shell outside the
+orbit pulls equally in all directions and has no net effect, and matter outside
+the orbit in a galaxy pulls about as much outward as inward.
+
+So we can weigh a galaxy one radius at a time. Plot the speed of orbiting
+stars and gas against their distance from the center, which is called a
+**rotation curve**, and every point on it gives the mass inside that radius.
+
+What should the curve look like? In the Solar System nearly all the mass is in
+the Sun, so the planets farther out move more slowly: Neptune, 30 times
+farther out than the Earth, orbits at about a fifth of the Earth's speed. A
+galaxy's starlight is concentrated toward its center, and fades away a few
+tens of thousands of light years out. If the stars and gas were all the mass
+there is, then out past where the light fades, the rotation curve should fall
+off just as the planets' speeds do.
+
+**Measuring the speeds** is a job for the Doppler effect of lecture 3. Gas and
+stars on the side of a rotating disk that is turning toward us are blueshifted,
+and those on the side turning away are redshifted, so a spectrum taken along
+the disk gives the speed at each radius. Stars and glowing gas give the speed
+where the light is. Farther out, where there are almost no stars, there is
+still cold hydrogen gas, and it gives itself away by one of the faintest
+spectral lines in astronomy: the **21-centimeter line** of neutral hydrogen.
+The electron and the proton in a hydrogen atom each spin, and the energy is a
+tiny bit higher when the two spins point the same way than when they point
+opposite ways. When the atom flips from one to the other it emits a photon of
+$5.9 \times 10^{-6}\ \mathrm{eV}$, at a frequency of $1420\ \mathrm{MHz}$ and
+a wavelength of $21\ \mathrm{cm}$, in the radio. The hydrogen disks of spiral
+galaxies reach well beyond their stars, so the 21-centimeter line carries the
+rotation curve far past where the light runs out.
+
+### Mathematical explanation
+
+For something of mass $m$ in a circular orbit of radius $r$ at speed $v$, the
+gravitational force of the mass $M(r)$ inside the orbit supplies the
+centripetal force (both are on your constants sheet):
+
+$$
+\frac{G\, m\, M(r)}{r^2} = \frac{m\, v^2}{r} .
+$$
+
+The mass $m$ of the orbiting thing cancels, as it always does in gravity. Solve
+for the speed, or for the mass:
+
+$$
+v = \sqrt{\frac{G\, M(r)}{r}} ,
+\qquad\qquad
+M(r) = \frac{r\, v^2}{G} .
+$$ {#eq-enclosed-mass}
+
+The first form says how fast things should orbit if we know the mass. The
+second is the scale: **measure $v$ at radius $r$, and learn the mass inside
+$r$.** Check its units: $\mathrm{cm} \times \mathrm{cm^{2}\,s^{-2}}$ divided
+by $\mathrm{cm^{3}\,g^{-1}\,s^{-2}}$ leaves $\mathrm{g}$, a mass, as it must.
+
+Now two cases.
+
+**Outside all the mass**, $M(r)$ stops growing and is just the total mass $M$,
+so
+
+$$
+v = \sqrt{\frac{GM}{r}} \propto r^{-1/2} .
+$$
+
+This is Keplerian motion, the planets of the Solar System: four times farther
+out, half the speed.
+
+**A flat rotation curve**, with the same speed $v$ at every radius, needs
+$M(r) = r v^2/G$ with $v$ fixed, so
+
+$$
+M(r) \propto r .
+$$ {#eq-mass-grows}
+
+Twice as far out, twice as much mass inside. A galaxy with a flat rotation curve
+from $10$ to $100\ \mathrm{kpc}$ has **ten times as much mass inside 100 kpc
+as inside 10 kpc**, however little light there is between them.
+
+How dense is matter that does that? The mass between $r$ and a slightly larger
+radius $r + \Delta r$ is $\Delta M = (v^2/G)\,\Delta r$. If it is spread in a
+spherical shell, the shell's volume is its area times its thickness,
+$4\pi r^2\,\Delta r$, so its density is
+
+$$
+\rho(r) = \frac{\Delta M}{4\pi r^2\, \Delta r} = \frac{v^2}{4\pi G\, r^2} \propto r^{-2} .
+$$ {#eq-halo-density}
+
+The $\Delta r$'s cancel, so this holds however thin the shell. The units are
+$\mathrm{cm^{2}\,s^{-2}}$ over $\mathrm{cm^{3}\,g^{-1}\,s^{-2}} \times
+\mathrm{cm^{2}}$, which is $\mathrm{g\,cm^{-3}}$, a density. **A flat rotation
+curve means a halo whose density falls as $1/r^2$**: much more slowly than the
+starlight, which falls off exponentially.
+
+::: {.content-visible when-format="pdf"}
+{{< include ../../in_class/lec17/exercises00.qmd >}}
+:::
+
+### Numerical exploration
+
+@fig-mw-rotation plots @eq-enclosed-mass for a simple model of the Milky Way,
+built from the measured masses of its parts [@blandhawthorn2016]: a central
+black hole and star cluster, a bulge, a disk of stars, a disk of gas, and a
+halo of dark matter. Each curve is the speed an orbit would have if that part
+were the only mass there. The stars and gas (blue) alone would make the
+rotation curve peak within the first kiloparsec and then fall away, much as the
+planets' speeds do. The dark halo (orange) adds more and more mass the farther out you
+go, and the two together (black) give a curve that is nearly flat from a
+couple of kiloparsecs out to well past the Sun. The model was not adjusted to
+make it pass through the Sun's orbit, from your constants sheet, but it does.
+
+```{python}
+#| label: fig-mw-rotation
+#| fig-cap: "The rotation curve of a simple model of the Milky Way, from @eq-enclosed-mass, with the masses of its parts taken from Bland-Hawthorn and Gerhard (2016). The blue curve is the orbital speed the stars and gas alone would give; the orange curve is what the dark-matter halo alone would give; the black curve is what they give together. The green point is the Sun's orbit, $8.0\\ \\mathrm{kpc}$ out at $220\\ \\mathrm{km\\,s^{-1}}$, from the constants sheet (recent measurements give slightly larger values of both). Disks are treated as if their mass were arranged in spheres."
+#| fig-alt: "A line chart. The horizontal axis is distance from the center of the Milky Way, from 0 to 40 kiloparsecs. The vertical axis is orbital speed, from 0 to 300 kilometers per second. A blue curve for the stars and gas rises steeply to a peak of about 200 kilometers per second within the first kiloparsec, then falls steadily, through 150 at 10 kiloparsecs, to about 80 at 40 kiloparsecs. An orange curve for the dark matter halo starts near zero and rises gradually, crossing the blue curve near 9 kiloparsecs at about 155 kilometers per second and leveling off near 190. A black curve for the total rises steeply to just over 200 kilometers per second within about a kiloparsec and then stays almost flat, between about 205 and 220, all the way to 40 kiloparsecs. A green dot labeled the Sun sits on the black curve at 8 kiloparsecs and 220 kilometers per second."
+#| fig-height: 4.2
+
+# A galaxy to compare with the model, in solar masses.
+M_halo = 1.3e12        # the dark halo's mass
+M_stars = 3.5e10       # the stellar disk's mass
+
+r = np.linspace(0.05, 40, 800)         # distance from the center, kpc
+m = enclosed(r)
+m["halo"] *= M_halo / MW["halo"][0]
+m["stars"] *= M_stars / MW["stars"][0]
+visible = m["bh"] + m["nsc"] + m["bulge"] + m["stars"] + m["gas"]
+total = visible + m["halo"]
+for r_kpc in (8, 30):
+    k = np.argmin(abs(r - r_kpc))
+    print(f"orbital speed at {r_kpc} kpc: {v_circ(total[k], r[k]):.0f} km/s")
+
+fig, ax = plt.subplots(figsize=(5.8, 4.2))
+ax.plot(r, v_circ(visible, r), color=BLUE, lw=2)
+ax.plot(r, v_circ(m["halo"], r), color=ORANGE, lw=2)
+ax.plot(r, v_circ(total, r), color=INK, lw=2.2)
+ax.plot([8.0], [220], "o", color=AQUA, ms=8, mec=INK, mew=0.8, zorder=4)
+ax.text(8.6, 232, "the Sun", color=INK2, fontsize=10)
+ax.text(30, 103, "stars and gas", color=BLUE, fontsize=10.5, ha="center")
+ax.text(30, 172, "dark matter", color=ORANGE, fontsize=10.5, ha="center")
+ax.text(30, 232, "total", color=INK, fontsize=10.5, ha="center")
+ax.set_xlim(0, 40)
+ax.set_ylim(0, 300)
+ax.set_xlabel(r"distance from the center, $r$ (kpc)")
+ax.set_ylabel(r"orbital speed, $v$ (km s$^{-1}$)")
+plt.show()
+```
+
+### Turn the knobs
+
+::: {.content-visible when-format="pdf"}
+Students have a live, editable version of this cell in the web notes —
+remind them to try it.
+:::
+
+::: {.content-visible when-format="html"}
+
+Same plot, but editable: change the mass of the dark halo or of the stellar
+disk on the two marked lines, run the cell, and watch the curves move. Set the
+halo's mass to zero to see the rotation curve the Milky Way would have with
+no dark matter at all.
+
+```{pyodide}
+#| autorun: false
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+BLUE, ORANGE, AQUA = "#2a78d6", "#eb6834", "#1baf7a"
+INK, INK2, MUTED, GRID = "#0b0b0b", "#52514e", "#898781", "#e1e0d9"
+
+# The course constants sheet, used by every figure on this page.
+G, MSUN, PC = 6.6732e-8, 1.9891e33, 3.0856e18
+KPC, KMS = 1e3 * PC, 1e5
+
+# A simple model of the Milky Way, from Bland-Hawthorn & Gerhard (2016).
+# Masses in solar masses, lengths in kpc.
+MW = dict(bh=4.0e6, nsc=(1.8e7, 4.2e-3 / (1 + np.sqrt(2))),
+          bulge=(1.5e10, 0.5), stars=(3.5e10, 2.6), gas=(1.3e10, 5.2),
+          halo=(1.3e12, 16, 282))
+
+
+def hernquist(M, a, r):
+    return M * r**2 / (r + a)**2
+
+
+def exp_disk(M, h, r):
+    return M * (1 - (1 + r / h) * np.exp(-r / h))
+
+
+def nfw(M_vir, c, r_vir, r):
+    f = lambda x: np.log(1 + x) - x / (1 + x)
+    return M_vir * f(r * c / r_vir) / f(c)
+
+
+def enclosed(r):
+    return dict(bh=np.full_like(r, MW["bh"]),
+                nsc=hernquist(*MW["nsc"], r),
+                bulge=hernquist(*MW["bulge"], r),
+                stars=exp_disk(*MW["stars"], r),
+                gas=exp_disk(*MW["gas"], r),
+                halo=nfw(*MW["halo"], r))
+
+
+def v_circ(M_sun, r_kpc):
+    return np.sqrt(G * M_sun * MSUN / (r_kpc * KPC)) / KMS
+
+
+# A galaxy to compare with the model, in solar masses.
+M_halo = 1.3e12        # the dark halo's mass  # <- edit this
+M_stars = 3.5e10       # the stellar disk's mass  # <- edit this
+
+r = np.linspace(0.05, 40, 800)         # distance from the center, kpc
+m = enclosed(r)
+m["halo"] *= M_halo / MW["halo"][0]
+m["stars"] *= M_stars / MW["stars"][0]
+visible = m["bh"] + m["nsc"] + m["bulge"] + m["stars"] + m["gas"]
+total = visible + m["halo"]
+for r_kpc in (8, 30):
+    k = np.argmin(abs(r - r_kpc))
+    print(f"orbital speed at {r_kpc} kpc: {v_circ(total[k], r[k]):.0f} km/s")
+
+fig, ax = plt.subplots(figsize=(5.8, 4.2))
+ax.plot(r, v_circ(visible, r), color=BLUE, lw=2)
+ax.plot(r, v_circ(m["halo"], r), color=ORANGE, lw=2)
+ax.plot(r, v_circ(total, r), color=INK, lw=2.2)
+ax.plot([8.0], [220], "o", color=AQUA, ms=8, mec=INK, mew=0.8, zorder=4)
+ax.text(8.6, 232, "the Sun", color=INK2, fontsize=10)
+ax.text(30, 103, "stars and gas", color=BLUE, fontsize=10.5, ha="center")
+ax.text(30, 172, "dark matter", color=ORANGE, fontsize=10.5, ha="center")
+ax.text(30, 232, "total", color=INK, fontsize=10.5, ha="center")
+ax.set_xlim(0, 40)
+ax.set_ylim(0, 300)
+ax.set_xlabel(r"distance from the center, $r$ (kpc)")
+ax.set_ylabel(r"orbital speed, $v$ (km s$^{-1}$)")
+plt.show()
+```
+:::
+
+:::
+
+::: {.callout-warning title="A caveat: a galaxy's disk is not a sphere"}
+@eq-enclosed-mass is exact when the mass inside the orbit is arranged in
+spheres, or in spherical shells. The stars and gas of a spiral are in a flat
+disk, and a flat disk pulls a little harder on an orbit at its edge than the
+same mass gathered into a sphere would. So for a galaxy that was all disk,
+$rv^2/G$ would overestimate the mass inside $r$, by as much as a third. Dark
+matter halos are round, so the estimate gets better the farther out you go,
+where the halo dominates. For a sophomore's scale, and for this course, $rv^2/G$
+is the mass.
+:::
+
+::: {.callout-note .worked-example collapse="true" title="Worked example: a star 4 kpc from the Galactic center"}
+**The question.** A star in the Milky Way is $4\ \mathrm{kpc}$ from the
+Galactic center, half as far out as the Sun, and moves in a circular orbit at
+$200\ \mathrm{km\,s^{-1}}$. How long does it take to go once around, and how
+much mass is inside its orbit?
+
+First the radius and the speed in centimeters and seconds, each conversion
+written so the unwanted unit cancels:
+
+$$
+\begin{aligned}
+r &= 4\ \mathrm{kpc} \times \frac{10^{3}\ \mathrm{pc}}{1\ \mathrm{kpc}}
+       \times \frac{3.0856 \times 10^{18}\ \mathrm{cm}}{1\ \mathrm{pc}}
+       \\[0.8em]
+  &= 1.234 \times 10^{22}\ \mathrm{cm} , \\[0.8em]
+v &= 200\ \mathrm{km\,s^{-1}} \times \frac{10^{5}\ \mathrm{cm}}{1\ \mathrm{km}}
+   = 2.00 \times 10^{7}\ \mathrm{cm\,s^{-1}} .
+\end{aligned}
+$$
+
+**The period** is the circumference divided by the speed:
+
+$$
+P = \frac{2\pi r}{v}
+  = \frac{2\pi \times 1.234 \times 10^{22}\ \mathrm{cm}}
+         {2.00 \times 10^{7}\ \mathrm{cm\,s^{-1}}} .
+$$
+
+Centimeters over centimeters per second leaves seconds. *Do the units make
+sense?* A period is a time, so yes. The numbers give
+$P = 3.88 \times 10^{15}\ \mathrm{s}$, or
+
+$$
+P = 3.88 \times 10^{15}\ \mathrm{s}
+    \times \frac{1\ \mathrm{yr}}{3.156 \times 10^{7}\ \mathrm{s}}
+  = 1.23 \times 10^{8}\ \mathrm{yr} .
+$$
+
+A hundred and twenty million years for one trip around. Even the inner Galaxy
+turns slowly.
+
+**The mass** comes from @eq-enclosed-mass, $M(r) = rv^2/G$:
+
+$$
+M(r) = \frac{1.234 \times 10^{22}\ \mathrm{cm}
+             \times \left(2.00 \times 10^{7}\ \mathrm{cm\,s^{-1}}\right)^2}
+            {6.6732 \times 10^{-8}\ \mathrm{cm^{3}\,g^{-1}\,s^{-2}}} .
+$$
+
+On top, $\mathrm{cm} \times \mathrm{cm^{2}\,s^{-2}} = \mathrm{cm^{3}\,s^{-2}}$;
+dividing by $\mathrm{cm^{3}\,g^{-1}\,s^{-2}}$ leaves $\mathrm{g}$. *Do the
+units make sense?* We are computing a mass, so yes. Now the numbers: the top
+is $4.94 \times 10^{36}$, so $M = 7.40 \times 10^{43}\ \mathrm{g}$, and
+
+$$
+M = 7.40 \times 10^{43}\ \mathrm{g}
+    \times \frac{1\,M_\odot}{1.9891 \times 10^{33}\ \mathrm{g}}
+  = 3.7 \times 10^{10}\,M_\odot .
+$$
+
+**About 37 billion solar masses inside 4 kpc.** That is most of the stars in
+the Galaxy, which is what you would expect so close in, where the stars are
+concentrated.
+:::
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-weighing}
+
+1. A $7\,M_\odot$ star has planets in circular orbits. How fast does a planet
+   move at $1\ \mathrm{AU}$, and at $100\ \mathrm{AU}$? This is what a
+   rotation curve looks like when all the mass is in the middle.
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   The planet moves at $78.8\ \mathrm{km\,s^{-1}}$ at $1\ \mathrm{AU}$ and at
+   $7.88\ \mathrm{km\,s^{-1}}$ at $100\ \mathrm{AU}$: a hundred times farther
+   out, ten times slower.
+   :::
+
+2. How long does the Sun take to orbit the Galaxy once? Use $R_0$ and $v_0$
+   from your constants sheet. The Sun is about 4.6 billion years old; how many
+   times has it been around?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
+   The worked example above does the same thing for a star at
+   $4\ \mathrm{kpc}$. Convert the radius to centimeters and the speed to
+   centimeters per second first.
+
+   One orbit takes $7.05 \times 10^{15}\ \mathrm{s} = 2.23 \times 10^{8}\
+   \mathrm{yr}$, about 220 million years, so the Sun has been around about
+   **20 times**.
+   :::
+
+3. Suppose *all* of the mass inside the Sun's orbit were arranged as the
+   $1/r^2$ halo of @eq-halo-density, with the Sun's $R_0$ and $v_0$. How dense
+   would it be where the Sun is, in $\mathrm{g\,cm^{-3}}$? About how many
+   proton masses is that per cubic centimeter? (This overestimates the dark
+   matter near the Sun, since some of the mass inside the Sun's orbit is in
+   the disk; in the model of @fig-mw-rotation the dark matter there is about
+   three-quarters of this.)
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
+   Put $v = v_0$ and $r = R_0$ into @eq-halo-density, with both in
+   centimeters and seconds, and divide by the proton mass on your constants
+   sheet.
+
+   The density is $\rho = 9.5 \times 10^{-25}\ \mathrm{g\,cm^{-3}}$, about **0.6 proton
+   masses per cubic centimeter**. The dark matter passing through the room you
+   are in weighs about as much as half a proton per thimbleful.
+   :::
+
+4. Derive the rotation curve of a galaxy whose mass inside radius $r$ grows as
+   $M(r) = M_0\, (r/r_0)^{\alpha}$, where $M_0$ is the mass inside $r_0$ and
+   $\alpha$ is a number. For which value of $\alpha$ is the rotation curve
+   flat? For which does it rise in proportion to $r$, as it does near the
+   centers of many galaxies, and what does that tell you about the density
+   there?
+
+:::
+
+## Rotation curves that do not fall
+
+When astronomers measured rotation curves out past the edges of the light, they
+did not fall. Vera Rubin and Kent Ford measured the rotation of the Andromeda
+galaxy from the glowing gas around its young stars [@rubin1970], and then the
+rotation curves of many spirals, large and small [@rubin1980]. In nearly every
+one, the speed rises over the first few kiloparsecs and then stays roughly
+constant as far out as anything can be measured. The 21-centimeter line takes
+the curves farther out still, and they stay flat there too.
+
+@fig-m33 is a modern example: M33, the third-largest member of the Local Group,
+whose rotation curve has been measured from its center out to $23\ \mathrm{kpc}$
+[@kam2017]. The speed rises steeply over the inner few kiloparsecs, and then it keeps
+rising slowly, as far out as the measurements are good. The dashed curve is the most the stars and gas
+of M33 could hold in orbit, even if every gram of them were inside each orbit.
+They cannot hold the gas at the edge in orbit at anything like the speed it
+moves. **Something else, something that gives off no light, holds M33
+together.** Inside $23\ \mathrm{kpc}$, M33 has about $8 \times 10^{10}\,M_\odot$,
+and only 11% of it is stars and gas [@kam2017].
+
+```{python}
+#| label: fig-m33
+#| fig-cap: "The rotation curve of the galaxy M33, measured from the Doppler shifts of hydrogen gas glowing in visible light near the center and of cold hydrogen through its 21-centimeter line farther out, from Table B2 of Kam et al. (2017), at their distance of 840 kpc. Gray bars show the uncertainties. The dashed blue curve is the speed of a circular orbit around all of M33's stars and gas, about $9 \\times 10^{9}\\,M_\\odot$, as if they were concentrated at the center: about the most they could hold in orbit."
+#| fig-alt: "A chart of orbital speed against distance from the center of the galaxy M33. The horizontal axis runs from 0 to 24 kiloparsecs and the vertical axis from 0 to 160 kilometers per second. About 350 measured points with small gray error bars rise steeply from near zero at the center to about 85 kilometers per second at 3 kiloparsecs, and then keep rising slowly, to about 110 at 8 kiloparsecs and between 115 and 125 from 10 to 19 kiloparsecs. Beyond 20 kiloparsecs the last few points scatter between 100 and 125 and have large error bars. A dashed blue curve starts at about 115 kilometers per second at 3 kiloparsecs, crosses the measured points near 4 kiloparsecs, and falls steadily to about 40 kilometers per second at 23 kiloparsecs, far below the measurements."
+#| fig-height: 4.0
+
+from pathlib import Path
+
+# Three comment lines, then a header line, then the data.
+r_m33, v_m33, dv_m33 = np.loadtxt(Path("m33-rotation-curve.csv"),
+                                  delimiter=",", skiprows=4, unpack=True)
+M_baryons = 0.11 * 8e10     # Kam et al. (2017): 11% of 8e10 Msun inside 23 kpc
+r_kep = np.linspace(3, 23.5, 200)
+
+fig, ax = plt.subplots(figsize=(5.8, 4.0))
+ax.errorbar(r_m33, v_m33, yerr=dv_m33, fmt="none",
+            ecolor=GRID, elinewidth=0.9, zorder=1)
+ax.plot(r_m33, v_m33, "o", color=INK, ms=2.2, zorder=2)
+ax.plot(r_kep, v_circ(M_baryons, r_kep), color=BLUE, lw=2, ls="--", zorder=3)
+ax.text(19.5, 51, "all the stars and gas,\nat the center", color=BLUE,
+        fontsize=10, ha="center")
+ax.text(15, 128, "measured", color=INK2, fontsize=10.5, ha="center")
+ax.set_xlim(0, 24)
+ax.set_ylim(0, 160)
+ax.set_xlabel(r"distance from the center of M33, $r$ (kpc)")
+ax.set_ylabel(r"orbital speed, $v$ (km s$^{-1}$)")
+plt.show()
+```
+
+The Milky Way is the same, as @fig-mw-rotation showed: if its stars and gas
+were all the mass there is, its rotation curve would fall to well under half
+the Sun's speed by $40\ \mathrm{kpc}$, and it does not. By @eq-mass-grows, a flat
+rotation curve means the mass inside each radius grows in proportion to the
+radius, long after the starlight has stopped growing. Out where the curves are
+flat, most of the mass is dark. Spiral galaxies are typically about **90% dark
+matter and 10% stars and gas**, by mass, and the dark matter is arranged in a
+roughly round halo that reaches far beyond the visible galaxy.
+
+::: {.callout-tip .resolution collapse="true" title="Think about why the dark matter cannot simply be in the disk"}
+Rotation curves alone tell us *how much* mass is inside each radius, not how it
+is arranged. So could the extra mass be in the disk, as dim stars or cold gas?
+
+Two things say no. First, the disk can be weighed by itself. Stars near the
+Sun bob up and down through the disk as they orbit, and how far they get from
+it depends on how strongly the disk pulls them back. That pull is about what
+the stars and gas we can count would give, nowhere near enough to make up the
+missing mass. Second, the evidence later in this lecture, from galaxies that
+do not rotate and from clusters of galaxies, finds the same missing mass in
+places where there is no disk at all.
+:::
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-flat}
+
+1. Read the speed at the edge of M33 off @fig-m33, at $23\ \mathrm{kpc}$, and
+   use @eq-enclosed-mass to estimate the mass inside. Compare it with the
+   $8 \times 10^{10}\,M_\odot$ quoted above.
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   With $v \approx 118$ to $120\ \mathrm{km\,s^{-1}}$, the mass is
+   from $7.4$ to $7.7 \times 10^{10}\,M_\odot$, close to the value of
+   $8 \times 10^{10}\,M_\odot$ from Kam and collaborators' full model of the
+   galaxy.
+   :::
+
+2. If M33's stars and gas, $8.8 \times 10^{9}\,M_\odot$, were all the mass it
+   has, how fast would the gas at $23\ \mathrm{kpc}$ orbit? By what factor is
+   the real speed larger, and by what factor is the real mass larger?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   It would orbit at $41\ \mathrm{km\,s^{-1}}$. The measured speed is about three times larger,
+   so the mass is about $3^2 = 9$ times larger, which is the 11% of the text
+   turned around.
+   :::
+
+3. Out past most of its light, a galaxy's rotation curve is flat at
+   $150\ \mathrm{km\,s^{-1}}$ from $15$ to $45\ \mathrm{kpc}$. How much mass
+   is between those two radii? No calculation of the mass at either radius by
+   itself is needed.
+
+4. A friend says the flat rotation curves just mean there is more gas and
+   dust in the outskirts of galaxies than we thought, too cold to see. What
+   observation in this section is most directly against that idea, and what
+   would you look for to test it further?
+
+:::
+
+## The Milky Way, from its black hole out
+
+The Milky Way is the one galaxy we can weigh at every scale, from the orbits of
+single stars around its central black hole, Sagittarius A\*, to the orbits of
+the small galaxies that circle it far outside its disk. @fig-mw-mass is the
+same model as @fig-mw-rotation, now showing the mass inside each radius, from
+a thousandth of a parsec to the edge of the dark halo, about $280\
+\mathrm{kpc}$ out.
+
+```{python}
+#| label: fig-mw-mass
+#| fig-cap: "The mass of the Milky Way inside each radius, in the model of @fig-mw-rotation, on logarithmic axes from 0.001 pc to 300 kpc. Inside about a parsec and a half, the mass is almost all the central black hole, Sagittarius A\\*, about $4 \\times 10^{6}\\,M_\\odot$. From there out to a few kiloparsecs it is mostly stars, first in the nuclear star cluster and then in the bulge and disk. Beyond about 8 kpc, near the Sun, it is mostly dark matter."
+#| fig-alt: "A chart with logarithmic axes. The horizontal axis is distance from the center of the Milky Way, from one thousandth of a parsec to 300 kiloparsecs. The vertical axis is the mass inside that distance, from one million to ten trillion solar masses. A green horizontal line labeled black hole sits at 4 million solar masses all the way across. A blue curve labeled stars and gas starts far below, rises past the black hole line at about a parsec and a half, climbs steeply through the bulge and disk, and levels off at about 60 billion solar masses beyond about 20 kiloparsecs. An orange curve labeled dark matter starts very low, rises steadily, crosses the blue curve at about 8 kiloparsecs, and reaches about 1.3 trillion solar masses at 280 kiloparsecs. A dashed black curve for the total follows the black hole line at first, then the blue curve, then the orange one. A dotted vertical line marks the Sun's orbit at 8 kiloparsecs."
+#| fig-height: 4.4
+
+r = np.logspace(-6, np.log10(300), 600)        # kpc
+m = enclosed(r)
+stars_gas = m["nsc"] + m["bulge"] + m["stars"] + m["gas"]
+total = m["bh"] + stars_gas + m["halo"]
+pc = r * 1e3
+
+fig, ax = plt.subplots(figsize=(5.8, 4.4))
+ax.axvline(8e3, color=MUTED, lw=1, ls=":", zorder=0)
+ax.text(8e3 * 0.75, 2.4e12, "Sun's\norbit", color=INK2, fontsize=9.5,
+        ha="right", va="center")
+ax.plot(pc, m["bh"], color=AQUA, lw=2)
+ax.plot(pc, stars_gas, color=BLUE, lw=2)
+ax.plot(pc, m["halo"], color=ORANGE, lw=2)
+ax.plot(pc, total, color=INK, lw=1.4, ls="--")
+ax.text(2e-3, 6.0e6, "black hole", color=AQUA, fontsize=10.5)
+ax.text(1.5e2, 1.0e10, "stars and gas", color=BLUE, fontsize=10.5, ha="right")
+ax.text(3e3, 2e8, "dark matter", color=ORANGE, fontsize=10.5)
+ax.text(2.5e3, 2.5e11, "total", color=INK, fontsize=10.5, ha="right")
+ax.set_xscale("log")
+ax.set_yscale("log")
+ax.set_xlim(1e-3, 3e5)
+ax.set_ylim(1e6, 1e13)
+ax.set_xticks([1e-3, 1e-1, 1e1, 1e3, 1e5])
+ax.set_xticklabels(["0.001 pc", "0.1 pc", "10 pc", "1 kpc", "100 kpc"])
+ax.set_xlabel(r"distance from the center, $r$")
+ax.set_ylabel(r"mass inside $r$, $M(r)$ ($M_\odot$)")
+plt.show()
+```
+
+Three things stand out.
+
+**The black hole rules only its own neighborhood.** Sagittarius A\* is about
+$4 \times 10^{6}\,M_\odot$, a few millionths of the mass of the Galaxy, and
+yet inside about a parsec and a half it outweighs everything else put
+together. Within that region, stars orbit it as the planets orbit the Sun, on
+Keplerian orbits whose speeds fall as $r^{-1/2}$, and that is how its mass was
+measured. Lecture 19 is about those orbits, and lecture 21 asks how far a
+black hole's gravity rules a galaxy's center, and why black holes and their
+galaxies grow together.
+
+**The stars rule the middle.** From a parsec or two out to a few kiloparsecs,
+most of the mass is stars: a dense nuclear star cluster around the black hole,
+then the bulge, then the inner disk.
+
+**Dark matter rules the rest.** Near the Sun's orbit the dark matter and the
+stars and gas have about the same mass inside; beyond it, the dark matter takes
+over, and the whole halo outweighs the stars and gas by about twenty to one.
+The Milky Way is a modest disk of stars sitting inside a vast, dark halo.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-mw}
+
+1. The dark halo of the Milky Way is about $1.3 \times 10^{12}\,M_\odot$.
+   What fraction of the Galaxy's mass is its central black hole?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   The fraction is $4 \times 10^{6} / 1.3 \times 10^{12} = 3 \times 10^{-6}$:
+   three millionths.
+   :::
+
+2. How fast does a star orbit Sagittarius A\*, $4 \times 10^{6}\,M_\odot$, at
+   $0.01\ \mathrm{pc}$, where the black hole is essentially all the mass? How
+   many astronomical units is that? At $1\ \mathrm{pc}$, what speed would the
+   black hole alone give, and why is the real speed there larger?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   The star moves at $1310\ \mathrm{km\,s^{-1}}$ at $0.01\ \mathrm{pc}$, which is about
+   $2060\ \mathrm{AU}$. At $1\ \mathrm{pc}$, the black hole alone gives
+   $131\ \mathrm{km\,s^{-1}}$, ten times slower for a hundred times the
+   distance. The real speed there is larger because the nuclear star cluster
+   adds a few million solar masses inside $1\ \mathrm{pc}$ (@fig-mw-mass).
+   :::
+
+3. Why can the rotation curve near the Sun tell us almost nothing about the
+   mass of the black hole at the center of the Galaxy? Use @fig-mw-mass.
+
+:::
+
+## Weighing galaxies without a disk
+
+Rotation curves need something rotating. An elliptical galaxy has no disk: its
+stars move on orbits of every orientation, in every direction, like a swarm of
+bees. There is no single orbital speed to measure, but there is a *spread* of
+speeds, and a spread of speeds broadens spectral lines. Each star's light is
+Doppler shifted by its own motion along our line of sight, so the absorption
+lines in an elliptical's spectrum, the sum of the light of billions of stars,
+are smeared out. The width of the smear measures the **velocity dispersion**
+$\sigma$, the typical speed of a star along our line of sight. The faster the
+stars move, the more mass it takes to hold them in.
+
+The tool for turning a spread of speeds into a mass is the **virial theorem**,
+which is on your constants sheet: for a system that has settled down, held
+together by its own gravity, twice the total kinetic energy $K$ equals minus
+the gravitational potential energy $U$,
+
+$$
+2K = -U .
+$$ {#eq-virial}
+
+::: {.callout-tip .resolution collapse="true" title="How to turn the virial theorem into a mass"}
+Take a system of total mass $M$ and radius $R$, and treat it as a uniform
+sphere, so (from your constants sheet, and lecture 11)
+$U = -\tfrac{3}{5}\,GM^2/R$. Its kinetic energy is
+$K = \tfrac12 M \langle v^2 \rangle$, where $\langle v^2 \rangle$ is the
+average of the square of the speed.
+
+We can only measure the speed along our line of sight. But if the motions are
+the same in every direction, $\langle v^2 \rangle = 3\sigma^2$, three equal
+parts for three directions, which is also on your sheet. Put both into
+@eq-virial:
+
+$$
+2 \times \tfrac12 M \times 3\sigma^2 = \tfrac35 \frac{GM^2}{R} ,
+$$
+
+so
+
+$$
+M = \frac{5\, \sigma^2 R}{G} .
+$$ {#eq-virial-mass}
+
+One $M$ cancels, and what is left is @eq-enclosed-mass with $\sigma$ in
+place of $v$ and a factor of 5 out front. The units are the same, so it is a
+mass. The factor of 5 depends on how the mass is arranged, and for real
+galaxies and clusters it can come out a little different; what matters is
+that **the mass goes as the speed squared times the size, divided by $G$**,
+exactly as for a rotation curve.
+:::
+
+Ellipticals weighed this way come out about the same as spirals, roughly 90%
+dark matter by mass, once the measurements reach far enough out.
+
+### Clusters of galaxies
+
+Fritz Zwicky did the same thing for a whole cluster of galaxies in the 1930s
+[@zwicky1937]. He measured the Doppler shifts of the galaxies in the Coma
+cluster, found them moving at about a thousand kilometers per second relative
+to one another, and worked out that the cluster needed far more mass than its
+galaxies' light suggested to keep from flying apart. He had already named the
+missing mass, in German, *dunkle Materie*: dark matter. The idea was largely set
+aside for about forty years, until the rotation curves came in.
+
+Clusters have a second way to be weighed. They are filled with gas so hot,
+tens of millions of kelvin, that it glows in X-rays. Gas that hot would leak
+out of the cluster unless gravity held it in, and the temperature it reaches
+tells how deep the cluster's gravity is, much as the speeds of the galaxies do.
+Both methods agree: a typical rich cluster is about **85% dark matter, 13% hot
+gas and 2% stars**. The hot gas outweighs all the stars in all the galaxies by
+about six to one, and it is still nowhere near enough.
+
+### Gravitational lensing
+
+The third method does not need anything to be moving. Lecture 4 showed that
+mass bends light, and that a massive enough galaxy can bend the light of a more
+distant one into arcs or a ring. A cluster of galaxies does the same, on a
+grander scale, and the pattern of arcs and the slight, systematic stretching of
+thousands of faint background galaxies can be turned into a map of where the
+mass is, whether or not it gives off any light. Lensing finds the same thing
+the other two methods find: about 90% of a cluster's mass is dark.
+
+### The Bullet cluster
+
+The most direct evidence comes from a cluster caught in the act of a
+collision. The **Bullet cluster** is two clusters of galaxies that passed
+through each other, not long before the light we see left them, as such
+things are measured. When two clusters collide, their parts
+behave differently:
+
+* **The galaxies** are tiny compared with the space between them, so they
+  sail past one another, almost never colliding.
+* **The hot gas** fills the clusters, so the gas of one slams into the gas of
+  the other. It is slowed down, heated, and left behind in the middle,
+  trailing the galaxies.
+* **The dark matter**, if it is something that interacts only by gravity,
+  should sail through like the galaxies.
+
+So in the Bullet cluster, the normal matter, which is mostly the hot gas, has
+been pulled apart from the galaxies. If there were no dark matter, most of the
+mass would be in the gas, and lensing would find most of the mass there, in
+the middle. It does not. @fig-bullet shows the result [@clowe2006; @cha2025]:
+the X-ray gas (pink) sits in the middle, and the mass found by lensing (blue)
+sits around the galaxies, on either side of it. The offset between the mass
+and the gas is far too large to be a fluke of the measurement.
+
+![The Bullet cluster. Near-infrared light from the galaxies and stars, from
+the James Webb Space Telescope, is white and yellow. Hot gas, seen in X-rays by
+the Chandra X-ray Observatory, is pink. The mass, mapped from how it lenses the
+light of background galaxies, is blue. Most of the mass sits with the
+galaxies, on either side of the hot gas. Credit: [X-ray: NASA/CXC/SAO;
+Near-infrared: NASA/ESA/CSA/STScI; Image processing: NASA/STScI/J.
+DePasquale](https://chandra.harvard.edu/photo/2025/bullet/), used
+unmodified.](bullet-cluster-2025.jpg){#fig-bullet width="100%"
+fig-alt="A wide image of a field of galaxies on black, with a few bright stars
+showing long spikes. Hundreds of small white, yellow and orange galaxies are
+scattered across it, with two crowded groups of brighter galaxies, one left of
+center and a smaller one on the right. A broad translucent pink cloud, the hot
+gas, fills the middle, brightest in a cone-shaped knot on its right side. Two
+translucent blue clouds, the mass, are centered on the two groups of galaxies,
+a large one on the left and a smaller one on the right, overlapping the pink
+cloud only at their edges."}
+
+**Dark matter does not interact the way ordinary matter does.** It does not
+collide with itself, or with gas, nearly as much as gas does, and it does not
+radiate. It interacts, as far as anyone has ever been able to tell, by gravity
+alone.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-clusters}
+
+1. A cluster of galaxies has a velocity dispersion of $940\ \mathrm{km\,s^{-1}}$
+   and a radius of $2.8\ \mathrm{Mpc}$. Use @eq-virial-mass to find its mass in
+   solar masses.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
+   A megaparsec is $10^{6}\ \mathrm{pc}$. Convert $\sigma$ to centimeters per
+   second and $R$ to centimeters before multiplying anything.
+
+   The mass is $M = 5.7 \times 10^{48}\ \mathrm{g} = 2.9 \times 10^{15}\,M_\odot$.
+   :::
+
+2. The same cluster holds 520 galaxies, each with an average of
+   $1.2 \times 10^{11}\,M_\odot$ of stars, and six times as much mass in hot
+   gas as in stars. What fractions of the cluster's mass are stars, hot gas
+   and dark matter?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   Stars $6.2 \times 10^{13}\,M_\odot$, **2%**; hot gas
+   $3.7 \times 10^{14}\,M_\odot$, **13%**; dark matter, the rest, **85%**.
+   :::
+
+3. Suppose dark matter were not a new kind of matter at all, but more hot gas
+   than we had measured. Where would lensing have found most of the mass in
+   the Bullet cluster? And if it were dim stars inside the galaxies?
+
+:::
+
+## What is dark matter?
+
+The short answer is that nobody knows. But we know a good deal about what it is
+*not*.
+
+**It is not ordinary matter that happens to be dark.** Everything made of atoms,
+whether bright stars, dim stars, cold gas or planets, is made mostly of protons
+and neutrons, which physicists call **baryons**. The amount of baryonic matter
+in the universe is measured, independently of any galaxy, from the light left
+over from the Big Bang, and it is far too little. Measured that way, ordinary
+matter is about 5% of the universe's total energy content, and dark matter about
+27%: **there is about five times as much dark matter as ordinary matter**
+[@planck2018]. Whatever dark matter is, it is not made of atoms. It is most
+likely a kind of particle that has not yet been detected, and physicists are
+searching for it in experiments deep underground, at particle accelerators, and
+in the sky.
+
+The other 68% is **dark energy**, which is not matter at all. It is whatever is
+making the expansion of the universe speed up, and it is spread almost evenly
+through space, so it plays no part in holding galaxies together. It is a
+subject for a cosmology course.
+
+**Could the dark matter be black holes?** It is a natural question in this
+course. Black holes are dark, and a black hole made in the early universe would
+not have been counted as baryons. Searches for compact dark objects in the
+halo of the Milky Way have ruled out most of the possible masses, though, and
+the ones made by dying stars, of the kind lectures 13 to 15 describe, are far
+too few. *If you want to go further* has more.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-what}
+
+1. One proposed kind of dark matter particle has a rest energy of
+   $100\ \mathrm{GeV}$. What is its mass in grams? If the dark matter near the
+   Sun has the density you found in exercise 3.3, how many of these particles
+   are there in a liter (a thousand cubic centimeters)?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
+   Convert the energy to ergs with your constants sheet, then use $E = mc^2$
+   (lecture 7).
+
+   Each particle is $m = 1.8 \times 10^{-22}\ \mathrm{g}$, about a hundred proton masses, and
+   there are about **five in every liter**.
+   :::
+
+2. Give two pieces of evidence that dark matter cannot be ordinary gas that is
+   too cold to glow.
+
+:::
+
+## If you want to go further
+
+None of this section is needed for what comes before or after.
+
+**Black holes as dark matter.** If the dark halo of the Milky Way were made of
+compact objects, black holes or dim stars, one of them would occasionally pass
+in front of a star in a nearby galaxy and briefly brighten it by lensing.
+Years of watching millions of stars in the Magellanic Clouds rule out objects
+from about $10^{-7}$ to $15\,M_\odot$ as most of the halo [@tisserand2007].
+Black holes made in the very early universe, outside that range, are still
+being looked for, including among the black holes whose mergers are detected
+by gravitational waves (lecture 10).
+
+**The Milky Way in numbers.** Bland-Hawthorn and Gerhard
+[-@blandhawthorn2016] review the masses, sizes and motions of every part of our
+Galaxy, from Sagittarius A\* to the dark halo, and are the source of the model
+in @fig-mw-rotation and @fig-mw-mass.
+
+## Summary
+
+| idea | result | why it matters |
+|:---|:---|:---|
+| Galaxy types | spirals (disk and spheroid), ellipticals (spheroid only), irregulars | nearly every large galaxy has a supermassive black hole at its center |
+| A hierarchical universe | big galaxies are built by small ones merging | when galaxies merge, so do their black holes |
+| Weighing by orbits | $M(r) = rv^2/G$ | the mass inside an orbit, from its speed and size |
+| Flat rotation curves | $v$ constant, so $M(r) \propto r$ and $\rho \propto r^{-2}$ | the mass keeps growing where the light has stopped |
+| Spiral galaxies | about 90% dark matter | the visible galaxy sits inside a vast dark halo |
+| The Milky Way | black hole inside a parsec or two, stars to a few kpc, dark matter beyond | Sgr A\* is three millionths of the Galaxy's mass |
+| Velocity dispersions | $2K = -U$, so $M = 5\sigma^2 R/G$ | weighs ellipticals and clusters, which do not rotate |
+| Clusters of galaxies | about 85% dark matter, 13% hot gas, 2% stars | three independent methods agree |
+| The Bullet cluster | the mass stays with the galaxies, not with the gas | dark matter interacts by gravity alone |
+| What dark matter is | not atoms; about five times as much as ordinary matter | a new kind of particle, not yet detected |
+
+Every galaxy is mostly dark matter, and the stars and gas and the black hole at
+the center are a small part of the whole. That makes the next question all the
+more striking: next time we meet quasars, the brightest objects in the
+universe, which outshine whole galaxies from a region smaller than the Solar
+System, and which turn out to be the black holes at the centers of galaxies,
+eating.
+
+:::: {.content-visible when-format="html"}
+## References {.unnumbered}
+
+::: {#refs}
+:::
+::::
+
+::: {.content-visible when-format="pdf"}
+
+```{=latex}
+\clearpage
+\tableofcontents
+```
+:::
