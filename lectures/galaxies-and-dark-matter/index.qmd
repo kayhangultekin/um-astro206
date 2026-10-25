@@ -87,7 +87,9 @@ galaxy tell us the galaxy's.
 Canvas do not cover galaxies. The lecture has one idea at its center, and it
 is worth holding onto from the start:
 
-> **How fast something orbits tells you how much mass is inside its orbit.**
+::: {.callout-important title="The idea at the center of this lecture"}
+**How fast something orbits tells you how much mass is inside its orbit.**
+:::
 
 It is the same balance between gravity and circular motion that lecture 16
 used for gas in an accretion disk, and that lecture 15 used to weigh the black
@@ -363,7 +365,8 @@ remind them to try it.
 ::: {.content-visible when-format="html"}
 
 Same plot, but editable: change the mass of the dark halo or of the stellar
-disk on the two marked lines, run the cell, and watch the curves move. Set the
+disk on the two lines marked `# <- edit this` (lines 46 and 47 of the cell),
+run the cell, and watch the curves move. Set the
 halo's mass to zero to see the rotation curve the Milky Way would have with
 no dark matter at all.
 
@@ -453,8 +456,7 @@ disk, and a flat disk pulls a little harder on an orbit at its edge than the
 same mass gathered into a sphere would. So for a galaxy that was all disk,
 $rv^2/G$ would overestimate the mass inside $r$, by as much as a third. Dark
 matter halos are round, so the estimate gets better the farther out you go,
-where the halo dominates. For a sophomore's scale, and for this course, $rv^2/G$
-is the mass.
+where the halo dominates. For a 200-level course, $rv^2/G$ is the mass.
 :::
 
 ::: {.callout-note .worked-example collapse="true" title="Worked example: a star 4 kpc from the Galactic center"}
@@ -586,6 +588,31 @@ rotation curves of many spirals, large and small [@rubin1980]. In nearly every
 one, the speed rises over the first few kiloparsecs and then stays roughly
 constant as far out as anything can be measured. The 21-centimeter line takes
 the curves farther out still, and they stay flat there too.
+
+::: {.content-visible when-format="html"}
+::: {.column-margin}
+![Vera Rubin at the 0.9-meter telescope at Kitt Peak National Observatory,
+with Kent Ford's image-tube spectrograph attached. Credit: [Carnegie
+Institution for Science](https://noirlab.edu/public/images/noirlab2003a/),
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), used
+unmodified.](vera-rubin-kitt-peak.jpg){#fig-rubin
+fig-alt="A black-and-white photograph of Vera Rubin, smiling, in glasses and a
+dark short-sleeved dress, standing beside the bottom of a large telescope. She
+has both hands on a cylindrical instrument that sticks out from a box of
+equipment, cables and dials bolted under the telescope."}
+:::
+
+[**Vera Rubin** (1928–2016) earned her PhD at Georgetown in 1954, with George
+Gamow as her adviser, and from 1965 worked at the Carnegie Institution's
+Department of Terrestrial Magnetism in Washington, where she began her long
+partnership with the instrument-builder Kent Ford. The same year she became
+the first woman permitted to observe at Palomar Observatory. It had no women's
+restroom, so she cut a skirt out of paper, taped it to the figure on the men's
+room door, and got to work. She spent her life pressing for women to have a
+fair place in science. The NSF–DOE **Vera C. Rubin Observatory** in Chile,
+which was built to survey the whole southern sky, is named for her: the first United
+States national observatory named for a woman.]{.aside}
+:::
 
 @fig-m33 is a modern example: M33, the third-largest member of the Local Group,
 whose rotation curve has been measured from its center out to $23\ \mathrm{kpc}$
@@ -843,6 +870,15 @@ galaxies' light suggested to keep from flying apart. He had already named the
 missing mass, in German, *dunkle Materie*: dark matter. The idea was largely set
 aside for about forty years, until the rotation curves came in.
 
+::: {.content-visible when-format="html"}
+[Zwicky was brilliant and famously combative. One of his favorite insults was
+*spherical bastards*: people who were bastards whichever way you looked at
+them. He was also often right years ahead of everyone else. In 1934 he and
+Walter Baade proposed that a supernova is an ordinary star collapsing into a
+neutron star [@baade1934], the story of lectures 13 and 14, more than thirty
+years before the first neutron star was found.]{.aside}
+:::
+
 Clusters have a second way to be weighed. They are filled with gas so hot,
 tens of millions of kelvin, that it glows in X-rays. Gas that hot would leak
 out of the cluster unless gravity held it in, and the temperature it reaches
@@ -1001,6 +1037,15 @@ from about $10^{-7}$ to $15\,M_\odot$ as most of the halo [@tisserand2007].
 Black holes made in the very early universe, outside that range, are still
 being looked for, including among the black holes whose mergers are detected
 by gravitational waves (lecture 10).
+
+**Why Zwicky was set aside, and Rubin was not.** De Swart, Bertone and van
+Dongen [-@deswart2017] trace how dark matter came to be taken seriously. They
+argue that the missing mass became a problem astronomers widely recognized only
+in the early 1970s, and not simply because the evidence piled up: cosmology was
+growing into a field of its own, general relativity was back in fashion, and
+separate puzzles about missing mass, in clusters and in galaxies, came to be
+seen as a single one. Rubin and Ford's rotation curves arrived while that
+change was under way.
 
 **The Milky Way in numbers.** Bland-Hawthorn and Gerhard
 [-@blandhawthorn2016] review the masses, sizes and motions of every part of our
