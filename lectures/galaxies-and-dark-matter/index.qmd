@@ -315,14 +315,14 @@ halo of dark matter. Each curve is the speed an orbit would have if that part
 were the only mass there. The stars and gas (blue) alone would make the
 rotation curve peak within the first kiloparsec and then fall away, much as the
 planets' speeds do. The dark halo (orange) adds more and more mass the farther out you
-go, and the two together (black) give a curve that is nearly flat from a
+go, and the two together (dashed black) give a curve that is nearly flat from a
 couple of kiloparsecs out to well past the Sun. The model was not adjusted to
 make it pass through the Sun's orbit, from your constants sheet, but it does.
 
 ```{python}
 #| label: fig-mw-rotation
-#| fig-cap: "The rotation curve of a simple model of the Milky Way, from @eq-enclosed-mass, with the masses of its parts taken from Bland-Hawthorn and Gerhard (2016). The blue curve is the orbital speed the stars and gas alone would give; the orange curve is what the dark-matter halo alone would give; the black curve is what they give together. The green point is the Sun's orbit, $8.0\\ \\mathrm{kpc}$ out at $220\\ \\mathrm{km\\,s^{-1}}$, from the constants sheet (recent measurements give slightly larger values of both). Disks are treated as if their mass were arranged in spheres."
-#| fig-alt: "A line chart. The horizontal axis is distance from the center of the Milky Way, from 0 to 40 kiloparsecs. The vertical axis is orbital speed, from 0 to 300 kilometers per second. A blue curve for the stars and gas rises steeply to a peak of about 200 kilometers per second within the first kiloparsec, then falls steadily, through 150 at 10 kiloparsecs, to about 80 at 40 kiloparsecs. An orange curve for the dark matter halo starts near zero and rises gradually, crossing the blue curve near 9 kiloparsecs at about 155 kilometers per second and leveling off near 190. A black curve for the total rises steeply to just over 200 kilometers per second within about a kiloparsec and then stays almost flat, between about 205 and 220, all the way to 40 kiloparsecs. A green dot labeled the Sun sits on the black curve at 8 kiloparsecs and 220 kilometers per second."
+#| fig-cap: "The rotation curve of a simple model of the Milky Way, from @eq-enclosed-mass, with the masses of its parts taken from Bland-Hawthorn and Gerhard (2016). The blue curve is the orbital speed the stars and gas alone would give; the orange curve is what the dark-matter halo alone would give; the dashed black curve is what they give together. The green point is the Sun's orbit, $8.0\\ \\mathrm{kpc}$ out at $220\\ \\mathrm{km\\,s^{-1}}$, from the constants sheet (recent measurements give slightly larger values of both). Disks are treated as if their mass were arranged in spheres."
+#| fig-alt: "A line chart. The horizontal axis is distance from the center of the Milky Way, from 0 to 40 kiloparsecs. The vertical axis is orbital speed, from 0 to 300 kilometers per second. A blue curve for the stars and gas rises steeply to a peak of about 200 kilometers per second within the first kiloparsec, then falls steadily, through 150 at 10 kiloparsecs, to about 80 at 40 kiloparsecs. An orange curve for the dark matter halo starts near zero and rises gradually, crossing the blue curve near 9 kiloparsecs at about 155 kilometers per second and leveling off near 190. A dashed black curve for the total rises steeply to just over 200 kilometers per second within about a kiloparsec and then stays almost flat, between about 205 and 220, all the way to 40 kiloparsecs. A green dot for the Sun sits on the black curve at 8 kiloparsecs and 220 kilometers per second. A legend in the top right corner names the four."
 #| fig-height: 4.2
 
 # A galaxy to compare with the model, in solar masses.
@@ -340,14 +340,14 @@ for r_kpc in (8, 30):
     print(f"orbital speed at {r_kpc} kpc: {v_circ(total[k], r[k]):.0f} km/s")
 
 fig, ax = plt.subplots(figsize=(5.8, 4.2))
-ax.plot(r, v_circ(visible, r), color=BLUE, lw=2)
-ax.plot(r, v_circ(m["halo"], r), color=ORANGE, lw=2)
-ax.plot(r, v_circ(total, r), color=INK, lw=2.2)
-ax.plot([8.0], [220], "o", color=AQUA, ms=8, mec=INK, mew=0.8, zorder=4)
-ax.text(8.6, 232, "the Sun", color=INK2, fontsize=10)
-ax.text(30, 103, "stars and gas", color=BLUE, fontsize=10.5, ha="center")
-ax.text(30, 172, "dark matter", color=ORANGE, fontsize=10.5, ha="center")
-ax.text(30, 232, "total", color=INK, fontsize=10.5, ha="center")
+ax.plot(r, v_circ(visible, r), color=BLUE, lw=2, label="stars and gas")
+ax.plot(r, v_circ(m["halo"], r), color=ORANGE, lw=2, label="dark matter")
+ax.plot(r, v_circ(total, r), color=INK, lw=2, ls="--", zorder=3,
+        label="total")
+ax.plot([8.0], [220], "o", color=AQUA, ms=8, mec=INK, mew=0.8, zorder=4,
+        label="the Sun")
+ax.legend(loc="upper right", ncol=2, fontsize=9.5, frameon=True,
+          framealpha=0.9, edgecolor=GRID)
 ax.set_xlim(0, 40)
 ax.set_ylim(0, 300)
 ax.set_xlabel(r"distance from the center, $r$ (kpc)")
@@ -431,14 +431,14 @@ for r_kpc in (8, 30):
     print(f"orbital speed at {r_kpc} kpc: {v_circ(total[k], r[k]):.0f} km/s")
 
 fig, ax = plt.subplots(figsize=(5.8, 4.2))
-ax.plot(r, v_circ(visible, r), color=BLUE, lw=2)
-ax.plot(r, v_circ(m["halo"], r), color=ORANGE, lw=2)
-ax.plot(r, v_circ(total, r), color=INK, lw=2.2)
-ax.plot([8.0], [220], "o", color=AQUA, ms=8, mec=INK, mew=0.8, zorder=4)
-ax.text(8.6, 232, "the Sun", color=INK2, fontsize=10)
-ax.text(30, 103, "stars and gas", color=BLUE, fontsize=10.5, ha="center")
-ax.text(30, 172, "dark matter", color=ORANGE, fontsize=10.5, ha="center")
-ax.text(30, 232, "total", color=INK, fontsize=10.5, ha="center")
+ax.plot(r, v_circ(visible, r), color=BLUE, lw=2, label="stars and gas")
+ax.plot(r, v_circ(m["halo"], r), color=ORANGE, lw=2, label="dark matter")
+ax.plot(r, v_circ(total, r), color=INK, lw=2, ls="--", zorder=3,
+        label="total")
+ax.plot([8.0], [220], "o", color=AQUA, ms=8, mec=INK, mew=0.8, zorder=4,
+        label="the Sun")
+ax.legend(loc="upper right", ncol=2, fontsize=9.5, frameon=True,
+          framealpha=0.9, edgecolor=GRID)
 ax.set_xlim(0, 40)
 ax.set_ylim(0, 300)
 ax.set_xlabel(r"distance from the center, $r$ (kpc)")
