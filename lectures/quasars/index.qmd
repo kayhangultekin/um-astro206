@@ -1,0 +1,1148 @@
+---
+title: "Quasars"
+subtitle: "ASTRO 206 — Black Holes · Lecture 18"
+author: "Kayhan Gültekin"
+date: "November 10"
+date-format: "MMMM D"
+# Dates are LECTURE dates -- when the class meets -- not publication dates.
+# Sourced from Canvas (Reading & Reflection 3234222 and the In-Class Problem
+# 3219328, both due 2026-11-10). A placeholder string renders as "Invalid Date".
+
+# Kernel pinning is deliberate and must stay in the DOCUMENT, not _quarto.yml:
+# Quarto silently ignores a project-level `jupyter:` and auto-selects a kernel.
+jupyter: python3
+
+# No `pyodide: packages:` block: the one live cell needs numpy and matplotlib
+# only, which are inside Pyodide's default dependency closure.
+---
+
+::: {.callout-note appearance="simple" icon=false}
+**Disclaimer.** These notes have not been subjected to the usual scrutiny
+reserved for formal publications. They may be distributed outside this class
+only with the permission of the instructor.
+:::
+
+{{< include ../../_figure-setup.qmd >}}
+
+```{python}
+#| label: quasar-functions
+#| include: false
+
+# The course constants sheet, used by every figure on this page, plus the
+# course value of the Hubble constant (see "How far, and how bright").
+C, G = 2.99792458e10, 6.6732e-8
+MSUN, LSUN, PC, AU = 1.9891e33, 3.83e33, 3.0856e18, 1.4959789e13
+MP, SIGMA_T = 1.6726e-24, 6.6524e-25
+KMS, DAY, HOUR, YR = 1e5, 86400.0, 3600.0, 3.156e7
+MPC = 1e6 * PC
+H0 = 70.0 * KMS / MPC          # 70 km/s/Mpc, in 1/s
+
+
+def r_s(M_g):
+    """Schwarzschild radius in cm of a mass in grams."""
+    return 2 * G * M_g / C**2
+
+
+def m_min_edd(L):
+    """The smallest mass (g) that can shine at L (erg/s) below its Eddington limit."""
+    return L * SIGMA_T / (4 * np.pi * C * G * MP)
+```
+
+In 1963 an object that looked like a faint star turned out to be the brightest
+thing anyone had ever seen: a point of light two billion light-years away, far
+beyond every galaxy then known, giving off the light of a trillion Suns. Within
+a few years it was clear that the light came from a region no bigger than the
+Solar System, and that only one kind of object could do that. This lecture is
+about **quasars**, how they were discovered, how we know how far away and how
+bright they are, and the two simple arguments that say their engines are
+supermassive black holes, the very objects whose growth we followed in lecture
+9 and whose homes we met in lecture 17.
+
+## How to read this lecture
+
+**These notes are the reading for this lecture.** Kutner's §19.4, *Quasars*,
+in the Chapter 19 PDF under *Reading Material* in Canvas Files, tells the
+discovery story and is optional. The lecture builds one argument, and it is
+worth holding onto from the start:
+
+::: {.callout-important title="The idea at the center of this lecture"}
+**A quasar outshines a galaxy from a region smaller than the Solar System, and
+only a supermassive black hole fed by gas can do that.**
+:::
+
+Every tool it needs is one you already have. *Spectral lines* reviews what an
+emission line is. *The discovery of quasars* tells how a pattern of shifted
+lines gave 3C 273 its redshift. *How far, and how bright* turns the redshift
+into a distance with Hubble's law and the distance into a luminosity with the
+inverse-square law of lecture 7. *The engine* uses the speed of light to bound
+how big the source can be, and the Eddington limit of lecture 8 to bound how
+massive it must be, which together leave only a black hole. *Broad lines*
+weighs the black hole with the orbits of the gas around it, by the enclosed-mass
+formula of lecture 17. *Quasars then and now* places them among the galaxies.
+
+## Spectral lines: a short detour
+
+The spectrum of a quasar was the clue that gave the whole game away, so it is
+worth a minute on what a spectrum can look like. There are three kinds, and
+which one you see depends on what the light has been through.
+
+**A continuous spectrum**, a smooth rainbow with no gaps, comes from hot, dense
+matter: the surface of a star, the filament of a bulb, the inner disk around a
+black hole (lecture 16). Its shape is the blackbody curve of lecture 7, and its
+color says how hot the matter is.
+
+**Emission lines** come from a thin, hot gas on its own. The electrons in each
+atom can sit only on certain energy levels, and when one drops from a higher
+level to a lower one the atom gives off a photon of exactly the energy
+difference: one wavelength, and no other. A hydrogen atom whose electron drops
+to the second level emits one of the **Balmer lines**, in visible light:
+H$\alpha$ at $656.3\ \mathrm{nm}$ (red), H$\beta$ at $486.1\ \mathrm{nm}$
+(blue-green), H$\gamma$ at $434.0\ \mathrm{nm}$ and H$\delta$ at
+$410.2\ \mathrm{nm}$ (violet), and so on, closer and closer together toward
+$364.6\ \mathrm{nm}$. An electron dropping all the way to the lowest level emits
+a **Lyman line**, in the ultraviolet, and the Earth's atmosphere blocks every
+one of them: Lyman $\alpha$, at $121.6\ \mathrm{nm}$, cannot be seen from the
+ground. Every element has its own set of lines, so the lines in a spectrum
+say what the gas is made of, and, through the Doppler effect of lecture 3, how
+it is moving.
+
+**Absorption lines** are the same wavelengths, missing. Put a cooler, thinner
+gas in front of a source of continuous light, and the gas absorbs exactly the
+photons its atoms can use, leaving dark gaps in the rainbow at the lines'
+wavelengths. The Sun's spectrum is a continuum crossed by thousands of
+absorption lines from the gas of its own atmosphere.
+
+Lecture 3 used the H$\alpha$ line to measure a speed, lecture 16 used an iron
+line to see the inner disk, and lecture 17 used the $21\ \mathrm{cm}$ line to
+trace cold hydrogen. Here the lines are hydrogen's, the gas is hot and thin and
+in emission, and the whole point is that they appear **where they should
+not be**.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-lines}
+
+1. For each of the following, say whether you would expect a continuous
+   spectrum, emission lines, absorption lines, or a combination, and why: the
+   surface of a star; a glowing cloud of hydrogen gas between the stars; a
+   star seen through such a cloud; the accretion disk around a black hole.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+   Ask of each one: is the light coming from dense matter or from thin gas,
+   and is there thin gas in front of a bright background?
+   :::
+
+2. The Balmer lines are emitted when an electron drops to hydrogen's second
+   level, and the Lyman lines when it drops to the first. Which set has the
+   larger photon energies, and therefore the shorter wavelengths? Use that to
+   explain why the Lyman lines are in the ultraviolet.
+
+:::
+
+## The discovery of quasars
+
+Radio astronomy in the 1950s found hundreds of sources of radio waves on the
+sky, cataloged by position, and one problem with most of them: a radio
+telescope of the time could not say where a source was to better than a good
+fraction of a degree, so nobody knew which, if any, of the stars and galaxies
+in that patch of sky was making the radio waves. The 273rd source in the third
+Cambridge catalog, **3C 273**, happened to lie where the Moon passes. In 1962
+Cyril Hazard and his colleagues timed its disappearance and reappearance
+behind the Moon's edge with the Parkes radio telescope in Australia, which
+pinned its position to a few seconds of arc [@hazard1963]. At that spot on
+the photographic plates was a thirteenth-magnitude object that looked like a
+star, with a faint wisp sticking out of it. No star had ever been a radio
+source.
+
+Maarten Schmidt took its spectrum with the 200-inch telescope on Palomar
+Mountain in December 1962. It showed broad, bright emission lines, and none of
+them was at the wavelength of any known line. The puzzle lasted about six
+weeks. Schmidt noticed that four of the lines were spaced like the Balmer
+series of hydrogen, but every one of them shifted to the red by the same
+factor, about 16%. Read that way, the line at $563\ \mathrm{nm}$ was H$\beta$,
+the ones at $503$, $475$ and $460\ \mathrm{nm}$ were H$\gamma$, H$\delta$ and
+H$\epsilon$, and a fifth line at $324\ \mathrm{nm}$ was a line of magnesium
+whose true wavelength, $279.8\ \mathrm{nm}$, is in the ultraviolet, where no
+one had ever seen it from the ground [@schmidt1963]. The object had a
+**redshift of $z = 0.158$**, larger than that of almost any galaxy then known.
+In the same issue of *Nature*, Bev Oke reported an infrared line at
+$760\ \mathrm{nm}$, exactly where H$\alpha$ belongs at that redshift
+[@oke1963], and Jesse Greenstein and Thomas Matthews showed that a second
+such object, 3C 48, had a redshift of $0.37$ [@greenstein1963].
+
+```{python}
+#| label: fig-lines
+#| fig-cap: "The lines Schmidt identified in 3C 273. Gray marks are the wavelengths at which hydrogen (the Balmer lines) and singly ionized magnesium emit at rest; orange marks are the same lines as they appear in the spectrum of 3C 273, every one $15.8\\%$ longer. The pale band is the range of wavelengths that reaches the ground and the eye. The magnesium line, invisible from the ground at rest, is shifted into it."
+#| fig-alt: "A chart of wavelength from 250 to 800 nanometers. A pale band marks visible light from about 380 to 750 nanometers. Six gray vertical marks on an upper row show the rest wavelengths of the magnesium line at 280 and the hydrogen lines at 397, 410, 434, 486 and 656 nanometers; six orange marks on a lower row show each line shifted to the right by about 16 percent, to 324, 460, 475, 503, 563 and 760 nanometers. Thin arrows join each gray mark to its orange partner. The magnesium line's gray mark is outside the visible band and its orange mark is inside it; the hydrogen alpha line's gray mark is inside and its orange mark just outside."
+#| fig-height: 3.4
+
+lines = [("Mg II", 279.8), (r"H$\epsilon$", 397.0), (r"H$\delta$", 410.2),
+         (r"H$\gamma$", 434.0), (r"H$\beta$", 486.1), (r"H$\alpha$", 656.3)]
+z = 0.158
+
+fig, ax = plt.subplots(figsize=(5.8, 3.4))
+ax.axvspan(380, 750, color="#f3efe2", zorder=0)
+ax.text(565, 2.72, "visible from the ground", color=INK2, fontsize=10,
+        ha="center")
+for name, lam in lines:
+    lam_obs = lam * (1 + z)
+    ax.plot([lam, lam], [1.55, 2.45], color=MUTED, lw=2.5)
+    ax.plot([lam_obs, lam_obs], [0.55, 1.45], color=ORANGE, lw=2.5)
+    ax.annotate("", xy=(lam_obs, 1.5), xytext=(lam, 1.5),
+                arrowprops=dict(arrowstyle="-|>", color=INK2, lw=0.8,
+                                shrinkA=0, shrinkB=0))
+    ax.text(lam, 2.5, name, color=INK2, fontsize=9, ha="center", va="bottom")
+ax.set_yticks([2.0, 1.0])
+ax.set_yticklabels(["at rest", "in 3C 273"])
+ax.set_ylim(0.3, 3.0)
+ax.set_xlim(250, 800)
+ax.grid(axis="y", visible=False)
+ax.set_xlabel("wavelength (nm)")
+plt.show()
+```
+
+::: {.callout-note .worked-example collapse="true" title="Worked example: the redshift of 3C 273"}
+**The question.** The H$\beta$ line of hydrogen is emitted at
+$\lambda_{\mathrm{em}} = 486.1\ \mathrm{nm}$ and appears in the spectrum of
+3C 273 at $\lambda_{\mathrm{obs}} = 563.1\ \mathrm{nm}$. What is the redshift
+of 3C 273?
+
+Lecture 3 defined the redshift as the fractional change in wavelength,
+
+$$
+z = \frac{\lambda_{\mathrm{obs}} - \lambda_{\mathrm{em}}}{\lambda_{\mathrm{em}}}
+  = \frac{\lambda_{\mathrm{obs}}}{\lambda_{\mathrm{em}}} - 1 .
+$$
+
+Both wavelengths are in nanometers, so nanometers cancel and $z$ is a pure
+number. *Do the units make sense?* A redshift is a ratio, so yes. Then
+
+$$
+z = \frac{563.1\ \mathrm{nm}}{486.1\ \mathrm{nm}} - 1 = 1.158 - 1 = 0.158 .
+$$
+
+**Every line in the spectrum gives the same answer**, which is what told
+Schmidt he had it right: a shift that multiplies every wavelength by the same
+factor $1 + z$ is what a moving source, or an expanding universe, does to light.
+:::
+
+::: {.callout-tip .resolution collapse="true" title="Think about why every line must shift by the same factor"}
+A Doppler shift multiplies each wavelength by $1 + z$, so a line at twice the
+wavelength of another is shifted twice as far in nanometers, and the *ratios*
+between the lines' wavelengths are unchanged. That is why a pattern of lines
+survives a redshift: the Balmer series in 3C 273 has the same shape as in a
+laboratory, only stretched. It is also why one line alone can never give a
+redshift. A single bright line at $563\ \mathrm{nm}$ might be H$\beta$ shifted
+by 16%, or H$\gamma$ shifted by 30%, or something else altogether; it was the
+*spacing* of four lines, and then the magnesium line and Oke's H$\alpha$
+landing exactly where the same $z$ put them, that settled it.
+:::
+
+The new objects needed a name. On short exposures they looked like stars, and
+the first ones were radio sources, so they were called *quasi-stellar radio
+sources*, soon shortened to **quasars**. Objects with the same spectra but
+no strong radio emission were called *quasi-stellar objects*, or **QSOs**, and
+turned out to be far more common; today the two words are used
+interchangeably. By the time of the Sloan Digital Sky Survey's sixteenth data
+release, more than **750,000** quasars had been cataloged [@lyke2020]. The
+most distant are seen as they were when the universe was less than a billion
+years old, which is where lecture 9's question about how black holes begin
+came from.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-discovery}
+
+1. A quasar's spectrum shows the H$\alpha$ line at $750.0\ \mathrm{nm}$. What
+   is its redshift?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   The redshift is $z = 750.0/656.3 - 1 = 0.143$.
+   :::
+
+2. The Lyman $\alpha$ line of hydrogen, at $121.6\ \mathrm{nm}$, is blocked by
+   the Earth's atmosphere. What is the smallest redshift at which it appears
+   at a wavelength of $400\ \mathrm{nm}$ or longer, where telescopes on the
+   ground can see it? Most of the quasars in the Sloan catalog have
+   redshifts between $0.5$ and $3$; for which of them is Lyman $\alpha$ the
+   easiest line to find from the ground?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
+   Set $\lambda_{\mathrm{obs}} = 400\ \mathrm{nm}$ and solve the definition of
+   $z$ for the redshift.
+
+   Lyman $\alpha$ reaches $400\ \mathrm{nm}$ at $z = 2.29$, so for quasars at
+   redshifts above about $2.3$ the strongest line in the ultraviolet spectrum
+   of hydrogen becomes visible from the ground. Below that redshift it is
+   still in the ultraviolet, and must be observed from space.
+   :::
+
+3. The quasar 3C 48 has a redshift of $z = 0.367$. At what wavelengths do its
+   H$\beta$ and H$\alpha$ lines appear? Explain why its spectrum was even
+   harder to recognize than that of 3C 273.
+
+:::
+
+## How far, and how bright
+
+### Hubble's law
+
+A redshift is a distance in disguise. In 1929 Edwin Hubble found that galaxies
+are moving away from us, and that the farther away a galaxy is, the faster it
+recedes [@hubble1929]. The relation is a straight line through the origin,
+
+$$
+v = H_0\, D ,
+$$ {#eq-hubble}
+
+where $v$ is the recession speed, $D$ the distance and $H_0$ the **Hubble
+constant**. This is the expansion of the universe: every distance between
+galaxies grows with time, so from any galaxy, ours included, all the others
+appear to be moving away, the distant ones fastest. The value of $H_0$ has
+been measured in several independent ways, which agree to within a few percent
+and disagree by a little more than their stated uncertainties: the light left
+over from the Big Bang gives $67.4\ \mathrm{km\,s^{-1}\,Mpc^{-1}}$
+[@planck2018] and distances to nearby galaxies give $73.0$ [@riess2022]. In
+this course we round to
+
+$$
+H_0 = 70\ \mathrm{km\,s^{-1}\,Mpc^{-1}} ,
+$$
+
+which is not on your constants sheet, so write it on it. A galaxy a megaparsec
+away recedes at $70\ \mathrm{km\,s^{-1}}$, one a hundred megaparsecs away at
+$7000\ \mathrm{km\,s^{-1}}$.
+
+The recession shows up as a redshift. For speeds well below that of light, the
+Doppler shift of lecture 3 reduces to $z = v/c$, so Hubble's law can be
+written in terms of the one thing a spectrum gives directly:
+
+$$
+D = \frac{v}{H_0} = \frac{c\, z}{H_0} .
+$$ {#eq-distance}
+
+::: {.callout-warning title="A caveat: the redshift of a distant galaxy is not quite a Doppler shift"}
+A galaxy's redshift is not really caused by the galaxy moving *through* space;
+it is caused by space expanding while the light is on its way, which stretches
+the light along with everything else. The two pictures agree when the redshift
+is small, and @eq-distance is good to about ten percent at the redshift of
+3C 273. For quasars at $z$ of $2$ or $6$ it fails, not because the formula
+for the Doppler shift breaks down but because the expansion has not been
+constant over the billions of years the light has traveled, and "the
+distance" to the object has to be defined more carefully. That is a subject
+for a cosmology course. In this course we use @eq-distance only for
+$z \lesssim 0.2$.
+:::
+
+::: {.callout-note .worked-example collapse="true" title="Worked example: how far away is 3C 273?"}
+**The question.** With a redshift of $z = 0.158$, how far away is 3C 273, and
+how long has its light been traveling?
+
+The recession speed is
+
+$$
+\begin{aligned}
+v = c\, z &= 2.998 \times 10^{5}\ \mathrm{km\,s^{-1}} \times 0.158 \\[0.8em]
+          &= 4.74 \times 10^{4}\ \mathrm{km\,s^{-1}} ,
+\end{aligned}
+$$
+
+a sixth of the speed of light. Then @eq-distance, with the units attached:
+
+$$
+\begin{aligned}
+D = \frac{v}{H_0}
+  &= \frac{4.74 \times 10^{4}\ \mathrm{km\,s^{-1}}}
+          {70\ \mathrm{km\,s^{-1}\,Mpc^{-1}}} \\[0.8em]
+  &= 677\ \mathrm{Mpc} .
+\end{aligned}
+$$
+
+The $\mathrm{km\,s^{-1}}$ cancel and the $\mathrm{Mpc^{-1}}$ in the
+denominator comes up as $\mathrm{Mpc}$. *Do the units make sense?* A distance,
+so yes. In centimeters, each conversion written so the unwanted unit cancels,
+
+$$
+\begin{aligned}
+D &= 677\ \mathrm{Mpc}
+  \times \frac{10^{6}\ \mathrm{pc}}{1\ \mathrm{Mpc}}
+  \times \frac{3.0856 \times 10^{18}\ \mathrm{cm}}{1\ \mathrm{pc}} \\[0.8em]
+  &= 2.09 \times 10^{27}\ \mathrm{cm} .
+\end{aligned}
+$$
+
+The light has been traveling for $D/c = 2.09 \times 10^{27}\ \mathrm{cm} \,/\,
+2.998 \times 10^{10}\ \mathrm{cm\,s^{-1}} = 6.97 \times 10^{16}\ \mathrm{s}$,
+which is $2.2$ billion years. **We see 3C 273 as it was before the Sun and
+the Earth had formed.** (A careful cosmological calculation puts it a little
+farther, about $750\ \mathrm{Mpc}$, as the caveat above warns.)
+:::
+
+### The luminosity of a quasar
+
+A distance is what turns a brightness into a power. Lecture 7 gave the
+inverse-square law: a source of luminosity $L$ at a distance $D$ delivers a
+flux $F = L/4\pi D^2$ to every square centimeter facing it. Turned around,
+
+$$
+L = 4\pi D^2\, F .
+$$ {#eq-luminosity}
+
+::: {.callout-note .worked-example collapse="true" title="Worked example: the luminosity of 3C 273"}
+**The question.** In visible light, 3C 273 delivers a flux of about
+$7 \times 10^{-11}\ \mathrm{erg\,s^{-1}\,cm^{-2}}$ to the Earth. At a distance
+of $677\ \mathrm{Mpc}$, what is its luminosity in visible light, in solar
+luminosities?
+
+From @eq-luminosity, with the distance in centimeters from the worked example
+above,
+
+$$
+\begin{aligned}
+L &= 4\pi \left(2.09 \times 10^{27}\ \mathrm{cm}\right)^2 \\[0.8em]
+  &\qquad \times 7 \times 10^{-11}\ \mathrm{erg\,s^{-1}\,cm^{-2}} .
+\end{aligned}
+$$
+
+The $\mathrm{cm^{2}}$ from the distance cancels the $\mathrm{cm^{-2}}$ of the
+flux and leaves $\mathrm{erg\,s^{-1}}$. *Do the units make sense?* A luminosity
+is energy per time, so yes. The numbers: $4\pi D^2 = 5.48 \times 10^{55}\
+\mathrm{cm^{2}}$, so
+
+$$
+\begin{aligned}
+L &= 3.8 \times 10^{45}\ \mathrm{erg\,s^{-1}}
+     \times \frac{1\,L_\odot}{3.83 \times 10^{33}\ \mathrm{erg\,s^{-1}}} \\[0.8em]
+  &= 1.0 \times 10^{12}\,L_\odot .
+\end{aligned}
+$$
+
+**A trillion Suns**, in visible light alone: tens of times the light of the
+entire Milky Way, from a point that a 1960s photograph could not tell from a
+star. Counting the radio waves, the infrared, the ultraviolet, the X-rays and
+the gamma rays it also gives off, the total is larger still.
+:::
+
+This was the shock of 1963. Objects at the distances their redshifts implied
+had to be the most luminous things in the universe by a wide margin. Some
+astronomers tried for years to put the quasars closer, by finding some other
+cause for their redshifts, and failed: everything about them, from the
+absorption lines of gas in front of them at smaller redshifts to the galaxies
+they turned out to live in, puts them where Hubble's law says. Kutner's §19.4.3
+tells that story.
+
+### Quasar hosts
+
+With a telescope above the atmosphere, the glare of the quasar can be blocked
+out and what is around it photographed. @fig-3c273 shows 3C 273 both ways.
+Around the point of light is a galaxy, an elliptical larger than the Milky
+Way, which the quasar outshines many times over, and from the point a jet
+reaches out more than a hundred thousand light-years. **A quasar is the
+brilliant nucleus of a galaxy**: the same kind of object we found at the
+center of the Milky Way in lecture 17, four million solar masses of black hole,
+but far more massive and, for a while, fed.
+
+::: {#fig-3c273 layout-ncol=2}
+
+![3C 273 as a point of light, with its jet toward the lower right. Hubble
+Wide Field and Planetary Camera 2. Credit: [ESA/Hubble &
+NASA](https://esahubble.org/images/potw1346a/), [CC BY
+4.0](https://creativecommons.org/licenses/by/4.0/), used
+unmodified.](3c273-wfpc2-potw1346a.jpg){#fig-3c273-point
+fig-alt="A black-and-white telescope image. A very bright white point of light sits at the center with a soft halo around it and four thin diffraction spikes, two of them long. A short, faint, straight streak of light reaches from it toward the lower right. A few faint small galaxies and stars dot the black background."}
+
+![The same quasar with its glare blocked by the coronagraph of Hubble's
+imaging spectrograph, in 2024. The dark disk hides the quasar; the blue
+filaments around it are the host galaxy's inner regions, and the blue-white
+feature toward the lower right is the start of the jet. Credit: [NASA, ESA, Bin
+Ren (Côte d'Azur Observatory)](https://esahubble.org/images/opo2424a/), [CC BY
+4.0](https://creativecommons.org/licenses/by/4.0/), used
+unmodified.](3c273-stis-opo2424a.jpg){#fig-3c273-host
+fig-alt="A telescope image in shades of blue on black. A black circle in the center blocks the quasar itself. Around it, patchy blue filaments and lobes of light form an irregular shape, with a bright L-shaped structure just to the upper left of the circle. A blue-white, smoke-like streak runs from near the circle toward the lower right of the frame."}
+
+The quasar 3C 273 and its surroundings, seen by the Hubble Space Telescope.
+:::
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-distance}
+
+1. Using @eq-distance, how far away is 3C 48, at $z = 0.367$? How long has its
+   light been traveling? (This redshift is at the edge of where the simple
+   formula is reliable; a cosmological calculation gives a larger distance.)
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   The distance is $1570\ \mathrm{Mpc}$, and the light has traveled for about
+   $5$ billion years.
+   :::
+
+2. If a quasar exactly like 3C 273 were ten times farther away, what flux
+   would reach the Earth from it? What would its redshift be, by @eq-distance?
+   Would @eq-distance be reliable there?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
+   The flux falls as $1/D^2$; the redshift, by @eq-distance, grows in
+   proportion to $D$.
+
+   A hundred times fainter, $7 \times 10^{-13}\ \mathrm{erg\,s^{-1}\,cm^{-2}}$,
+   and $z = 1.58$ by the simple formula, which is well beyond where the
+   formula holds, so the real redshift of such an object would be different.
+   The point stands: the flux is small, and the luminosity is not.
+   :::
+
+3. Hubble's law says every galaxy a distance $D$ away recedes at $H_0 D$. Run
+   the expansion backward: how long ago was every galaxy on top of every other
+   one, if the speeds have never changed? Give the answer in years. This is
+   the **Hubble time**, a first estimate of the age of the universe.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
+   A galaxy at distance $D$ moving at $v = H_0 D$ took a time $D/v$ to get
+   there, and $D$ cancels. Convert $H_0$ to $\mathrm{s^{-1}}$ by writing the
+   megaparsec in kilometers.
+
+   The Hubble time is $1/H_0 = 4.4 \times 10^{17}\ \mathrm{s} = 1.4 \times
+   10^{10}\ \mathrm{yr}$, fourteen billion years, close to the universe's
+   measured age of $13.8$ billion years.
+   :::
+
+4. The quasar in @fig-3c273 outshines its host galaxy about sixteen times over
+   in visible light. Using the worked example's luminosity for the quasar, how
+   luminous is the host galaxy, in solar luminosities? How does that compare
+   with the Milky Way, whose stars give off a few times $10^{10}\,L_\odot$?
+
+:::
+
+## The engine
+
+::: {.panel-tabset .tracks}
+
+### Physical intuition
+
+Two facts about quasars, put together, leave only one explanation. The first
+is the luminosity we just found. The second is that **quasars flicker**. The
+brightness of 3C 273 changes noticeably from month to month and year to year,
+and the brightest quasars seen in X-rays can change by a large fraction within
+days; the nearest active galactic nuclei, within hours. For a single star that
+would be unremarkable. For something that outshines a galaxy, it is
+astonishing, because of a rule that follows from nothing but the speed of
+light.
+
+**Nothing can change as a whole faster than light can cross it.** Suppose a
+glowing region of size $R$ brightened everywhere at the same instant. We would
+not see it brighten at once: light from its near side reaches us first, and
+light from its far side arrives later, by the time it takes light to cross the
+region, $R/c$. The brightening we see is smeared out over about that long
+(@fig-light-travel). So if a source doubles its brightness in a time
+$\Delta t$, the part of it doing the doubling can be no larger than
+$c\,\Delta t$, however the brightening is organized inside it. A source that
+varies in a day is smaller than a light-day, $173\ \mathrm{AU}$, about six
+times the size of Neptune's orbit. A source that varies in an hour is smaller
+than a light-hour, $7\ \mathrm{AU}$, inside the orbit of Saturn. **A trillion
+Suns' worth of light, from a region the size of the Solar System.**
+
+```{python}
+#| label: fig-light-travel
+#| fig-cap: "Why a source cannot change faster than light can cross it. Left: a glowing sphere of radius $R$ switches on everywhere at the same instant; the light that reaches the observer first comes from the near side, and light from the far side has $2R$ farther to go. Right: what the observer sees. The source's own brightness (dashed) jumps at once; the observed brightness (solid) climbs over the light-crossing time, $2R/c$, as light from deeper and deeper layers arrives. However fast a source changes inside, what we see is smeared over the time light takes to cross it, so a change seen in a time $\\Delta t$ means a source smaller than about $c\\,\\Delta t$."
+#| fig-alt: "Two panels. On the left, a large pale orange circle labeled R at its radius, with an observer marked by an eye symbol far to the right. Two horizontal arrows run from the circle toward the observer: one from the near edge, labeled 'first light', and one from the far edge, labeled 'last light, 2R over c later'. On the right, a chart of brightness against time. A dashed line jumps from zero to full brightness at time zero and stays there. A solid line starts rising at time zero and climbs smoothly in an S shape, reaching full brightness at a time marked 2R over c on the axis."
+#| fig-height: 3.0
+
+fig, (axl, axr) = plt.subplots(1, 2, figsize=(5.8, 3.0),
+                               gridspec_kw=dict(width_ratios=[1.15, 1]))
+
+# Left: the geometry.
+axl.set_aspect("equal")
+circ = plt.Circle((0, 0), 1.0, facecolor="#f9dcc8", edgecolor=ORANGE, lw=1.5)
+axl.add_patch(circ)
+axl.plot([0, 0.7071], [0, 0.7071], color=INK2, lw=1)
+axl.text(0.22, 0.50, "$R$", color=INK2, fontsize=11)
+axl.plot([0], [0], "o", color=INK2, ms=3)
+axl.annotate("", xy=(3.1, 0.62), xytext=(0.78, 0.62),
+             arrowprops=dict(arrowstyle="-|>", color=BLUE, lw=1.2))
+axl.annotate("", xy=(3.1, -0.62), xytext=(-0.78, -0.62),
+             arrowprops=dict(arrowstyle="-|>", color=BLUE, lw=1.2,
+                             linestyle="--"))
+axl.text(1.95, 0.80, "first light", color=BLUE, fontsize=9.5, ha="center")
+axl.text(1.55, -1.02, "last light, $2R/c$ later", color=BLUE, fontsize=9.5,
+         ha="center")
+axl.text(3.35, 0.0, "observer", color=INK2, fontsize=9.5, ha="center",
+         va="center", rotation=90)
+axl.set_xlim(-1.3, 3.6)
+axl.set_ylim(-1.4, 1.4)
+axl.axis("off")
+
+# Right: what is seen. A uniformly glowing sphere that turns on at t = 0; at
+# time t the observer sees light from the part of the sphere within a depth
+# c t of the near side, i.e. a spherical cap of height h = c t.
+t = np.linspace(0, 2.6, 400)              # in units of R/c
+h = np.clip(t, 0, 2)
+cap = np.pi * h**2 * (3 - h) / 3          # cap volume for R = 1
+seen = cap / (4 * np.pi / 3)
+axr.plot([-0.5, 0, 0, 2.6], [0, 0, 1, 1], color=MUTED, lw=1.5, ls="--")
+axr.plot(t, seen, color=ORANGE, lw=2.2)
+axr.text(1.55, 0.3, "what the\nobserver sees", color=ORANGE, fontsize=9.5,
+         ha="center")
+axr.text(0.1, 1.06, "the source\nitself", color=INK2, fontsize=9.5)
+axr.set_xlim(-0.5, 2.6)
+axr.set_ylim(-0.05, 1.3)
+axr.set_xticks([0, 2])
+axr.set_xticklabels(["0", "$2R/c$"])
+axr.set_yticks([0, 1])
+axr.set_yticklabels(["dark", "bright"])
+axr.set_xlabel("time")
+axr.set_ylabel("brightness")
+plt.show()
+```
+
+Now the second argument, which runs the other way. Lecture 8 showed that
+anything shining by accretion has a ceiling on its brightness, the Eddington
+limit: above it, the pressure of the light pushes the infalling gas away
+faster than gravity can pull it in, and the source chokes off its own fuel.
+The ceiling is set by the mass, $L_{\mathrm{Edd}} \approx 1.26 \times
+10^{38}\,(M/M_\odot)\ \mathrm{erg\,s^{-1}}$, so **a source of luminosity $L$
+must have at least the mass whose Eddington limit is $L$.** For a quasar, that
+is tens of millions of solar masses, at the least.
+
+Put the two together. Tens of millions of solar masses or more, inside a
+region the size of the Solar System. A cluster of that many stars packed into
+so small a space would have its stars a few astronomical units apart, closer
+than the Earth is to the Sun; they would collide and merge within a human
+lifetime, and the whole cluster would fall in on itself. Whatever such an
+object began as, gravity turns it into a black hole, and a black hole is the
+one object that can hold that much mass in that little space and go on
+shining. The Schwarzschild radius of a hundred-million-solar-mass black hole
+is $2\ \mathrm{AU}$; that of a billion-solar-mass one, $20\ \mathrm{AU}$, the
+size of the orbit of Uranus. Both fit comfortably inside a light-day. And
+lecture 7 supplied the last piece: gas spiraling into a black hole releases
+up to tens of percent of its rest-mass energy as light, ten or more times what
+nuclear fusion can manage, so a black hole does not even need very much gas to
+shine as a quasar does. Edwin Salpeter and Yakov Zel'dovich proposed this
+in 1964 [@salpeter1964], a year after Schmidt's paper, and Donald Lynden-Bell
+worked out in 1969 that the engine had to be a black hole and that burnt-out
+quasars should be sitting, dark and massive, in the centers of galaxies today
+[@lyndenbell1969].
+
+### Mathematical explanation
+
+**The size.** If the brightness of a source changes by a large fraction in a
+time $\Delta t$, the region responsible cannot be bigger than the distance
+light travels in that time:
+
+$$
+R \lesssim c\, \Delta t .
+$$ {#eq-size-limit}
+
+The "$\lesssim$" is honest about a factor of two or so: the exact bound
+depends on the shape of the region and on how the change spreads through it,
+and relativistic motion inside the source can beat it (lecture 22). As a
+bound on the order of magnitude it is secure. Its units are
+$\mathrm{cm\,s^{-1}} \times \mathrm{s} = \mathrm{cm}$, a length, as a size
+must be.
+
+**The mass.** From lecture 8, the Eddington luminosity of a mass $M$ is
+
+$$
+L_{\mathrm{Edd}} = \frac{4\pi c\, G M m_p}{\sigma_T} .
+$$
+
+A source that shines steadily by accretion must have $L < L_{\mathrm{Edd}}$,
+and solving for the mass gives a *lower* limit on it,
+
+$$
+M > \frac{L\, \sigma_T}{4\pi c\, G\, m_p} ,
+$$ {#eq-min-mass}
+
+or, with the numbers put in once and for all,
+
+$$
+M > \frac{L}{1.26 \times 10^{38}\ \mathrm{erg\,s^{-1}}}\, M_\odot .
+$$
+
+The units of @eq-min-mass: $\mathrm{erg\,s^{-1}} \times \mathrm{cm^{2}}$ on top,
+and $\mathrm{cm\,s^{-1}} \times \mathrm{cm^{3}\,g^{-1}\,s^{-2}} \times
+\mathrm{g}$ below. With $1\ \mathrm{erg} = \mathrm{g\,cm^{2}\,s^{-2}}$, the top
+is $\mathrm{g\,cm^{4}\,s^{-3}}$ and the bottom $\mathrm{cm^{4}\,s^{-3}}$, which
+leaves $\mathrm{g}$: a mass.
+
+**Compactness.** The thing to compare the size with is the Schwarzschild
+radius of the minimum mass, $r_S = 2GM/c^2$ (lecture 1). The bound on the size
+from @eq-size-limit is an upper limit; $r_S$ of the Eddington mass is a lower
+limit on how big the black hole is. A quasar is a black hole if the second fits
+inside the first, and for every quasar ever measured it does, with room to
+spare. The ratio $c\,\Delta t / r_S$, the size of the varying region in
+Schwarzschild radii, is at most a few hundred for a day's variation and a
+hundred-million-solar-mass hole, and at most a few for the fastest X-ray
+flickers, which are therefore coming from the innermost part of the accretion
+disk of lecture 16.
+
+::: {.content-visible when-format="pdf"}
+{{< include ../../in_class/lec18/exercises00.qmd >}}
+:::
+
+### Numerical exploration
+
+@fig-size-limit plots @eq-size-limit: the largest a source can be, against
+how fast it varies, with the Schwarzschild radii of black holes of
+$10^{7}$, $10^{8}$ and $10^{9}\,M_\odot$ drawn across it for comparison. The
+two scales are the whole argument. A source that varies in days is a few
+hundred Schwarzschild radii across at most, for the largest black holes we
+know of, and a few astronomical units of flicker is a few Schwarzschild radii:
+the inner disk itself.
+
+```{python}
+#| label: fig-size-limit
+#| fig-cap: "The largest a source can be if it varies in a time $\\Delta t$, $R = c\\,\\Delta t$ (@eq-size-limit), from an hour to a year, on logarithmic axes. The right-hand scale is the same size in astronomical units. The dashed lines are the Schwarzschild radii of black holes of $10^{7}$, $10^{8}$ and $10^{9}$ solar masses, and the dotted line is the size of Neptune's orbit. A quasar that varies within a day is smaller than a light-day; the black hole that powers it has a Schwarzschild radius well below that."
+#| fig-alt: "A chart with logarithmic axes. The horizontal axis is the variability time, from one hour to one year, with ticks at one hour, one day, one week, one month and one year. The vertical axis is the largest possible size, from about ten to the twelve to ten to the eighteen centimeters, with a matching right-hand axis in astronomical units from about 0.1 to 100,000. A solid blue line rises diagonally from about 10 to the 14 centimeters at one hour to about 10 to the 18 at one year. Three dashed orange horizontal lines mark the Schwarzschild radii of black holes of ten million, a hundred million and a billion solar masses, at about 3 times 10 to the 12, 3 times 10 to the 13 and 3 times 10 to the 14 centimeters, each labeled at the right. A dotted gray horizontal line labeled Neptune's orbit sits at 4.5 times 10 to the 14 centimeters. The blue line is above all three dashed lines everywhere except that it crosses the billion-solar-mass line near three hours."
+#| fig-height: 4.2
+
+# The black hole and the timescale to mark on the plot, in solar masses and hours.
+M_bh = 1.0e8           # mass of the black hole, in solar masses
+dt_hours = 24.0        # how fast the quasar varies, in hours
+
+dt = np.logspace(np.log10(HOUR), np.log10(YR), 300)      # seconds
+R_max = C * dt                                            # cm
+
+fig, ax = plt.subplots(figsize=(5.55, 4.2))
+ax.plot(dt, R_max, color=BLUE, lw=2.2, zorder=3)
+ax.text(2.2 * DAY, 2.0e16, r"largest size, $R = c\,\Delta t$", color=BLUE,
+        fontsize=10.5, rotation=36, rotation_mode="anchor")
+for M, ytext in ((1e7, 1.35), (1e8, 1.35), (1e9, 1.35)):
+    rs = r_s(M * MSUN)
+    ax.axhline(rs, color=ORANGE, lw=1.4, ls="--", zorder=2)
+    ax.text(0.95 * YR, rs * ytext,
+            rf"$r_S$ of $10^{{{int(np.log10(M))}}}\,M_\odot$", color=ORANGE,
+            fontsize=9.5, ha="right", va="bottom")
+ax.axhline(30 * AU, color=MUTED, lw=1.2, ls=":", zorder=2)
+ax.text(1.15 * HOUR, 30 * AU * 1.35, "Neptune's orbit", color=INK2,
+        fontsize=9.5, va="bottom")
+R_pick, rs_pick = C * dt_hours * HOUR, r_s(M_bh * MSUN)
+ax.plot([dt_hours * HOUR], [R_pick], "o", color=AQUA, ms=8, mec=INK,
+        mew=0.8, zorder=4)
+print(f"varies in {dt_hours:g} h: R < {R_pick:.2e} cm = {R_pick / AU:.0f} AU")
+print(f"= {R_pick / rs_pick:.0f} Schwarzschild radii of {M_bh:.0e} Msun")
+ax.set_xscale("log")
+ax.set_yscale("log")
+ax.set_xlim(HOUR, YR)
+ax.set_ylim(1e12, 1.5e18)
+ax.set_xticks([HOUR, DAY, 7 * DAY, 30 * DAY, YR])
+ax.set_xticklabels(["1 hour", "1 day", "1 week", "1 month", "1 year"])
+ax.set_xlabel(r"variability time, $\Delta t$")
+ax.set_ylabel(r"largest possible size, $R$ (cm)")
+ax2 = ax.secondary_yaxis("right", functions=(lambda r: r / AU,
+                                             lambda a: a * AU))
+ax2.set_ylabel(r"$R$ (AU)")
+plt.show()
+```
+
+### Turn the knobs
+
+::: {.content-visible when-format="pdf"}
+Students have a live, editable version of this cell in the web notes —
+remind them to try it.
+:::
+
+::: {.content-visible when-format="html"}
+
+The same plot, but editable: change the black hole's mass or how fast the
+source varies on the two lines marked `# <- edit this` (lines 18 and 19 of the
+cell), run the cell, and read off how many Schwarzschild radii across the
+source can be. Try an hour, and try a year; try the four-million-solar-mass
+black hole at the center of the Milky Way.
+
+```{pyodide}
+#| autorun: false
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+BLUE, ORANGE, AQUA = "#2a78d6", "#eb6834", "#1baf7a"
+INK, INK2, MUTED = "#0b0b0b", "#52514e", "#898781"
+
+# The course constants sheet.
+C, G, MSUN, AU = 2.99792458e10, 6.6732e-8, 1.9891e33, 1.4959789e13
+HOUR, DAY, YR = 3600.0, 86400.0, 3.156e7
+
+
+def r_s(M_g):
+    return 2 * G * M_g / C**2
+
+
+# The black hole and the timescale to mark on the plot, in solar masses and hours.
+M_bh = 1.0e8           # mass of the black hole, in solar masses  # <- edit this
+dt_hours = 24.0        # how fast the quasar varies, in hours  # <- edit this
+
+dt = np.logspace(np.log10(HOUR), np.log10(YR), 300)      # seconds
+R_max = C * dt                                            # cm
+
+fig, ax = plt.subplots(figsize=(5.55, 4.2))
+ax.plot(dt, R_max, color=BLUE, lw=2.2, zorder=3)
+ax.text(2.2 * DAY, 2.0e16, r"largest size, $R = c\,\Delta t$", color=BLUE,
+        fontsize=10.5, rotation=36, rotation_mode="anchor")
+for M, ytext in ((1e7, 1.35), (1e8, 1.35), (1e9, 1.35)):
+    rs = r_s(M * MSUN)
+    ax.axhline(rs, color=ORANGE, lw=1.4, ls="--", zorder=2)
+    ax.text(0.95 * YR, rs * ytext,
+            rf"$r_S$ of $10^{{{int(np.log10(M))}}}\,M_\odot$", color=ORANGE,
+            fontsize=9.5, ha="right", va="bottom")
+ax.axhline(30 * AU, color=MUTED, lw=1.2, ls=":", zorder=2)
+ax.text(1.15 * HOUR, 30 * AU * 1.35, "Neptune's orbit", color=INK2,
+        fontsize=9.5, va="bottom")
+R_pick, rs_pick = C * dt_hours * HOUR, r_s(M_bh * MSUN)
+ax.plot([dt_hours * HOUR], [R_pick], "o", color=AQUA, ms=8, mec=INK,
+        mew=0.8, zorder=4)
+print(f"varies in {dt_hours:g} h: R < {R_pick:.2e} cm = {R_pick / AU:.0f} AU")
+print(f"= {R_pick / rs_pick:.0f} Schwarzschild radii of {M_bh:.0e} Msun")
+ax.set_xscale("log")
+ax.set_yscale("log")
+ax.set_xlim(HOUR, YR)
+ax.set_ylim(1e12, 1.5e18)
+ax.set_xticks([HOUR, DAY, 7 * DAY, 30 * DAY, YR])
+ax.set_xticklabels(["1 hour", "1 day", "1 week", "1 month", "1 year"])
+ax.set_xlabel(r"variability time, $\Delta t$")
+ax.set_ylabel(r"largest possible size, $R$ (cm)")
+ax2 = ax.secondary_yaxis("right", functions=(lambda r: r / AU,
+                                             lambda a: a * AU))
+ax2.set_ylabel(r"$R$ (AU)")
+plt.show()
+```
+:::
+
+:::
+
+::: {.callout-note .worked-example collapse="true" title="Worked example: how small, and how massive, is the engine of 3C 273?"}
+**The question.** The brightness of 3C 273 can change by a noticeable fraction
+in about a day. How big can the region making that light be, in astronomical
+units? Its luminosity in visible light is $3.8 \times 10^{45}\
+\mathrm{erg\,s^{-1}}$; what is the smallest mass that can shine that brightly,
+and what is that mass's Schwarzschild radius?
+
+**The size**, from @eq-size-limit with $\Delta t = 1\ \mathrm{d} = 86{,}400\
+\mathrm{s}$:
+
+$$
+\begin{aligned}
+R &\lesssim 2.998 \times 10^{10}\ \mathrm{cm\,s^{-1}} \times 8.64 \times 10^{4}\ \mathrm{s} \\[0.8em]
+  &= 2.59 \times 10^{15}\ \mathrm{cm} .
+\end{aligned}
+$$
+
+Centimeters per second times seconds is centimeters. *Do the units make
+sense?* A size, so yes. In astronomical units,
+
+$$
+R \lesssim 2.59 \times 10^{15}\ \mathrm{cm}
+   \times \frac{1\ \mathrm{AU}}{1.496 \times 10^{13}\ \mathrm{cm}}
+  = 173\ \mathrm{AU} .
+$$
+
+**The mass**, from @eq-min-mass. The quick form is enough here:
+
+$$
+\begin{aligned}
+M &> \frac{3.8 \times 10^{45}\ \mathrm{erg\,s^{-1}}}
+          {1.26 \times 10^{38}\ \mathrm{erg\,s^{-1}}}\, M_\odot \\[0.8em]
+  &= 3.0 \times 10^{7}\,M_\odot .
+\end{aligned}
+$$
+
+The ergs per second cancel and leave a pure number of solar masses. *Do the
+units make sense?* A mass, so yes. (The light we counted is only the visible
+part, so the true lower limit is larger.)
+
+**The Schwarzschild radius** of $3.0 \times 10^{7}\,M_\odot = 6.0 \times
+10^{40}\ \mathrm{g}$ is
+
+$$
+\begin{aligned}
+r_S &= \frac{2 \times 6.6732 \times 10^{-8}\ \mathrm{cm^{3}\,g^{-1}\,s^{-2}}
+            \times 6.0 \times 10^{40}\ \mathrm{g}}
+           {\left(2.998 \times 10^{10}\ \mathrm{cm\,s^{-1}}\right)^2} \\[0.8em]
+    &= 9.0 \times 10^{12}\ \mathrm{cm} = 0.60\ \mathrm{AU} .
+\end{aligned}
+$$
+
+**Thirty million Suns at least, inside a region at most 173 AU across**, and
+a black hole of that mass, a little over half an astronomical unit in radius,
+fits inside it three hundred times over. The engine is a black hole. Its real
+mass, weighed by the gas orbiting it in the next section, is tens of times
+larger than this minimum, which is why 3C 273 shines at only a few percent of
+its Eddington limit.
+:::
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-engine}
+
+1. A quasar shines at $10^{46}\ \mathrm{erg\,s^{-1}}$ for a hundred million
+   years. How much energy is that, in ergs? If the energy came from gas
+   spiraling into a black hole with a radiative efficiency of 10% (lecture 7),
+   how much gas had to fall in, in solar masses? And if it came from nuclear
+   fusion, which releases 0.7% of the rest-mass energy of its fuel, how much
+   hydrogen would have had to burn?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
+   The energy is $L \times t$, with $t$ in seconds. Then $E = \eta\, m c^2$
+   gives the mass $m$ for each efficiency $\eta$; convert grams to solar
+   masses with a conversion fraction.
+
+   The energy is $3.2 \times 10^{61}\ \mathrm{erg}$. Accretion needs
+   $1.8 \times 10^{8}\,M_\odot$ of gas; fusion would need
+   $2.5 \times 10^{9}\,M_\odot$ of hydrogen, the mass of a small galaxy's
+   worth of stars, burned to completion inside a region the size of the Solar
+   System.
+   :::
+
+2. At that luminosity and efficiency, how much gas does the black hole swallow
+   each year, in solar masses per year? Compare with lecture 9's Eddington
+   accretion rate for a $10^{8}\,M_\odot$ black hole.
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   About $1.8\,M_\odot$ per year.
+   :::
+
+3. The X-rays of some active galactic nuclei change by a large fraction within
+   an hour. How big can the X-ray source be, in astronomical units? If the
+   black hole has $10^{7}\,M_\odot$, how many Schwarzschild radii is that?
+   Where in lecture 16's picture of the disk must those X-rays come from?
+
+4. Suppose someone proposed that a quasar is not a black hole but a cluster of
+   $10^{8}$ ordinary stars packed into a sphere $100\ \mathrm{AU}$ in radius.
+   How far apart would neighboring stars be, on average, in astronomical
+   units and in solar radii? What would happen to such a cluster, and how
+   fast?
+
+:::
+
+## Broad lines: the gas near the engine
+
+The emission lines that gave quasars away have a second thing to tell us. They
+are **broad**: not a sharp line at one wavelength but a hump spread over
+several nanometers, which is the Doppler effect at work. The light of each line
+comes from many clouds of gas, each moving at its own speed, some toward us
+and blueshifted, some away and redshifted, and the sum of all their lines is a
+single wide one (@fig-broad-line). The width of the hump measures the spread
+of speeds, and in a quasar it is thousands of kilometers per second, one
+percent of the speed of light or more. Nothing moves that fast unless
+something very massive is holding it in orbit very close by. This is the
+same reasoning that weighed the Milky Way in lecture 17: **how fast the gas
+orbits tells us how much mass is inside its orbit**, $M = rv^2/G$. The speed
+is in the width of the line. The radius is the hard part.
+
+```{python}
+#| label: fig-broad-line
+#| fig-cap: "How a broad emission line is made. Thousands of clouds of gas orbit the black hole, here at speeds of a few thousand kilometers per second, in every direction. Each cloud emits a sharp H$\\beta$ line at $486.1\\ \\mathrm{nm}$, Doppler shifted by its own motion along our line of sight (a few of them are drawn as thin lines). Their sum, the orange hump, is the broad line that is observed; its width across the middle corresponds here to about $5000\\ \\mathrm{km\\,s^{-1}}$. The narrow blue line is what gas moving at a few hundred kilometers per second would give instead, the width of the lines of a quiet galaxy."
+#| fig-alt: "A chart of brightness against wavelength near 486 nanometers, with a matching scale of velocity from minus 8000 to plus 8000 kilometers per second along the top. A broad, smooth orange hump spans from about 480 to 492 nanometers, with a horizontal bar across its middle labeled width. Under the hump, about a dozen faint thin spikes mark the sharp lines of individual clouds at scattered wavelengths. A tall narrow blue spike stands at the center, at 486.1 nanometers, much narrower than the hump."
+#| fig-height: 3.8
+
+rng = np.random.default_rng(206)
+lam0 = 486.1
+n_clouds = 4000
+# Clouds on circular orbits at a range of radii, speed falling as r^(-1/2),
+# with every orientation equally likely, so each one's line-of-sight speed is
+# its orbital speed times the cosine of a random angle.
+v_orb = 4500 * KMS * rng.uniform(0.6, 1.6, n_clouds) ** -0.5
+v_los = v_orb * rng.uniform(-1, 1, n_clouds)
+lam = np.linspace(478, 494, 1200)
+dv = (lam / lam0 - 1) * C                 # velocity of each wavelength
+width_cloud = 40 * KMS                    # each cloud's own small line width
+profile = np.zeros_like(lam)
+for v in v_los:
+    profile += np.exp(-0.5 * ((dv - v) / width_cloud) ** 2)
+profile /= profile.max()
+narrow = np.exp(-0.5 * (dv / (250 * KMS)) ** 2)
+
+fig, ax = plt.subplots(figsize=(5.8, 3.8))
+for v in v_los[:14]:
+    ax.plot(lam, 0.18 * np.exp(-0.5 * ((dv - v) / width_cloud) ** 2),
+            color=ORANGE, lw=0.7, alpha=0.6)
+ax.plot(lam, profile, color=ORANGE, lw=2.2, zorder=3)
+ax.plot(lam, 1.25 * narrow, color=BLUE, lw=2.0, zorder=4)
+half = lam[profile >= 0.5]
+ax.plot([half.min(), half.max()], [0.5, 0.5], color=INK2, lw=1.2)
+ax.text(lam0, 0.54, "width", color=INK2, fontsize=9.5, ha="center")
+ax.text(489.6, 0.9, "thousands of clouds\nin orbit: a broad line",
+        color=ORANGE, fontsize=9.5, ha="left")
+ax.text(484.9, 1.1, "a narrow line,\nfor comparison", color=BLUE,
+        fontsize=9.5, ha="right")
+ax.set_xlim(478, 494)
+ax.set_ylim(0, 1.4)
+ax.set_yticks([])
+ax.set_xlabel(r"wavelength (nm), near H$\beta$")
+ax.set_ylabel("brightness")
+axv = ax.secondary_xaxis("top", functions=(lambda l: (l / lam0 - 1) * C / KMS,
+                                           lambda v: lam0 * (1 + v * KMS / C)))
+axv.set_xlabel(r"velocity along the line of sight (km s$^{-1}$)")
+plt.show()
+```
+
+**How far out is the gas?** Nobody can see it; even in 3C 273, the
+line-emitting gas is a few thousandths of a second of arc from the center, a
+thousand times too small to resolve with an ordinary telescope. The trick is
+the one we just used: light-travel time. The gas glows because the quasar's
+light shines on it, so when the quasar brightens, the lines brighten too, but
+only after the light has had time to reach the gas. Watch a quasar's continuum
+and its lines for long enough, and the lines lag by a time $\tau$, which is the
+distance of the gas divided by the speed of light. This is **reverberation
+mapping** [@blandford1982], and after years of patient monitoring it has given
+the sizes of the line-emitting regions of dozens of quasars and active galaxies
+[@kaspi2000; @peterson2004]. The lags are weeks to a year: the gas is light-weeks
+to a light-year out, a thousand or so Schwarzschild radii, far outside the disk
+but far inside the galaxy. With $r = c\,\tau$ and $v$ from the width of the
+line,
+
+$$
+M = f\, \frac{c\, \tau\, v^2}{G} ,
+$$ {#eq-blr-mass}
+
+where $f$ is a number near one that accounts for the clouds not all being on
+circular orbits in one plane, and for the line's width being a particular
+measure of the spread of speeds. Weighed this way, the black hole of 3C 273 is
+about $9 \times 10^{8}\,M_\odot$ [@peterson2004], thirty times the minimum we
+found from its light, and the quasar shines at a few percent of its Eddington
+limit. In 2018 the gas was finally *seen* to orbit: combining the light of the
+four 8-meter telescopes of the Very Large Telescope in Chile, the GRAVITY
+instrument resolved the line-emitting region of 3C 273, about 150 light-days
+in radius and rotating, with one side coming toward us and the other going
+away, around a black hole of about $3 \times 10^{8}\,M_\odot$ [@gravity2018].
+Lecture 19 does the same thing for the black hole at the center of the Milky
+Way, where single stars can be followed around it.
+
+Closer in still, the innermost part of the disk emits the iron line of lecture
+16, broadened and skewed by orbital speeds near a third of the speed of light
+and by the gravitational redshift. The broad hydrogen lines of this lecture and
+the iron line of that one are the same effect at two distances: the Doppler
+effect, reading out the orbits of gas around a black hole.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-lines-mass}
+
+1. In a quasar the H$\beta$ line is observed to lag the continuum by 100 days,
+   and its width corresponds to a spread of speeds of
+   $3000\ \mathrm{km\,s^{-1}}$. Taking $f = 1$, what is the mass of the black
+   hole in solar masses?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
+   The radius is $r = c\,\tau$; convert the 100 days to seconds first, and
+   the speed to centimeters per second. Then @eq-blr-mass is lecture 17's
+   $rv^2/G$.
+
+   The gas is $2.6 \times 10^{17}\ \mathrm{cm}$ out, about $0.08\
+   \mathrm{pc}$, and the mass is $3.5 \times 10^{41}\ \mathrm{g} =
+   1.8 \times 10^{8}\,M_\odot$.
+   :::
+
+2. The line-emitting gas of 3C 273 is about $150$ light-days from a black
+   hole of about $3 \times 10^{8}\,M_\odot$ (the GRAVITY result above). How
+   fast does gas in a circular orbit move there, in kilometers per second? By
+   how many nanometers would that speed shift the H$\beta$ line of a cloud
+   coming straight toward us? How many Schwarzschild radii out is the gas?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   The orbital speed is about $3200\ \mathrm{km\,s^{-1}}$, which shifts
+   H$\beta$ by about $5\ \mathrm{nm}$; the gas is about $4000$ Schwarzschild
+   radii from the black hole.
+   :::
+
+3. The lines of a quiet galaxy's gas are a few hundred kilometers per second
+   wide, and a quasar's broad lines are ten times wider. By what factor is the
+   mass inside the orbit of the gas larger, if the gas is at the same radius?
+   Which galaxy does lecture 17 let you weigh this way, at what radius?
+
+4. Why does reverberation mapping take years of observing a single quasar?
+   Think about what has to happen, and be seen to happen, before a lag can be
+   measured, and about how long a lag of a hundred days is compared with how
+   quickly quasars change.
+
+:::
+
+## Quasars then and now
+
+The universe had far more quasars when it was young than it has today. The
+number of luminous quasars per volume of space rose steeply through the first
+few billion years after the Big Bang, peaked when the universe was about a
+quarter of its present age, and has fallen by a large factor since
+[@shen2020]. The brightest quasars we see are therefore mostly far away, and
+seen as they were long ago: 3C 273, at $677\ \mathrm{Mpc}$, is one of the
+closest there is.
+
+Where did they all go? Lynden-Bell's answer in 1969 was that a quasar is a
+phase, not a kind of object. A black hole shines as a quasar while gas is
+falling into it, and when the supply runs out, after perhaps a hundred million
+years, the light goes out, but the black hole stays, heavier than before. The
+galaxies around us today should therefore be full of **dead quasars**: black
+holes of millions to billions of solar masses, sitting quietly in the centers
+of galaxies [@lyndenbell1969]. That prediction is what the rest of the course
+tests. Lecture 19 finds the one at the center of our own Galaxy, from the
+orbits of stars around it. Lecture 20 looks at the galaxies whose black holes
+are still being fed, the active galactic nuclei, and at why they look so
+different from one another. Lecture 21 asks how the masses of these black
+holes are tied to the galaxies they live in, and lecture 22 returns to the jet
+of 3C 273.
+
+## If you want to go further
+
+None of this section is needed for what comes before or after.
+
+**Kutner, §19.4 to §19.6.** The chapter PDF in Canvas Files tells the
+discovery story of §*The discovery of quasars* at more length, including the
+decades-long argument over whether quasars were really as far away as their
+redshifts say (§19.4.3), the quasars that gravitational lensing splits into
+several images (§19.5), and the "unified picture" of active galaxies
+(§19.6), which lecture 20 takes up. Its end-of-chapter problems 19.4, 19.7,
+19.8, 19.9, 19.13 and 19.16 are on this lecture's material, and use
+$H_0 = 70\ \mathrm{km\,s^{-1}\,Mpc^{-1}}$ as we do.
+
+::: {.callout-warning .textbook-watch title="Textbook watch: when black holes were proposed for quasars"}
+Kutner's §19.4.3 says that *"when it was suggested in the 1980s that quasars
+might involve some form of black hole, the idea was not taken seriously by
+most."* The dates are off by two decades. Salpeter and Zel'dovich proposed
+accretion onto massive black holes as the power source in 1964, within a year
+of Schmidt's paper [@salpeter1964], and Lynden-Bell's 1969 paper
+[@lyndenbell1969] made the case in detail, including the prediction of dead
+quasars in the nuclei of ordinary galaxies. The idea took time to win over
+everyone, but it was on the table from the start.
+:::
+
+**Seeing the gas orbit.** The GRAVITY Collaboration's paper [-@gravity2018]
+is short, and its one figure, the shift of the line-emitting region's
+position from the red side of the line to the blue side, is the first direct
+picture of gas orbiting a quasar's black hole.
+
+**The first quasar papers.** The four papers in the 16 March 1963 issue of
+*Nature* that announced 3C 273 and 3C 48 [@hazard1963; @schmidt1963; @oke1963;
+@greenstein1963] are each a page or two long, and still readable.
+
+## Summary
+
+| idea | result | why it matters |
+|:---|:---|:---|
+| Spectral lines | emission lines from thin hot gas, at wavelengths set by the atom | the pattern of lines identifies the gas and gives its redshift |
+| The discovery | 3C 273's lines are hydrogen's, all shifted by $1 + z$ with $z = 0.158$ | a star-like object far beyond the galaxies |
+| Hubble's law | $v = H_0 D$, so $D = cz/H_0$ with $H_0 = 70\ \mathrm{km\,s^{-1}\,Mpc^{-1}}$ | a redshift is a distance (for $z \lesssim 0.2$) |
+| Luminosity | $L = 4\pi D^2 F$; 3C 273 gives off $10^{12}\,L_\odot$ in visible light | brighter than whole galaxies |
+| Size | $R \lesssim c\,\Delta t$; days of variability mean light-days of size | the light comes from a region the size of the Solar System |
+| Mass | $M > L\sigma_T/4\pi c G m_p$, the Eddington minimum | tens of millions of solar masses at least |
+| Why a black hole | that much mass in that little space, shining at up to tens of percent of $mc^2$ | nothing else can do it; Salpeter and Zel'dovich 1964, Lynden-Bell 1969 |
+| Broad lines | $M = f\,c\tau v^2/G$ from the line width and the reverberation lag | weighs the black hole: $\sim 10^{9}\,M_\odot$ for 3C 273 |
+| Then and now | quasars peaked when the universe was a quarter of its age | today's galaxies hold dead quasars |
+
+A quasar is a supermassive black hole caught eating. The black hole is the
+same one lecture 9 grew and lecture 17 weighed at the center of the Milky Way,
+and next time we go there: the stars that orbit Sagittarius A\* so closely
+that we can watch them go around, and what they tell us about the four million
+solar masses at the center of our own Galaxy.
+
+:::: {.content-visible when-format="html"}
+## References {.unnumbered}
+
+::: {#refs}
+:::
+::::
+
+::: {.content-visible when-format="pdf"}
+
+```{=latex}
+\clearpage
+\tableofcontents
+```
+:::
