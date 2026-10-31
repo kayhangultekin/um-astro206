@@ -30,6 +30,7 @@ project:
     - lectures/accretion-disks/index.qmd
     - lectures/galaxies-and-dark-matter/index.qmd
     - lectures/quasars/index.qmd
+    - lectures/galactic-center/index.qmd
   # No `resources:` entry for fonts/ is needed. Quarto follows the url()
   # references in the theme SCSS and copies those files next to the compiled
   # CSS itself. Adding fonts/ here published a SECOND copy at _site/fonts/,
@@ -111,6 +112,8 @@ website:
             text: "Galaxies and dark matter"
           - href: lectures/quasars/index.qmd
             text: "Quasars and their central engines"
+          - href: lectures/galactic-center/index.qmd
+            text: "Sgr A* and the Galactic center"
 
 format:
   live-html:

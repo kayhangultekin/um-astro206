@@ -1,0 +1,919 @@
+---
+title: "Sgr A* and the stars at the Galactic center"
+subtitle: "ASTRO 206 — Black Holes · Lecture 19"
+author: "Kayhan Gültekin"
+date: "November 12"
+date-format: "MMMM D"
+# Dates are LECTURE dates -- when the class meets -- not publication dates.
+# Sourced from Canvas (Reading & Reflection 3234223 and the In-Class Problem
+# 3219329, both due 2026-11-12). A placeholder string renders as "Invalid Date".
+
+# Kernel pinning is deliberate and must stay in the DOCUMENT, not _quarto.yml:
+# Quarto silently ignores a project-level `jupyter:` and auto-selects a kernel.
+jupyter: python3
+
+# No `pyodide: packages:` block: the one live cell needs numpy and matplotlib
+# only, which are inside Pyodide's default dependency closure.
+---
+
+::: {.callout-note appearance="simple" icon=false}
+**Disclaimer.** These notes have not been subjected to the usual scrutiny
+reserved for formal publications. They may be distributed outside this class
+only with the permission of the instructor.
+:::
+
+{{< include ../../_figure-setup.qmd >}}
+
+```{python}
+#| label: s2-orbit
+#| include: false
+
+# The course constants sheet, used by every figure on this page.
+C, G = 2.99792458e10, 6.6732e-8
+MSUN, PC, AU = 1.9891e33, 3.0856e18, 1.4959789e13
+KMS, YR = 1e5, 3.156e7
+
+# S2's published orbit: GRAVITY Collaboration 2020 (A&A 636, L5),
+# Table E.1, with the mass and distance of the same fit.
+S2 = dict(
+    a_as=0.125058,       # semi-major axis, arcsec
+    e=0.884649,          # eccentricity
+    i=134.567,           # inclination, degrees
+    omega=66.263,        # argument of pericenter, degrees
+    Omega=228.171,       # longitude of the ascending node, degrees
+    P=16.0455,           # period, years
+    tp=2018.379,         # time of pericenter, year
+    M=4.261e6,           # mass of Sgr A*, solar masses
+    R0=8.2467,           # distance to the Galactic center, kpc
+)
+
+
+def s2_state(t):
+    """S2's sky position (arcsec east, arcsec north of Sgr A*), its distance
+    from Sgr A* (cm), its speed (cm/s) and its Newtonian radial velocity
+    (cm/s, positive receding) at the times t (years), from the elements above."""
+    a, e = S2["a_as"], S2["e"]
+    inc, w, Om = (np.radians(S2[k]) for k in ("i", "omega", "Omega"))
+    mean = 2 * np.pi * (np.asarray(t, float) - S2["tp"]) / S2["P"]
+    E = mean.copy()
+    for _ in range(60):                       # Kepler's equation, by Newton's method
+        E -= (E - e * np.sin(E) - mean) / (1 - e * np.cos(E))
+    X, Y = np.cos(E) - e, np.sqrt(1 - e**2) * np.sin(E)
+    # Thiele-Innes constants: the orbit's plane turned to face us.
+    A = a * (np.cos(w) * np.cos(Om) - np.sin(w) * np.sin(Om) * np.cos(inc))
+    B = a * (np.cos(w) * np.sin(Om) + np.sin(w) * np.cos(Om) * np.cos(inc))
+    F = a * (-np.sin(w) * np.cos(Om) - np.cos(w) * np.sin(Om) * np.cos(inc))
+    Gc = a * (-np.sin(w) * np.sin(Om) + np.cos(w) * np.cos(Om) * np.cos(inc))
+    north, east = A * X + F * Y, B * X + Gc * Y
+    a_cm = a * S2["R0"] * 1e3 * AU             # arcsec times parsecs is AU
+    M = S2["M"] * MSUN
+    r = a_cm * (1 - e * np.cos(E))
+    speed = np.sqrt(G * M * (2 / r - 1 / a_cm))
+    nu = 2 * np.arctan2(np.sqrt(1 + e) * np.sin(E / 2), np.sqrt(1 - e) * np.cos(E / 2))
+    P_s = S2["P"] * YR
+    K = 2 * np.pi * a_cm * np.sin(inc) / (P_s * np.sqrt(1 - e**2))
+    v_r = K * (np.cos(w + nu) + e * np.cos(w))
+    return east, north, r, speed, v_r
+```
+
+At the center of the Milky Way, 26,000 light-years away, there is a dark object
+four million times as massive as the Sun, and we know its mass the way we know
+the Sun's: by watching things go around it. A handful of stars orbit it so
+closely and so fast that in a few decades astronomers have followed one of them
+all the way around, twice. This lecture is about that object, **Sagittarius
+A\***, how it was weighed, why nothing but a black hole fits what was found, and
+how the same star turned into the sharpest test of general relativity ever made
+in a strong gravitational field. It is the black hole that lecture 4 used for
+orbital precession, lecture 5 for gravitational redshift, lecture 16 for the
+Event Horizon Telescope's picture and lecture 17 for the mass at the center of
+the Galaxy. Here it gets a lecture of its own.
+
+## How to read this lecture
+
+**These notes are the reading for this lecture**; no chapter of Kutner covers
+the Galactic center as it is understood today, because almost all of what
+follows was measured after the book was written. The lecture builds one
+argument, and it is worth holding onto from the start:
+
+::: {.callout-important title="The idea at the center of this lecture"}
+**Stars at the center of the Milky Way orbit four million solar masses packed
+inside a region smaller than the Solar System. Kepler's third law weighs it,
+only a black hole fits, and the same orbits show the effects general
+relativity predicts.**
+:::
+
+Every tool it needs is one you already have. *Looking at the Galactic center*
+says why the center has to be watched in infrared light, and how sharp the
+picture has to be. *Weighing Sgr A\** turns one star's orbit into a mass with
+Kepler's third law, as Newton taught us to weigh the Sun. *Why it must be a
+black hole* asks what else could hold that much mass in so small a space.
+*Two tests of general relativity* goes back to the precession of lecture 4 and
+the redshift of lecture 5, and asks how large each one is for this star and
+how they were measured.
+
+## Looking at the Galactic center
+
+The center of the Milky Way lies in the constellation Sagittarius, about
+$8.0\ \mathrm{kpc}$ from the Sun, the value on your constants sheet: about
+26,000 light-years. In 1974 radio astronomers found a tiny, bright source of
+radio waves there [@balick1974], and it later took the name **Sagittarius A\***
+(Sgr A\*, said "saj A star"), the star marking it out from the larger radio
+source Sagittarius A around it. Everything in this lecture is about what sits
+at that spot.
+
+**It cannot be seen in visible light.** The line of sight from the Sun runs
+through the disk of the Galaxy, and the dust in the disk dims visible light
+from the center by tens of magnitudes, so that essentially none of it arrives;
+lecture 6 met the same problem. Infrared light, with wavelengths a few times
+longer, slips past dust grains much more easily, and a small but usable
+fraction of it gets through. So the stars near Sgr A\* are watched in the
+near infrared, at a wavelength of about $2.2\ \mu\text{m}$.
+
+**It has to be seen very sharply.** At the distance of the Galactic center a
+small angle is a large distance. The constants sheet's parallax relation,
+$d\,(\mathrm{pc}) = 1/p\,('')$, says that $1\ \mathrm{AU}$ seen from
+$1\ \mathrm{pc}$ spans $1''$. The size of something scales up with its
+distance at a fixed angle, so
+
+$$
+s\ (\mathrm{AU}) = \theta\ ('') \times d\ (\mathrm{pc}) ,
+$$ {#eq-small-angle}
+
+and at the Galactic center, $8000\ \mathrm{pc}$ away, **one arcsecond is 8000
+astronomical units**. The stars that matter here move on orbits a few
+thousand astronomical units across, so their whole orbits are a fraction of an
+arcsecond on the sky, and their closest approaches to Sgr A\* are thousandths
+of an arcsecond.
+
+::: {.callout-note .worked-example collapse="true" title="Worked example: how big is S2's orbit?"}
+**The question.** The star S2 moves on an ellipse whose semi-major axis spans
+$0.1255''$ on the sky. How long is that semi-major axis in astronomical units
+and in centimeters, taking the Galactic center to be $8.0\ \mathrm{kpc}$ away?
+
+From @eq-small-angle, with the distance in parsecs,
+
+$$
+s = 0.1255\ ('') \times 8000\ (\mathrm{pc}) = 1004\ \mathrm{AU} .
+$$
+
+Arcseconds times parsecs gives astronomical units, which is how the parallax
+relation was built. *Do the units make sense?* A length, so yes. In
+centimeters,
+
+$$
+1004\ \mathrm{AU} \times \frac{1.496 \times 10^{13}\ \mathrm{cm}}{1\ \mathrm{AU}}
+= 1.50 \times 10^{16}\ \mathrm{cm} .
+$$
+
+**About a thousand astronomical units**, some twenty-five times the size of
+Pluto's orbit, and the whole ellipse, two semi-major axes long, spans only a
+quarter of an arcsecond.
+:::
+
+### Sharper than the atmosphere allows
+
+A telescope's resolution is set by diffraction, $\theta = 1.22\,\lambda/D$ (on
+your constants sheet), where $D$ is the diameter of its mirror. One of the
+10-meter Keck telescopes, at $2.2\ \mu\text{m}$, could in principle separate
+two stars $0.055''$ apart, about $440\ \mathrm{AU}$ at the Galactic center.
+**In practice the atmosphere spoils it.** Turbulent air bends starlight one
+way and then another many times a second, and a star that should be a sharp
+point is smeared into a blob more than ten times larger, a full arcsecond or
+so. At the Galactic center, where hundreds of stars crowd into a few
+arcseconds, that turns a field of stars into a glowing smudge.
+
+**Adaptive optics** takes the smudge back out. A bright star near the target,
+or an artificial star made by shining a laser up into the high atmosphere, is
+watched hundreds of times a second; a computer works out how the air has
+distorted it, and a thin, deformable mirror in the telescope's light path is
+bent to undo the distortion before the light reaches the camera. With it, the
+big telescopes reach close to their diffraction limit, and the smudge
+resolves into separate stars. Take the same picture again every few months,
+and you can watch the stars move.
+
+Two groups have done exactly that since the 1990s: one led by Andrea Ghez at
+UCLA with the Keck telescopes in Hawaii, and one led by Reinhard Genzel at the
+Max Planck Institute for Extraterrestrial Physics with the European Southern
+Observatory's Very Large Telescope in Chile [@ghez2008; @gillessen2009]. Lecture
+5 showed Ghez's group's animation of the orbits. Since 2016 the European group
+has had a further trick, an instrument called **GRAVITY**, which combines the
+light of the four $8.2\ \mathrm{m}$ telescopes of the Very Large Telescope as
+an interferometer. It acts like a single telescope as large as the distance
+between them, about $130\ \mathrm{m}$, sharp to a few thousandths of an
+arcsecond: a few tens of astronomical units at the Galactic center.
+
+@fig-s2-sky is the result of that monitoring for one star: the orbit of S2
+(called S0-2 by the UCLA group) around Sgr A\*, drawn from the orbit the
+measurements fit.
+
+```{python}
+#| label: fig-s2-sky
+#| fig-cap: "The orbit of the star S2 on the sky, drawn from the orbit fitted by the GRAVITY Collaboration [@gravity2020precession]. Sgr A\\* is at the cross, at one focus of the ellipse, and the dots mark S2's position at the start of each year from 2002 to 2018, and the green diamond its closest approach to Sgr A\\*, passed in 2002 and again in 2018. The axes are offsets from Sgr A\\* in arcseconds, east to the left as astronomers draw the sky; the top and right axes are the same offsets in astronomical units at the distance of the Galactic center. The dots bunch together far from Sgr A\\*, where S2 moves slowly, and spread apart near the bottom, where it swings past Sgr A\\* in a few months, as Kepler's second law says it must."
+#| fig-alt: "A chart of a tall ellipse on the sky, its long axis running nearly vertically. The horizontal axis is the east-west offset from Sgr A star in arcseconds, from plus 0.06 on the left to minus 0.075 on the right, and the vertical axis is the north-south offset, from about minus 0.02 to plus 0.18. Matching axes on the top and right give the same offsets in astronomical units, up to about 1400. An orange cross labeled Sgr A star sits just inside the bottom end of the ellipse. Blue dots mark the star's position at the start of each year from 2002 to 2018, labeled 2006, 2010 and 2014 along the way; they are spaced evenly around the top and sides and spread farther apart toward the bottom. A green diamond at the bottom of the ellipse, just below the cross and slightly to its left, is labeled closest approach, 2002 and 2018."
+#| fig-height: 5.0
+
+t_dots = np.arange(2002.0, 2018.5, 1.0)
+t_line = np.linspace(S2["tp"], S2["tp"] + S2["P"], 2000)
+east, north, *_ = s2_state(t_line)
+ed, nd, *_ = s2_state(t_dots)
+ep, npk, *_ = s2_state(np.array([S2["tp"]]))
+fig, ax = plt.subplots(figsize=(4.6, 5.0))
+ax.plot(east, north, color=BLUE, lw=1.4, zorder=2)
+ax.plot(ed, nd, "o", color=BLUE, ms=5, mec=INK, mew=0.5, zorder=3)
+for t, x, y in zip(t_dots, ed, nd):
+    if int(t) in (2006, 2010, 2014):
+        ax.text(x - 0.007, y, f"{int(t)}", color=INK2, fontsize=9, va="center")
+ax.plot(ep, npk, "D", color=AQUA, ms=6, mec=INK, mew=0.6, zorder=4)
+ax.annotate("closest approach,\n2002 and 2018", xy=(ep[0], npk[0]),
+            xytext=(0.045, 0.035), color=INK2, fontsize=9, ha="left",
+            arrowprops=dict(arrowstyle="-", color=INK2, lw=0.8))
+ax.plot([0], [0], "x", color=ORANGE, ms=9, mew=2, zorder=4)
+ax.text(0.006, 0.006, "Sgr A*", color=ORANGE, fontsize=10, ha="left")
+ax.set_aspect("equal")
+ax.set_xlim(0.06, -0.075)             # east to the left, as on the sky
+ax.set_xticks([0.05, 0.0, -0.05])
+ax.set_xlabel(r"offset east of Sgr A* ($''$)")
+ax.set_ylabel(r"offset north of Sgr A* ($''$)")
+au = S2["R0"] * 1e3                   # AU per arcsecond
+axt = ax.secondary_xaxis("top", functions=(lambda x: x * au, lambda s: s / au))
+axt.set_xlabel("offset (AU)")
+axr = ax.secondary_yaxis("right", functions=(lambda y: y * au, lambda s: s / au))
+axr.set_ylabel("offset (AU)")
+plt.show()
+```
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-looking}
+
+1. The Galactic center is $8.0\ \mathrm{kpc}$ away. How many light-years is
+   that? How long ago did the infrared light from S2 that reaches a telescope
+   tonight leave the star?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   About 26,000 light-years, so the light left S2 about 26,000 years ago.
+   :::
+
+2. What is the diffraction limit of a 10-meter Keck telescope at
+   $2.2\ \mu\text{m}$, in arcseconds? What would it be in visible light, at
+   $550\ \mathrm{nm}$? Explain why the sharper limit in visible light is no
+   help at the Galactic center.
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   The limit is $0.055''$ at $2.2\ \mu\text{m}$, and $0.014''$ at $550\ \mathrm{nm}$. No
+   visible light arrives from the Galactic center, so there is nothing to
+   resolve.
+   :::
+
+3. GRAVITY works like a telescope $130\ \mathrm{m}$ across. Find its
+   diffraction limit at $2.2\ \mu\text{m}$ in arcseconds, and the distance
+   that angle spans at the Galactic center, in astronomical units. S2 comes
+   within about $120\ \mathrm{AU}$ of Sgr A\*. Could GRAVITY tell the two
+   apart at closest approach? Could a single Keck telescope?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
+   Use $\theta = 1.22\,\lambda/D$ with both lengths in the same unit, and
+   convert from radians to arcseconds with the constants sheet's
+   $1\ \mathrm{rad} = 206{,}265''$. Then @eq-small-angle.
+
+   GRAVITY resolves $0.0043''$, which is $34\ \mathrm{AU}$ at the Galactic
+   center, so yes. A single Keck telescope resolves about $440\ \mathrm{AU}$,
+   so no: at closest approach, S2 and Sgr A\* blur together.
+   :::
+
+4. The Event Horizon Telescope's ring around Sgr A\* is about
+   $52\ \mu\text{as}$ across (lecture 16), where $1\ \mu\text{as}$ is a
+   millionth of an arcsecond. How many astronomical units is that, at
+   $8.0\ \mathrm{kpc}$? Compare it with the size of S2's closest approach.
+
+:::
+
+## Weighing Sgr A\*
+
+::: {.panel-tabset .tracks}
+
+### Physical intuition
+
+The way to weigh anything in astronomy is to watch something orbit it. Kepler
+found that the planets obey a single rule, that the square of a planet's
+period is proportional to the cube of the size of its orbit, and Newton showed
+why: the rule follows from his law of gravity, and the constant of
+proportionality is the mass of the Sun. **A larger mass makes the same orbit
+faster.** Measure an orbit's size and how long it takes, and you have weighed
+whatever it goes around, without ever seeing it.
+
+That is all there is to weighing Sgr A\*. S2 goes around it once every
+16 years, on an ellipse about a thousand astronomical units in semi-major axis
+(@fig-s2-sky). Compare the Earth, which goes around the Sun once a year at one
+astronomical unit. S2's orbit is a thousand times larger, so if the central
+mass were the Sun's, the orbit would take $1000^{3/2}$, about 32,000, years.
+It takes 16. Something must be pulling far harder than the Sun, and Kepler's
+third law says how much harder: the mass at the center is about **four million
+solar masses**.
+
+Three things make this measurement unusually secure.
+
+**It is a whole orbit, not a snapshot.** S2 was first followed in the early
+1990s and passed its closest approach to Sgr A\* in 2002 [@schodel2002;
+@ghez2003] and again in 2018; it has been watched all the way around, twice.
+Its ellipse is not a guess at a shape from a few positions, it is a measured
+closed path.
+
+**Every star agrees.** Dozens of stars near Sgr A\* have measured orbits, of
+every size and tilt, and all of them have the same point at one focus and give
+the same central mass [@gillessen2009]. Whatever is there is one object, at
+one point, and it does not move: Sgr A\* itself, the radio source, sits at
+rest at that focus to within about a kilometer per second [@reid2020].
+
+**The star's own mass drops out.** S2 is a hot, young star of about fifteen
+solar masses. Next to four million, that is three parts in a million, far less
+than the uncertainty in the measurement.
+
+::: {.callout-tip .resolution collapse="true" title="Think about why S2's own mass does not matter"}
+Kepler's third law, in Newton's form, contains the *sum* of the two masses,
+$M + m$. The pull of gravity accelerates each body in proportion to the
+*other's* mass, so S2 moves in response to the four million solar masses at
+the center while the center moves in response to S2's fifteen. The central
+mass hardly moves at all, and S2's fifteen adds three parts in a million to
+the sum. It is the same reason the planets' masses can be left out when
+Kepler's law is used to weigh the Sun: Jupiter, the heaviest of them, is a
+thousandth of the Sun's mass.
+:::
+
+### Mathematical explanation
+
+**Kepler's third law**, in Newton's form, for two bodies of masses $M$ and $m$
+on an orbit of semi-major axis $a$ and period $P$:
+
+$$
+P^2 = \frac{4\pi^2 a^3}{G\,(M + m)} ,
+$$ {#eq-kepler}
+
+which is on your constants sheet as $4\pi^2 R^3/G = (m_1 + m_2) P^2$. When the
+orbiting body is much lighter than the central one, $m \ll M$, solve for the
+central mass:
+
+$$
+M = \frac{4\pi^2 a^3}{G\,P^2} .
+$$ {#eq-kepler-mass}
+
+*Its units*: $\mathrm{cm^{3}}$ on top, and $\mathrm{cm^{3}\,g^{-1}\,s^{-2}}
+\times \mathrm{s^{2}} = \mathrm{cm^{3}\,g^{-1}}$ below, which leaves
+$\mathrm{g}$, a mass.
+
+**In solar units** it is simpler still. For the Earth around the Sun, $a =
+1\ \mathrm{AU}$, $P = 1\ \mathrm{yr}$ and $M = 1\,M_\odot$, so dividing
+@eq-kepler-mass by the same formula for the Earth cancels the $4\pi^2/G$ and
+leaves
+
+$$
+\frac{M}{M_\odot} = \frac{\left(a/1\ \mathrm{AU}\right)^3}{\left(P/1\ \mathrm{yr}\right)^2} ,
+$$ {#eq-kepler-solar}
+
+the second form on your constants sheet: **the cube of the orbit in
+astronomical units, over the square of the period in years, is the mass in
+solar masses.**
+
+**What is actually measured** is an angle, not a length. The semi-major axis
+comes from its size on the sky, $\theta$, and the distance $d$, through
+@eq-small-angle, $a = \theta d$, so
+
+$$
+M = \frac{4\pi^2\,\theta^3\, d^3}{G\,P^2} \propto d^{3} .
+$$
+
+**The mass depends on the cube of the distance.** A distance 3% too small
+gives a mass 9% too small. The way out is the star's spectrum. The Doppler
+shift of S2's lines (lecture 3) gives its speed toward or away from us in
+kilometers per second, while its motion across the sky gives the same orbit's
+speed in arcseconds per year, and the orbit has to make both agree. The ratio
+of a speed in kilometers per second to the same speed in arcseconds per year
+is a distance. So **S2 measures the distance to the Galactic center as well
+as the mass there**, and the published fits give both together: $M =
+4.30 \times 10^{6}\,M_\odot$ at $d = 8.28\ \mathrm{kpc}$ [@gravity2022mass].
+
+::: {.content-visible when-format="pdf"}
+{{< include ../../in_class/lec19/exercises00.qmd >}}
+:::
+
+### Numerical exploration
+
+@fig-kepler plots @eq-kepler-solar: the period of an orbit against its size,
+for a central mass of one Sun and for the four million solar masses of
+Sgr A\*, on logarithmic axes, where each is a straight line. The planets sit
+on the Sun's line. S2 sits on the other, a thousand times farther out than the
+Earth and only sixteen times slower.
+
+```{python}
+#| label: fig-kepler
+#| fig-cap: "Kepler's third law, $P^2 = a^3/M$ in years, astronomical units and solar masses (@eq-kepler-solar), for a central mass of $1\\,M_\\odot$ (the Sun) and of $4.3 \\times 10^{6}\\,M_\\odot$ (Sgr A\\*), on logarithmic axes. The planets Earth, Jupiter and Neptune lie on the Sun's line; the star S2 lies on Sgr A\\*'s. A larger mass shifts the whole line down: the same orbit, gone around faster."
+#| fig-alt: "A chart with logarithmic axes. The horizontal axis is the semi-major axis of an orbit, from 0.3 to 3000 astronomical units, and the vertical axis is the orbital period, from 0.001 to 100,000 years. Two parallel straight lines rise from lower left to upper right. The upper one, in orange, is labeled 1 solar mass, the Sun; orange dots for Earth at 1 AU and 1 year, Jupiter at 5.2 AU and 12 years, and Neptune at 30 AU and 165 years sit on it. The lower line, in blue, is labeled 4.3 million solar masses, Sgr A star, and lies more than three powers of ten below. A green dot for the star S2 sits on the blue line at about 1000 AU and 16 years, directly below where the orange line would put a period of about 32,000 years."
+#| fig-height: 4.4
+
+# The star to put on the plot: its semi-major axis in AU and period in years.
+a_star = 1004.0        # semi-major axis of the star's orbit, in AU
+P_star = 16.05         # period of the star's orbit, in years
+
+a = np.logspace(np.log10(0.3), np.log10(3000), 200)
+fig, ax = plt.subplots(figsize=(5.8, 4.4))
+for M, color, label, xy in ((1.0, ORANGE, r"$1\,M_\odot$, the Sun", (0.45, 2.0)),
+                            (4.3e6, BLUE, r"$4.3 \times 10^{6}\,M_\odot$, Sgr A*",
+                             (12, 3.0e-3))):
+    ax.plot(a, np.sqrt(a**3 / M), color=color, lw=2)
+    ax.text(*xy, label, color=color, fontsize=10.5, rotation=27,
+            rotation_mode="anchor")
+for name, ap, Pp in (("Earth", 1.0, 1.0), ("Jupiter", 5.2, 11.9),
+                     ("Neptune", 30.1, 164.8)):
+    ax.plot([ap], [Pp], "o", color=ORANGE, ms=6, mec=INK, mew=0.6, zorder=3)
+    ax.text(ap * 1.25, Pp / 1.6, name, color=INK2, fontsize=9.5)
+M_star = a_star**3 / P_star**2
+ax.plot([a_star], [P_star], "o", color=AQUA, ms=8, mec=INK, mew=0.8, zorder=4)
+ax.text(a_star / 1.3, P_star * 1.8, "the star", color=INK2, fontsize=9.5,
+        ha="right")
+print(f"a = {a_star:g} AU, P = {P_star:g} yr: M = a^3/P^2 = {M_star:.3g} Msun")
+ax.set_xscale("log")
+ax.set_yscale("log")
+ax.set_xlim(0.3, 3000)
+ax.set_ylim(1e-3, 1e5)
+ax.set_xlabel(r"semi-major axis, $a$ (AU)")
+ax.set_ylabel(r"period, $P$ (years)")
+plt.show()
+```
+
+### Turn the knobs
+
+::: {.content-visible when-format="pdf"}
+Students have a live, editable version of this cell in the web notes —
+remind them to try it.
+:::
+
+::: {.content-visible when-format="html"}
+
+The same plot, but editable: change the size and period of the star's orbit on
+the two lines marked `# <- edit this` (lines 9 and 10 of the cell),
+run the cell, and read off the mass the orbit implies. Try the Earth (1 AU,
+1 year) to check that it gives the Sun; try halving S2's period and see how
+the mass changes; try a star at $1\ \mathrm{pc}$ (about 206,000 AU) moving in
+a circle at $130\ \mathrm{km\,s^{-1}}$, which takes about 47,000 years to go
+around.
+
+```{pyodide}
+#| autorun: false
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+BLUE, ORANGE, AQUA = "#2a78d6", "#eb6834", "#1baf7a"
+INK, INK2, MUTED = "#0b0b0b", "#52514e", "#898781"
+
+# The star to put on the plot: its semi-major axis in AU and period in years.
+a_star = 1004.0        # semi-major axis of the star's orbit, in AU  # <- edit this
+P_star = 16.05         # period of the star's orbit, in years  # <- edit this
+
+a = np.logspace(np.log10(0.3), np.log10(3000), 200)
+fig, ax = plt.subplots(figsize=(5.8, 4.4))
+for M, color, label, xy in ((1.0, ORANGE, r"$1\,M_\odot$, the Sun", (0.45, 2.0)),
+                            (4.3e6, BLUE, r"$4.3 \times 10^{6}\,M_\odot$, Sgr A*",
+                             (12, 3.0e-3))):
+    ax.plot(a, np.sqrt(a**3 / M), color=color, lw=2)
+    ax.text(*xy, label, color=color, fontsize=10.5, rotation=27,
+            rotation_mode="anchor")
+for name, ap, Pp in (("Earth", 1.0, 1.0), ("Jupiter", 5.2, 11.9),
+                     ("Neptune", 30.1, 164.8)):
+    ax.plot([ap], [Pp], "o", color=ORANGE, ms=6, mec=INK, mew=0.6, zorder=3)
+    ax.text(ap * 1.25, Pp / 1.6, name, color=INK2, fontsize=9.5)
+M_star = a_star**3 / P_star**2
+ax.plot([a_star], [P_star], "o", color=AQUA, ms=8, mec=INK, mew=0.8, zorder=4)
+ax.text(a_star / 1.3, P_star * 1.8, "the star", color=INK2, fontsize=9.5,
+        ha="right")
+print(f"a = {a_star:g} AU, P = {P_star:g} yr: M = a^3/P^2 = {M_star:.3g} Msun")
+ax.set_xscale("log")
+ax.set_yscale("log")
+ax.set_xlim(0.3, 3000)
+ax.set_ylim(1e-3, 1e5)
+ax.set_xlabel(r"semi-major axis, $a$ (AU)")
+ax.set_ylabel(r"period, $P$ (years)")
+plt.show()
+```
+:::
+
+:::
+
+::: {.callout-note .worked-example collapse="true" title="Worked example: weighing Sgr A* with S2"}
+**The question.** S2's orbit has a semi-major axis of $1004\ \mathrm{AU}$ at a
+distance of $8.0\ \mathrm{kpc}$ (the first worked example) and a period of
+$16.05$ years. What is the mass of Sgr A\*, in solar masses?
+
+The solar-unit form of Kepler's law, @eq-kepler-solar, needs only the cube of
+one number and the square of another. Keep the units on:
+
+$$
+\begin{aligned}
+\frac{M}{M_\odot} &= \frac{\left(1004\ \mathrm{AU} / 1\ \mathrm{AU}\right)^3}
+                         {\left(16.05\ \mathrm{yr} / 1\ \mathrm{yr}\right)^2} \\[0.8em]
+                  &= \frac{1.012 \times 10^{9}}{257.6} .
+\end{aligned}
+$$
+
+The astronomical units cancel on top and the years on the bottom, so the ratio
+is a pure number, and it is the mass in solar masses. *Do the units make
+sense?* A mass in units of the Sun's, so yes. The numbers give
+
+$$
+M = 3.9 \times 10^{6}\,M_\odot .
+$$
+
+**Four million solar masses.** The published value is
+$4.30 \times 10^{6}\,M_\odot$ [@gravity2022mass], about 9% larger, and the
+difference is the distance: the same fit puts the Galactic center at
+$8.28\ \mathrm{kpc}$, 3.5% farther than the $8.0\ \mathrm{kpc}$ we used, and
+the mass goes as the cube of the distance, $1.035^{3} = 1.11$.
+:::
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-weighing}
+
+1. Check @eq-kepler-solar against Jupiter, which orbits the Sun at
+   $5.20\ \mathrm{AU}$ every $11.86$ years. What mass does it give for the
+   Sun?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   It gives $5.20^3 / 11.86^2 = 140.6/140.7 = 1.00\,M_\odot$.
+   :::
+
+2. The star S4716 orbits Sgr A\* every 4.02 years on an orbit with a
+   semi-major axis of 402 AU [@peissker2022]. What mass does it give for
+   Sgr A\*?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   It gives $402^3/4.02^2 = 4.0 \times 10^{6}\,M_\odot$, the same as S2 gives.
+   :::
+
+3. Suppose the distance to the Galactic center were $8.3\ \mathrm{kpc}$
+   instead of $8.0$, with the angles and the period unchanged. By what factor
+   would every mass measured from the stars' orbits change? Would the
+   measured *periods* change?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
+   The semi-major axis in AU is the angle times the distance, and the mass goes
+   as its cube. The period is measured with a clock, and does not depend on
+   the distance at all.
+
+   The masses would all be $(8.3/8.0)^3 = 1.12$ times larger, 12% more. The
+   periods would not change.
+   :::
+
+4. A star at the Galactic center moves across the sky by $0.026''$ per year,
+   and its speed across the sky is known (from the shape of its orbit and the
+   Doppler shift of its lines) to be $1000\ \mathrm{km\,s^{-1}}$. How far away
+   is it, in parsecs?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
+   Turn the speed into astronomical units per year. In one year the star moves
+   a distance $s$ in AU, which spans $0.026''$, and @eq-small-angle then gives
+   the distance in parsecs.
+
+   A speed of $1000\ \mathrm{km\,s^{-1}}$ is $211\ \mathrm{AU}$ per year, so the distance
+   is $211/0.026 = 8100\ \mathrm{pc}$, about $8.1\ \mathrm{kpc}$.
+   :::
+
+5. A planet orbits a star at $2\ \mathrm{AU}$ every 1.41 years. What is the
+   mass of the star? Now suppose the same planet were moved to S2's
+   semi-major axis, about $1000\ \mathrm{AU}$, around the same star. How long
+   would one orbit take?
+
+:::
+
+## Why it must be a black hole
+
+Four million solar masses, then. The next question is how small a space they
+fit in, and the answer comes from S2's closest approach. At pericenter the
+star passes about $120\ \mathrm{AU}$ from Sgr A\*, seventeen light-hours,
+three times the size of Neptune's orbit, and its orbit there is still the
+ellipse that four million solar masses at a point would give. **The whole mass
+is inside $120\ \mathrm{AU}$.** For a mass that large, that is very small: the
+Schwarzschild radius of $4.3 \times 10^{6}\,M_\odot$ is
+$1.3 \times 10^{12}\ \mathrm{cm}$, $0.085\ \mathrm{AU}$, and S2's closest
+approach is still more than a thousand times larger. What could be in there?
+
+**Not ordinary stars.** Four million Suns spread through a sphere
+$120\ \mathrm{AU}$ in radius would be about one astronomical unit apart, and
+they would be in plain sight: four million suns, all within a fraction of an
+arcsecond, would outshine everything around them. Nothing like that is seen.
+
+**Not a cluster of dark objects either.** Suppose the mass were white dwarfs,
+neutron stars or stellar-mass black holes, dark but packed just as tightly. A
+cluster that dense would not last. Its members would pass close to one another
+again and again, some would be flung out and the rest would sink to the
+center, and in far less time than the age of the Galaxy the cluster would have
+evaporated or collapsed; collapse leaves one black hole
+[@maoz1998; @schodel2002; @genzel2010].
+
+**And the center sits still.** Sgr A\*, the radio source, is not moving: it
+stays at the focus of every orbit, and its motion out of the plane of the Galaxy is under two kilometers per
+second [@reid2020]. Something light would be jostled by the stars around it,
+at speeds like theirs; to stay that still, the radio source must itself carry
+at least about a quarter of the four million solar masses. The mass is *in*
+the radio source, not merely near it.
+
+Lecture 16 added the last piece. The Event Horizon Telescope's picture of Sgr
+A\* is a ring of light around a dark center, at the size general relativity
+predicts for a black hole of exactly the mass the stars give
+[@eht2022sgra]. Two methods, one with starlight and one with radio waves, one
+blind to light bending and one built on it, agree.
+
+**And it is very quiet.** A black hole of four million solar masses has an
+Eddington luminosity (lecture 8) of $5 \times 10^{44}\ \mathrm{erg\,s^{-1}}$,
+over a hundred billion Suns, enough to make it a respectable quasar.
+Sgr A\* gives off about three billionths of that: averaged over time it
+shines more than eight powers of ten below its Eddington limit
+[@genzel2010], a few hundred times the Sun's luminosity, from an object
+that could outshine its whole galaxy. It is the kind of dead quasar that Lynden-Bell
+predicted would sit in every galaxy (lecture 18): a black hole that grew long
+ago and is now starved of gas.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-black-hole}
+
+1. How many Schwarzschild radii of a $4.3 \times 10^{6}\,M_\odot$ black hole
+   is S2's closest approach, $120\ \mathrm{AU}$?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   The Schwarzschild radius is $1.27 \times 10^{12}\ \mathrm{cm} =
+   0.085\ \mathrm{AU}$, so $120\ \mathrm{AU}$ is about 1400 Schwarzschild
+   radii.
+   :::
+
+2. Suppose the four million solar masses inside S2's closest approach were
+   four million Suns, spread evenly through a sphere $120\ \mathrm{AU}$ in
+   radius. About how far apart would neighboring stars be? Compare with the
+   size of the Sun, $7 \times 10^{10}\ \mathrm{cm}$.
+
+3. Use the Eddington luminosity from lecture 8 to find the most luminous Sgr
+   A\* could be while feeding steadily, in solar luminosities.
+   Averaged over time, Sgr A\* shines at about $10^{-8.5}$ of that
+   [@genzel2010]. How many Suns' worth of light is that?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
+   Use $L_{\mathrm{Edd}} \approx 1.26 \times 10^{38}\,(M/M_\odot)\
+   \mathrm{erg\,s^{-1}}$, and the Sun's luminosity is on your constants sheet.
+
+   The Eddington luminosity is $L_{\mathrm{Edd}} = 5.4 \times 10^{44}\ \mathrm{erg\,s^{-1}} = 1.4 \times
+   10^{11}\,L_\odot$, and $10^{-8.5}$ of it is about 450 Suns.
+   :::
+
+:::
+
+## Two tests of general relativity
+
+S2 is useful twice over. Its orbit weighs Sgr A\*, and at its closest approach
+it is deep enough in the black hole's gravity that the corrections general
+relativity makes to Newton's picture become large enough to measure. Lecture 4
+met one of them, the precession of an orbit, and lecture 5 the other, the
+redshift of light climbing out of a gravitational field. Here is how big each
+one is for S2.
+
+**How big.** Both effects are controlled by one ratio: how close the star
+comes, in units of the Schwarzschild radius, $r_S/r$. For a body falling around
+a mass, it is also, roughly, the square of its speed in units of the speed of
+light, since the Newtonian speed of an orbit at distance $r$ satisfies
+$v^2 \sim GM/r = \tfrac12 r_S c^2/r$:
+
+$$
+\beta^2 = \frac{v^2}{c^2} \sim \frac{r_S}{r} .
+$$ {#eq-beta2}
+
+For the Earth around the Sun it is $10^{-8}$, and general relativity's
+corrections to the Earth's orbit are that small. For S2 at closest approach
+it is nearly $10^{-3}$, a hundred thousand times larger.
+
+::: {.callout-note .worked-example collapse="true" title="Worked example: how big are the relativistic effects for S2?"}
+**The question.** S2 passes $17$ light-hours from Sgr A\*, whose mass is
+$4.3 \times 10^{6}\,M_\odot$. What is $r_S/r$ there, and how fast a speed, in
+kilometers per second, is that fraction of the speed of light?
+
+The Schwarzschild radius, with $M = 4.3 \times 10^{6} \times 1.9891 \times
+10^{33}\ \mathrm{g} = 8.55 \times 10^{39}\ \mathrm{g}$:
+
+$$
+\begin{aligned}
+r_S &= \frac{2GM}{c^2} \\[0.8em]
+    &= \frac{2 \times 6.6732 \times 10^{-8}\ \mathrm{cm^{3}\,g^{-1}\,s^{-2}}
+                     \times 8.55 \times 10^{39}\ \mathrm{g}}
+                    {\left(2.998 \times 10^{10}\ \mathrm{cm\,s^{-1}}\right)^2} \\[0.8em]
+     &= 1.27 \times 10^{12}\ \mathrm{cm} .
+\end{aligned}
+$$
+
+The grams cancel and $\mathrm{cm^{3}\,s^{-2}}$ over $\mathrm{cm^{2}\,s^{-2}}$
+leaves centimeters. *Do the units make sense?* A radius, so yes. The distance
+is light's speed times 17 hours:
+
+$$
+\begin{aligned}
+r &= 2.998 \times 10^{10}\ \mathrm{cm\,s^{-1}} \times 17\ \mathrm{h}
+     \times \frac{3600\ \mathrm{s}}{1\ \mathrm{h}} \\[0.8em]
+  &= 1.83 \times 10^{15}\ \mathrm{cm} .
+\end{aligned}
+$$
+
+So
+
+$$
+\frac{r_S}{r} = \frac{1.27 \times 10^{12}\ \mathrm{cm}}{1.83 \times 10^{15}\ \mathrm{cm}}
+             = 6.9 \times 10^{-4} ,
+$$
+
+a pure number, as a ratio of two lengths must be. As a speed,
+
+$$
+6.9 \times 10^{-4} \times 3.00 \times 10^{5}\ \mathrm{km\,s^{-1}}
+  = 210\ \mathrm{km\,s^{-1}} .
+$$
+
+**About seven parts in ten thousand, or two hundred kilometers per second.**
+S2's ordinary Doppler shift at closest approach swings by thousands of
+kilometers per second, so the relativistic part is a few percent of it:
+small, but well within reach of a good spectrograph.
+:::
+
+### The redshift
+
+Light from S2 reaches us redshifted for three reasons. The first is the plain
+Doppler shift of its motion along our line of sight, lecture 3's, which
+Newton's orbit predicts exactly and which swings by thousands of kilometers per
+second as the star rounds the black hole. The other two are the ones
+relativity adds, and each is about half of @eq-beta2:
+
+* **The moving clock runs slow.** S2's atoms are clocks moving at a few
+  percent of the speed of light, and time dilation (lecture 3) makes them tick
+  slow by a fraction $\gamma - 1 \approx \tfrac12 v^2/c^2$, whichever way the
+  star is moving. This is the *transverse Doppler effect*, and it always
+  reddens the light.
+* **The light climbs out of the black hole's gravity.** From lecture 5, light
+  emitted at distance $r$ from a mass arrives redshifted by
+  $z \approx GM/rc^2 = \tfrac12 r_S/r$ when $r \gg r_S$.
+
+Together they redden S2's light at closest approach by about $200\
+\mathrm{km\,s^{-1}}$, on top of a Doppler swing of thousands
+(@fig-s2-redshift). In 2018 GRAVITY followed S2 through closest approach and
+measured exactly this extra redshift: as a fraction of what general relativity
+predicts, they found $f = 0.90 \pm 0.09$, with a further $\pm 0.15$ of
+systematic uncertainty, where $f = 0$ would mean Newton and
+$f = 1$ Einstein [@gravity2018redshift]. The UCLA group, with the Keck telescopes,
+measured the same thing independently a year later, $0.88 \pm 0.17$ on the
+same scale [@do2019].
+
+```{python}
+#| label: fig-s2-redshift
+#| fig-cap: "The radial velocity of S2, computed from the orbit fitted by the GRAVITY Collaboration [@gravity2020precession]. Top: the ordinary Doppler velocity of Newton's orbit, positive when the star moves away from us, from 2000 to 2022. It drifts slowly for most of the orbit and swings by thousands of kilometers per second in a few months around each closest approach, in 2002 and 2018. Bottom: what general relativity adds, the transverse Doppler shift and the gravitational redshift together, around the 2018 approach. It is under $30\\ \\mathrm{km\\,s^{-1}}$ for most of the orbit and peaks at about $200\\ \\mathrm{km\\,s^{-1}}$ at closest approach. This is a model, not data; the deck shows the measurements, which follow the bottom curve."
+#| fig-alt: "Two charts stacked, sharing a time axis in years. The top chart shows radial velocity in kilometers per second from 2000 to 2022: a blue curve that climbs slowly from about minus 1500 to plus 2000 over most of the period, with a sudden swing in 2002 and again in 2018, each rising steeply to about plus 4000 and then plunging to about minus 2000 within a few months. The bottom chart, from 2014 to 2022, shows the extra redshift from relativity in kilometers per second, as an orange curve that stays near 10 to 30 kilometers per second, rises sharply to a peak of about 200 in 2018, and falls back. A dotted vertical line marks the 2018 closest approach in both charts."
+#| fig-height: 5.0
+
+t = np.linspace(2000.0, 2022.0, 6000)
+_, _, r, speed, v_r = s2_state(t)
+z_rel = 0.5 * speed**2 / C**2 + G * S2["M"] * MSUN / (r * C**2)
+fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(5.8, 5.0), sharex=False,
+                               gridspec_kw=dict(height_ratios=[1.15, 1]))
+ax1.plot(t, v_r / KMS, color=BLUE, lw=1.8)
+ax1.axhline(0, color=AXIS, lw=0.8, zorder=0)
+ax1.set_xlim(2000, 2022)
+ax1.set_xticks([2000, 2005, 2010, 2015, 2020])
+ax1.set_ylabel(r"Doppler velocity (km s$^{-1}$)")
+tz = t[(t > 2014) & (t < 2022)]
+_, _, rz, sz, _ = s2_state(tz)
+zz = 0.5 * sz**2 / C**2 + G * S2["M"] * MSUN / (rz * C**2)
+ax2.plot(tz, zz * C / KMS, color=ORANGE, lw=2)
+ax2.set_xlim(2014, 2022)
+ax2.set_ylim(0, 240)
+ax2.set_xlabel("year")
+ax2.set_ylabel(r"relativistic redshift (km s$^{-1}$)")
+for ax in (ax1, ax2):
+    ax.axvline(S2["tp"], color=MUTED, lw=1, ls=":", zorder=0)
+ax2.text(S2["tp"] + 0.25, 200, "closest\napproach", color=INK2, fontsize=9.5,
+         va="top")
+fig.tight_layout()
+plt.show()
+```
+
+### The precession
+
+Lecture 4 gave the angle by which an orbit's long axis turns each time
+around, in curved spacetime:
+
+$$
+\Delta\phi = \frac{3\pi\, r_S}{a\,(1 - e^2)} ,
+$$ {#eq-precession}
+
+where $a$ is the semi-major axis and $e$ the eccentricity. For S2, with $a =
+1031\ \mathrm{AU}$, $e = 0.885$ and $M = 4.26 \times 10^{6}\,M_\odot$, it is
+$3.5 \times 10^{-3}$ radians per orbit, **about twelve arcminutes**, the number lecture 4 quoted. Mercury's
+is a tenth of an arcsecond per orbit; S2's is seven thousand times larger.
+
+Twelve arcminutes is a big angle, but seen from Earth it is a tiny shift. The
+orbit turns about Sgr A\*, so a point a distance $r$ from it moves sideways by
+about $r\,\Delta\phi$. At closest approach that is half an astronomical unit;
+at the far end of the orbit, almost two thousand astronomical units out, it is
+about seven, under a thousandth of an arcsecond. It took GRAVITY's sharpness,
+and S2's passage through closest approach in 2018, to see it. In 2020 the
+GRAVITY Collaboration reported the precession at $f_{\mathrm{SP}} =
+1.10 \pm 0.19$ times general relativity's prediction [@gravity2020precession]: S2's orbit is
+not a closed ellipse but a slowly turning rosette, as Einstein's theory says.
+
+::: {.callout-tip .resolution collapse="true" title="Think about why both tests had to wait for closest approach"}
+Both effects scale as $r_S/r$. S2's orbit has $e = 0.885$, so its farthest
+point is $(1 + e)/(1 - e) = 16$ times farther from Sgr A\* than its closest,
+and the relativistic redshift there is thirty times smaller, about seven
+kilometers per second. Most of the redshift, and most of the precession's
+turning, happens in the few months around closest approach (the bottom panel
+of @fig-s2-redshift). And those months are exactly when the ordinary Doppler
+shift changes fastest, so the Newtonian orbit has to be known extremely well
+to be subtracted. That is why it took two closest approaches, sixteen years
+apart, and a new instrument for the second, to make the measurement.
+:::
+
+<!-- american-spelling: ignore-begin
+     The Nobel motivation is quoted verbatim, in the committee's spelling. -->
+Andrea Ghez and Reinhard Genzel shared half of the 2020 Nobel Prize in Physics
+for this work, *"for the discovery of a supermassive compact object at
+the centre of our galaxy"* [@nobel2020]. The other half went to Roger
+Penrose, for showing that general relativity predicts black holes form.
+<!-- american-spelling: ignore-end -->
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-tests}
+
+1. Use @eq-precession to compute S2's precession per orbit in arcminutes, with
+   $M = 4.3 \times 10^{6}\,M_\odot$, $a = 1035\ \mathrm{AU}$ and $e = 0.886$.
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   The precession is $\Delta\phi = 3.6 \times 10^{-3}$ radians, which is
+   $12.4'$.
+   :::
+
+2. Find $r_S/r$ at the perihelion of Mercury, $4.6 \times 10^{12}\ \mathrm{cm}$
+   from the Sun. How many times larger is it for S2 at closest approach?
+
+   ::: {.callout-note .help-answer collapse="true" title="Answer"}
+   It is $6.4 \times 10^{-8}$ for Mercury, against $6.9 \times 10^{-4}$ for S2:
+   about 11,000 times larger.
+   :::
+
+3. S2's farthest point from Sgr A\* is $a(1 + e)$, with $a = 1035\
+   \mathrm{AU}$ and $e = 0.886$. Find $r_S/r$ there, and the relativistic
+   redshift as a speed in kilometers per second. Why is that harder to
+   measure than the redshift at closest approach, even though the star
+   spends years near its farthest point?
+
+4. Explain in a few sentences why the transverse Doppler shift reddens S2's
+   light whether the star is moving toward us or away from us, while the
+   ordinary Doppler shift can be a redshift or a blueshift.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+   One effect depends on the direction of the velocity and the other only on
+   its size. Which is which, and what does time dilation do to the frequency
+   of a moving clock's ticks?
+   :::
+
+:::
+
+## If you want to go further
+
+**The papers.** The GRAVITY Collaboration's two letters on the redshift
+[-@gravity2018redshift] and the precession [-@gravity2020precession] are each a few pages, and
+their figures are the ones in the lecture slides. The review by Genzel,
+Eisenhauer and Gillessen [-@genzel2010] tells the whole story of the Galactic
+center up to 2010 at length.
+
+**The closest stars.** S2 is no longer the star with the shortest known
+period: S4716 goes around Sgr A\* in about four years [@peissker2022]. Stars
+on still smaller orbits would feel the black hole's spin (lecture 2), and
+finding one is a goal of the next generation of telescopes.
+
+## Summary
+
+| | | |
+|---|---|---|
+| Where | Sgr A\*, $8.0\ \mathrm{kpc}$ away; one arcsecond is 8000 AU there | seen in the infrared, with adaptive optics and interferometry |
+| The star | S2: a 16-year orbit, $\sim 1000\ \mathrm{AU}$ across, closest approach $120\ \mathrm{AU}$ | followed all the way around, twice |
+| The mass | $M = 4\pi^2 a^3/GP^2$, or $a^3/P^2$ in AU, years and $M_\odot$ | about $4.3 \times 10^{6}\,M_\odot$, and the distance too |
+| Why a black hole | four million $M_\odot$ inside $120\ \mathrm{AU}$, at rest, the right size for the EHT | no cluster of stars could survive that dense |
+| How quiet | far below its Eddington luminosity | a starved, dead quasar |
+| Redshift | time dilation and gravitational redshift, each $\tfrac12 r_S/r$ | $\sim 200\ \mathrm{km\,s^{-1}}$ at closest approach, measured 2018 |
+| Precession | $\Delta\phi = 3\pi r_S/a(1 - e^2)$ | twelve arcminutes an orbit, measured 2020 |
+
+The black hole at the center of the Milky Way is the best-weighed black hole in
+the universe, and it is quiet. Next time we look at the ones that are not:
+the active galactic nuclei, of which the quasars of lecture 18 are the
+brightest, and the one picture, seen from different angles, that explains them
+all.
+
+:::: {.content-visible when-format="html"}
+## References {.unnumbered}
+
+::: {#refs}
+:::
+::::
