@@ -1,0 +1,1156 @@
+---
+title: "Active Galactic Nuclei and the Unified Model"
+subtitle: "ASTRO 206 — Black Holes · Lecture 20"
+author: "Kayhan Gültekin"
+date: "November 17"
+date-format: "MMMM D"
+# Dates are LECTURE dates -- when the class meets -- not publication dates.
+# Sourced from Canvas (Reading & Reflection 3234224 and the In-Class Problem
+# 3219331, both due 2026-11-17). A placeholder string renders as "Invalid Date".
+
+# Kernel pinning is deliberate and must stay in the DOCUMENT, not _quarto.yml:
+# Quarto silently ignores a project-level `jupyter:` and auto-selects a kernel.
+jupyter: python3
+
+# No `pyodide: packages:` block: the one live cell needs numpy and matplotlib
+# only, which are inside Pyodide's default dependency closure.
+---
+
+::: {.callout-note appearance="simple" icon=false}
+**Disclaimer.** These notes have not been subjected to the usual scrutiny
+reserved for formal publications. They may be distributed outside this class
+only with the permission of the instructor.
+:::
+
+{{< include ../../_figure-setup.qmd >}}
+
+```{python}
+#| label: agn-functions
+#| include: false
+
+# The course constants sheet, used by the dust figure on this page.
+SIG = 5.6696e-5
+WIEN = 2.89789e-1
+PC, LD = 3.0856e18, 2.99792458e10 * 86400.0
+
+
+def t_dust(L, r):
+    """Temperature (K) of a blackbody dust grain a distance r (cm) from L (erg/s)."""
+    return (L / (16 * np.pi * SIG * r**2)) ** 0.25
+```
+
+Lecture 18 met the quasars, the brightest of the black holes that are still
+being fed, and lecture 19 went to the quiet one at the center of our own Galaxy.
+Between those two extremes lies a whole family of galaxies whose centers are
+lit by a growing black hole. Astronomers discovered the members of the family
+one at a time, gave each a name, and for decades treated them as different
+kinds of object. This lecture is about what is really there: one machine, seen
+from different directions and run at different speeds.
+
+## How to read this lecture
+
+**These notes are the reading for this lecture, along with Kutner's §19.6.1,
+*A common picture*** (about a page and a half, in the Chapter 19 PDF under
+*Reading Material* in Canvas Files). The lecture builds one argument, and it is
+worth holding onto from the start:
+
+::: {.callout-important title="The idea at the center of this lecture"}
+**Every active galactic nucleus has the same parts, and what we call one depends
+mostly on the angle we see it from, how fast it is being fed, and whether it
+has a jet.**
+:::
+
+*The spectrum of an active nucleus* shows that the light spans the whole
+electromagnetic spectrum and that only part of it is the blackbody glow of
+lecture 16's disk. *Where each part of the light comes from* builds the
+machine, piece by piece, one piece for each part of the spectrum. *Accretion
+rate and state* shows how the mix changes with the feeding rate. *The zoo and
+the unified model* explains the names, and why most of them are one object seen
+from different directions. *The dusty torus* does the arithmetic: how far out
+the dust sits, and how much of the sky it hides.
+
+## The spectrum of an active nucleus {#sec-spectrum}
+
+An **active galactic nucleus**, or **AGN**, is the center of a galaxy where a
+supermassive black hole is swallowing gas fast enough that the light from the
+gas rivals or beats the light of the galaxy's stars. Quasars are the brightest
+AGN. Lecture 16 predicted what such an object ought to look like: a disk of gas
+at a range of temperatures, glowing like a stack of blackbodies, and nothing
+else. Here is what one actually looks like.
+
+:::: {.panel-tabset .tracks}
+
+### Physical intuition
+
+Spread out the light of an AGN by frequency, from radio waves to gamma rays,
+and you find five distinct features, each made by a different piece of the
+machine:
+
+1. **The big blue bump**, in the ultraviolet: the accretion disk of lecture 16.
+   This is the part we expected, and it is only one part of the story.
+2. **An infrared bump**: dust, a long way from the black hole, warmed by the
+   disk's light and glowing in the infrared.
+3. **A dip at about one micron** between those two bumps, called the
+   **one-micron inflection**. It marks the boundary between the two sources of
+   light, and we will see why it falls where it does when we get to the dust.
+4. **A long flat stretch of X-rays**, reaching hundreds of keV, ending in a
+   broad rise near 30 keV called the **Compton hump**.
+5. **Radio emission** from electrons spiraling in magnetic fields. In most AGN
+   this is faint. In a minority, roughly one in six among bright quasars, it
+   is hundreds to thousands of times brighter, and those are the **radio-loud** AGN.
+
+Every one of these is a clue. An ordinary star, or even a galaxy of them, puts
+its light out in a narrow range of frequencies; an AGN spreads its light over
+more than ten powers of ten in frequency. Most of it is not the disk's. Only a
+small part of the spectrum is the thermal blackbody we would expect from an
+accretion disk. And a piece of it can't be seen at all: hydrogen
+gas in our own Galaxy absorbs nearly all of the extreme ultraviolet, right at
+the top of the big blue bump, so the peak of the disk's light is usually
+inferred rather than measured.
+
+The shape is plotted in a way worth stopping to understand. Each horizontal
+step on the plot is a factor of ten in frequency, and the vertical axis is
+$\nu L_\nu$, which is the luminosity in that factor-of-ten range. So **the
+height of the curve says directly where the energy is coming out**, and two
+parts of the spectrum at the same height carry the same power. A flat stretch
+means equal energy in every band. That is why this is the plot astronomers
+reach for.
+
+### Mathematical explanation
+
+**What is plotted.** The luminosity per unit frequency is $L_\nu$, in
+$\mathrm{erg\,s^{-1}\,Hz^{-1}}$. Multiply it by the frequency and you get
+$\nu L_\nu$, in $\mathrm{erg\,s^{-1}}$, a true luminosity. On a logarithmic
+frequency axis, $\nu L_\nu$ is the power per unit $\ln \nu$:
+
+$$
+\int L_\nu \, d\nu = \int (\nu L_\nu) \, d\ln\nu .
+$$ {#eq-nulnu}
+
+Both sides have units of $\mathrm{erg\,s^{-1}}$, a luminosity, as they must,
+since $d\ln\nu$ is a pure number. Equal heights therefore mean equal power in
+equal logarithmic intervals, which is the point of the plot.
+
+**Where the big blue bump sits.** Lecture 16 found the temperature of the disk,
+
+$$
+T(r) = \left( \frac{G M \dot M}{4 \pi \sigma r^3} \right)^{1/4} ,
+$$
+
+and showed that at a fixed number of Schwarzschild radii and a fixed fraction
+of the Eddington rate it scales with the mass as
+
+$$
+T \propto M^{-1/4} .
+$$ {#eq-t-scaling}
+
+A disk around a $10\,M_\odot$ black hole, at its Eddington luminosity and at
+the ISCO, reached $1.6 \times 10^{7}\ \mathrm{K}$ in lecture 16's worked
+example. Scaling that to a black hole of mass $M$ gives
+
+$$
+T_{\mathrm{max}} = 1.6 \times 10^{7}\ \mathrm{K}
+  \left( \frac{M}{10\,M_\odot} \right)^{-1/4} .
+$$ {#eq-t-max}
+
+A stellar-mass black hole's disk peaks in X-rays. A supermassive black hole's
+disk, millions of times heavier, peaks in the ultraviolet, and that is the whole
+reason for the name *big blue bump*.
+
+**A sum of blackbodies.** The disk is not one temperature. Each ring radiates
+like a blackbody at its own $T(r)$, so the disk's spectrum is the sum of many
+Planck curves, the hot, small rings at high frequency and the cool, large rings
+at low. That sum is what makes the bump broader than any single blackbody,
+and it is what the code in the next tab adds up.
+
+### Numerical exploration
+
+@fig-sed builds an AGN spectrum out of its parts. The disk really is computed
+by adding up rings at the temperatures of lecture 16's formula. The other
+components are simple recipes with shapes chosen to match the observed spectra
+[@elvis1994], so read the figure as a schematic of where each part sits, not as
+a measurement. The code prints where the disk's own contribution peaks.
+
+```{python}
+#| label: fig-sed
+#| fig-cap: "A schematic spectrum of an active nucleus, as $\\nu L_\\nu$ relative to the total luminosity $L$, against frequency on logarithmic axes, for a $10^{8}\\,M_\\odot$ black hole at its Eddington luminosity. The top axis gives the same frequencies as a wavelength or a photon energy. The disk (blue) is the sum of blackbody rings at the temperature of lecture 16; the dust (orange), the X-ray corona (green), the Compton hump (gray dashes) and the radio emission (gray dots) are simple recipes. The black curve is their sum. Radio emission is shown for a radio-loud nucleus and, much fainter, for a radio-quiet one."
+#| fig-alt: "A chart with logarithmic axes. The horizontal axis is frequency from ten to the nine to ten to the twenty hertz, with a matching top axis marked 3 centimeters, 300 microns, 3 microns, 300 angstroms, 4 keV and 400 keV. The vertical axis is nu L nu relative to the total luminosity, from one millionth to about three. A solid black curve runs across the plot. At the left it starts at about one percent in the radio. It climbs steeply near ten to the twelve hertz into an orange infrared bump, flat at about one fifth from ten to the 13 to ten to the 14 hertz, dips to about one percent near ten to the 14.5 hertz, which is one micron, rises to a blue ultraviolet bump that peaks at about one half near ten to the 16 hertz, falls to about one percent in the X-rays where a green flat line runs, rises slightly at a gray dashed bump near 30 keV, and drops at the far right. A much fainter gray dotted line near one hundred thousandth marks a radio-quiet nucleus."
+#| fig-height: 4.2
+
+# Constants (cgs) from the course sheet.
+C, G, H, KB, SIG = 2.99792458e10, 6.6732e-8, 6.6262e-27, 1.3806e-16, 5.6696e-5
+MSUN, LEDD, ETA = 1.9891e33, 1.26e38, 0.057  # LEDD is per solar mass
+
+M_bh = 1.0e8           # mass of the black hole, in solar masses
+f_edd = 1.0            # luminosity as a fraction of the Eddington luminosity
+cover = 0.5            # fraction of the sky covered by the dust
+
+nu = np.logspace(9, 20.3, 1500)
+dln = np.log(nu[1] / nu[0])
+L = f_edd * LEDD * M_bh
+
+
+def planck(nu, T):
+    """The Planck function, up to a constant (the constant is normalized away)."""
+    return nu**3 / np.expm1(np.minimum(H * nu / (KB * T), 600.0))
+
+
+def scaled(L_nu, total):
+    """Scale a spectrum so that it adds up to the luminosity `total`."""
+    return L_nu * total / (L_nu * nu * dln).sum()
+
+
+# The disk: rings from the ISCO to 100,000 r_S, at lecture 16's temperature.
+rs = 2 * G * M_bh * MSUN / C**2
+Mdot = L / (ETA * C**2)
+r = rs * np.logspace(np.log10(3), 5, 200)
+T = (G * M_bh * MSUN * Mdot / (4 * np.pi * SIG * r**3)) ** 0.25
+disk = scaled((planck(nu[:, None], T) * r**2).sum(axis=1), L)
+
+# The dust: equal energy per logarithmic step in temperature, 100 K to 1500 K.
+T_d = np.logspace(2, np.log10(1500.0), 40)
+dust = scaled((planck(nu[:, None], T_d) * nu[:, None] * T_d**-5.0).sum(axis=1),
+              max(cover, 1e-9) * L)
+
+# X-rays: a corona and the hump it makes by reflecting off the disk.
+E = H * nu / 1.602e-9                               # photon energy in keV
+corona = 0.02 * L * (E / 2.0) ** 0.1 * np.exp(-E / 300.0 - 0.1 / E)
+hump = 0.006 * L * np.exp(-0.5 * (np.log10(E / 30.0) / 0.3) ** 2)
+
+# Radio: a power law that turns over in the far infrared.
+radio_loud = 0.005 * L * (nu / 5e9) ** 0.3 * np.exp(-nu / 1e12)
+radio_quiet = 2e-3 * radio_loud
+
+total = nu * (disk + dust) + corona + hump + radio_loud
+
+fig, ax = plt.subplots(figsize=(5.55, 4.2))
+ax.plot(nu, nu * disk / L, color=BLUE, lw=1.5, label="disk")
+ax.plot(nu, nu * dust / L, color=ORANGE, lw=1.5, label="dust")
+ax.plot(nu, corona / L, color=AQUA, lw=1.5, label="corona")
+ax.plot(nu, hump / L, color=INK2, lw=1.3, ls="--", label="Compton hump")
+ax.plot(nu, radio_loud / L, color=INK2, lw=1.3, ls=":", label="radio")
+ax.plot(nu, radio_quiet / L, color=INK2, lw=1.3, ls=":")
+ax.plot(nu, total / L, color=INK, lw=2.2, label="total")
+ax.set_xscale("log")
+ax.set_yscale("log")
+ax.set_xlim(1e9, 2e20)
+ax.set_ylim(1e-6, 3.0)
+ax.set_xlabel(r"frequency $\nu$ (Hz)")
+ax.set_ylabel(r"$\nu L_\nu / L$")
+ax.legend(fontsize=9, loc="upper left", ncol=2)
+top = ax.secondary_xaxis("top")
+top.set_xticks([1e10, 1e12, 1e14, 1e16, 1e18, 1e20])
+top.set_xticklabels(["3 cm", r"300 $\mu$m", r"3 $\mu$m", r"300 Å", "4 keV", "400 keV"],
+                    fontsize=9)
+top.minorticks_off()
+peak = nu[np.argmax(nu * disk)]
+print(f"M = {M_bh:.0e} Msun, L = {L:.2e} erg/s")
+print(f"disk peaks at {peak:.1e} Hz = {C / peak * 1e7:.0f} nm")
+plt.show()
+```
+
+### Turn the knobs
+
+::: {.content-visible when-format="pdf"}
+Students have a live, editable version of this cell in the web notes —
+remind them to try it.
+:::
+
+::: {.content-visible when-format="html"}
+
+The same plot, but editable: change the mass, the Eddington fraction and the
+covering fraction on the three lines marked `# <- edit this` (lines 9, 10 and
+11 of the cell), run the cell, and watch the bumps move. Try a black hole of
+$10\,M_\odot$ and watch the disk's bump slide into the X-rays. Cut `f_edd` to
+$0.01$ and see the disk cool. Set `cover` to zero and see what is left of the
+infrared.
+
+```{pyodide}
+#| autorun: false
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+BLUE, ORANGE, AQUA, INK, INK2 = "#2a78d6", "#eb6834", "#1baf7a", "#0b0b0b", "#52514e"
+C, G, H, KB, SIG = 2.99792458e10, 6.6732e-8, 6.6262e-27, 1.3806e-16, 5.6696e-5
+MSUN, LEDD, ETA = 1.9891e33, 1.26e38, 0.057  # LEDD is per solar mass
+
+M_bh = 1.0e8           # mass of the black hole, in solar masses  # <- edit this
+f_edd = 1.0            # luminosity as a fraction of the Eddington luminosity  # <- edit this
+cover = 0.5            # fraction of the sky covered by the dust  # <- edit this
+
+nu = np.logspace(9, 20.3, 1500)
+dln = np.log(nu[1] / nu[0])
+L = f_edd * LEDD * M_bh
+
+
+def planck(nu, T):
+    """The Planck function, up to a constant (the constant is normalized away)."""
+    return nu**3 / np.expm1(np.minimum(H * nu / (KB * T), 600.0))
+
+
+def scaled(L_nu, total):
+    """Scale a spectrum so that it adds up to the luminosity `total`."""
+    return L_nu * total / (L_nu * nu * dln).sum()
+
+
+# The disk: rings from the ISCO to 100,000 r_S, at lecture 16's temperature.
+rs = 2 * G * M_bh * MSUN / C**2
+Mdot = L / (ETA * C**2)
+r = rs * np.logspace(np.log10(3), 5, 200)
+T = (G * M_bh * MSUN * Mdot / (4 * np.pi * SIG * r**3)) ** 0.25
+disk = scaled((planck(nu[:, None], T) * r**2).sum(axis=1), L)
+
+# The dust: equal energy per logarithmic step in temperature, 100 K to 1500 K.
+T_d = np.logspace(2, np.log10(1500.0), 40)
+dust = scaled((planck(nu[:, None], T_d) * nu[:, None] * T_d**-5.0).sum(axis=1),
+              max(cover, 1e-9) * L)
+
+# X-rays: a corona and the hump it makes by reflecting off the disk.
+E = H * nu / 1.602e-9                               # photon energy in keV
+corona = 0.02 * L * (E / 2.0) ** 0.1 * np.exp(-E / 300.0 - 0.1 / E)
+hump = 0.006 * L * np.exp(-0.5 * (np.log10(E / 30.0) / 0.3) ** 2)
+
+# Radio: a power law that turns over in the far infrared.
+radio_loud = 0.005 * L * (nu / 5e9) ** 0.3 * np.exp(-nu / 1e12)
+radio_quiet = 2e-3 * radio_loud
+
+total = nu * (disk + dust) + corona + hump + radio_loud
+
+fig, ax = plt.subplots(figsize=(5.55, 4.2))
+ax.plot(nu, nu * disk / L, color=BLUE, lw=1.5, label="disk")
+ax.plot(nu, nu * dust / L, color=ORANGE, lw=1.5, label="dust")
+ax.plot(nu, corona / L, color=AQUA, lw=1.5, label="corona")
+ax.plot(nu, hump / L, color=INK2, lw=1.3, ls="--", label="Compton hump")
+ax.plot(nu, radio_loud / L, color=INK2, lw=1.3, ls=":", label="radio")
+ax.plot(nu, radio_quiet / L, color=INK2, lw=1.3, ls=":")
+ax.plot(nu, total / L, color=INK, lw=2.2, label="total")
+ax.set_xscale("log")
+ax.set_yscale("log")
+ax.set_xlim(1e9, 2e20)
+ax.set_ylim(1e-6, 3.0)
+ax.set_xlabel(r"frequency $\nu$ (Hz)")
+ax.set_ylabel(r"$\nu L_\nu / L$")
+ax.legend(fontsize=9, loc="upper left", ncol=2)
+top = ax.secondary_xaxis("top")
+top.set_xticks([1e10, 1e12, 1e14, 1e16, 1e18, 1e20])
+top.set_xticklabels(["3 cm", r"300 $\mu$m", r"3 $\mu$m", r"300 Å", "4 keV", "400 keV"],
+                    fontsize=9)
+top.minorticks_off()
+peak = nu[np.argmax(nu * disk)]
+print(f"M = {M_bh:.0e} Msun, L = {L:.2e} erg/s")
+print(f"disk peaks at {peak:.1e} Hz = {C / peak * 1e7:.0f} nm")
+plt.show()
+```
+
+:::
+
+::::
+
+::: {.callout-note .worked-example collapse="true" title="Worked example: where does the disk of a hundred-million-solar-mass black hole peak?"}
+**The question.** A non-spinning black hole of $10^{8}\,M_\odot$ is shining at
+its Eddington luminosity. How hot is its disk at the ISCO, and at what
+wavelength does a blackbody at that temperature peak?
+
+The scaling @eq-t-max carries the units along in the temperature it starts
+from; the ratio of masses is a pure number. So
+
+$$
+\begin{aligned}
+T_{\mathrm{max}} &= 1.6 \times 10^{7}\ \mathrm{K}
+  \left( \frac{10^{8}\,M_\odot}{10\,M_\odot} \right)^{-1/4} \\[0.8em]
+ &= 1.6 \times 10^{7}\ \mathrm{K} \times \left(10^{7}\right)^{-1/4} .
+\end{aligned}
+$$
+
+The solar masses cancel. *Do the units make sense?* A kelvin in, and a pure
+number multiplying it: a temperature, so yes. Now the number: $(10^{7})^{1/4} =
+56$, so
+
+$$
+T_{\mathrm{max}} = \frac{1.6 \times 10^{7}\ \mathrm{K}}{56}
+  = 2.8 \times 10^{5}\ \mathrm{K} .
+$$
+
+Wien's law, on your constants sheet, gives the wavelength:
+
+$$
+\lambda_{\mathrm{max}} = \frac{2.898 \times 10^{-1}\ \mathrm{cm\,K}}
+  {2.8 \times 10^{5}\ \mathrm{K}} = 1.0 \times 10^{-6}\ \mathrm{cm} ,
+$$
+
+and the conversion to nanometers, set up so the unwanted unit cancels, is
+
+$$
+1.0 \times 10^{-6}\ \mathrm{cm} \times
+  \frac{10^{7}\ \mathrm{nm}}{1\ \mathrm{cm}} = 10\ \mathrm{nm} .
+$$
+
+The kelvins cancel, leaving a length. **The hottest part of the disk radiates at
+about $10\ \mathrm{nm}$, in the extreme ultraviolet**, the band our own Galaxy's
+hydrogen blocks. The whole disk's output adds up the cooler rings too, so the
+bump as a whole peaks at a longer wavelength than this, as @fig-sed shows.
+:::
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-spectrum}
+
+1. Use @eq-t-max to find the temperature at the ISCO of a disk around a
+   $10^{9}\,M_\odot$ black hole at its Eddington luminosity, and the wavelength
+   where a blackbody at that temperature peaks.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   $T_{\mathrm{max}} = 1.6 \times 10^{5}\ \mathrm{K}$ and
+   $\lambda_{\mathrm{max}} = 18\ \mathrm{nm}$.
+   :::
+
+2. On a plot of $\nu L_\nu$ against frequency, the radio and the X-ray parts of
+   an AGN's spectrum are at the same height. Do they carry the same power per
+   hertz? Do they carry the same power per factor-of-ten range in frequency?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+   Look at what $\nu$ does between the radio and the X-rays, and remember that
+   the plotted quantity is $\nu L_\nu$ rather than $L_\nu$.
+   :::
+
+3. How much hotter, at the ISCO and at the same Eddington fraction, is the disk
+   of a $10\,M_\odot$ black hole than the disk of a $10^{7}\,M_\odot$ black
+   hole?
+
+:::
+
+## Where each part of the light comes from {#sec-parts}
+
+@fig-unified, later in this lecture, is the whole machine in one picture. Here
+we go through it one piece at a time, in order of distance from the black
+hole.
+
+### The disk
+
+This is lecture 16's accretion disk: optically thick, geometrically thin, dense
+and ionized, with the temperature falling with distance as $r^{-3/4}$. Its
+inner edge is at the ISCO, its innermost rings reach hundreds of thousands of
+kelvin around a supermassive black hole, and a large fraction of the energy is
+released within a few tens of Schwarzschild radii. The idea that the big blue
+bump is the thermal glow of such a disk goes back to 1978 [@shields1978]. The radiative efficiency
+that comes out of this disk, the $\eta$ of lecture 7, is set by where the
+ISCO is and so by the black hole's spin. That is the connection we have been
+using since lecture 7, and it is why the big blue bump can be turned into a
+statement about how much mass the black hole has swallowed.
+
+### Magnetic fields and the corona
+
+The disk is made of ionized gas, so the particles circulating in it are charged
+particles in motion, and moving charges generate magnetic fields. The black
+hole itself cannot do this: an isolated black hole, by the no-hair theorem of
+lecture 2, has no magnetic field of its own. But a field can be induced in the
+disk close to the hole, and the field lines are anchored to the disk by the
+charged particles threading them. Lecture 16's magnetorotational instability
+already told us that those fields are not a detail: they are the friction that
+lets the disk accrete at all.
+
+As the disk rotates, the field lines passing through it get wound up and
+tangled. Anything wound up that tightly eventually snaps: two field lines
+pointing in opposite directions touch, cancel, and reconnect in a new
+configuration, releasing the energy stored in the field. This is **magnetic
+reconnection**, and you have seen its effects. The photosphere of the Sun is
+about $6000\ \mathrm{K}$, but its outer atmosphere, the corona, is at millions
+of degrees, and the same process is thought to be responsible.
+
+Around an accretion disk it is thought to do the same thing, on a grander
+scale, and the energy released accelerates electrons to high energies. These
+hot electrons form a tenuous cloud above and below the inner disk, named after
+its solar counterpart: the **corona** [@haardt1991]. Lecture 16 used the corona
+as the source of the X-rays that make the iron line. Now we can ask how it makes
+them.
+
+### X-rays: Compton scattering and its inverse
+
+When a high-energy photon hits a free electron, it can bounce off, handing some
+of its energy to the electron. This is **Compton scattering** [@compton1923].
+The photon comes out with less energy, which is to say a longer wavelength, and
+the shift depends only on the angle $\theta$ through which it was scattered:
+
+$$
+\Delta \lambda = \lambda' - \lambda
+  = \frac{h}{m_e c} \left( 1 - \cos\theta \right) .
+$$ {#eq-compton}
+
+The combination $h/m_e c = 2.43 \times 10^{-10}\ \mathrm{cm}$ is the **Compton
+wavelength** of the electron. Check its units: $\mathrm{erg\,s}$ over
+$\mathrm{g\,cm\,s^{-1}}$, with an erg being $\mathrm{g\,cm^{2}\,s^{-2}}$, gives
+$\mathrm{cm}$, a length. The shift is tiny compared with the wavelength of
+visible light and comparable to the wavelength of a hard X-ray, which is why
+Compton scattering matters for X-rays and gamma rays and not for your reading
+lamp.
+
+**Inverse Compton scattering** is the same collision viewed from the other side.
+A low-energy photon hits a fast-moving electron, and this time it is the
+*photon* that gains energy, taken from the electron. For an electron with
+Lorentz factor $\gamma$, a photon's energy goes up by roughly a factor of
+$\gamma^2$.
+
+This is how the corona works. The disk bathes it in ultraviolet photons. Those
+photons run through the cloud of hot electrons, picking up energy as they
+scatter, and leave as X-rays. In a real corona the electrons are at about a
+billion kelvin, where their thermal energy is about a sixth of their rest
+energy, so each scattering gives only a modest boost and it takes several scatterings to reach
+the X-rays: the process is called **Comptonization**. The steady climb in
+energy, one scatter at a time, is what produces the long flat stretch of X-rays
+in @fig-sed. It cuts off where the photons have as much energy as the electrons
+can give them, which is at hundreds of keV.
+
+Some of those X-rays head back down and hit the disk. Most of them bounce off
+it: this is the same Compton scattering, and the bounced X-rays pile up near
+$30\ \mathrm{keV}$ to make the **Compton hump**. And some are absorbed by iron
+atoms, which give off the iron line whose relativistic shape lecture 16
+analyzed.
+
+::: {.callout-note .worked-example collapse="true" title="Worked example: why the hump sits near 30 keV"}
+**The question.** X-rays of $30\ \mathrm{keV}$ and of $300\ \mathrm{keV}$ each
+scatter straight back off an electron in the disk ($\theta = 180°$). How much
+energy does each keep?
+
+A photon's wavelength is $\lambda = hc/E$. For the $300\ \mathrm{keV}$ photon,
+with the energy converted to ergs,
+
+$$
+\begin{aligned}
+E &= 300\ \mathrm{keV} \times
+     \frac{1.602 \times 10^{-9}\ \mathrm{erg}}{1\ \mathrm{keV}} \\[0.8em]
+  &= 4.81 \times 10^{-7}\ \mathrm{erg} , \\[0.8em]
+\lambda &= \frac{6.626 \times 10^{-27}\ \mathrm{erg\,s}
+     \times 2.998 \times 10^{10}\ \mathrm{cm\,s^{-1}}}
+     {4.81 \times 10^{-7}\ \mathrm{erg}} .
+\end{aligned}
+$$
+
+The ergs and the seconds cancel, leaving centimeters. *Do the units make sense?*
+A wavelength is a length, so yes. The number is
+$\lambda = 4.13 \times 10^{-10}\ \mathrm{cm}$. Straight-back scattering has
+$1 - \cos\theta = 2$, so @eq-compton adds
+$2 \times 2.43 \times 10^{-10}\ \mathrm{cm} = 4.85 \times 10^{-10}\ \mathrm{cm}$:
+
+$$
+\begin{aligned}
+\lambda' &= 8.98 \times 10^{-10}\ \mathrm{cm} , \\[0.8em]
+E' &= 300\ \mathrm{keV} \times \frac{4.13}{8.98} = 138\ \mathrm{keV} .
+\end{aligned}
+$$
+
+The $30\ \mathrm{keV}$ photon starts with a wavelength ten times longer,
+$4.13 \times 10^{-9}\ \mathrm{cm}$, and the same added shift takes it to
+$4.62 \times 10^{-9}\ \mathrm{cm}$, so it keeps
+$30 \times 4.13/4.62 = 27\ \mathrm{keV}$. **The high-energy photon loses more
+than half its energy, the low-energy one only a tenth.** So photons from high
+energies pile down to the tens of keV, while below about $10\ \mathrm{keV}$ the
+photons are absorbed by the disk's atoms instead of bouncing off. What is left
+between those two limits is the hump.
+:::
+
+::: {.callout-tip .resolution collapse="true" title="Think about why the corona cannot make its X-rays on its own"}
+Inverse Compton scattering does not create photons. It takes ones that already
+exist and gives them more energy. So the corona needs a supply of low-energy
+photons, and the disk underneath it provides them, in enormous numbers. A hot
+electron cloud with nothing to scatter would stay dark.
+:::
+
+### Broad lines and narrow lines
+
+Lecture 18 explained the **broad emission lines**: thousands of clouds of gas,
+orbiting close to the black hole at thousands of kilometers per second, the
+different speeds smearing each line out by the Doppler effect. That is the
+**broad-line region**.
+
+Much farther out, far beyond the dust we are about to meet, there is thinner
+gas lit by the same ultraviolet light, moving only at hundreds of kilometers per
+second. Its emission lines are correspondingly narrower. That is the
+**narrow-line region**, and its lines are the second kind you will see in an
+AGN spectrum.
+
+### The dust
+
+Beyond the broad-line region, at a fraction of a parsec to a few parsecs from
+the black hole, gas is cool enough for dust grains to survive. The dust sits in
+a thick, doughnut-shaped structure around the disk, called the **dusty torus**.
+It absorbs the disk's ultraviolet light, gets warm, and re-emits that energy
+in the infrared. That is **dust-reprocessed disk emission**, and it is the
+infrared bump in @fig-sed. Dust cannot be heated without limit, as we will see
+in the last section of this lecture, and that is what explains the one-micron
+inflection.
+
+### Radio emission and jets
+
+The radio light comes from **synchrotron radiation**: relativistic electrons
+spiraling around magnetic field lines, radiating as they go. In a radio-loud
+AGN, most of it comes from **jets**, narrow streams of particles fired out along
+the disk's axis, some of them reaching millions of parsecs. Jets are produced
+when matter falling toward the black hole gets caught in the magnetic fields of
+the inner disk, but how exactly, nobody yet knows for certain; Chapter 6 of the
+textbook has some ideas. Lecture 22 is devoted to them.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-parts}
+
+1. A $100\ \mathrm{keV}$ photon is Compton-scattered straight back
+   ($\theta = 180°$). What is its new wavelength, and what is its new energy?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   Its wavelength goes from $1.24 \times 10^{-9}\ \mathrm{cm}$ to
+   $1.73 \times 10^{-9}\ \mathrm{cm}$, and its energy from $100\ \mathrm{keV}$
+   to $72\ \mathrm{keV}$.
+   :::
+
+2. If a single inverse Compton scattering multiplies a photon's energy by about
+   $\gamma^2$, what Lorentz factor would an electron need in order to turn a
+   $10\ \mathrm{eV}$ ultraviolet photon into a $1\ \mathrm{keV}$ X-ray in one
+   scattering?
+
+3. Gas orbiting a black hole of $10^{8}\,M_\odot$ moves at $5000\
+   \mathrm{km\,s^{-1}}$ in the broad-line region and at $500\
+   \mathrm{km\,s^{-1}}$ in the narrow-line region. Use $r = GM/v^2$ (the
+   enclosed-mass formula of lecture 17) to find how far each is from the black
+   hole, in light-days or parsecs as seems natural.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
+   A factor of 10 in the speed is a factor of 100 in the radius. The broad-line
+   gas is about $5.3 \times 10^{16}\ \mathrm{cm}$, or $20$ light-days, from the
+   black hole, and the narrow-line gas is $5.3 \times 10^{18}\ \mathrm{cm}$, or
+   $1.7\ \mathrm{pc}$.
+   :::
+
+4. Explain in a sentence or two why a magnetic field in the disk is possible
+   when an isolated black hole has none.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+   What does a black hole have to be like, by the no-hair theorem, and what is
+   the disk made of?
+   :::
+
+:::
+
+## Accretion rate and state {#sec-state}
+
+The precise form of the spectrum depends on the accretion rate. Lecture 8
+measured accretion rates in units of the Eddington rate, and the disk and the
+corona respond to that number in opposite ways.
+
+At **low accretion rates**, the inner disk is thought to be missing or puffed up,
+and something hot above it, most likely a strong corona, dominates the X-rays. The photons that come
+out are high in energy: this is called the **hard state**. At **high accretion
+rates**, a bright disk runs close to the ISCO, the corona is weak, and the
+X-rays are mostly low in energy: the **soft state**. Stellar-mass black holes
+in X-ray binaries move between these states quickly enough for us to watch them
+do it [@remillard2006]. The same physics in a supermassive
+black hole would take far longer than a human lifetime, so we infer it by
+comparing many AGN at different accretion rates rather than by watching one
+change.
+
+This is the second of the three things that decide what an AGN looks like, and
+it tells us why a dim AGN and a bright one are not simply dimmed copies of one
+another. Lower the accretion rate and the disk cools, since
+$T \propto \dot M^{1/4}$ at a fixed radius, and the mix of the components changes too.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-state}
+
+1. At fixed mass, the disk's temperature goes as $\dot M^{1/4}$. A black hole of
+   $10^{8}\,M_\odot$ drops from its Eddington rate to one percent of it. By what
+   factor does the temperature at the ISCO fall, and what does it become?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   The factor is $(0.01)^{1/4} = 0.32$, so the temperature falls from
+   $2.8 \times 10^{5}\ \mathrm{K}$ to $9.0 \times 10^{4}\ \mathrm{K}$.
+   :::
+
+2. Imagine you are given the X-ray spectra of two black holes of the same mass
+   and asked which has the higher accretion rate. What would you look for?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+   Compare how much of the X-ray light comes out at high photon energy and how
+   much at low.
+   :::
+
+:::
+
+## The zoo and the unified model {#sec-unified}
+
+AGN were discovered and named one kind at a time, by whatever instrument
+happened to find them. So they carry a long list of names. The ones that matter
+are few:
+
+* **Quasars**: the brightest AGN, the subject of lecture 18.
+* **Seyfert galaxies**: the same phenomenon in less luminous form, mostly in
+  spiral galaxies, first catalogued by Carl Seyfert in 1943 [@seyfert1943].
+  They come in two kinds. A **Seyfert 1** shows both broad and narrow emission
+  lines in its spectrum. A **Seyfert 2** shows only narrow lines.
+* **Radio galaxies**: the same phenomenon with relativistic radio jets, usually
+  in giant elliptical galaxies, and usually with radio lobes far beyond the
+  stars.
+* **Blazars**: AGN whose brightness flickers violently and whose spectrum is
+  dominated by a jet.
+
+There are many more names in the literature, and most of them mark no real
+difference. Blazars, BL Lacs, Fanaroff–Riley classes I and II [@fanaroff1974],
+broad-line radio quasars, narrow-line Seyfert 1s: don't worry about these. The
+important fact is that they are not all different animals.
+
+### The picture
+
+@fig-unified is the picture. A thick dusty torus surrounds the disk, the
+broad-line region and the black hole. Look down the axis of the torus and you
+see straight to the center: the disk's blue bump, the broad-line clouds and all
+the rest. Look through the torus and the dust blocks everything inside it. What
+you see then is only what is outside the torus: the narrow-line clouds, which
+are far above it, the infrared glow of the torus itself, and hard X-rays, which
+have enough energy to get through.
+
+So **the difference between a Seyfert 1 and a Seyfert 2 is the angle we are
+looking from.** A Seyfert 2 is a Seyfert 1 seen through its dust. Add a jet
+to the same picture and the same geometry gives you the radio-loud sequence:
+looking along the jet, you see a blazar; somewhat off the axis, a
+broad-line radio galaxy or a radio-loud quasar; and through the torus, a
+narrow-line radio galaxy.
+
+```{python}
+#| label: fig-unified
+#| fig-cap: "The unified model of active galactic nuclei, in cross-section and not to scale. A thin accretion disk surrounds the black hole. The broad-line clouds sit close in, inside a thick torus of dust, with the narrow-line clouds far outside it. A jet leaves along the axis in a radio-loud object. An observer looking near the axis sees a type 1 AGN, with the broad lines visible; an observer looking through the torus sees a type 2 AGN; an observer looking straight down the jet sees a blazar."
+#| fig-alt: "A cross-sectional diagram, not to scale. A small black circle at the center marks the black hole, with a thin horizontal blue accretion disk through it. Small gray clouds close to the center mark the broad-line region. A thick orange oval shape to the left and another to the right mark the torus of dust, with an opening above and below. Above the opening, farther out, a group of gray clouds marks the narrow-line region. A narrow gray jet extends upward and downward along the vertical axis. Three arrows point at the center from outside: from directly above, labeled blazar, along the jet; from about 30 degrees off the axis, labeled type 1, broad and narrow lines; and from the side through the torus, labeled type 2, narrow lines only."
+#| fig-height: 4.3
+
+fig, ax = plt.subplots(figsize=(5.8, 4.3))
+ax.set_xlim(-10, 10)
+ax.set_ylim(-5.6, 7.2)
+ax.set_aspect("equal")
+ax.axis("off")
+
+# The torus, left and right, as thick ovals.
+for x0 in (-5.6, 5.6):
+    ax.add_patch(mpl.patches.Ellipse((x0, 0), 7.0, 4.4, fc=ORANGE, alpha=0.75,
+                                     ec=INK, lw=0.8, zorder=2))
+ax.text(-5.6, -3.0, "dusty torus", color=INK2, fontsize=10, ha="center")
+
+# The jet, up and down the axis.
+for s in (1, -1):
+    ax.add_patch(mpl.patches.Polygon([(0, 0), (-0.45, s * 5.2), (0.45, s * 5.2)],
+                                     fc=MUTED, alpha=0.6, ec="none", zorder=1))
+ax.text(0.75, -5.0, "jet", color=INK2, fontsize=10, va="center")
+
+# The accretion disk and the black hole.
+ax.plot([-2.1, 2.1], [0, 0], color=BLUE, lw=3.2, zorder=4)
+ax.add_patch(mpl.patches.Circle((0, 0), 0.22, fc=INK, ec=INK, zorder=5))
+ax.text(2.4, -0.55, "disk", color=BLUE, fontsize=10, zorder=5)
+
+# Broad-line clouds, close in; narrow-line clouds, far above the torus.
+rng = np.random.default_rng(7)
+ang = rng.uniform(0, 2 * np.pi, 24)
+rad = rng.uniform(0.7, 1.6, 24)
+ax.plot(rad * np.cos(ang), rad * np.sin(ang) * 0.7, "o", color=INK2, ms=3, zorder=3)
+ax.text(-2.9, 3.1, "broad-line clouds", color=INK2, fontsize=10, ha="right")
+ax.annotate("", xy=(-0.8, 0.9), xytext=(-2.7, 3.0),
+            arrowprops=dict(arrowstyle="-", color=INK2, lw=0.8))
+x_nlr = rng.uniform(-1.8, 1.8, 18)
+y_nlr = rng.uniform(4.1, 5.5, 18)
+ax.plot(x_nlr, y_nlr, "o", color=INK2, ms=4, zorder=3)
+ax.text(-2.1, 5.2, "narrow-line\nclouds", color=INK2, fontsize=10, ha="right",
+        va="center")
+
+
+# Three sight lines, each from outside toward the center.
+def sightline(angle_deg, length, text, ha, tx, ty, color):
+    a = np.radians(angle_deg)
+    xs, ys = length * np.sin(a), length * np.cos(a)
+    ax.annotate("", xy=(0.25 * xs / length, 0.25 * ys / length), xytext=(xs, ys),
+                arrowprops=dict(arrowstyle="->", color=color, lw=1.6), zorder=6)
+    ax.text(tx, ty, text, color=color, fontsize=10.5, ha=ha, va="center", zorder=6)
+
+
+sightline(2, 7.0, "blazar", "left", 0.75, 6.75, AQUA)
+sightline(36, 8.2, "type 1: broad and\nnarrow lines", "left", 5.0, 6.4, BLUE)
+sightline(83, 9.6, "type 2: narrow\nlines only", "right", 9.9, -3.2, INK)
+plt.show()
+```
+
+The model has three parameters, and this is the central statement of the
+lecture:
+
+| what varies | what it does |
+|:---|:---|
+| **Viewing angle** | decides whether the dust hides the broad lines and the disk (type 1 or type 2), and whether the jet points at us (a blazar) |
+| **Accretion rate** | decides how bright the object is and whether it is in the hard or the soft state |
+| **Presence or absence of a jet** | decides whether it is radio-loud or radio-quiet |
+
+### The evidence
+
+The clearest evidence came from a clever trick. If a Seyfert 2 really is a
+Seyfert 1 with its broad-line region hidden, some of the hidden light should
+escape upward through the opening of the torus and scatter off gas above it
+toward us. Scattered light is **polarized**, so a polarizing filter can pick it
+out from the unpolarized glare. Robert Antonucci and Joseph Miller did exactly
+this in 1985 with the Seyfert 2 galaxy NGC 1068, and in the polarized light its
+spectrum looked just like a Seyfert 1's, broad lines and all [@antonucci1985].
+The broad-line region was there the whole time, behind the dust.
+
+Other evidence points the same way. Hard X-rays, which can get through the
+torus, show Seyfert 2s to have the same central engines as Seyfert 1s, but
+behind a large column of gas [@ramosalmeida2017]. And the narrow lines and the infrared glow from
+the torus, which go out in every direction and are not blocked, are about the
+same in both.
+
+::: {.callout-warning .textbook-watch title="Textbook watch: is the unified model a hypothesis?"}
+Kutner's §19.6 is headed *"A unified picture of active galaxies?"*, with the
+question mark, and asks whether radio galaxies, Seyferts and quasars are
+*"different manifestations of the same basic phenomenon."* That undersells it.
+The orientation picture has been the
+consensus since the early 1990s [@antonucci1993; @urry1995], and it is
+essentially right: it accounts for most of the differences among AGN. It is
+also not the whole story, as the next subsection says, but do not take the
+book's question mark to mean that the matter is still open.
+:::
+
+### The part that is not orientation
+
+The unified model explains about 95% of what is going on, which leaves a few
+percent, and those few percent are where the action is now [@netzer2015].
+
+**The torus is not a solid doughnut.** It is made of separate, dusty clouds
+[@nenkova2008b], so a sight line near the edge of the torus has some chance of
+passing through a gap. That turns the crisp line between type 1 and type 2 into
+a probability.
+
+**The covering fraction depends on the accretion rate.** In a large
+X-ray sample, the gas covers about 85% of the sky around black holes below
+roughly 3% of their Eddington rate, and only about 40% above it, because
+radiation pressure on the dusty gas blows it out of the way [@ricci2017]. Orientation is therefore not the only thing
+deciding what we see, and the same accretion rate that sets the spectrum also
+reshapes the dust.
+
+**Radio-loudness is not an orientation effect.** The presence of a jet is a
+real physical difference between objects, and only 15 to 20 percent of bright
+quasars are radio-loud [@kellermann1989]. Why some black holes launch powerful jets and
+others do not remains an open question, with spin near the top of the list of
+suspects.
+
+**Some AGN change type on human timescales.** A *changing-look* AGN loses or
+gains its broad lines within a decade or less [@lamassa2015], far too fast for a torus
+to move across our line of sight. The source of the ultraviolet that lights up
+the broad lines has simply dimmed or brightened. Unification is about what is
+there; these objects remind us that what is lit up can change.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-unified}
+
+1. Classify each of the following, using @fig-unified and the table above. (a) A
+   radio-quiet AGN seen near its axis at modest luminosity. (b) The same object
+   seen edge-on. (c) A radio-loud AGN seen edge-on. (d) A radio-loud AGN seen
+   right along its jet.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   (a) A Seyfert 1. (b) A Seyfert 2. (c) A narrow-line radio galaxy. (d) A
+   blazar.
+   :::
+
+2. Antonucci and Miller found broad lines in the *polarized* light of a galaxy
+   of Seyfert type 2. Explain why this is evidence for the unified model. Why
+   was it the polarization that mattered?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+   What happens to light when it scatters, and how much of the unscattered light
+   from the rest of the galaxy is polarized?
+   :::
+
+3. A jet has a half-opening angle of $5°$. What fraction of the sky around the
+   source lies within the jet's two beams? So roughly one out of how many
+   randomly oriented jets happens to point at us?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   The two beams together cover a fraction $1 - \cos 5° = 0.0038$ of the sky, so
+   about one in 260.
+   :::
+
+:::
+
+## The dusty torus {#sec-torus}
+
+The picture has a number hidden in it. The dust glows because it is hot, and it
+cannot be hotter than some limit. So we can ask how far from the black hole the
+dust begins, and how much of the sky it hides.
+
+:::: {.panel-tabset .tracks}
+
+### Physical intuition
+
+A dust grain sitting in the disk's light absorbs what falls on it and warms up
+until it radiates as much as it absorbs. Near the black hole there is more light
+to absorb, so the grains get hotter, and at some distance they become so hot
+that they evaporate. Dust grains, made of silicates and carbon, come apart at
+about $1500\ \mathrm{K}$. That is why there is a hole in the middle of the
+torus, why the broad-line region can exist inside it, and why the dust's light
+stops at the near-infrared rather than going on into the visible.
+
+A brighter nucleus pushes this edge outward: the amount of light falling on a
+grain goes as $L/r^2$, so doubling the distance compensates for four times the
+luminosity. The edge moves as the square root of $L$, and the dust around a
+powerful quasar starts much farther out than the dust around a weak Seyfert.
+
+The other number is the fraction of the sky the torus blocks. The disk's light
+goes out in all directions and the torus intercepts whatever fraction falls on
+it. The torus re-emits that energy in the infrared, so **the ratio of infrared
+to ultraviolet luminosity measures how much of the sky the dust covers.** And
+counting what fraction of AGN are type 2 measures the same thing another way,
+since a type 2 is one seen through the dust.
+
+### Mathematical explanation
+
+**The temperature of a grain.** Take a dust grain of radius $a$, at a distance
+$r$ from a source of luminosity $L$. It catches the source's light on its
+cross-section $\pi a^2$, so it absorbs energy at the rate
+
+$$
+\frac{L}{4 \pi r^2} \, \pi a^2 ,
+$$
+
+and it radiates from its whole surface, of area $4 \pi a^2$, at the blackbody
+rate $4 \pi a^2 \sigma T^4$. Setting these equal, the grain's size cancels:
+
+$$
+T^4 = \frac{L}{16 \pi \sigma r^2} .
+$$ {#eq-dust-temp}
+
+Check the units: $\mathrm{erg\,s^{-1}}$ over
+$\mathrm{erg\,cm^{-2}\,K^{-4}\,s^{-1}} \times \mathrm{cm^{2}}$ leaves
+$\mathrm{K^{4}}$, as it should be. Notice that the size of the grain does not
+appear: every grain at the same distance reaches the same temperature, which is
+why this works at all.
+
+**How far the dust begins.** Solve @eq-dust-temp for $r$, with $T$ set to the
+temperature at which dust is destroyed, $T_{\mathrm{sub}} \approx
+1500\ \mathrm{K}$ [@barvainis1987]:
+
+$$
+r_{\mathrm{sub}} = \sqrt{ \frac{L}{16 \pi \sigma T_{\mathrm{sub}}^{4}} } .
+$$ {#eq-r-sub}
+
+Real grains absorb ultraviolet light better than they radiate in the infrared,
+so they run hotter than a blackbody at the same distance, and the real edge
+is somewhat farther out than @eq-r-sub. It scales as
+$r \propto L^{1/2}$ all the same, and the dust edge has been measured to do just
+that [@suganuma2006].
+
+**How much of the sky is covered.** Suppose the torus leaves open two cones
+around the axis, each with half-opening angle $\theta$. The area of a spherical
+cap of half-angle $\theta$ on a sphere of radius $R$ is
+$2 \pi R^2 (1 - \cos\theta)$, a formula from solid geometry, so the two cones
+together cover a fraction
+
+$$
+f_{\mathrm{open}} = \frac{2 \times 2 \pi R^2 (1 - \cos\theta)}{4 \pi R^2}
+  = 1 - \cos\theta
+$$ {#eq-open}
+
+of the sky. A pure number, as a fraction should be. A randomly oriented AGN is
+type 1 if we happen to lie inside the cones, so if the torus covers a fraction
+$C = 1 - f_{\mathrm{open}} = \cos\theta$ of the sky,
+
+$$
+\frac{N_{\mathrm{type\,2}}}{N_{\mathrm{type\,1}} + N_{\mathrm{type\,2}}}
+  = C = \cos\theta ,
+$$ {#eq-cover}
+
+and the torus's infrared luminosity is $L_{\mathrm{IR}} \approx C L$.
+
+::: {.content-visible when-format="pdf"}
+{{< include ../../in_class/lec20/exercises00.qmd >}}
+:::
+
+### Numerical exploration
+
+@fig-dust plots @eq-dust-temp for two AGN, one a hundred times brighter than the
+other. Dust cannot exist where the curve is above $1500\ \mathrm{K}$, so the
+place where each curve crosses that line is the inner edge of its torus.
+
+```{python}
+#| label: fig-dust
+#| fig-cap: "The temperature of a blackbody dust grain against distance from a nucleus of luminosity $10^{44}$ and $10^{46}\\ \\mathrm{erg\\,s^{-1}}$, on logarithmic axes. Above $1500\\ \\mathrm{K}$ dust is destroyed, so no dust exists in the shaded band. Each curve crosses that line at the inner edge of its torus, which moves out as the square root of the luminosity. The right-hand scale is the wavelength at which a blackbody of that temperature peaks."
+#| fig-alt: "A chart with logarithmic axes. The horizontal axis is distance from the black hole, from a thousandth of a parsec to a hundred parsecs. The vertical axis is dust temperature from about 30 to 10,000 kelvin, with a right-hand axis giving the peak wavelength of a blackbody at that temperature, from about 0.3 to about 100 microns. Two straight lines fall from upper left to lower right. The blue line for a luminosity of 10 to the 44 is below the orange line for 10 to the 46. A shaded band covers everything above 1500 kelvin. The blue line reaches 1500 kelvin at about 0.03 parsecs and the orange at about 0.3 parsecs, each marked with a dot."
+#| fig-height: 4.2
+
+r_pc = np.logspace(-3, 2, 200)
+fig, ax = plt.subplots(figsize=(5.55, 4.2))
+ax.axhspan(1500, 1e4, color=ORANGE, alpha=0.12, zorder=0)
+ax.axhline(1500, color=MUTED, ls="--", lw=1.1, zorder=1)
+ax.text(0.7, 1800, "too hot: dust is destroyed", color=INK2, fontsize=10)
+for L, col, tag in ((1e44, BLUE, r"$L = 10^{44}$ erg/s"),
+                    (1e46, ORANGE, r"$L = 10^{46}$ erg/s")):
+    ax.plot(r_pc, t_dust(L, r_pc * PC), color=col, lw=2.2, zorder=3, label=tag)
+    r_edge = np.sqrt(L / (16 * np.pi * SIG * 1500.0**4))
+    ax.plot([r_edge / PC], [1500.0], "o", color=col, mec=INK, mew=0.7, ms=7, zorder=4)
+    print(f"L = {L:.0e}: dust begins at {r_edge / PC:.3f} pc "
+          f"= {r_edge / LD:.0f} light-days")
+ax.set_xscale("log")
+ax.set_yscale("log")
+ax.set_xlim(1e-3, 100)
+ax.set_ylim(30, 1e4)
+ax.set_xlabel("distance from the black hole (pc)")
+ax.set_ylabel("dust temperature (K)")
+ax.legend(loc="lower left", fontsize=9.5)
+right = ax.secondary_yaxis("right", functions=(lambda T: WIEN / T * 1e4,
+                                               lambda lam: WIEN / lam * 1e4))
+right.set_ylabel(r"peak wavelength ($\mu$m)")
+plt.show()
+```
+
+The right-hand scale shows why the one-micron inflection is where it is. Dust
+at the sublimation temperature of $1500\ \mathrm{K}$ peaks at about
+$2\ \mu\text{m}$ and has a falling spectrum shortward of that, and no dust is
+hotter. The disk's light, climbing toward the ultraviolet, has its long-wavelength
+tail there. Somewhere between them is a minimum, and it falls near one micron.
+It is not a feature of any one thing; it is the gap between two.
+
+::::
+
+::: {.callout-note .worked-example collapse="true" title="Worked example: the inner edge of a Seyfert's torus"}
+**The question.** A Seyfert nucleus has a luminosity of
+$10^{44}\ \mathrm{erg\,s^{-1}}$. Treating dust grains as blackbodies, how far
+from the black hole can dust survive at $1500\ \mathrm{K}$?
+
+From @eq-r-sub, with the units attached. On the bottom,
+
+$$
+\begin{aligned}
+16 \pi \sigma T^4 &= 16 \pi \times 5.67 \times 10^{-5}\
+    \mathrm{erg\,cm^{-2}\,K^{-4}\,s^{-1}} \\[0.8em]
+    &\quad \times \left(1500\ \mathrm{K}\right)^4 .
+\end{aligned}
+$$
+
+The $\mathrm{K^{4}}$ cancels, leaving $\mathrm{erg\,cm^{-2}\,s^{-1}}$. Dividing
+$\mathrm{erg\,s^{-1}}$ by that leaves $\mathrm{cm^{2}}$, and its square root is
+$\mathrm{cm}$. *Do the units make sense?* A distance, so yes. Now the numbers:
+$16 \pi \sigma T^4 = 1.44 \times 10^{10}$, so
+
+$$
+r_{\mathrm{sub}} = \sqrt{ \frac{10^{44}\ \mathrm{erg\,s^{-1}}}
+  {1.44 \times 10^{10}\ \mathrm{erg\,cm^{-2}\,s^{-1}}} }
+  = 8.3 \times 10^{16}\ \mathrm{cm} .
+$$
+
+In light-days, with a conversion fraction arranged so the unwanted unit cancels,
+
+$$
+8.3 \times 10^{16}\ \mathrm{cm} \times
+  \frac{1\ \text{light-day}}{2.59 \times 10^{15}\ \mathrm{cm}}
+  = 32\ \text{light-days} .
+$$
+
+**About a month of light-travel time.** The actual dust edge of a Seyfert of this
+brightness is measured by watching the infrared follow changes in the disk's
+light, and it lies at tens of light-days [@suganuma2006], a success for one line
+of arithmetic.
+:::
+
+::: {.callout-tip .resolution collapse="true" title="Think about what the type 2 fraction says about the torus"}
+Suppose exactly half of AGN of some luminosity are type 2. From @eq-cover,
+$\cos\theta = 1/2$, so $\theta = 60°$: the dust covers the part of the sky within
+$30°$ of the plane of the disk. Measuring the ratio of types is measuring a
+shape. And since $L_{\mathrm{IR}} \approx C L$, the infrared to ultraviolet
+ratio in a single object measures the same thing again, independently. In a
+sample of nearby Seyferts, type 2 outnumber type 1 by about 4 to 1
+[@maiolino1995], which would make $\cos\theta = 0.8$ and $\theta = 37°$.
+:::
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-torus}
+
+1. Use @eq-r-sub to find how far dust begins around a quasar with
+   $L = 10^{47}\ \mathrm{erg\,s^{-1}}$. Give the answer in centimeters and in
+   parsecs.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   $2.6 \times 10^{18}\ \mathrm{cm}$, or $0.85\ \mathrm{pc}$.
+   :::
+
+2. A nucleus dims by a factor of 100 and stays dim. Where does the inner edge of
+   the torus eventually go, relative to where it was?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   In by a factor of 10, since $r_{\mathrm{sub}} \propto L^{1/2}$.
+   :::
+
+3. At what temperature is a dust grain $1\ \mathrm{pc}$ from a nucleus of
+   $L = 10^{46}\ \mathrm{erg\,s^{-1}}$, and where does its blackbody spectrum
+   peak?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
+   Use @eq-dust-temp, and take the fourth root last. The temperature is about
+   $780\ \mathrm{K}$, and the peak is at about $3.7\ \mu\text{m}$.
+   :::
+
+4. Survey counts show that $40\%$ of the AGN of some luminosity are type 1. What
+   is the half-opening angle of the cones, assuming every torus has the same
+   shape?
+
+5. A nucleus of $10^{45}\ \mathrm{erg\,s^{-1}}$ has a torus covering $60\%$ of
+   its sky. How much infrared luminosity do you expect from the dust?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   $L_{\mathrm{IR}} \approx 6 \times 10^{44}\ \mathrm{erg\,s^{-1}}$.
+   :::
+
+:::
+
+## If you want to go further
+
+None of this section is needed for what comes before or after.
+
+**Kutner, §19.2 and the rest of §19.6.** The chapter PDF in Canvas Files has a
+good qualitative account of radio galaxies (§19.2), and §19.6.2 turns to the
+hunt for supermassive black holes in the nuclei of nearby galaxies, which is
+where lecture 21 begins.
+
+**The reviews.** Antonucci's 1993 review [-@antonucci1993] and Urry and
+Padovani's 1995 review [-@urry1995] are the two that made unification the
+standard picture, and both are readable. Netzer's 2015 review [-@netzer2015] is
+the state of the art, with a clear view of what the model does not explain.
+
+## Summary
+
+| idea | result | why it matters |
+|:---|:---|:---|
+| Spectrum | five components, plotted as $\nu L_\nu$ | only one is the disk's blackbody |
+| Big blue bump | $T \propto M^{-1/4}$; a $10^{8}\,M_\odot$ disk reaches $2.8 \times 10^{5}\ \mathrm{K}$ at the ISCO | why supermassive black holes shine in the ultraviolet |
+| Corona | magnetic reconnection heats electrons above the disk | a hot cloud that needs the disk's photons |
+| X-rays | Compton scattering, $\Delta\lambda = (h/m_e c)(1 - \cos\theta)$, and its inverse | UV photons become X-rays; X-rays reflect to make the Compton hump |
+| Dusty torus | reprocessed disk light, in the infrared | hides what is inside it |
+| Radio | synchrotron from jets | present only in the minority that are radio-loud |
+| State | hard at low $\dot M$, soft at high $\dot M$ | the spectrum depends on the feeding rate |
+| Unified model | viewing angle, accretion rate, jet | most of the zoo is one machine |
+| Dust edge | $r_{\mathrm{sub}} = \sqrt{L/16\pi\sigma T^4}$ with $T \approx 1500\ \mathrm{K}$ | the torus has a hole in it, sized by $L$ |
+| Covering | $C = \cos\theta$ and $L_{\mathrm{IR}} \approx C L$ | counting types and measuring the infrared both measure the shape |
+
+An active galactic nucleus is one machine with many names. The disk makes the
+ultraviolet, the corona turns some of it into X-rays, the dust turns more of it
+into the infrared, a jet may or may not carry energy out along the axis, and
+where we happen to be standing does the rest. Next time we step back from the
+machine to ask about the galaxy around it: why the mass of a black hole, a tiny
+fraction of its galaxy's, should be so closely tied to the galaxy it lives in.
+
+:::: {.content-visible when-format="html"}
+## References {.unnumbered}
+
+::: {#refs}
+:::
+::::
+
+::: {.content-visible when-format="pdf"}
+
+```{=latex}
+\clearpage
+\tableofcontents
+```
+:::
