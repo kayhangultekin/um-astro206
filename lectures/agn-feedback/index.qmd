@@ -1,0 +1,1144 @@
+---
+title: "Black Holes and Their Galaxies: M–σ and Feedback"
+subtitle: "ASTRO 206 — Black Holes · Lecture 21"
+author: "Kayhan Gültekin"
+date: "November 19"
+date-format: "MMMM D"
+# Dates are LECTURE dates -- when the class meets -- not publication dates.
+# Sourced from Canvas (Reading & Reflection 3234225 and the In-Class Problem
+# 3219332, both due 2026-11-19). A placeholder string renders as "Invalid Date".
+
+# Kernel pinning is deliberate and must stay in the DOCUMENT, not _quarto.yml:
+# Quarto silently ignores a project-level `jupyter:` and auto-selects a kernel.
+jupyter: python3
+
+# No `pyodide: packages:` block: the one live cell needs numpy and matplotlib
+# only, which are inside Pyodide's default dependency closure.
+---
+
+::: {.callout-note appearance="simple" icon=false}
+**Disclaimer.** These notes have not been subjected to the usual scrutiny
+reserved for formal publications. They may be distributed outside this class
+only with the permission of the instructor.
+:::
+
+{{< include ../../_figure-setup.qmd >}}
+
+Lecture 20 ended on an odd fact. A supermassive black hole holds about half a
+percent of the mass of the bulge around it, and it occupies a far smaller
+fraction of the volume. Yet if you tell an astronomer how fast the stars are
+moving in a galaxy's bulge, thousands of light-years from the center, that
+astronomer can tell you the mass of the black hole to within a factor of two or
+three. This lecture is about that fact, and about the idea that explains it:
+black holes do not sit quietly in their galaxies. They push back.
+
+## How to read this lecture
+
+**These notes are the reading for this lecture.** The lecture builds one
+argument, and it is worth holding onto from the start:
+
+::: {.callout-important title="The idea at the center of this lecture"}
+**A black hole's gravity reaches only the very center of its galaxy, but the
+energy it releases while it grows can reach all of it, and that is very likely
+why black holes and galaxies grow together.**
+:::
+
+*Dead quasars* shows that the black holes in nearby galaxies are the leftovers
+of the quasars of the past. *The M–σ relation* shows how tightly those black
+holes are tied to their galaxies, and how to read a power law on a logarithmic
+plot. *The sphere of influence* measures how far a black hole's gravity
+actually reaches. *How can a black hole know?* shows that gravity cannot be the
+link and that energy can. The last sections are the two ways that energy gets
+out: *Quasar mode*, in which a black hole near its Eddington limit blows the
+gas out of its galaxy, and *Radio mode*, in which a jet keeps the gas from
+ever coming back. *The earliest black holes* asks what happens to all of this
+when we look back to the first billion years.
+
+## Dead quasars {#sec-soltan}
+
+Lecture 18 ended with a prediction. Quasars are powered by black holes, and
+quasars were once far more common than they are now, so the galaxies around us
+today should be full of black holes that used to be quasars.
+
+Count quasars per unit volume at each redshift and the history is striking.
+The density of bright quasars rises to a peak around redshift 2, when the
+Universe was about a quarter of its present age, and then falls steeply. In the
+very local Universe there are no true quasars at all, only much fainter active
+nuclei. The less luminous AGN peak later, at lower redshift, so the big ones
+finish first and the small ones keep going. Astronomers call this
+**downsizing** [@hasinger2005; @richards2006].
+
+**Andrzej Soltan turned this history into an accounting argument**
+[@soltan1982]. Every gram of gas that falls into a black hole does two things:
+a fraction $\eta$ of its rest-mass energy comes out as light (lecture 7), and
+the remaining $1 - \eta$ stays in the black hole as added mass. So the light
+that quasars have emitted over the history of the Universe and the mass in
+black holes today are two records of one event. If $u$ is the energy radiated
+per unit volume and $\rho_{\mathrm{BH}}$ is the mass of black holes per unit
+volume that resulted, then
+
+$$
+u = \frac{\eta}{1 - \eta}\, \rho_{\mathrm{BH}}\, c^2 .
+$$ {#eq-soltan}
+
+Both sides are energies per unit volume, as they must be: a mass density times
+$c^2$ is an energy density, and $\eta$ is a pure number. The quantity $u$ comes
+from counting quasars, which you can do at great distance, and
+$\rho_{\mathrm{BH}}$ comes from nearby galaxies, which is an entirely separate
+measurement. They agree when $\eta$ is about $0.1$
+[@yu2002; @marconi2004]. That is the efficiency lecture 7 calculated for a thin
+disk, found here by bookkeeping across the whole sky. It tells us that **most
+of the mass in supermassive black holes went in while they were shining**.
+
+::: {.callout-note .worked-example collapse="true" title="Worked example: how much light does the black hole mass of the Universe imply?"}
+**The question.** Surveys of nearby galaxies find about
+$4 \times 10^{5}\,M_\odot$ of black hole in every cubic megaparsec. If all of
+that mass arrived by accretion at $\eta = 0.1$, how much energy per cubic
+megaparsec was radiated in building it?
+
+Substitute into @eq-soltan with the units attached:
+
+$$
+\begin{aligned}
+u = {} & \frac{0.1}{0.9}
+    \times \frac{4 \times 10^{5}\,M_\odot}{1\ \mathrm{Mpc^3}}
+    \times \frac{1.989 \times 10^{33}\ \mathrm{g}}{1\,M_\odot} \\[0.8em]
+    & \times \left(3.00 \times 10^{10}\ \mathrm{cm\,s^{-1}}\right)^2 .
+\end{aligned}
+$$
+
+Cancel before multiplying. The fraction turns $M_\odot$ into grams, and what
+remains is $\mathrm{g\,cm^2\,s^{-2}\,Mpc^{-3}}$, which is an erg per cubic
+megaparsec. *Do the units make sense?* An energy in each unit of volume, so yes.
+
+Only now the numbers: $0.111 \times 4 \times 10^{5} \times 1.989 \times 10^{33}
+\times 9.0 \times 10^{20}$ gives
+
+$$
+u \approx 8 \times 10^{58}\ \mathrm{erg\,Mpc^{-3}} .
+$$
+
+**About $8 \times 10^{58}$ erg in every cubic megaparsec.** The light actually
+counted in quasar surveys adds up to about this much, which is the whole of
+Soltan's argument.
+:::
+
+**Black holes spend very little of their lives shining as quasars.** A quasar
+phase lasts around $10^{8}$ years, a couple of the Salpeter times of lecture 9,
+in a Universe more than $10^{10}$ years old. So at any moment only a percent or
+so of black holes are bright, and the fraction of time spent in the bright
+phase is called the **duty cycle**. Everything else is what lecture 19 found at
+the center of our own Galaxy: a black hole with almost nothing to eat.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-soltan}
+
+1. Suppose the true radiative efficiency of accretion were $\eta = 0.4$, the
+   value for a maximally spinning black hole, rather than $0.1$. For the same
+   amount of observed quasar light, would the black holes we find today need to
+   be more massive or less massive than in the worked example, and by what
+   factor?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   Less massive, by a factor of about $6$:
+   $\rho_{\mathrm{BH}} \propto (1 - \eta)/\eta$, which is $9$ at $\eta = 0.1$
+   and $1.5$ at $\eta = 0.4$.
+   :::
+
+2. How many Salpeter times (50 Myr each, from lecture 9) does a black hole
+   need to grow from $10^{6}\,M_\odot$ to $10^{9}\,M_\odot$? What fraction of
+   the age of the Universe, $1.4 \times 10^{10}$ years, is that?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   About $6.9$ e-foldings, so about $3.5 \times 10^{8}$ years, or $2.5\%$ of
+   the age of the Universe.
+   :::
+
+3. A friend looks at the fall in quasar numbers since redshift 2 and concludes
+   that black holes must be disappearing. What is wrong with this?
+
+:::
+
+## The M–σ relation {#sec-msigma}
+
+In the late 1990s, as the masses of black holes in nearby galaxies were first
+being measured, a pattern appeared. The ratio of black hole mass to bulge mass
+was roughly constant, about half a percent [@magorrian1998; @kormendy2013]. Then
+in 2000 two groups found an even tighter link, between the black hole's mass
+and the **velocity dispersion** of the stars in the bulge
+[@ferrarese2000; @gebhardt2000].
+
+Recall from lecture 17 what the dispersion $\sigma$ is. The stars in a bulge
+are not orbiting in one direction like the planets. They swarm, and the spread
+of their speeds along the line of sight, measured from the widths of the
+spectral lines of the bulge's starlight, is $\sigma$. A bigger, deeper bulge
+has a larger $\sigma$. So $\sigma$ is the ruler of the bulge's gravity.
+
+@fig-msigma plots black hole mass against $\sigma$ for the 49 galaxies in the
+sample of @gultekin2009.
+
+```{python}
+#| label: fig-msigma
+#| fig-cap: "The M–σ relation: black hole mass against the velocity dispersion of the host's bulge, for the 49 galaxies in the sample of Gültekin et al. (2009), on logarithmic axes. Blue circles are galaxies with classical bulges and ellipticals; orange squares are galaxies with pseudobulges, which are built by slower, internal processes. The solid line is the fit by Gültekin et al. to the whole sample. The dashed line is the fit by Kormendy and Ho (2013), which uses a later sample and excludes pseudobulges, and so sits higher. Two galaxies with two independent mass measurements are shown at the logarithmic average of the two. Vertical bars show the range of the mass measurement and horizontal bars the error in σ."
+#| fig-alt: "A chart with logarithmic axes. The horizontal axis is velocity dispersion from 60 to 400 kilometers per second, and the vertical axis is black hole mass from about one million to more than ten billion solar masses. Forty-nine points with error bars rise from lower left to upper right in a narrow band. A solid line and a slightly higher dashed line run along the band, climbing by about four powers of ten over less than one power of ten in dispersion. Most points, blue circles, follow the lines; ten orange squares, the galaxies with pseudobulges, lie mostly below them. The Milky Way, labeled, is an orange square at about 105 kilometers per second and four million solar masses, well below the lines. M87 is labeled at the top right near 375 kilometers per second and several billion solar masses."
+#| fig-height: 4.4
+
+import csv
+from collections import defaultdict
+
+rows = defaultdict(list)
+with open("msigma_gultekin2009.csv") as f:
+    for r in csv.DictReader(line for line in f if not line.startswith("#")):
+        rows[r["galaxy"]].append(r)
+
+# Two galaxies appear twice, with independent measurements: use the log average.
+def floats(rs, key):
+    return np.array([float(r[key]) for r in rs])
+
+points = []
+for name, rs in rows.items():
+    points.append(dict(name=name,
+                       sig=floats(rs, "sigma").mean(),
+                       esig=floats(rs, "sigma_err").mean(),
+                       M=10 ** np.log10(floats(rs, "M_bh")).mean(),
+                       lo=10 ** np.log10(floats(rs, "M_low")).mean(),
+                       hi=10 ** np.log10(floats(rs, "M_high")).mean(),
+                       pseudo=rs[0]["pseudobulge"] == "1"))
+assert len(points) == 49
+
+fig, ax = plt.subplots(figsize=(5.8, 4.4))
+for pseudo, color, marker, label in ((False, BLUE, "o", "ellipticals and classical bulges"),
+                                     (True, ORANGE, "s", "pseudobulges")):
+    p = [q for q in points if q["pseudo"] == pseudo]
+    x = np.array([q["sig"] for q in p])
+    y = np.array([q["M"] for q in p])
+    ax.errorbar(x, y,
+                xerr=[q["esig"] for q in p],
+                yerr=[[q["M"] - q["lo"] for q in p], [q["hi"] - q["M"] for q in p]],
+                fmt=marker, ms=4.5, color=color, ecolor=color, elinewidth=0.7,
+                capsize=0, label=label, zorder=3)
+
+s = np.geomspace(60, 420, 200)
+ax.plot(s, 10 ** (8.12 + 4.24 * np.log10(s / 200)), color=INK, lw=1.5,
+        label="Gültekin et al. 2009")
+ax.plot(s, 10 ** (8.49 + 4.38 * np.log10(s / 200)), color=INK2, lw=1.5, ls="--",
+        label="Kormendy & Ho 2013")
+
+for q in points:
+    if q["name"] == "MW":
+        ax.annotate("Milky Way", (q["sig"], q["M"]), xytext=(4, -14),
+                    textcoords="offset points", fontsize=9, ha="left")
+    if q["name"].endswith("M87"):
+        ax.annotate("M87", (q["sig"], q["M"]), xytext=(2, 9),
+                    textcoords="offset points", fontsize=9, ha="center")
+
+ax.set_xscale("log")
+ax.set_yscale("log")
+ax.set_xlim(60, 420)
+ax.set_ylim(5e5, 3e10)
+ax.set_xticks([60, 100, 200, 300, 400])
+ax.set_xticklabels(["60", "100", "200", "300", "400"])
+ax.minorticks_off()
+ax.set_xlabel(r"velocity dispersion $\sigma$ (km s$^{-1}$)")
+ax.set_ylabel(r"black hole mass $M_{\mathrm{BH}}$ ($M_\odot$)")
+ax.legend(fontsize=9, loc="upper left")
+plt.show()
+```
+
+The points lie close to a straight line on these axes. Black holes range over
+four powers of ten in mass, while $\sigma$ ranges over less than one, so the
+relation is steep. The black hole's mass is set far more sensitively than the
+dispersion is.
+
+### A power law is a straight line on a logarithmic plot
+
+A straight line on log-log axes means a **power law**, $y = a x^{b}$. To see
+why, take the base-10 logarithm of both sides:
+
+$$
+\begin{aligned}
+\log y &= \log\left(a x^{b}\right) \\[0.8em]
+       &= \log a + \log\left(x^{b}\right) \\[0.8em]
+       &= \log a + b \log x ,
+\end{aligned}
+$$
+
+which is the equation of a line, $Y = A + bX$, with $Y = \log y$ and
+$X = \log x$. The slope of the line is the exponent $b$, and the intercept is
+$A = \log a$. So the fit to the data is reported in this form [@kormendy2013]:
+
+$$
+\log\left(\frac{M_{\mathrm{BH}}}{M_\odot}\right)
+  = 8.49 + 4.38 \log\left(\frac{\sigma}{200\ \mathrm{km\,s^{-1}}}\right) .
+$$ {#eq-msigma}
+
+Dividing $\sigma$ by $200\ \mathrm{km\,s^{-1}}$ is a convenience: it makes the
+argument of the logarithm a pure number near one, so that the intercept $8.49$
+is simply the logarithm of the mass at $\sigma = 200\ \mathrm{km\,s^{-1}}$,
+which is $3.1 \times 10^{8}\,M_\odot$. Undoing the logarithm gives the power
+law, $M_{\mathrm{BH}} = 3.1 \times 10^{8}\,M_\odot\, (\sigma /
+200\ \mathrm{km\,s^{-1}})^{4.38}$.
+
+::: {.callout-note .worked-example collapse="true" title="Worked example: the mass predicted by a dispersion of 250 km/s"}
+**The question.** The stars in a galaxy's bulge have
+$\sigma = 250\ \mathrm{km\,s^{-1}}$. What black hole mass does @eq-msigma
+predict?
+
+Substitute with the units attached:
+
+$$
+\log\left(\frac{M_{\mathrm{BH}}}{M_\odot}\right)
+  = 8.49 + 4.38 \log\left(\frac{250\ \mathrm{km\,s^{-1}}}
+                                {200\ \mathrm{km\,s^{-1}}}\right) .
+$$
+
+The kilometers per second cancel inside the logarithm, as they must, since a
+logarithm can only be taken of a pure number. *Do the units make sense?* The
+right side is a pure number, and so is the left side, the logarithm of a mass
+in solar masses. So yes.
+
+Now the numbers. The ratio is $1.25$, and $\log 1.25 = 0.097$, so
+
+$$
+\log\left(\frac{M_{\mathrm{BH}}}{M_\odot}\right)
+  = 8.49 + 4.38 \times 0.097 = 8.91 ,
+$$
+
+and $M_{\mathrm{BH}} = 10^{8.91}\,M_\odot$, which is
+**about $8 \times 10^{8}\,M_\odot$**.
+:::
+
+**The scatter around the line is small, but it is not zero.** Real galaxies
+sit within about $0.3$ to $0.45$ dex of the line, a factor of two or three in
+mass [@gultekin2009; @kormendy2013]. **The relation also has exceptions, and our
+own Galaxy is one of them.** Bulges come in two kinds. A **classical bulge** is
+like a small elliptical galaxy, built violently in a merger. A **pseudobulge**
+is built slowly inside a disk, by gas and stars migrating inward, and the orange
+points in @fig-msigma show that pseudobulges tend to fall below the line
+[@kormendy2013]. The Milky Way has a pseudobulge, and its black hole is several
+times less massive than the line predicts. That is a real clue, and we will
+use it below: a black hole's mass seems to follow the part of the galaxy that
+was built by violence.
+
+**Why does anyone care about a relation with this much scatter?** For one thing,
+it gives the mass of a black hole we cannot measure directly, from a single
+spectrum. For another, it says that black holes and galaxies know about each
+other, and this lecture is about why.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-msigma}
+
+1. Write the relation of @eq-msigma as a power law for
+   $\sigma$ in units of $100\ \mathrm{km\,s^{-1}}$, that is, in the form
+   $M_{\mathrm{BH}} = a\,(\sigma/100\ \mathrm{km\,s^{-1}})^{b}$. What are $a$
+   and $b$?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   $a = 1.5 \times 10^{7}\,M_\odot$ and $b = 4.38$.
+   :::
+
+2. If the dispersion of a galaxy is measured with a $10\%$ error, what is the
+   resulting error in the black hole mass predicted by @eq-msigma?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint and answer"}
+   Compare the predictions at $\sigma$ and at $1.1\,\sigma$: the $\sigma$
+   itself cancels from the ratio. About a $50\%$ error.
+   :::
+
+3. The Milky Way's dispersion is about $105\ \mathrm{km\,s^{-1}}$, the value
+   plotted in @fig-msigma. What mass does @eq-msigma predict, and by what factor
+   does it exceed the measured $4.3 \times 10^{6}\,M_\odot$?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   About $1.8 \times 10^{7}\,M_\odot$, about four times the measured mass.
+   :::
+
+4. The fit by Gültekin et al. is $\log(M_{\mathrm{BH}}/M_\odot) = 8.12 + 4.24
+   \log(\sigma/200\ \mathrm{km\,s^{-1}})$. At what dispersion do the two fits in
+   @fig-msigma agree? Is that dispersion inside the range of the data, and what
+   does your answer say about the difference between the two lines?
+
+5. A student fits a straight line to $M_{\mathrm{BH}}$ against $\sigma$ on
+   ordinary, non-logarithmic axes. Why would the answer be almost entirely
+   determined by the handful of most massive black holes?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+   In a fit, every point counts through its distance from the line, measured in
+   the units of the vertical axis. How do those distances compare at $10^{7}$
+   and at $10^{10}\,M_\odot$?
+   :::
+
+:::
+
+## The sphere of influence {#sec-soi}
+
+How far does the black hole's gravity actually reach?
+
+:::: {.panel-tabset .tracks}
+
+### Physical intuition
+
+Near the black hole, stars orbit it as the planets orbit the Sun, and everything
+is set by its mass. Far from it, the same stars are moving at speeds set by the
+gravity of the whole bulge, and the black hole might as well not be there. The
+crossover is where the speed of an orbit around the black hole alone has fallen
+to the speed the stars have anyway. The black hole's **sphere of influence** is
+the region inside that crossover.
+
+### Mathematical explanation
+
+**Set the two speeds equal.** A circular orbit around a mass $M_{\mathrm{BH}}$
+has $v^2 = G M_{\mathrm{BH}}/r$ (lecture 1). The stars in the bulge have
+$v^2 \sim \sigma^2$. The crossover is at
+
+$$
+r_{\mathrm{SOI}} = \frac{G M_{\mathrm{BH}}}{\sigma^2} .
+$$ {#eq-rsoi}
+
+This idea goes back to @peebles1972. *Do the units make sense?* $G M$ is a length times a speed squared
+($\mathrm{cm^3\,s^{-2}}$), and dividing by $\sigma^2$
+($\mathrm{cm^2\,s^{-2}}$) leaves centimeters, so yes.
+
+**There is a useful way to compare this with the horizon.** Dividing
+@eq-rsoi by $r_S = 2GM_{\mathrm{BH}}/c^2$, the mass cancels:
+
+$$
+\frac{r_{\mathrm{SOI}}}{r_S} = \frac12 \left(\frac{c}{\sigma}\right)^2 ,
+$$ {#eq-rsoi-rs}
+
+a pure number. For $\sigma = 200\ \mathrm{km\,s^{-1}}$ it is about a million.
+
+::: {.content-visible when-format="pdf"}
+{{< include ../../in_class/lec21/exercises00.qmd >}}
+:::
+
+### Numerical exploration
+
+@fig-scales lays out the Milky Way's center on a single logarithmic axis,
+from the size of the black hole's horizon to the size of the disk of the Galaxy.
+
+```{python}
+#| label: fig-scales
+#| fig-cap: "Lengths around the Milky Way's black hole, on a logarithmic axis in centimeters. From left: the Schwarzschild radius of a black hole of $4.3 \\times 10^{6}\\,M_\\odot$, the closest approach of the star S2 (lecture 19), the sphere of influence, the radius of the bulge, and the radius of the stellar disk. Each labeled tick is a factor of a hundred. The sphere of influence is a few million times the horizon and a few thousandths of the bulge."
+#| fig-alt: "A horizontal axis, logarithmic, in centimeters from ten to the twelve to ten to the twenty-three. Five labeled tick marks: the Schwarzschild radius near ten to the twelve, the closest approach of the star S2 near ten to the fifteen, the sphere of influence near ten to the eighteen, the bulge near ten to the twenty-one and a half, and the stellar disk near ten to the twenty-two and a half. The sphere of influence falls past the middle of the axis, a few hundred times less than the bulge radius and a few million times more than the Schwarzschild radius."
+#| fig-height: 2.0
+
+G, C, MSUN, PC, AU, KM = 6.6732e-8, 2.99792458e10, 1.9891e33, 3.0856e18, 1.496e13, 1e5
+M = 4.3e6 * MSUN
+SIGMA_MW = 105 * KM
+
+marks = [(2 * G * M / C**2, r"$r_S$", BLUE),
+         (120 * AU, "S2 at\nclosest", INK2),
+         (G * M / SIGMA_MW**2, r"$r_{\mathrm{SOI}}$", ORANGE),
+         (1e3 * PC, "bulge", INK2),
+         (1.5e4 * PC, "stellar\ndisk", INK2)]
+
+fig, ax = plt.subplots(figsize=(5.8, 1.6))
+ax.axhline(0, color=AXIS, lw=1.5, zorder=1)
+for r, label, color in marks:
+    ax.plot(np.log10(r), 0, "o", color=color, ms=9, zorder=3)
+    ax.annotate(label, (np.log10(r), 0), xytext=(0, 12),
+                textcoords="offset points", ha="center", fontsize=10)
+ax.set_xlim(11.5, 23.5)
+ax.set_ylim(-0.6, 1.3)
+ax.set_yticks([])
+for side in ("left", "right", "top"):
+    ax.spines[side].set_visible(False)
+ax.set_xticks(range(12, 24, 2))
+ax.set_xlabel(r"$\log_{10}$ of length (cm)")
+plt.show()
+```
+
+::::
+
+::: {.callout-note .worked-example collapse="true" title="Worked example: the reach of a billion-solar-mass black hole"}
+**The question.** A black hole of $10^{9}\,M_\odot$ sits in a giant elliptical
+with $\sigma = 300\ \mathrm{km\,s^{-1}}$. How big is its sphere of influence,
+and how large does that sphere appear from a distance of 20 Mpc?
+
+Substitute into @eq-rsoi with the units attached, writing out both
+conversions as fractions:
+
+$$
+\begin{aligned}
+r_{\mathrm{SOI}} = {} &
+  \left(6.674 \times 10^{-8}\ \mathrm{cm^3\,g^{-1}\,s^{-2}}\right)
+  \left(10^{9}\,M_\odot\right) \\[0.8em]
+  & \times \left(\frac{1.989 \times 10^{33}\ \mathrm{g}}{1\,M_\odot}\right) \\[0.8em]
+  & \times \frac{1}{\left[\left(300\ \mathrm{km\,s^{-1}}\right)
+    \left(\dfrac{10^{5}\ \mathrm{cm}}{1\ \mathrm{km}}\right)\right]^2} .
+\end{aligned}
+$$
+
+The solar masses and kilometers cancel in the conversions, and
+$\mathrm{g}\cdot\mathrm{g^{-1}}$ cancels, leaving
+$\mathrm{cm^3\,s^{-2}}/\mathrm{cm^2\,s^{-2}} = \mathrm{cm}$.
+*Do the units make sense?* A radius is a length, so yes.
+
+Multiply: the top is $1.33 \times 10^{35}$ and the bottom is
+$9.0 \times 10^{14}$, so $r_{\mathrm{SOI}} = 1.5 \times 10^{20}\ \mathrm{cm}$.
+In parsecs,
+
+$$
+1.5 \times 10^{20}\ \mathrm{cm}
+  \times \frac{1\ \mathrm{pc}}{3.086 \times 10^{18}\ \mathrm{cm}}
+  = 48\ \mathrm{pc} .
+$$
+
+At a distance of 20 Mpc, the angle in radians is size divided by distance, and
+the conversion to arcseconds is one more fraction:
+
+$$
+\theta = \frac{48\ \mathrm{pc}}{2 \times 10^{7}\ \mathrm{pc}}
+  \times \frac{206265\ \mathrm{arcsec}}{1\ \mathrm{radian}}
+  = 0.5\ \mathrm{arcsec} .
+$$
+
+**About 48 pc, or half an arcsecond.** The Hubble Space Telescope resolves
+about $0.1$ arcsec. That is the reason black hole masses have been measured
+directly only in fairly nearby galaxies: past a hundred megaparsecs or so, even
+a billion-solar-mass black hole's sphere of influence is too small to see, and the only way to get a mass is
+through the relation of @fig-msigma.
+:::
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-soi}
+
+1. Use @eq-rsoi to find the sphere of influence of a black hole of
+   $10^{8}\,M_\odot$ in a galaxy with $\sigma = 200\ \mathrm{km\,s^{-1}}$.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   About $11\ \mathrm{pc}$.
+   :::
+
+2. The black hole of NGC 4258 is $3.8 \times 10^{7}\,M_\odot$, and the
+   dispersion of its bulge is $115\ \mathrm{km\,s^{-1}}$. Find the radius of its
+   sphere of influence and the angle it subtends from a distance of $7.2$ Mpc.
+   Could the Hubble Space Telescope resolve it?
+
+3. Why is $r_{\mathrm{SOI}}/r_S$ in @eq-rsoi-rs independent of the mass of the
+   black hole?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+   Look at which quantity appears in both the top and the bottom of the ratio,
+   and think about what this says about scale: which features of a black hole's
+   surroundings grow in proportion to its mass?
+   :::
+
+4. Put the relation of @eq-msigma into @eq-rsoi. How does
+   $r_{\mathrm{SOI}}$ scale with $\sigma$ along the relation, and by what
+   factor does it grow when $\sigma$ doubles?
+
+:::
+
+## How can a black hole know? {#sec-energy}
+
+Here is the puzzle stated plainly. A black hole's sphere of influence is
+a few thousandths of the radius of its bulge, and the volume ratio is a few
+billionths. The black hole cannot feel a star on the far side of the bulge, and
+the star cannot feel it. And yet $M_{\mathrm{BH}}$ and $\sigma$ are tied
+together to within a factor of three, across four powers of ten.
+
+::: {.callout-tip .resolution collapse="true" title="Think about why gravity cannot be the link"}
+Gravity from the black hole is too weak beyond $r_{\mathrm{SOI}}$ to change how
+the bulge's stars move. If you took away a galaxy's black hole, almost nothing
+in the bulge would notice. Whatever ties the two together has to work some other
+way, and it has to work on a much larger scale. The one thing a black hole
+makes in enormous amounts is energy.
+:::
+
+**The energy budget settles it.** Compare the energy released by growing the
+black hole with the energy that binds the bulge together.
+
+::: {.callout-note .worked-example collapse="true" title="Worked example: can a black hole unbind its own bulge?"}
+**The question.** A bulge has a mass of $10^{11}\,M_\odot$, a dispersion of
+$200\ \mathrm{km\,s^{-1}}$ and a black hole holding half a percent of its mass.
+How does the energy released in growing that black hole, at $\eta = 0.1$,
+compare with the binding energy of the bulge?
+
+By lecture 17's virial theorem, the binding energy of a bulge of mass
+$M_{\mathrm{b}}$ is of order $M_{\mathrm{b}}\sigma^2$. The energy released in
+making a black hole of mass $M_{\mathrm{BH}}$ is $\eta M_{\mathrm{BH}} c^2$. The
+ratio is
+
+$$
+\frac{E_{\mathrm{BH}}}{E_{\mathrm{bulge}}}
+  = \frac{\eta M_{\mathrm{BH}} c^2}{M_{\mathrm{b}}\sigma^2}
+  = \eta\, \frac{M_{\mathrm{BH}}}{M_{\mathrm{b}}}
+    \left(\frac{c}{\sigma}\right)^2 .
+$$
+
+*Do the units make sense?* $\eta$ and the mass ratio are pure numbers, and
+$c/\sigma$ is a speed over a speed, so the ratio is a pure number, as a ratio of
+two energies has to be. So yes.
+
+Now the numbers:
+
+$$
+\frac{E_{\mathrm{BH}}}{E_{\mathrm{bulge}}}
+  = 0.1 \times 0.005 \times
+    \left(\frac{3.00 \times 10^{5}\ \mathrm{km\,s^{-1}}}
+               {200\ \mathrm{km\,s^{-1}}}\right)^2
+  \approx 1100 .
+$$
+
+**The black hole releases about a thousand times the binding energy of the
+bulge.** That is the key. Even if only one part in a thousand of the energy
+released couples to the gas, the black hole can blow the galaxy's gas away.
+The fact that this ratio is so large, and that $c/\sigma$ is so large, is why a
+black hole can matter at all [@silk1998; @fabian1999].
+:::
+
+So a black hole does not need to reach the bulge with gravity. It can reach it
+with light, winds and jets. The name for this is **feedback**, the same word we
+used in lecture 8 for a black hole that pushes away the fuel it is eating. Now
+it is the whole galaxy's fuel supply that is at stake.
+
+### Mergers feed both at once
+
+Something also has to feed both. A galaxy's stars and its black hole are both
+built from gas, and the violent events in a galaxy's life bring gas to its
+center. **The black hole–galaxy connection may be driven by mergers**
+[@dimatteo2005; @hopkins2008]. When two gas-rich galaxies collide:
+
+1. The stars and gas of the two disks are thrown around and a **bulge** forms.
+2. Gas loses its angular momentum and falls to the center, feeding the
+   **black hole**.
+3. The same gas forms **stars** in a burst.
+4. Then the energy released drives **outflows** of gas, which shut down the
+   accretion and the star formation that made them.
+
+The last step is feedback, and it may be why the sequence ends with a galaxy of
+old stars and a dormant black hole. Supernovae can drive outflows too, and in
+small galaxies they probably do most of the work. This story is still debated:
+many active galaxies show no sign of a recent merger, especially the less
+luminous ones [@cisternas2011]. Mergers are not the only way to feed a black
+hole, but they are probably how the most massive ones got that way.
+
+The rest of the lecture is about the two ways feedback operates.
+
+| | **quasar mode** | **radio mode** |
+|:---|:---|:---|
+| Eddington ratio | near $1$ | below about $10^{-2}$ |
+| what comes out | light and a wind | a jet |
+| when | a short bright phase | most of a galaxy's life |
+| what it does | blows gas out | keeps gas from cooling |
+| motto | "blasting away" | "slow and steady" |
+
+: The two modes of AGN feedback. {#tbl-modes}
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-energy}
+
+1. Use the worked example's approach for a bulge with
+   $\sigma = 100\ \mathrm{km\,s^{-1}}$ and for one with
+   $\sigma = 300\ \mathrm{km\,s^{-1}}$. Which bulge is easier for its black hole
+   to unbind?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   The ratios are about $4500$ and $500$, so the small bulge, with
+   $\sigma = 100\ \mathrm{km\,s^{-1}}$, is easier.
+   :::
+
+2. For the bulge of the worked example, how much mass would the black hole need
+   to swallow for the accretion energy to equal the bulge's binding energy? How
+   does that compare with the black hole's actual mass?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   About $4.5 \times 10^{5}\,M_\odot$, which is about $0.1\%$ of its actual mass.
+   :::
+
+3. In the merger sequence, why would you expect the black hole and the stars of
+   the bulge to grow at about the same time?
+
+:::
+
+## Quasar mode: blasting away {#sec-quasar-mode}
+
+A black hole accreting near its Eddington limit is a very bright source of
+light, and that light pushes on gas. Lecture 8 used this to show that a black
+hole can only accrete so fast. Now apply the same push on a galactic scale.
+
+:::: {.panel-tabset .tracks}
+
+### Physical intuition
+
+Imagine a shell of gas surrounding the black hole, reaching out into the bulge.
+The black hole's light pushes the shell outward. Gravity holds it in. If the
+black hole is small, gravity wins, gas falls in, and the black hole grows. As
+it grows, its Eddington luminosity grows. At some point the push wins, and the
+shell starts to move outward. **The gas is now going away, the black hole has
+stopped being fed, and its mass stops growing at the value where the two forces
+balanced.**
+
+That is self-regulation. The black hole grows until it is massive enough to cut
+off its own food, and the mass at which that happens depends on how deep the
+galaxy's gravity is, which is to say on $\sigma$. So the M–σ relation falls out
+of the physics.
+
+### Mathematical explanation
+
+**The push.** Radiation of luminosity $L$ carries momentum at the rate $L/c$
+(lecture 8). If the gas shell is opaque, it absorbs all of that momentum. The
+force on the shell is $L/c$. Using the Eddington luminosity from lecture 8,
+
+$$
+F_{\mathrm{push}} = \frac{L_{\mathrm{Edd}}}{c}
+                  = \frac{4\pi G M_{\mathrm{BH}}\, m_p}{\sigma_T} .
+$$
+
+**The weight of the shell.** Treat the bulge as a singular isothermal sphere,
+whose mass inside radius $r$ is $M(r) = 2\sigma^2 r/G$. This is the distribution
+behind lecture 17's flat rotation curve, with $v^2 = 2\sigma^2$. Suppose a
+fraction $f_g$ of that mass is gas, so the shell has $M_g = f_g M(r)$. Gravity
+pulls on the shell with force
+
+$$
+F_{\mathrm{grav}} = \frac{G M(r) M_g}{r^2}
+  = \frac{G}{r^2} \cdot \frac{2\sigma^2 r}{G} \cdot f_g \frac{2\sigma^2 r}{G}
+  = \frac{4 f_g \sigma^4}{G} .
+$$
+
+**The radius has canceled out.** The weight of the shell is the same wherever
+it is, so once the push beats it, the shell can keep going all the way out.
+
+**Set the two equal and solve for the mass:**
+
+$$
+M_{\mathrm{BH}} = \frac{f_g\, \sigma_T}{\pi G^2 m_p}\, \sigma^4 .
+$$ {#eq-mbalance}
+
+This is a prediction of the M–σ relation, and it is due to Andrew King
+[@king2003; @king2005; @kingpounds2015]. The units check: $\sigma_T$ is
+$\mathrm{cm^2}$, $G^2$ is $\mathrm{cm^6\,g^{-2}\,s^{-4}}$, $m_p$ is
+$\mathrm{g}$, and $\sigma^4$ is $\mathrm{cm^4\,s^{-4}}$, so the combination is
+$\mathrm{cm^2 \cdot g^{2}\,cm^{-6}\,s^{4} \cdot g^{-1} \cdot cm^4\,s^{-4}}$, or
+grams. A mass, as it should be.
+
+### Numerical exploration
+
+@fig-balance plots @eq-mbalance against the observed relation.
+
+```{python}
+#| label: fig-balance
+#| fig-cap: "The black hole mass at which the radiation push balances the weight of the gas (@eq-mbalance, blue), against the observed relation of @eq-msigma (orange, dashed), for a gas fraction of $f_g = 0.16$. The prediction has slope exactly 4, and its only free parameter is the gas fraction."
+#| fig-alt: "A chart with logarithmic axes. The horizontal axis is velocity dispersion from 60 to 400 kilometers per second, and the vertical axis is black hole mass from about one hundred thousand to more than ten billion solar masses. A blue solid line and an orange dashed line both rise from lower left to upper right, nearly on top of one another, with the orange line very slightly steeper. A single blue point at 200 kilometers per second lies on the blue line, at about 400 million solar masses."
+#| fig-height: 4.0
+
+G, M_P, SIG_T, M_SUN = 6.6732e-8, 1.6726e-24, 6.6524e-25, 1.9891e33
+
+f_gas = 0.16           # fraction of the galaxy's mass that is gas
+sigma_mark = 200.0     # a dispersion to read off, in km/s
+
+
+def m_balance(sigma_kms, f_gas):
+    """Black hole mass (Msun) at which L_Edd/c balances the shell's weight."""
+    sigma = sigma_kms * 1e5
+    return f_gas * SIG_T * sigma**4 / (np.pi * G**2 * M_P) / M_SUN
+
+
+def m_observed(sigma_kms):
+    """The observed relation, Kormendy & Ho (2013)."""
+    return 10 ** (8.49 + 4.38 * np.log10(sigma_kms / 200.0))
+
+
+s = np.geomspace(60, 420, 200)
+fig, ax = plt.subplots(figsize=(5.8, 4.0))
+ax.plot(s, m_balance(s, f_gas), color=BLUE, lw=2, label="force balance")
+ax.plot(s, m_observed(s), color=ORANGE, lw=2, ls="--", label="observed")
+ax.plot(sigma_mark, m_balance(sigma_mark, f_gas), "o", color=BLUE, ms=7, zorder=3)
+ax.set_xscale("log")
+ax.set_yscale("log")
+ax.set_xlim(60, 420)
+ax.set_xticks([60, 100, 200, 300, 400])
+ax.set_xticklabels(["60", "100", "200", "300", "400"])
+ax.minorticks_off()
+ax.set_xlabel(r"velocity dispersion $\sigma$ (km s$^{-1}$)")
+ax.set_ylabel(r"black hole mass $M_{\mathrm{BH}}$ ($M_\odot$)")
+ax.legend(fontsize=10, loc="upper left")
+print(f"at sigma = {sigma_mark:.0f} km/s, force balance gives {m_balance(sigma_mark, f_gas):.2e} Msun")
+print(f"the observed relation gives {m_observed(sigma_mark):.2e} Msun")
+plt.show()
+```
+
+### Turn the knobs
+
+::: {.content-visible when-format="pdf"}
+Students have a live, editable version of this cell in the web notes —
+remind them to try it.
+:::
+
+::: {.content-visible when-format="html"}
+
+The same plot, but editable: change the gas fraction and the dispersion to read
+off on the two lines marked `# <- edit this` (lines 9 and 10 of the cell), run it,
+and see how the prediction moves against the observed relation. A gas-poor
+galaxy with `f_gas = 0.02` makes a much smaller black hole. Why?
+
+```{pyodide}
+#| autorun: false
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+BLUE, ORANGE = "#2a78d6", "#eb6834"
+
+G, M_P, SIG_T, M_SUN = 6.6732e-8, 1.6726e-24, 6.6524e-25, 1.9891e33
+
+f_gas = 0.16           # fraction of the galaxy's mass that is gas  # <- edit this
+sigma_mark = 200.0     # a dispersion to read off, in km/s  # <- edit this
+
+
+def m_balance(sigma_kms, f_gas):
+    """Black hole mass (Msun) at which L_Edd/c balances the shell's weight."""
+    sigma = sigma_kms * 1e5
+    return f_gas * SIG_T * sigma**4 / (np.pi * G**2 * M_P) / M_SUN
+
+
+def m_observed(sigma_kms):
+    """The observed relation, Kormendy & Ho (2013)."""
+    return 10 ** (8.49 + 4.38 * np.log10(sigma_kms / 200.0))
+
+
+s = np.geomspace(60, 420, 200)
+fig, ax = plt.subplots(figsize=(5.8, 4.0))
+ax.plot(s, m_balance(s, f_gas), color=BLUE, lw=2, label="force balance")
+ax.plot(s, m_observed(s), color=ORANGE, lw=2, ls="--", label="observed")
+ax.plot(sigma_mark, m_balance(sigma_mark, f_gas), "o", color=BLUE, ms=7, zorder=3)
+ax.set_xscale("log")
+ax.set_yscale("log")
+ax.set_xlim(60, 420)
+ax.set_xticks([60, 100, 200, 300, 400])
+ax.set_xticklabels(["60", "100", "200", "300", "400"])
+ax.minorticks_off()
+ax.set_xlabel(r"velocity dispersion $\sigma$ (km s$^{-1}$)")
+ax.set_ylabel(r"black hole mass $M_{\mathrm{BH}}$ ($M_\odot$)")
+ax.legend(fontsize=10, loc="upper left")
+print(f"at sigma = {sigma_mark:.0f} km/s, force balance gives {m_balance(sigma_mark, f_gas):.2e} Msun")
+print(f"the observed relation gives {m_observed(sigma_mark):.2e} Msun")
+plt.show()
+```
+
+:::
+
+::::
+
+::: {.callout-note .worked-example collapse="true" title="Worked example: the predicted black hole mass at 200 km/s"}
+**The question.** Take a gas fraction of $f_g = 0.16$, the cosmic ratio of gas
+to total matter, and $\sigma = 200\ \mathrm{km\,s^{-1}}$. What mass does
+@eq-mbalance predict?
+
+Substitute with units attached, converting the dispersion with a fraction:
+
+$$
+\begin{aligned}
+M_{\mathrm{BH}} = {} & \frac{0.16 \times \left(6.652 \times 10^{-25}\ \mathrm{cm^2}\right)}
+  {\pi \left(6.674 \times 10^{-8}\ \mathrm{cm^3\,g^{-1}\,s^{-2}}\right)^2} \\[0.8em]
+  & \times \frac{1}{1.673 \times 10^{-24}\ \mathrm{g}} \\[0.8em]
+  & \times \left[\left(200\ \mathrm{km\,s^{-1}}\right)
+        \left(\frac{10^{5}\ \mathrm{cm}}{1\ \mathrm{km}}\right)\right]^4 .
+\end{aligned}
+$$
+
+Cancel. The kilometers go in the fraction. The top has
+$\mathrm{cm^2 \cdot cm^4\,s^{-4}} = \mathrm{cm^6\,s^{-4}}$, the bottom has
+$\mathrm{cm^6\,g^{-2}\,s^{-4} \cdot g} = \mathrm{cm^6\,g^{-1}\,s^{-4}}$, and the
+ratio is a gram. *Do the units make sense?* A mass, so yes. Notice how the
+speed of light does not appear: it went out when the Eddington luminosity was
+divided by $c$.
+
+Now the numbers. The top gives $1.06 \times 10^{-25} \times 1.6 \times 10^{29}
+= 1.70 \times 10^{4}$, and the bottom gives $2.34 \times 10^{-38}$. Dividing,
+$M_{\mathrm{BH}} = 7.3 \times 10^{41}\ \mathrm{g}$. In solar masses,
+
+$$
+7.3 \times 10^{41}\ \mathrm{g} \times
+  \frac{1\,M_\odot}{1.989 \times 10^{33}\ \mathrm{g}}
+  = 3.7 \times 10^{8}\,M_\odot .
+$$
+
+**About $3.7 \times 10^{8}\,M_\odot$, against an observed $3.1 \times
+10^{8}\,M_\odot$.** The agreement is better than the argument deserves, and part of it is luck. The
+derivation assumed that the shell is exactly the right density and the momentum
+of the light is used exactly once, and neither is quite true. But to get
+within a factor of two of a measured mass using nothing beyond the Eddington
+luminosity and a gas fraction, with no adjustable parameter chosen to make it
+work, is remarkable.
+:::
+
+**A different assumption gives a different slope.** The derivation assumed that
+the shell is pushed by momentum, and that the energy of the wind is radiated
+away before it can help. If the energy is retained, the wind pushes harder, the
+same argument gives $M_{\mathrm{BH}} \propto \sigma^{5}$, and the black hole
+needed is smaller [@silk1998; @king2005]. The observed slope, between $4$ and
+$5$, cannot yet tell them apart.
+
+**Outflows are seen.** Fast winds of molecular gas are observed around some
+powerful quasars, carrying off several hundred solar masses of gas per year,
+far more than the black hole accretes [@feruglio2010; @cicone2014].
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-quasar}
+
+1. Use @eq-mbalance to find the predicted mass at
+   $\sigma = 100\ \mathrm{km\,s^{-1}}$ and $\sigma = 300\ \mathrm{km\,s^{-1}}$,
+   with $f_g = 0.16$. Compare each with @eq-msigma.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   $2.3 \times 10^{7}\,M_\odot$ and $1.9 \times 10^{9}\,M_\odot$, against an
+   observed $1.5 \times 10^{7}\,M_\odot$ and $1.8 \times 10^{9}\,M_\odot$.
+   :::
+
+2. By how much does the mass in @eq-mbalance change if the gas fraction is ten
+   times smaller? Check with the "Turn the knobs" cell.
+
+3. Suppose a pseudobulge has the same $\sigma$ as a classical bulge but grew
+   from a smaller supply of gas. Which way would @eq-mbalance move it relative
+   to the relation, and why should this be taken as only a suggestion?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+   Find the place in the derivation where $f_g$ appears, and think about whether
+   the force-balance argument is really what built a pseudobulge's black hole.
+   :::
+
+4. @eq-mbalance has no dependence on $\eta$ or on $c$. Trace where each of them
+   went in the derivation.
+
+:::
+
+## Radio mode: slow and steady {#sec-radio-mode}
+
+Most of the black holes in the Universe are not near their Eddington limit.
+They are accreting far below it. Recall lecture 20: at a low accretion rate, a
+black hole enters the **hard state**, in which the disk gives way to a hot,
+inefficient flow, the light is faint, and the output comes in a steady radio
+jet instead. **Radio-mode feedback** is what that jet does to the galaxy, once
+the bright phase has passed, at Eddington ratios below about a hundredth or a
+thousandth [@heckman2014; @fabian2012].
+
+**The problem it solves is a puzzle about hot gas.** The largest galaxies and
+galaxy clusters are filled with gas at tens of millions of kelvin, glowing in
+X-rays. Radiating energy cools it, and in the middle of a cluster the cooling
+time is short compared with the age of the cluster. So the gas should cool and
+flow to the center and form stars in enormous numbers. It doesn't. X-ray
+observations find far less cool gas than that predicts and far fewer new stars
+[@peterson2006]. Something is heating it.
+
+**The heater is the jet.** X-ray images of the centers of clusters show bright
+gas with dark holes in it, large bubbles a few kiloparsecs to tens of
+kiloparsecs across, and radio images show the jet's plasma filling those holes
+[@mcnamara2007; @fabian2012]. The jet has pushed the hot gas aside. The bubbles
+are the record of how much work the black hole has done.
+
+::: {.callout-note .worked-example collapse="true" title="Worked example: how much work did the jet do in Perseus?"}
+**The question.** The Perseus cluster's hot gas has an electron pressure of
+about $0.2\ \mathrm{keV\,cm^{-3}}$ at the rim of its inner bubble, and the
+bubble is about $7\ \mathrm{kpc}$ in radius [@fabian2006; @rafferty2006]. How
+much energy did the jet supply to make that bubble, and how much mass did the
+black hole have to swallow to supply it?
+
+The energy needed to inflate a bubble of relativistic plasma is its enthalpy,
+which is $E = 4pV$ [@mcnamara2007]. Electrons and ions each contribute a
+pressure, so $p$ is about twice the electron pressure. Substitute with the units
+attached, converting keV to erg and kiloparsecs to centimeters with fractions:
+
+$$
+\begin{aligned}
+E = {} & 4 \left(2 \times 0.2\ \mathrm{keV\,cm^{-3}}\right)
+      \left(\frac{1.602 \times 10^{-9}\ \mathrm{erg}}{1\ \mathrm{keV}}\right) \\[0.8em]
+      & \times \frac{4\pi}{3}
+      \left[\left(7\ \mathrm{kpc}\right)
+      \left(\frac{3.086 \times 10^{21}\ \mathrm{cm}}{1\ \mathrm{kpc}}\right)\right]^3 .
+\end{aligned}
+$$
+
+The keV and the kiloparsecs cancel in their fractions, and
+$\mathrm{erg\,cm^{-3}} \times \mathrm{cm^3} = \mathrm{erg}$.
+*Do the units make sense?* An energy, so yes.
+
+The pressure is $6.4 \times 10^{-10}\ \mathrm{erg\,cm^{-3}}$ and the volume is
+$4.2 \times 10^{67}\ \mathrm{cm^3}$, so
+
+$$
+E = 4 \times \left(6.4 \times 10^{-10}\right) \times \left(4.2 \times 10^{67}\right)
+  \approx 1 \times 10^{59}\ \mathrm{erg} .
+$$
+
+At $\eta = 0.1$, the mass that had to fall in is
+$M = E/\eta c^2 = 1.2 \times 10^{39}\ \mathrm{g}$, which is
+
+$$
+1.2 \times 10^{39}\ \mathrm{g} \times
+  \frac{1\,M_\odot}{1.989 \times 10^{33}\ \mathrm{g}}
+  = 6 \times 10^{5}\,M_\odot .
+$$
+
+**About $10^{59}$ erg, paid for by about $6 \times 10^{5}\,M_\odot$ of
+accretion.** That is less than a thousandth of the mass of the black hole in
+the middle of Perseus, about $8 \times 10^{8}\,M_\odot$ [@scharwachter2013]. Over
+a bubble's rise time of about $1.6 \times 10^{7}$ years, it is a power of about
+$2 \times 10^{44}\ \mathrm{erg\,s^{-1}}$. The X-ray gas in the middle of the
+cluster radiates about $6 \times 10^{44}\ \mathrm{erg\,s^{-1}}$
+[@rafferty2006], and there are several bubbles at any time. So a black hole
+sipping gas at a tiny fraction of its Eddington rate can pay the whole cooling
+bill of a cluster of galaxies.
+:::
+
+**A simulated life.** Computer simulations of an elliptical galaxy with a black
+hole show this whole history in one plot [@ciotti2007]. From about 2.5 to 7.6
+billion years after the simulation begins, the black hole flares repeatedly as
+gas cools onto it and is blown away again, reaching between a thousandth and a
+tenth of its Eddington luminosity at the peaks. After the last flare it settles
+into a long, faint, sub-Eddington decline. Bright and brief, then faint and
+long: the two modes of feedback in one object.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-radio}
+
+1. A cavity like the one in the worked example has twice the radius. Assuming
+   the same pressure, how much more energy did it take to make?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   Eight times as much, about $9 \times 10^{59}$ erg.
+   :::
+
+2. A jet's mechanical power is $2 \times 10^{44}\ \mathrm{erg\,s^{-1}}$. If the
+   black hole has a mass of $8 \times 10^{8}\,M_\odot$ and $\eta = 0.1$, what is
+   the accretion rate needed to supply the jet, and what is the ratio of this
+   power to the Eddington luminosity?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   About $0.04\,M_\odot\,\mathrm{yr^{-1}}$, and a ratio of about $2 \times 10^{-3}$.
+   :::
+
+3. Jets are narrow, but the hot gas that must be heated fills a sphere. What
+   would you need to happen for a jet to heat all of the gas, and not only the
+   gas along its own axis?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+   Think about what the bubbles do after they have been inflated, and about
+   what a disturbance can do as it moves through a gas.
+   :::
+
+:::
+
+## The earliest black holes {#sec-jwst}
+
+Lecture 9 raised a question: how did black holes of a billion solar masses
+appear within a billion years of the Big Bang? It introduced ideas about the
+seeds they grew from: the remnants of the first stars, the collapse of dense
+star clusters, and the direct collapse of gas into black holes of $10^{4}$ to
+$10^{5}\,M_\odot$. Scaling relations offer a way to check those ideas: if
+black holes and galaxies grow together, then the black holes of the early
+Universe should look like small versions of today's.
+
+**The James Webb Space Telescope has complicated this.** Since 2023 it has
+found active nuclei in the first billion years, more of them than expected and
+at surprising redshifts. They include GN-z11, at a redshift of 10.6, with a
+black hole of about $2 \times 10^{6}\,M_\odot$ growing at several times the
+Eddington rate [@maiolino2024], and UHZ1, at a redshift of about 10, whose black
+hole may be about as massive as all of the stars in its galaxy
+[@bogdan2024; @goulding2023]. Many are compact red sources called **little red
+dots** [@matthee2024; @greene2024]. In these objects, black holes look ten to a
+hundred times more massive, compared with their galaxies, than the local
+relation allows [@harikane2023; @pacucci2023]. If that is right, the black
+holes got ahead of their galaxies, which is a natural outcome if they began
+heavy.
+
+**The question is not settled, for two reasons.**
+
+The first is **selection**. A survey that finds black holes because they are
+bright finds the most massive black holes in a given sort of galaxy, because
+they are the ones bright enough to be found. That bias makes the black holes
+look too big for their hosts, and it may explain much of the reported excess
+[@lauer2007; @li2025].
+
+The second is that **the masses themselves are in dispute**. Most of them come
+from the width of the broad lines, as in lecture 18. If those lines are
+broadened by scattering in dense gas rather than by the speed of the gas, the
+true masses could be about a hundred times smaller [@rusakov2026], and in
+some of these objects dense gas rather than stars may be producing the light
+[@naidu2025; @degraaff2025]. Against that, the one direct measurement so far, a
+rotation curve around a black hole at a redshift of 7.04, gives
+$5 \times 10^{7}\,M_\odot$, in agreement with the estimate from the broad lines,
+and more massive than the stars of its galaxy [@juodzbalis2026].
+
+What is safe to say is that some black holes were already large, relative to
+their galaxies, very early on, and that this favors heavy seeds or periods of
+growth above the Eddington limit. How large, and how common, is one of the
+questions astronomers are working on right now.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-jwst}
+
+1. Use the Salpeter time of 50 Myr to compare how long it would take a seed of
+   $10^{2}\,M_\odot$ and a seed of $10^{5}\,M_\odot$ to grow at the Eddington
+   limit to the $5 \times 10^{7}\,M_\odot$ black hole at a redshift of 7, when
+   the Universe was about 750 Myr old. Is either excluded?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   About $660$ Myr and $310$ Myr. Neither is excluded, though the light seed needs
+   to start almost at once and accrete without a pause.
+   :::
+
+2. A black hole of $10^{7}\,M_\odot$ is found in a galaxy of stellar mass
+   $10^{9}\,M_\odot$. Compare its ratio of black hole mass to stellar mass with
+   the half a percent found in nearby bulges. Why would you want to know how
+   this galaxy was selected before drawing a conclusion?
+
+:::
+
+## If you want to go further
+
+None of this section is needed for what comes before or after.
+
+**Kutner, §19.6.2.** The chapter PDF in Canvas Files has a short section on the
+search for supermassive black holes in the nuclei of nearby galaxies, including
+the correlation with the brightness of the bulge.
+
+**The reviews.** Kormendy and Ho's 2013 review [-@kormendy2013] of the scaling
+relations and Fabian's 2012 review [-@fabian2012] of feedback are the standard
+references, and both are readable in parts.
+
+## Summary
+
+| idea | result | why it matters |
+|:---|:---|:---|
+| Soltan's argument | $u = [\eta/(1-\eta)]\,\rho_{\mathrm{BH}}\, c^2$ | the black holes in galaxies now are the leftover quasars of the past, grown at $\eta \approx 0.1$ |
+| Black hole masses | about $0.5\%$ of the bulge's mass | every massive galaxy has one |
+| M–σ relation | $\log(M_{\mathrm{BH}}/M_\odot) = 8.49 + 4.38 \log(\sigma/200\ \mathrm{km\,s^{-1}})$ | tight, steep, and a way to weigh black holes from one spectrum |
+| Power laws | $y = ax^b$ is a straight line in $\log y$ against $\log x$ | the slope on the plot is the exponent |
+| Pseudobulges | below the line | mass follows the part of a galaxy built by violence |
+| Sphere of influence | $r_{\mathrm{SOI}} = GM_{\mathrm{BH}}/\sigma^2$ | gravity reaches only the very center |
+| Energy budget | $E_{\mathrm{BH}}/E_{\mathrm{bulge}} \sim \eta\,(M_{\mathrm{BH}}/M_{\mathrm{b}})\,(c/\sigma)^2 \approx 1000$ | energy can reach the whole galaxy |
+| Quasar mode | $M_{\mathrm{BH}} = f_g\sigma_T\sigma^4/\pi G^2 m_p$ | radiation drives the gas out and stops the black hole's growth |
+| Radio mode | jets inflate bubbles, $E = 4pV$ | the jet heats the gas and stops it cooling |
+
+A black hole holds half a percent of its bulge's mass, its gravity reaches a
+few thousandths of the way across, and yet its mass is set by the whole. The answer
+is that black holes are not passive. Their energy can reach every part of
+the galaxy, and it is by pushing back on the gas that a black hole limits how
+much it, and the galaxy around it, can grow. Next time we look more closely at
+the machine that does some of that pushing: the jets.
+
+::: {.content-visible when-format="html"}
+## References {.unnumbered}
+
+:::: {#refs}
+::::
+:::
+
+::: {.content-visible when-format="pdf"}
+
+```{=latex}
+\clearpage
+\tableofcontents
+```
+:::
