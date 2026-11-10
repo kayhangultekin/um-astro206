@@ -687,6 +687,14 @@ are few:
   spiral galaxies, first catalogued by Carl Seyfert in 1943 [@seyfert1943].
   They come in two kinds. A **Seyfert 1** shows both broad and narrow emission
   lines in its spectrum. A **Seyfert 2** shows only narrow lines.
+* **Low-luminosity AGN** (LLAGN): the faintest members of the family, black
+  holes fed far below their Eddington rate, which puts them in the hard state
+  of the previous section [@ho2008]. Many nearby galaxies have one. M87 is the
+  best-known example. Its black hole, the one in the Event Horizon Telescope's
+  image in lecture 16, weighs $6.5 \times 10^{9}\,M_\odot$, but its nucleus
+  shines at only a few millionths of its Eddington luminosity [@prieto2016].
+  Sgr A\*, more than eight powers of ten below its own limit (lecture 19), is
+  quieter still.
 * **Radio galaxies**: the same phenomenon with relativistic radio jets, usually
   in giant elliptical galaxies, and usually with radio lobes far beyond the
   stars.
@@ -709,7 +717,9 @@ are far above it, the infrared glow of the torus itself, and hard X-rays, which
 have enough energy to get through.
 
 So **the difference between a Seyfert 1 and a Seyfert 2 is the angle we are
-looking from.** A Seyfert 2 is a Seyfert 1 seen through its dust. Add a jet
+looking from.** A Seyfert 2 is a Seyfert 1 seen through its dust. This is
+also why reverberation mapping (lecture 18) can weigh only type 1 objects: it
+times the broad lines, and in a type 2 they are hidden. Add a jet
 to the same picture and the same geometry gives you the radio-loud sequence:
 looking along the jet, you see a blazar; somewhat off the axis, a
 broad-line radio galaxy or a radio-loud quasar; and through the torus, a
