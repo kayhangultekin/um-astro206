@@ -1,0 +1,861 @@
+---
+title: "Black Hole Thermodynamics and Hawking Radiation"
+subtitle: "ASTRO 206 — Black Holes · Lecture 23"
+author: "Kayhan Gültekin"
+date: "December 1"
+date-format: "MMMM D"
+# Dates are LECTURE dates -- when the class meets -- not publication dates.
+# Sourced from Canvas (Reading & Reflection 3234229 and the In-Class Problem
+# 3219334, both due 2026-12-01). A placeholder string renders as "Invalid Date".
+
+# Kernel pinning is deliberate and must stay in the DOCUMENT, not _quarto.yml:
+# Quarto silently ignores a project-level `jupyter:` and auto-selects a kernel.
+jupyter: python3
+
+# No `pyodide: packages:` block: the one live cell needs numpy and matplotlib
+# only, which are inside Pyodide's default dependency closure.
+---
+
+::: {.callout-note appearance="simple" icon=false}
+**Disclaimer.** These notes have not been subjected to the usual scrutiny
+reserved for formal publications. They may be distributed outside this class
+only with the permission of the instructor.
+:::
+
+{{< include ../../_figure-setup.qmd >}}
+
+```{python}
+#| include: false
+
+# Kayhan's constants sheet, cgs.
+c = 2.99792458e10
+G = 6.6732e-8
+k_B = 1.3806e-16
+hbar = 6.6262e-27 / (2 * np.pi)
+M_sun = 1.9891e33
+yr = 3.156e7
+T_CMB = 2.725
+
+def hawking_T(M):
+    """Hawking temperature in kelvin of a Schwarzschild black hole of mass M (g)."""
+    return hbar * c**3 / (8 * np.pi * G * M * k_B)
+```
+
+Every black hole in this course so far has been perfectly black. Light goes in
+and nothing comes out, so a black hole can only grow. That is what general
+relativity says, and for every black hole anyone has ever observed it is true
+to far better than any measurement could test. But it is not the whole story.
+In the early 1970s, a few physicists noticed that the rules black holes obey
+look exactly like the laws of thermodynamics, the laws of heat. They first took
+this as a coincidence. Then Stephen Hawking added quantum mechanics and found
+that it is not: **a black hole has a temperature, and it glows.** This lecture
+follows that argument from the beginning, and ends with a black hole that
+evaporates.
+
+## How to read this lecture
+
+**These notes are the reading for this lecture.** Kutner's §8.4.4, *Non-stellar
+black holes*, is optional: it is a page and a half on Hawking radiation and the
+evaporation of small black holes, and it says nothing these notes do not. The
+lecture builds one argument, and it is worth holding onto from the start:
+
+::: {.callout-important title="The idea at the center of this lecture"}
+**A black hole obeys laws that have exactly the form of the laws of
+thermodynamics, with its horizon area playing the part of entropy, and quantum
+mechanics shows that the analogy is real: a black hole of mass $M$ radiates
+like a blackbody at a temperature proportional to $1/M$, and so it slowly
+evaporates.**
+:::
+
+*Thermodynamics on one page* sets out the four laws of thermodynamics and what
+entropy is, for anyone who has not met them. *A black hole has no hair, and
+that is a problem* shows why a black hole seems to break the second law.
+*The area theorem* shows that horizon area, like entropy, never decreases.
+*The four laws of black-hole mechanics* puts black holes and thermodynamics side
+by side. *Hawking radiation* adds quantum mechanics and finds the temperature.
+*Evaporation* follows a black hole that radiates until nothing is left. Lecture
+24 takes up what this leaves unanswered: how much entropy a black hole holds,
+and what happens to the information in whatever fell in.
+
+## Thermodynamics on one page {#sec-thermo}
+
+Thermodynamics is the physics of heat: of how energy moves between things, and
+which way it goes on its own. It was worked out in the nineteenth century, for
+steam engines, long before anyone knew that matter is made of atoms. It needs
+two ideas besides energy.
+
+**Temperature** is what two things in contact share once they have stopped
+exchanging heat. Heat flows on its own from the hotter to the colder, never the
+other way.
+
+**Entropy**, $S$, measures how many different microscopic arrangements of a
+system look the same from the outside. A gas has a huge number of ways to place
+and move its atoms that all give the same pressure, temperature and volume; a
+crystal at absolute zero has essentially one. More arrangements means more
+entropy. Entropy has units of energy per temperature, $\mathrm{erg\,K^{-1}}$.
+For heat $\mathrm{d}Q$ added gently to something at temperature $T$, its
+entropy rises by
+
+$$
+\mathrm{d}S = \frac{\mathrm{d}Q}{T} .
+$$ {#eq-dS}
+
+The same heat adds more entropy to a cold object than to a hot one, which is
+why heat flowing from hot to cold raises the total.
+
+The four laws, numbered from zero because the zeroth was named last:
+
+| law | statement | in symbols |
+|:---|:---|:---|
+| **zeroth** | a system in thermal equilibrium has one temperature throughout | $T$ uniform |
+| **first** | energy is conserved; it changes by heat added and work done | $\mathrm{d}E = T\,\mathrm{d}S - P\,\mathrm{d}V$ |
+| **second** | the total entropy of an isolated system never decreases | $\mathrm{d}S/\mathrm{d}t \ge 0$ |
+| **third** | a system cannot be brought to absolute zero temperature | $S \to 0$ as $T \to 0$ |
+
+: The laws of thermodynamics. The first law's $T\,\mathrm{d}S$ is the heat
+added, from @eq-dS, and $-P\,\mathrm{d}V$ is the work done on the system when it
+is squeezed. {#tbl-thermo}
+
+The second law is the one that matters most here. It is the reason heat flows
+from hot to cold, the reason no engine converts heat entirely into work, and
+the reason a broken egg does not reassemble. It is not a law about forces; it
+says only that disordered arrangements vastly outnumber ordered ones, so a
+system left alone wanders into them. **Nowhere in nature has it been seen to
+fail.**
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-thermo}
+
+1. Melting ice takes $3.34 \times 10^{9}\ \mathrm{erg}$ of heat for every gram,
+   and happens at $273\ \mathrm{K}$. By how much does the entropy of
+   $1\ \mathrm{kg}$ of ice rise as it melts?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   $1.22 \times 10^{10}\ \mathrm{erg\,K^{-1}}$.
+   :::
+
+2. Heat $Q$ flows from a hot object at temperature $T_1$ to a cold one at
+   $T_2$. Use @eq-dS to find the total change in entropy of the two together,
+   and show that it is positive. What would its sign be if heat flowed the
+   other way?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+   The hot object loses heat $Q$ and the cold one gains it, so their entropies
+   change by $-Q/T_1$ and $+Q/T_2$. Which is bigger, when $T_1 > T_2$?
+   :::
+
+:::
+
+## A black hole has no hair, and that is a problem {#sec-nohair}
+
+Lecture 2 met the **no-hair theorem**: once a black hole has settled down, it
+is described completely by three numbers, its mass $M$, its angular momentum
+$J$, and its electric charge $Q$. Whatever fell in, whether hydrogen or iron,
+stars or filing cabinets, nothing else about it can be measured from outside.
+
+Put that next to the second law. Take a box of hot gas, with an enormous
+entropy, and drop it into a black hole. Outside, the gas and its entropy are
+gone. The black hole's mass goes up by the box's mass, and that is the only
+trace left. If a black hole has no entropy of its own, **the entropy of
+everything we can see has just gone down**, and the second law has been broken
+by throwing something away.
+
+John Wheeler put a version of this puzzle to his graduate student Jacob
+Bekenstein around 1971. There are only two ways out. Either the second law
+fails at black holes, the one place in nature it would, or **a black hole has
+an entropy, and it grows by at least as much as the entropy that fell in.**
+Bekenstein took the second option [@bekenstein1973]. To make it work, he needed
+a property of a black hole that, like entropy, only ever goes up. General
+relativity had just supplied one.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-nohair}
+
+1. A cup of tea falls into a black hole. List three things you could have
+   measured about the tea before it fell in, and say which of them, if any,
+   you can still learn about afterward by measuring the black hole.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+   Only the mass, the angular momentum and the charge survive, and only as
+   additions to the black hole's own.
+   :::
+
+:::
+
+## The area theorem {#sec-area}
+
+In 1971 Hawking proved that **the total area of black-hole horizons never
+decreases** [@hawking1971], as long as the matter falling in has positive
+energy, which every kind of classical matter does. Matter falling in makes a
+black hole bigger; two black holes merging make one whose horizon has at least
+the area of the two together. Nothing classical can make a horizon shrink, and
+a black hole can never split into two.
+
+For a non-spinning black hole, the horizon is a sphere of radius $r_S$, so its
+area is
+
+$$
+A = 4\pi r_S^2 = \frac{16\pi G^2 M^2}{c^4} .
+$$ {#eq-area}
+
+**The area goes as the mass squared.** For one solar mass,
+$A = 1.1 \times 10^{12}\ \mathrm{cm^2}$, about $110\ \mathrm{km^2}$. A spinning
+black hole of the same mass has a smaller horizon, by a factor
+$\tfrac{1}{2}\left(1 + \sqrt{1 - a_*^2}\right)$, where $a_*$ is the spin of
+lecture 2.
+
+Because $A \propto M^2$, the area theorem is a powerful constraint on mergers.
+Two black holes of masses $M_1$ and $M_2$ cannot merge into anything with less
+area than $M_1^2 + M_2^2$ (in units of $16\pi G^2/c^4$), and that puts a ceiling
+on how much mass can be radiated away as gravitational waves.
+
+::: {.callout-note .worked-example collapse="true" title="Worked example: did GW150914 obey the area theorem?"}
+**The question.** The first gravitational-wave event, GW150914 (lecture 10),
+was the merger of black holes of about $36$ and $29\,M_\odot$ into one of
+about $62\,M_\odot$ with spin $a_* \approx 0.67$ [@abbott2016]. Three solar
+masses were radiated away as gravitational waves. Did the total horizon area
+go up?
+
+Work in units of $16\pi G^2 M_\odot^2/c^4$, the area of a one-solar-mass
+non-spinning black hole, so that @eq-area becomes $A = (M/M_\odot)^2$. The two
+black holes before the merger were spinning slowly enough to treat as
+non-spinning, so the area before is
+
+$$
+A_{\mathrm{before}} = 36^2 + 29^2 = 1296 + 841 = 2137 .
+$$
+
+The final black hole spins, so its area is reduced by the factor above:
+
+$$
+\begin{aligned}
+A_{\mathrm{after}} &= 62^2 \times \tfrac{1}{2}\left(1 + \sqrt{1 - 0.67^2}\right) \\
+  &= 3844 \times 0.871 = 3349 .
+\end{aligned}
+$$
+
+*Do the units make sense?* Both are in the same unit, so their ratio is a pure
+number, and that is all the theorem compares. **The area went up by more than
+half.** Mass went down, from $65$ to $62\,M_\odot$, but area went up, because
+area goes as mass squared and squaring rewards putting the mass in one place.
+In 2021, a team measured both areas directly from the gravitational waves, and
+confirmed the theorem with about $97\%$ confidence [@isi2021].
+:::
+
+::: {.callout-tip .resolution collapse="true" title="Find the most energy two equal black holes can radiate when they merge"}
+Two non-spinning black holes of mass $M$ each have total area $2M^2$. The final
+black hole needs at least that much, so if it does not spin, its mass is at
+least $\sqrt{2}\,M$. At most $2M - \sqrt{2}\,M$ can be radiated, which is a
+fraction $1 - 1/\sqrt{2} = 29\%$ of the starting mass. The real figure for
+GW150914 was under $5\%$; the theorem sets the ceiling, not the amount.
+:::
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-area}
+
+1. Find the horizon area of a non-spinning black hole of $10\,M_\odot$, and of
+   Sgr A\*, $4.3 \times 10^{6}\,M_\odot$ (lecture 19).
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   $1.1 \times 10^{14}\ \mathrm{cm^2}$ for $10\,M_\odot$, and
+   $2.0 \times 10^{25}\ \mathrm{cm^2}$ for Sgr A\*.
+   :::
+
+2. Two non-spinning black holes of $10\,M_\odot$ each merge. What is the
+   smallest mass the final black hole can have, and so the most energy that
+   can be radiated, in ergs?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   At least $14.1\,M_\odot$, so at most $5.9\,M_\odot$ is radiated, which is
+   $1.05 \times 10^{55}\ \mathrm{erg}$.
+   :::
+
+3. Could a non-spinning black hole of $30\,M_\odot$ split into two
+   non-spinning black holes of $15\,M_\odot$ each? Use the area theorem.
+
+4. A non-spinning $30\,M_\odot$ black hole merges with a non-spinning
+   $10\,M_\odot$ one. What is the largest fraction of the total mass that can
+   be radiated away?
+
+:::
+
+## The four laws of black-hole mechanics {#sec-laws}
+
+In 1973 James Bardeen, Brandon Carter and Hawking wrote down four laws that
+every black hole obeys, and named them after the laws of thermodynamics because
+the resemblance was impossible to miss [@bardeen1973]. They need one new
+quantity, the **surface gravity** $\kappa$. It is the gravitational
+acceleration at the horizon, measured in a way that stays finite there; for a
+non-spinning black hole
+
+$$
+\kappa = \frac{c^4}{4GM} .
+$$ {#eq-kappa}
+
+For one solar mass it is $1.5 \times 10^{15}\ \mathrm{cm\,s^{-2}}$, and it is
+smaller for heavier black holes.
+
+| law | thermodynamics | black holes |
+|:---|:---|:---|
+| **zeroth** | temperature is uniform in equilibrium | surface gravity $\kappa$ is the same everywhere on the horizon of a settled black hole |
+| **first** | $\mathrm{d}E = T\,\mathrm{d}S - P\,\mathrm{d}V$ | $\mathrm{d}(Mc^2) = \dfrac{\kappa c^2}{8\pi G}\,\mathrm{d}A + \Omega\,\mathrm{d}J + \Phi\,\mathrm{d}Q$ |
+| **second** | $\mathrm{d}S/\mathrm{d}t \ge 0$ | $\mathrm{d}A/\mathrm{d}t \ge 0$, the area theorem |
+| **third** | cannot reach $T = 0$ | cannot reach $\kappa = 0$ |
+
+: The laws of thermodynamics and of black-hole mechanics [@bardeen1973]. In
+the first law, $\Omega$ is the horizon's rate of spin and $\Phi$ its electric
+potential; the last two terms are the work done by adding angular momentum or
+charge, playing the part of $-P\,\mathrm{d}V$. {#tbl-laws}
+
+**Read across the table.** Surface gravity plays the part of temperature, and
+area the part of entropy. In the first law, $\kappa\,\mathrm{d}A$ stands where
+$T\,\mathrm{d}S$ stands: the energy that goes into a black hole and is not
+spent on spin or charge goes into its area, as heat goes into entropy.
+
+Bekenstein said the analogy was more than a resemblance: **a black hole's
+entropy is proportional to its horizon area**, and with that entropy counted,
+the second law survives the box of hot gas [@bekenstein1973]. The box adds mass,
+the mass adds area, and the area's entropy outweighs the gas's.
+
+Bardeen, Carter and Hawking disagreed, and the paper that set out the four laws
+says so. Their objection was sound. If a black hole has an entropy, the first
+law says it has a temperature, proportional to $\kappa$. Anything with a
+temperature radiates. A black hole emits nothing, so its temperature is zero,
+and the analogy is only an analogy. Bekenstein's proposal looked like a
+contradiction.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-laws}
+
+1. Show that @eq-kappa has units of acceleration. Find $\kappa$ for a
+   one-solar-mass black hole and compare it with the acceleration of gravity
+   at the Earth's surface, $980\ \mathrm{cm\,s^{-2}}$.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   $\kappa = 1.5 \times 10^{15}\ \mathrm{cm\,s^{-2}}$, about
+   $1.6 \times 10^{12}$ times the Earth's.
+   :::
+
+2. Surface gravity goes as $1/M$. Which has the higher "temperature," in the
+   sense of @tbl-laws: a stellar black hole or a supermassive one? Is that the
+   way temperature behaves for an ordinary star, which gets hotter as it gains
+   mass on the main sequence (lecture 11)?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+   The lighter black hole has the larger $\kappa$. Adding mass makes a black
+   hole colder, the opposite of a star.
+   :::
+
+3. Explain, in a few sentences, how Bekenstein's proposal rescues the second
+   law when a box of hot gas falls into a black hole.
+
+:::
+
+## Hawking radiation {#sec-hawking}
+
+Hawking set out to settle the argument by doing what nobody had done: working
+out what quantum mechanics says happens near a horizon [@hawking1974;
+@hawking1975]. He expected to show that Bekenstein was wrong. He found instead
+that a black hole radiates exactly as a blackbody would, at a temperature
+proportional to its surface gravity, and that Bekenstein was right.
+
+:::: {.panel-tabset .tracks}
+
+### Physical intuition
+
+**Empty space is not empty in quantum mechanics.** The uncertainty principle
+lets energy be borrowed for a short time: an amount $\Delta E$ for a time of
+about $\Delta t \sim \hbar/\Delta E$, where $\hbar = h/2\pi$. So everywhere,
+all the time, pairs of particles and their antiparticles (for light, pairs of
+photons) appear out of nothing and annihilate again before the loan falls due.
+These **virtual pairs** are not a figure of speech; they shift the energy levels
+of atoms by amounts that have been measured.
+
+**Near a horizon, a pair can be pulled apart before it annihilates.** One
+member falls in, the other escapes. The one that escapes is now a real
+particle, carrying real energy away, and the debt is paid by the black hole:
+the partner that fell in carries negative energy, and the black hole's mass goes
+down by exactly what escaped. To a distant observer, the black hole has emitted
+a particle.
+
+**The pair has to straddle the horizon**, so the particles that escape are the
+ones whose wavelength is about the size of the black hole. A smaller black hole
+pulls apart pairs of shorter wavelength, and so of higher energy, which is why
+**small black holes are hot and big ones are cold.**
+
+::: {.callout-note title="A picture, not the calculation"}
+The pair picture is Hawking's own way of describing his result in words, and
+it is the right intuition. It is not how the calculation goes. Hawking worked
+out how the quantum vacuum in the spacetime of a collapsing star looks to an
+observer far away, and found that it looks like a thermal glow. The radiation
+does not come from right at the horizon but from a region a few times its size
+around it.
+:::
+
+### Mathematical explanation
+
+**A size argument first.** The escaping particles have wavelengths about the
+size of the black hole, $\lambda \sim r_S$. A photon of that wavelength has
+energy $hc/\lambda \sim \hbar c/r_S$ (the $2\pi$ is already beyond what a size
+argument can tell). A blackbody at temperature $T$ emits photons with energies
+of about $k_B T$, so the temperature should be about
+
+$$
+k_B T \sim \frac{\hbar c}{r_S} .
+$$
+
+**Hawking's calculation gives the number in front.** The exact result is
+
+$$
+k_B T_H = \frac{\hbar c}{4\pi r_S} = \frac{\hbar c^3}{8\pi G M} ,
+$$ {#eq-TH}
+
+the second form from $r_S = 2GM/c^2$. This is the **Hawking temperature**. In
+terms of the surface gravity of @eq-kappa it is $k_B T_H = \hbar\kappa/2\pi c$,
+which is the zeroth law of @tbl-laws made literal: the surface gravity *is* a
+temperature, up to constants.
+
+*Do the units make sense?* $\hbar c^3$ is in
+$\mathrm{erg\,s} \times \mathrm{cm^3\,s^{-3}} = \mathrm{erg\,cm^3\,s^{-2}}$, and
+$GM$ is in $\mathrm{cm^3\,g^{-1}\,s^{-2}} \times \mathrm{g} =
+\mathrm{cm^3\,s^{-2}}$. The ratio is in ergs, an energy, and $k_B T$ is an
+energy, so yes. Leave out the $c^3$ and the ratio is no longer an energy,
+which is the check that catches it.
+
+Putting in the numbers once, for a solar mass, gives a form that is easy to
+scale:
+
+$$
+T_H = 6.2 \times 10^{-8}\ \mathrm{K} \left(\frac{M_\odot}{M}\right) .
+$$ {#eq-TH-scaled}
+
+**Sixty billionths of a kelvin**, for a black hole of the Sun's mass.
+
+### Numerical exploration
+
+@fig-temperature plots @eq-TH from asteroid-sized masses to the heaviest known
+black holes. The dotted line is the temperature of the cosmic microwave
+background, the glow left over from the Big Bang, which fills all of space at
+$2.7\ \mathrm{K}$. Any black hole whose line lies below it absorbs more
+radiation from the background than it emits.
+
+```{python}
+#| label: fig-temperature
+#| fig-cap: "The Hawking temperature $T_H$ of a non-spinning black hole against its mass, from @eq-TH. Both axes are logarithmic. The dotted line is the temperature of the cosmic microwave background, $2.7\\ \\mathrm{K}$; only black holes lighter than about two-thirds of the Moon's mass are hotter than it."
+#| fig-alt: "A straight line falling from upper left to lower right on logarithmic axes: Hawking temperature in kelvin, from 10 to the minus 20 up to 10 to the 12, against black hole mass in grams, from 10 to the 14 up to 10 to the 44. Four dots sit on the line: the Moon's mass near 2 kelvin, one solar mass near 6 times 10 to the minus 8 kelvin, Sgr A star near 10 to the minus 14 kelvin, and M87 star near 10 to the minus 17 kelvin. A horizontal dotted line at 2.7 kelvin, labeled cosmic microwave background at its right end, crosses the line just left of the Moon's dot."
+#| fig-height: 4.0
+
+masses = {"Moon": 7.35e25, "Sun": 1.9891e33, "Sgr A*": 8.55e39, "M87*": 1.29e43}   # grams
+M = np.logspace(14, 44, 400)
+fig, ax = plt.subplots(figsize=(5.8, 4.0))
+ax.loglog(M, hawking_T(M), color=BLUE, lw=2)
+ax.axhline(T_CMB, color=MUTED, ls=":", lw=1.2)
+ax.text(5e43, T_CMB * 3, "cosmic microwave background", color=MUTED,
+        fontsize=10, ha="right", va="bottom")
+for name, m in masses.items():
+    T = hawking_T(m)
+    ax.plot(m, T, "o", color=ORANGE, ms=6, zorder=3)
+    ax.annotate(name, (m, T), xytext=(6, 4), textcoords="offset points",
+                fontsize=10, color=INK2)
+    print(f"{name}: M = {m:.2e} g, T_H = {T:.2e} K")
+ax.set_xlim(1e14, 1e44)
+ax.set_ylim(1e-20, 1e12)
+ax.set_xlabel(r"black hole mass $M$ (g)")
+ax.set_ylabel(r"Hawking temperature $T_H$ (K)")
+plt.show()
+```
+
+### Turn the knobs
+
+::: {.content-visible when-format="pdf"}
+Students have a live, editable version of this cell in the web notes —
+remind them to try it.
+:::
+
+::: {.content-visible when-format="html"}
+
+The same plot, but editable: change the masses on the line marked
+`# <- edit this` (line 5 of the cell), run it, and the cell prints each black
+hole's Hawking temperature and marks it on the line. Try the Earth's mass,
+$5.98 \times 10^{27}\ \mathrm{g}$, and find out whether it is hotter or colder
+than the background.
+
+```{pyodide}
+#| autorun: false
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+masses = {"Moon": 7.35e25, "Sun": 1.9891e33, "Sgr A*": 8.55e39, "M87*": 1.29e43}   # grams  # <- edit this
+
+BLUE, ORANGE, INK2, MUTED = "#2a78d6", "#eb6834", "#52514e", "#898781"
+c = 2.99792458e10
+G = 6.6732e-8
+k_B = 1.3806e-16
+hbar = 6.6262e-27 / (2 * np.pi)
+T_CMB = 2.725
+
+
+def hawking_T(M):
+    """Hawking temperature in kelvin of a Schwarzschild black hole of mass M (g)."""
+    return hbar * c**3 / (8 * np.pi * G * M * k_B)
+
+
+M = np.logspace(14, 44, 400)
+fig, ax = plt.subplots(figsize=(5.8, 4.0))
+ax.loglog(M, hawking_T(M), color=BLUE, lw=2)
+ax.axhline(T_CMB, color=MUTED, ls=":", lw=1.2)
+ax.text(5e43, T_CMB * 3, "cosmic microwave background", color=MUTED,
+        fontsize=10, ha="right", va="bottom")
+for name, m in masses.items():
+    T = hawking_T(m)
+    ax.plot(m, T, "o", color=ORANGE, ms=6, zorder=3)
+    ax.annotate(name, (m, T), xytext=(6, 4), textcoords="offset points",
+                fontsize=10, color=INK2)
+    print(f"{name}: M = {m:.2e} g, T_H = {T:.2e} K")
+ax.set_xlim(1e14, 1e44)
+ax.set_ylim(1e-20, 1e12)
+ax.set_xlabel(r"black hole mass $M$ (g)")
+ax.set_ylabel(r"Hawking temperature $T_H$ (K)")
+plt.show()
+```
+
+:::
+
+::::
+
+::: {.callout-note .worked-example collapse="true" title="Worked example: the temperature of a black hole of one solar mass"}
+**The question.** What is the Hawking temperature of a non-spinning black hole
+with the mass of the Sun?
+
+Work out the top and bottom of @eq-TH, divided through by $k_B$, separately,
+with every unit attached. The top is
+
+$$
+\hbar c^3 = \left(1.0546 \times 10^{-27}\ \mathrm{erg\,s}\right)
+            \left(2.998 \times 10^{10}\ \mathrm{cm\,s^{-1}}\right)^3 ,
+$$
+
+where $\hbar = h/2\pi$, from Planck's constant on the constants sheet. The
+bottom is
+
+$$
+\begin{aligned}
+8\pi G M k_B = 8\pi
+  &\left(6.673 \times 10^{-8}\ \mathrm{cm^3\,g^{-1}\,s^{-2}}\right) \\
+  &\times \left(1.989 \times 10^{33}\ \mathrm{g}\right) \\
+  &\times \left(1.381 \times 10^{-16}\ \mathrm{erg\,K^{-1}}\right) .
+\end{aligned}
+$$
+
+Cancel the units before any arithmetic. The top is in
+$\mathrm{erg\,s} \cdot \mathrm{cm^3\,s^{-3}} = \mathrm{erg\,cm^3\,s^{-2}}$. The
+bottom is in
+$\mathrm{cm^3\,g^{-1}\,s^{-2}} \cdot \mathrm{g} \cdot \mathrm{erg\,K^{-1}} =
+\mathrm{erg\,cm^3\,s^{-2}\,K^{-1}}$. Dividing, everything cancels except the
+$\mathrm{K^{-1}}$ on the bottom, which leaves kelvin. *Do the units make
+sense?* A temperature, so yes.
+
+Now the numbers. The top is
+$1.0546 \times 10^{-27} \times 2.694 \times 10^{31} = 2.841 \times 10^{4}$, and
+the bottom is
+$8\pi \times 6.673 \times 10^{-8} \times 1.989 \times 10^{33} \times
+1.381 \times 10^{-16} = 4.605 \times 10^{11}$, so
+
+$$
+T_H = 6.2 \times 10^{-8}\ \mathrm{K} .
+$$
+
+**About sixty billionths of a kelvin.** The coldest temperatures reached in a
+laboratory are lower than this, but nothing in the sky is: the cosmic microwave
+background is $2.7\ \mathrm{K}$, forty million times hotter. A black hole of
+one solar mass sitting in the real universe absorbs far more radiation than it
+emits, and grows.
+:::
+
+::: {.callout-tip .resolution collapse="true" title="Think about whether Hawking radiation could ever be seen from a stellar black hole"}
+No. At $6 \times 10^{-8}\ \mathrm{K}$, a solar-mass black hole emits photons
+with wavelengths of tens to hundreds of kilometers, and its whole luminosity, from
+@eq-Lbb below, is about $10^{-21}\ \mathrm{erg\,s^{-1}}$. It sits in a
+background forty million times hotter, and is surrounded, in any real system,
+by gas glowing at millions of kelvin. Hawking radiation from any black hole that
+forms from a star is beyond detection by every measure, by a margin of tens of
+orders of magnitude. If it is ever seen, it will be from a black hole far
+lighter than any star, the subject of the next section.
+:::
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-hawking}
+
+1. Find the Hawking temperatures of black holes of $10\,M_\odot$, of Sgr A\*
+   ($4.3 \times 10^{6}\,M_\odot$), and of M87\* ($6.5 \times 10^{9}\,M_\odot$).
+   Check them against @fig-temperature.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   $6.2 \times 10^{-9}\ \mathrm{K}$, $1.4 \times 10^{-14}\ \mathrm{K}$ and
+   $9.5 \times 10^{-18}\ \mathrm{K}$.
+   :::
+
+2. What mass of black hole has the same temperature as the cosmic microwave
+   background, $2.725\ \mathrm{K}$? Give it in grams and as a fraction of the
+   Moon's mass.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
+   Rearrange @eq-TH-scaled for $M$, rather than starting from @eq-TH again.
+   The answer is $4.5 \times 10^{25}\ \mathrm{g}$, about $0.61$ of the Moon's
+   mass.
+   :::
+
+3. Show that the photon energy $k_B T_H$ corresponds to a wavelength
+   $\lambda = hc/k_B T_H$ of exactly $8\pi^2 r_S$, about $80$ times the
+   Schwarzschild radius, for a black hole of any mass. What does that say about
+   the size-argument picture in the *Mathematical explanation* tab?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+   Write $h = 2\pi\hbar$, put @eq-TH in for $k_B T_H$, and replace $GM/c^2$ with
+   $r_S/2$. The size argument gets the scaling right and the number wrong by a
+   large factor, which is what size arguments do.
+   :::
+
+4. If the Earth were squeezed into a black hole, would it be hotter or colder
+   than the cosmic microwave background? Would it grow or shrink?
+
+:::
+
+## Evaporation {#sec-evaporation}
+
+Every particle that escapes carries energy, and every bit of that energy comes
+out of the black hole's mass. **A black hole that radiates loses mass**, and
+since a lighter black hole is hotter, it then radiates faster, and loses mass
+faster still. The process runs away.
+
+**How fast?** Treat the black hole as a blackbody at $T_H$ with the area of
+its horizon. The Stefan–Boltzmann law (lecture 7) gives its luminosity:
+
+$$
+L = 4\pi r_S^2\,\sigma T_H^4 .
+$$ {#eq-Lbb}
+
+Now $r_S^2 \propto M^2$ and $T_H^4 \propto M^{-4}$, so **$L \propto M^{-2}$**:
+halve the mass and the black hole is four times brighter. For one solar mass,
+@eq-Lbb gives $9 \times 10^{-22}\ \mathrm{erg\,s^{-1}}$.
+
+The luminosity drains mass at the rate $\mathrm{d}M/\mathrm{d}t = -L/c^2$, by
+$E = mc^2$. Write $L = C/M^2$, with $C$ a constant. Then
+
+$$
+M^2\,\frac{\mathrm{d}M}{\mathrm{d}t} = -\frac{C}{c^2} ,
+$$
+
+and integrating from the starting mass $M_0$ down to zero gives the time it
+takes, the **evaporation time**:
+
+$$
+t_{\mathrm{evap}} = \frac{c^2 M_0^3}{3C} \propto M_0^3 .
+$$ {#eq-tevap}
+
+**The lifetime goes as the cube of the mass.** A black hole ten times heavier
+lasts a thousand times longer.
+
+**The number in front needs more than a blackbody of photons.** A real black
+hole emits every kind of particle whose mass is small compared with $k_B T_H/c^2$,
+not only photons, and it is not a perfect blackbody: particles of long
+wavelength are partly reflected back by the black hole's own gravity. The full
+calculation was done by Don Page [@page1976], and extended to heavier particles
+by Jane MacGibbon [@macgibbon1991]. The constants sheet's coefficient is of the
+size these calculations give:
+
+$$
+t_{\mathrm{evap}} \sim 5 \times 10^{-27}\ \mathrm{s} \left(\frac{M}{1\ \mathrm{g}}\right)^3 .
+$$ {#eq-tevap-sheet}
+
+The photon-only blackbody of @eq-Lbb gives a lifetime about seventeen times
+longer. Both give the same $M^3$. Use @eq-tevap-sheet for numbers.
+
+::: {.callout-note .worked-example collapse="true" title="Worked example: how long does a black hole of one solar mass last?"}
+**The question.** Ignoring the cosmic microwave background, how long does a
+non-spinning black hole of one solar mass take to evaporate?
+
+Put the mass into @eq-tevap-sheet, with the units attached:
+
+$$
+t_{\mathrm{evap}} = 5 \times 10^{-27}\ \mathrm{s}
+  \left(\frac{1.989 \times 10^{33}\ \mathrm{g}}{1\ \mathrm{g}}\right)^3 .
+$$
+
+*Do the units make sense?* The grams cancel inside the bracket, leaving seconds,
+a time, so yes. The bracket cubed is $7.87 \times 10^{99}$, so
+
+$$
+t_{\mathrm{evap}} = 3.9 \times 10^{73}\ \mathrm{s}
+  \times \frac{1\ \mathrm{yr}}{3.156 \times 10^{7}\ \mathrm{s}}
+  = 1.2 \times 10^{66}\ \mathrm{yr} .
+$$
+
+**About $10^{66}$ years**, against an age of the universe of about
+$1.4 \times 10^{10}$ years. And this is a lower limit, because the real black
+hole is colder than the microwave background and is growing, not shrinking. It
+will only begin to evaporate once the universe has expanded enough for the
+background to cool below $6 \times 10^{-8}\ \mathrm{K}$.
+:::
+
+```{python}
+#| label: fig-runaway
+#| fig-cap: "The last stage of an evaporating black hole. Its mass $M$ and Hawking temperature $T_H$, in units of their starting values, against time in units of the evaporation time, from @eq-tevap: $M = M_0 (1 - t/t_{\\mathrm{evap}})^{1/3}$. The mass barely changes for most of the black hole's life and then drops to zero all at once, while the temperature runs away."
+#| fig-alt: "A chart with time, as a fraction of the evaporation time, from 0 to 1, on the horizontal axis. A blue curve for mass starts at 1, stays above 0.8 until about half the time has passed, and then falls ever more steeply to zero at 1. An orange curve for temperature, read on a logarithmic right-hand axis from 1 to 100, starts at 1, stays near 1 for most of the time, and shoots upward near the end."
+#| fig-height: 3.8
+
+f = np.linspace(0, 0.999999, 2000)
+m = (1 - f) ** (1 / 3)
+fig, ax = plt.subplots(figsize=(5.8, 3.8))
+ax.plot(f, m, color=BLUE, lw=2)
+ax.set_xlim(0, 1)
+ax.set_ylim(0, 1.05)
+ax.set_xlabel(r"time $t/t_{\mathrm{evap}}$")
+ax.set_ylabel(r"mass $M/M_0$", color=BLUE)
+ax2 = ax.twinx()
+ax2.semilogy(f, 1 / m, color=ORANGE, lw=2)
+ax2.set_ylim(1, 100)
+ax2.set_ylabel(r"temperature $T_H/T_0$", color=ORANGE)
+ax.text(0.30, 0.92, "mass", color=BLUE, fontsize=11)
+ax2.text(0.62, 1.7, "temperature", color=ORANGE, fontsize=11, ha="center")
+plt.show()
+```
+
+**What would an evaporating black hole look like?** For most of its life,
+nothing. In its last moments its temperature rises without limit, it emits
+every kind of particle there is, and it ends in a burst of high-energy gamma
+rays (@fig-runaway). Black holes that formed from stars are far too heavy and
+far too cold to be anywhere near that stage. But the early universe may have
+made **primordial black holes**, from the collapse of dense regions in its
+first instants, with masses far below a star's [@carr2020]. A primordial black
+hole of about $5 \times 10^{14}\ \mathrm{g}$, the mass of a small mountain
+packed into less than the size of a proton, would be ending its life now
+[@macgibbon2008]. Gamma-ray telescopes have looked for the bursts and found
+none, which limits how many such black holes there can be. **No Hawking
+radiation has ever been detected.** It is accepted because the calculation has
+been repeated in many different ways and always comes out the same.
+
+**One last thing should seem wrong.** An evaporating black hole loses mass, and
+by @eq-area, loses area. **Its horizon shrinks**, which the area theorem says
+cannot happen. There is no contradiction in the theorem, which assumed
+classical matter with positive energy, and the partner that falls in during
+Hawking radiation has negative energy. But if the area is the black hole's
+entropy, the second law is in trouble again, from the other direction. Lecture
+24 takes this up: the entropy that leaves in the radiation, how big a black
+hole's entropy is, and what becomes of the information in what fell in.
+
+::: {.content-visible when-format="pdf"}
+{{< include ../../in_class/lec23/exercises00.qmd >}}
+:::
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-evaporation}
+
+1. Starting from $\mathrm{d}M/\mathrm{d}t = -L/c^2$ and $L = C/M^2$, carry out
+   the integration that gives @eq-tevap.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+   Separate the variables: $M^2\,\mathrm{d}M = -(C/c^2)\,\mathrm{d}t$.
+   Integrate the left from $M_0$ to $0$ and the right from $0$ to
+   $t_{\mathrm{evap}}$.
+   :::
+
+2. Imagine a black hole that formed shortly after the Big Bang, $13.7$ billion
+   years ago, and that finished evaporating yesterday. What was its mass at
+   formation, in grams and in solar masses?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+   Turn the age into seconds with a conversion fraction, and solve
+   @eq-tevap-sheet for $M$; a cube root is the last step.
+   :::
+
+3. Use @eq-Lbb and @eq-TH to find the luminosity of a black hole of
+   $10^{15}\ \mathrm{g}$, and its Hawking temperature. What kind of light is
+   it emitting?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   $L = 3.6 \times 10^{15}\ \mathrm{erg\,s^{-1}}$ and
+   $T_H = 1.2 \times 10^{11}\ \mathrm{K}$: gamma rays, with photon energies of
+   about $10\ \mathrm{MeV}$, as well as electrons, positrons and neutrinos.
+   :::
+
+4. How massive is a black hole with one second left to live, and how much
+   energy does it release in that last second?
+
+5. A black hole is a thousand times heavier than another. How many times
+   colder is it, how many times fainter, and how many times longer does it
+   last?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   A thousand times colder, a million times fainter, and a billion times longer
+   lived.
+   :::
+
+:::
+
+## If you want to go further
+
+None of this section is needed for what comes before or after.
+
+**Kutner, §8.4.4.** The chapter 8 PDF in Canvas Files describes Hawking
+radiation with the same pair picture, in a page and a half, and estimates the
+lifetime of a small black hole.
+
+::: {.callout-warning .textbook-watch title="Textbook watch (Kutner): a lifetime that does not match its own formula"}
+Kutner writes the lifetime as $10^{-26}\ \mathrm{s}$ times $M^3$, with $M$ in
+grams, and then says that a black hole of about $10^{14}\ \mathrm{g}$ would
+live about $10^{10}$ years. His own formula gives $10^{16}\ \mathrm{s}$, about
+$3 \times 10^{8}$ years, thirty times shorter. The black holes ending their
+lives now are about $5 \times 10^{14}\ \mathrm{g}$, a few times heavier than
+his example. His coefficient is also twice the one on the constants sheet,
+which is no more than the uncertainty in how many kinds of particles to count.
+:::
+
+**The original papers.** Hawking's two-page *Nature* paper [@hawking1974] is
+titled *Black hole explosions?*, and is readable in its opening and closing
+paragraphs. Bekenstein's 1973 paper [@bekenstein1973] makes the entropy
+argument in words before it does it in equations.
+
+## Summary
+
+| idea | result | why it matters |
+|:---|:---|:---|
+| Entropy | $\mathrm{d}S = \mathrm{d}Q/T$; it counts arrangements | the second law: $\mathrm{d}S/\mathrm{d}t \ge 0$ |
+| No hair | a black hole keeps only $M$, $J$, $Q$ | entropy that falls in seems to vanish |
+| Area theorem | $\mathrm{d}A/\mathrm{d}t \ge 0$, with $A = 16\pi G^2M^2/c^4$ | area behaves like entropy; caps the energy of mergers |
+| Four laws | $\kappa \leftrightarrow T$, $A \leftrightarrow S$ | black holes obey laws of the form of thermodynamics |
+| Bekenstein | entropy $\propto$ area | rescues the second law |
+| Hawking temperature | $k_B T_H = \hbar c^3/8\pi G M$ | $6 \times 10^{-8}\ \mathrm{K}$ for one solar mass; hotter when lighter |
+| Luminosity | $L = 4\pi r_S^2\,\sigma T_H^4 \propto M^{-2}$ | lighter black holes are brighter |
+| Evaporation | $t_{\mathrm{evap}} \sim 5 \times 10^{-27}\ \mathrm{s}\,(M/\mathrm{g})^3$ | $10^{66}$ years for one solar mass; about $5 \times 10^{14}\ \mathrm{g}$ ends now |
+
+The analogy between black holes and thermodynamics turned out to be an
+identity. A black hole has a temperature, set by its surface gravity, and an
+entropy, set by its area; it glows, and given long enough, it evaporates. For
+any black hole made by a star, the glow is far too faint ever to see, and the
+time far longer than the universe has existed. But the idea reaches further than
+any observation: it is the one place where general relativity, quantum
+mechanics and thermodynamics all meet. Next time: how much entropy a black hole
+holds, and what happens to everything that fell in once the black hole is gone.
+
+::: {.content-visible when-format="html"}
+## References {.unnumbered}
+
+:::: {#refs}
+::::
+:::
+
+::: {.content-visible when-format="pdf"}
+
+```{=latex}
+\clearpage
+\tableofcontents
+```
+:::
