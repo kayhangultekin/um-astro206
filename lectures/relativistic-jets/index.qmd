@@ -1,0 +1,945 @@
+---
+title: "Relativistic Jets and Superluminal Motion"
+subtitle: "ASTRO 206 — Black Holes · Lecture 22"
+author: "Kayhan Gültekin"
+date: "November 24"
+date-format: "MMMM D"
+# Dates are LECTURE dates -- when the class meets -- not publication dates.
+# Sourced from Canvas (Reading & Reflection 3234227 and the In-Class Problem
+# 3219333, both due 2026-11-24). A placeholder string renders as "Invalid Date".
+
+# Kernel pinning is deliberate and must stay in the DOCUMENT, not _quarto.yml:
+# Quarto silently ignores a project-level `jupyter:` and auto-selects a kernel.
+jupyter: python3
+
+# No `pyodide: packages:` block: the one live cell needs numpy and matplotlib
+# only, which are inside Pyodide's default dependency closure.
+---
+
+::: {.callout-note appearance="simple" icon=false}
+**Disclaimer.** These notes have not been subjected to the usual scrutiny
+reserved for formal publications. They may be distributed outside this class
+only with the permission of the instructor.
+:::
+
+{{< include ../../_figure-setup.qmd >}}
+
+```{python}
+#| include: false
+
+def beta_app(beta, theta):
+    """Apparent transverse speed, in units of c, of a blob moving at speed
+    beta (units of c) at angle theta (radians) to the line of sight."""
+    return beta * np.sin(theta) / (1 - beta * np.cos(theta))
+```
+
+Lecture 21 ended with a jet doing quiet work: pushing the hot gas of a galaxy
+cluster aside, bubble by bubble, so that it could not cool. This lecture is
+about the jet itself. Jets are the fastest large things we know of. They carry
+matter away from a black hole at more than $99\%$ of the speed of light, they
+stay narrow for thousands of light-years, and when we film them they appear to
+break the speed limit of special relativity. They do not break it, and working
+out why is a lovely piece of physics that needs nothing more than the finite
+speed of light and a right triangle.
+
+## How to read this lecture
+
+**These notes are the reading for this lecture.** Kutner's §19.2, *Radio
+galaxies*, is optional; its §19.2.3 derives the same result as
+@sec-superluminal by the same route. The lecture builds one argument, and it is
+worth holding onto from the start:
+
+::: {.callout-important title="The idea at the center of this lecture"}
+**Jets are streams of matter moving at nearly the speed of light, and when one
+points close to our line of sight, it chases its own light toward us, so that
+it appears to cross the sky faster than light and appears far brighter than the
+jet pointing away.**
+:::
+
+*What a jet is* introduces jets and shows that the same phenomenon appears
+around newborn stars, stellar black holes and supermassive black holes.
+*Seeing a jet* explains how radio astronomers combine telescopes across a
+continent, or the whole Earth, to resolve a jet's inner parsec. *Measuring a
+jet's speed* turns a motion across the sky into a speed, and finds speeds
+faster than light. *Apparent superluminal motion* shows why, and how fast the
+jet must really be going. *Why we see only one jet* uses lecture 6's Doppler
+beaming to explain why the jet pointed away from us is so often invisible.
+*Where jets come from* says briefly what is known about how a black hole makes
+one.
+
+## What a jet is {#sec-jets}
+
+A **jet** is a narrow stream of matter and energy fired out of the center of an
+accreting system, usually in two opposite directions along the rotation axis.
+Lecture 20 introduced them as one of the parts of an AGN, and lecture 15 met
+one in the binary SS 433. Two properties define them.
+
+**Jets are highly collimated.** A jet can stay narrower than a few degrees over
+a length a million times larger than the region that launched it. The jet of
+M87 is visible in radio, optical and X-ray light along about $1.5\ \mathrm{kpc}$, and
+radio images trace its start to within about a hundred Schwarzschild radii of
+the black hole [@walker2018].
+
+**Jets shine by synchrotron radiation**: electrons moving at nearly the speed
+of light spiral around magnetic field lines, and radiate as they turn (lectures
+13, 14 and 20). Synchrotron light is mostly radio, so jets are mostly seen with
+radio telescopes. Only about one AGN in ten has a powerful jet, and those are
+the **radio-loud** AGN of lecture 20.
+
+### Jets are seen on many scales
+
+The same shape turns up wherever matter is falling onto something compact and
+spinning [@mirabel1999]:
+
+| where | launched by | length | speed |
+|:---|:---|:---|:---|
+| young stars | a protostar and its disk | about a parsec | a few hundred $\mathrm{km\,s^{-1}}$: supersonic, not relativistic |
+| microquasars | a stellar black hole or neutron star in an X-ray binary (lecture 15) | about a parsec | from $0.26c$ (SS 433) to $\gamma \approx 2$–$3$ |
+| radio galaxies and blazars | a supermassive black hole (lectures 18 and 20) | up to a few megaparsecs | $\gamma \approx 10$–$20$ |
+
+: Jets on three scales. The protostellar jets are called Herbig–Haro objects
+[@reipurth2001]; the name **microquasar** was coined for X-ray binaries whose
+jets look like a quasar's in miniature [@mirabel1994]. {#tbl-scales}
+
+The speeds of the fast jets are given as a **Lorentz factor** $\gamma =
+(1 - \beta^2)^{-1/2}$, where $\beta = v/c$ (lecture 3). Close to the speed of
+light, $\gamma$ is a far more sensitive measure than $\beta$: a jet with
+$\gamma = 10$ has $\beta = 0.995$, and one with $\gamma = 20$ has
+$\beta = 0.9987$.
+
+### A jet's power is mostly not light
+
+**A jet's kinetic power, the energy it carries per second in the motion of its
+matter, is usually much larger than the power it radiates.** The radiation is
+easy to measure and the kinetic power is not. Astronomers find it the way
+lecture 21's Perseus example did: a jet ends in a cocoon of hot plasma that
+pushes the surrounding gas aside, the work it has done is $pV$ for each
+bubble (times a few, for the bubble's own energy), and dividing by the bubble's
+age turns that energy into a power. The answer is often ten to a hundred times
+what the jet emits as light. Most of what a jet carries is delivered to its
+surroundings, which is exactly what made it a candidate for radio-mode feedback.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-jets}
+
+1. Find the Lorentz factor $\gamma$ for jets moving at $\beta = 0.9$, $0.99$
+   and $0.999$, and then the speed $\beta$ for jets with $\gamma = 2$, $3$,
+   $10$ and $20$.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   The Lorentz factors are $\gamma = 2.29$, $7.09$ and $22.4$, and the speeds
+   are $\beta = 0.866$, $0.943$, $0.995$ and $0.9987$.
+   :::
+
+2. M87's jet is about $1.5\ \mathrm{kpc}$ long. How many years does it take a
+   blob moving at $\beta = 0.98$ to travel from the black hole to the end of
+   it?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   About $5000$ years.
+   :::
+
+3. Explain why the light a jet emits is a poor guide to how much energy the jet
+   is carrying, and why the bubbles it inflates are a better one.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+   Ask what fraction of the energy each one records. The light is only the part
+   the jet lost on the way; the bubble records the work done by everything the
+   jet delivered at its end.
+   :::
+
+:::
+
+## Seeing a jet {#sec-interferometry}
+
+To film a jet moving, we need to resolve its inner parsec, at a distance of
+tens or hundreds of megaparsecs. That is far beyond any single telescope.
+
+**A single dish is limited by diffraction.** From lecture 19, the smallest
+angle a telescope of diameter $D$ can resolve at wavelength $\lambda$ is
+
+$$
+\theta = 1.22\,\frac{\lambda}{D} ,
+$$ {#eq-diffraction}
+
+with $\lambda$ and $D$ in the same units and $\theta$ in radians. Radio
+wavelengths are long, so radio dishes resolve badly. One of the VLA's
+$25\ \mathrm{m}$ dishes, observing at $6\ \mathrm{cm}$, resolves only about
+$10$ arcminutes, a third of the width of the full Moon.
+
+**An interferometer combines dishes far apart.** Two dishes separated by a
+**baseline** $B$ both record the same incoming wave, and by comparing the two
+records it is possible to resolve detail as fine as
+
+$$
+\theta \approx \frac{\lambda}{B} ,
+$$ {#eq-baseline}
+
+as though the two dishes were pieces of one giant dish of diameter $B$. With
+many dishes, and many baselines in many directions, a computer can
+reconstruct a full image. The collecting area is still only that of the dishes
+themselves, so an interferometer sees fine detail but not faint sources.
+
+::: {.callout-note .worked-example collapse="true" title="Worked example: how fine a detail can the VLBA see?"}
+**The question.** The Very Long Baseline Array (VLBA) is ten $25\ \mathrm{m}$
+dishes spread from Hawaii to the Virgin Islands, with a longest baseline of
+$8600\ \mathrm{km}$. Observing at $\lambda = 2\ \mathrm{cm}$, what is the
+smallest angle it can resolve, in milliarcseconds? And how large is that at the
+distance of M87, $16.8\ \mathrm{Mpc}$?
+
+Put the baseline in centimeters first, with a conversion fraction:
+
+$$
+B = 8600\ \mathrm{km} \times \frac{10^{5}\ \mathrm{cm}}{1\ \mathrm{km}}
+  = 8.6 \times 10^{8}\ \mathrm{cm} .
+$$
+
+Then @eq-baseline, with the units attached:
+
+$$
+\theta \approx \frac{2\ \mathrm{cm}}{8.6 \times 10^{8}\ \mathrm{cm}} .
+$$
+
+The centimeters cancel. *Do the units make sense?* An angle in radians is a
+pure number, so yes. The numbers give $\theta = 2.3 \times 10^{-9}$ radians.
+In milliarcseconds,
+
+$$
+2.3 \times 10^{-9}\ \mathrm{rad} \times
+  \frac{206265''}{1\ \mathrm{rad}} \times
+  \frac{1000\ \mathrm{mas}}{1''} = 0.48\ \mathrm{mas} .
+$$
+
+**About half a milliarcsecond**, a hundred times sharper than the Hubble Space
+Telescope. A small angle times a distance is a length, so at M87,
+
+$$
+2.3 \times 10^{-9} \times 16.8\ \mathrm{Mpc} \times
+  \frac{10^{6}\ \mathrm{pc}}{1\ \mathrm{Mpc}} = 0.039\ \mathrm{pc} ,
+$$
+
+**about $8000\ \mathrm{AU}$**, or about sixty Schwarzschild radii of M87's
+black hole.
+:::
+
+**The hard part is timing.** The wave from the source reaches the two dishes at
+different times, because one dish is farther from the source than the other. On
+a baseline across the Earth the difference can be tens of milliseconds, and it
+changes as the Earth turns. To compare the two records, that delay has to be
+taken out, by holding one record back by exactly the right amount before
+combining them, and it has to be right to a small fraction of a wave period,
+a small fraction of a nanosecond for centimeter waves. Dishes that are wired
+together, like the VLA's, can share a clock. Dishes on different continents
+cannot, so each records its signal with a hydrogen-maser atomic clock, and the
+records are combined later at a central computer called a **correlator**. This
+is **very long baseline interferometry** (VLBI), and it was VLBI that first
+showed jets moving faster than light [@whitney1971].
+
+**Arrays at radio wavelengths** include the VLA in New Mexico (baselines up to
+$36\ \mathrm{km}$), the VLBA, and the European and global VLBI networks. **At
+millimeter wavelengths**, ALMA in Chile and NOEMA in France are connected arrays,
+and the Event Horizon Telescope of lecture 16 is VLBI at $1.3\ \mathrm{mm}$ on
+baselines as long as the Earth. <!-- american-spelling: ignore-begin  (official name of the array) -->
+The Square Kilometre Array, under construction in
+Australia and South Africa, will be the next large one.
+<!-- american-spelling: ignore-end -->
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-interferometry}
+
+1. Find the resolution of a single $25\ \mathrm{m}$ VLA dish at
+   $6\ \mathrm{cm}$, in arcminutes, using @eq-diffraction. Then find the
+   resolution of the whole VLA at its largest spacing, $36\ \mathrm{km}$, at the
+   same wavelength, in arcseconds, using @eq-baseline.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   About $10$ arcminutes for one dish, and about $0.34''$ for the array.
+   :::
+
+2. The Event Horizon Telescope observes at $1.3\ \mathrm{mm}$ on baselines up to
+   the Earth's diameter, $12{,}700\ \mathrm{km}$. What resolution does
+   @eq-baseline give, in microarcseconds? Compare it with the size of M87\*'s
+   ring, $42\ \mu\text{as}$ (lecture 16).
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   About $21\ \mu\text{as}$, half the size of the ring: just enough to see it
+   as a ring, and not enough to see much more.
+   :::
+
+3. Two VLBA dishes are $8600\ \mathrm{km}$ apart. What is the largest possible
+   difference in the time the same wavefront takes to reach them? How far does
+   light travel in one nanosecond, and how many $2\ \mathrm{cm}$ waves is that?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint, and the answer"}
+   The largest delay is for a source on the horizon, along the line joining the
+   two dishes, where the wavefront has to cross the whole baseline. About
+   $29\ \mathrm{ms}$; light travels $30\ \mathrm{cm}$ in a nanosecond, which is
+   $15$ waves. A timing error of one nanosecond would scramble the comparison
+   completely.
+   :::
+
+4. How large would a single dish have to be, using @eq-diffraction, to match
+   the VLBA's resolution of $0.5\ \mathrm{mas}$ at $2\ \mathrm{cm}$?
+
+:::
+
+## Measuring a jet's speed {#sec-speed}
+
+**A jet is made of knots, or blobs**, that move outward from a bright, fixed
+**core** where the jet starts. Image the jet once a year with VLBI, or with the
+Hubble Space Telescope for a nearby one, and the blobs move. What is measured
+directly is an angle: how far across the sky the blob moves each year, its
+**proper motion** $\mathrm{d}\phi/\mathrm{d}t$. (Here $\phi$ is a position on the
+sky, to keep $\theta$ free for the next section.) If the galaxy's distance $d$ is
+known, from Hubble's law (lecture 18), the small-angle relation turns this into a
+speed across the sky:
+
+$$
+v_{\mathrm{app}} = d\,\frac{\mathrm{d}\phi}{\mathrm{d}t} ,
+$$ {#eq-vapp}
+
+with $\phi$ in radians. The subscript is for **apparent**, and the reason will
+be clear in a moment.
+
+::: {.callout-note .worked-example collapse="true" title="Worked example: a blob that moves one milliarcsecond a year"}
+**The question.** A blob in the jet of a radio galaxy $100\ \mathrm{Mpc}$ away
+moves $1.0\ \mathrm{mas}$ farther from the core each year. How fast is it moving
+across the sky, in units of $c$?
+
+The proper motion in radians per year, with the conversions written out:
+
+$$
+\begin{aligned}
+\frac{\mathrm{d}\phi}{\mathrm{d}t} &= 1.0\ \frac{\mathrm{mas}}{\mathrm{yr}} \times
+  \frac{1''}{1000\ \mathrm{mas}} \times
+  \frac{1\ \mathrm{rad}}{206265''} \\[0.8em]
+  &= 4.85 \times 10^{-9}\ \mathrm{rad\,yr^{-1}} .
+\end{aligned}
+$$
+
+Then @eq-vapp, with the distance in centimeters and the year in seconds:
+
+$$
+\begin{aligned}
+v_{\mathrm{app}} = {} &
+  \left(100\ \mathrm{Mpc} \times \frac{3.086 \times 10^{24}\ \mathrm{cm}}{1\ \mathrm{Mpc}}\right) \\[0.8em]
+  & \times \left(4.85 \times 10^{-9}\ \mathrm{yr^{-1}}\right)
+  \frac{1\ \mathrm{yr}}{3.156 \times 10^{7}\ \mathrm{s}} .
+\end{aligned}
+$$
+
+The megaparsecs cancel in their fraction and the years in theirs, and the radian
+is a pure number. *Do the units make sense?* Centimeters per second is a speed, so
+yes. The numbers give $v_{\mathrm{app}} = 4.74 \times 10^{10}\ \mathrm{cm\,s^{-1}}$,
+and dividing by $c = 3.00 \times 10^{10}\ \mathrm{cm\,s^{-1}}$,
+
+$$
+\beta_{\mathrm{app}} = \frac{v_{\mathrm{app}}}{c} = 1.6 .
+$$
+
+**The blob appears to move at $1.6$ times the speed of light.**
+:::
+
+Results like this were first found in quasars in 1971 [@whitney1971], and they
+are now routine. The MOJAVE program has filmed the jets of hundreds of AGN with
+the VLBA for decades, and finds apparent speeds up to about $50c$, with the
+most common values between $5c$ and $15c$ [@lister2009]. Jets in our own
+Galaxy do it too: the microquasar GRS 1915+105 shot out two blobs in 1994, one
+of which appeared to move at $1.25c$ [@mirabel1994].
+
+So either the distances are wrong, or something is moving faster than light, or
+the speed in @eq-vapp is not the speed of anything. **The third is right.** The
+distances are not the problem, since the galaxies are where Hubble's law puts
+them (lecture 18). And no object is moving faster than light.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-speed}
+
+1. A blob in a radio galaxy $400\ \mathrm{Mpc}$ away moves
+   $0.5\ \mathrm{mas}$ a year. How far across the sky does it move each year,
+   in parsecs, and what is its apparent speed in units of $c$?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   About $0.97\ \mathrm{pc}$ a year, so $\beta_{\mathrm{app}} = 3.2$.
+   :::
+
+2. One proposed explanation is that we are not seeing one blob moving, but a row
+   of separate sources lighting up one after another, like the lights of a
+   theater marquee. Kutner's §19.2.3 argues that this does not solve the problem.
+   Why not?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+   Something has to tell each light when to switch on. How fast would that
+   signal have to travel?
+   :::
+
+3. At what distance would the blob in exercise 1 appear to move at exactly the
+   speed of light?
+
+:::
+
+## Apparent superluminal motion {#sec-superluminal}
+
+The explanation was worked out by Martin Rees in 1966, five years before the
+first observation [@rees1966]. It depends only on the fact that light takes
+time to reach us.
+
+:::: {.panel-tabset .tracks}
+
+### Physical intuition
+
+Picture a blob moving at nearly the speed of light, aimed close to, but not
+exactly at, us. It sends out a flash at point A. Over the next while it moves
+to point B, and sends out a second flash. **Because the blob has moved toward
+us, the second flash has less distance to travel than the first.** So the two
+flashes arrive at our telescope separated by much less time than actually
+passed between them.
+
+But we judge the blob's speed by how far it moved across the sky divided by the
+time between the two flashes *as we receive them*. The distance across the sky
+is real. The time is shortened, by the blob's head start in the race toward us.
+Divide a real distance by a shortened time, and the speed comes out too high,
+and when the blob is fast enough and the angle is small enough, faster than
+light.
+
+**This is not time dilation, and it is not any other effect of relativity.**
+The same thing would happen to sound, if a sound source moved toward you at
+nearly the speed of sound. Relativity enters in one place only: it is the
+reason the blob's real speed must be less than $c$, which is what makes the
+apparent speed a puzzle in the first place.
+
+### Mathematical explanation
+
+```{python}
+#| label: fig-geometry
+#| fig-cap: "The geometry of apparent superluminal motion. A blob moves from A to B at speed $\\beta c$, at an angle $\\theta$ to the line of sight; the observer is far below the figure. In a time $\\Delta t$, it moves $\\beta c\\,\\Delta t\\,\\sin\\theta$ across the sky and $\\beta c\\,\\Delta t\\,\\cos\\theta$ toward the observer, which is the head start that shortens the time between the two flashes."
+#| fig-alt: "A diagram with a vertical dashed line labeled line of sight, running downward to an arrow labeled to the observer. A point A sits at the top of the line. A solid arrow runs from A downward and to the right to a point B, labeled beta c delta t, at an angle theta to the vertical. A horizontal dotted segment from the vertical line to B is labeled beta c delta t sine theta, the motion across the sky. A vertical dotted segment along the line of sight from A down to the level of B is labeled beta c delta t cosine theta, the motion toward the observer."
+#| fig-height: 3.6
+
+fig, ax = plt.subplots(figsize=(4.6, 3.6))
+th = np.radians(25)
+L = 1.0
+A = np.array([0.0, 1.0])
+B = A + L * np.array([np.sin(th), -np.cos(th)])
+ax.plot([0, 0], [1.08, -0.45], ls="--", color=MUTED, lw=1)
+ax.annotate("", xy=(0, -0.55), xytext=(0, -0.3),
+            arrowprops=dict(arrowstyle="-|>", color=INK2, lw=1.2))
+ax.text(0.03, -0.56, "to the observer", color=INK2, fontsize=10, va="center")
+ax.text(-0.04, -0.12, "line of sight", color=MUTED, fontsize=10,
+        rotation=90, ha="right", va="center")
+ax.annotate("", xy=B, xytext=A,
+            arrowprops=dict(arrowstyle="-|>", color=BLUE, lw=2))
+ax.plot(*A, "o", color=INK, ms=6, zorder=3)
+ax.plot(*B, "o", color=INK, ms=6, zorder=3)
+ax.text(A[0] + 0.03, A[1] + 0.04, "A", fontsize=12)
+ax.text(B[0] + 0.03, B[1] - 0.02, "B", fontsize=12)
+ax.plot([0, B[0]], [B[1], B[1]], ls=":", color=ORANGE, lw=1.6)
+ax.text(B[0] / 2, B[1] - 0.07, r"$\beta c\,\Delta t\,\sin\theta$",
+        color=ORANGE, ha="center", va="top", fontsize=11)
+ax.plot([0.012, 0.012], [A[1], B[1]], ls=":", color=AQUA, lw=2.2)
+ax.text(-0.06, (A[1] + B[1]) / 2 - 0.15, r"$\beta c\,\Delta t\,\cos\theta$",
+        color=AQUA, ha="right", va="center", fontsize=11)
+ax.text(*(A + 0.55 * (B - A) + np.array([0.06, 0.03])), r"$\beta c\,\Delta t$",
+        color=BLUE, fontsize=11)
+arc = np.linspace(-np.pi / 2, -np.pi / 2 + th, 30)
+ax.plot(0.22 * np.cos(arc), A[1] + 0.22 * np.sin(arc), color=INK2, lw=1)
+ax.text(0.075, A[1] - 0.36, r"$\theta$", fontsize=11, ha="center")
+ax.set_xlim(-0.75, 0.75)
+ax.set_ylim(-0.65, 1.15)
+ax.set_aspect("equal")
+ax.axis("off")
+plt.show()
+```
+
+**Set up the geometry** of @fig-geometry. A blob moves at speed $v = \beta c$
+in a direction making an angle $\theta$ with our line of sight, with
+$\theta = 0$ straight at us. It emits a flash at A, and a time $\Delta t$ later,
+by the blob's own reckoning in the galaxy, emits another at B. In that time it
+has moved $\beta c\,\Delta t$, which splits into two pieces:
+
+* across the sky, $\beta c\,\Delta t \sin\theta$;
+* toward us, $\beta c\,\Delta t \cos\theta$.
+
+**The flash from B has less distance to travel**, by $\beta c\,\Delta t
+\cos\theta$, so it saves a time $\beta\,\Delta t \cos\theta$. The two flashes
+therefore arrive separated by
+
+$$
+\Delta t_{\mathrm{obs}} = \Delta t - \beta\,\Delta t\cos\theta
+  = \Delta t\,(1 - \beta\cos\theta) .
+$$ {#eq-tobs}
+
+**The apparent speed** is the distance across the sky divided by the time we
+measure:
+
+$$
+v_{\mathrm{app}} = \frac{\beta c\,\Delta t \sin\theta}{\Delta t\,(1 - \beta\cos\theta)} ,
+$$
+
+and dividing by $c$,
+
+$$
+\beta_{\mathrm{app}} = \frac{\beta\sin\theta}{1 - \beta\cos\theta} .
+$$ {#eq-betaapp}
+
+*Do the units make sense?* Both sides are speeds divided by $c$, pure numbers,
+so yes. For a slow blob, $\beta \ll 1$, the denominator is $1$ and
+$\beta_{\mathrm{app}} = \beta\sin\theta$, the ordinary projected speed. The
+denominator is what makes the difference: as $\beta \to 1$ and
+$\theta \to 0$, it goes to zero.
+
+**The fastest it can appear.** For a given $\beta$, which angle gives the
+largest $\beta_{\mathrm{app}}$? Differentiate @eq-betaapp with respect to
+$\theta$ and set the result to zero:
+
+$$
+\frac{\beta\cos\theta\,(1 - \beta\cos\theta) - \beta\sin\theta\,(\beta\sin\theta)}
+     {(1 - \beta\cos\theta)^2} = 0 .
+$$
+
+The denominator cannot vanish, so the top must. Dividing it by $\beta$,
+
+$$
+\cos\theta - \beta\left(\cos^2\theta + \sin^2\theta\right) = 0 ,
+$$
+
+and since $\cos^2\theta + \sin^2\theta = 1$,
+
+$$
+\cos\theta = \beta .
+$$
+
+Then $\sin\theta = \sqrt{1 - \beta^2} = 1/\gamma$, and putting both into
+@eq-betaapp,
+
+$$
+\beta_{\mathrm{app,max}} = \frac{\beta/\gamma}{1 - \beta^2} = \beta\gamma .
+$$ {#eq-betamax}
+
+So a jet with $\gamma = 10$ can appear to move at up to about $10c$, and the
+fastest apparent speeds tell us the smallest Lorentz factors the jets can have.
+
+**The slowest jet that can appear superluminal.** Setting
+$\beta\gamma = 1$ gives $\beta^2 = 1 - \beta^2$, or
+
+$$
+\beta = \frac{1}{\sqrt{2}} \approx 0.71 .
+$$ {#eq-betamin}
+
+**Below about $0.71c$, no angle makes a jet appear faster than light.** Above
+it, some range of angles always does.
+
+**Going backward.** What we measure is $\beta_{\mathrm{app}}$, and we want
+$\beta$. Solving @eq-betaapp for $\beta$,
+
+$$
+\beta = \frac{\beta_{\mathrm{app}}}{\sin\theta + \beta_{\mathrm{app}}\cos\theta} .
+$$ {#eq-betainv}
+
+This needs the angle, which is rarely known. But @eq-betamax gives a floor
+without it: since $\beta_{\mathrm{app}} \le \beta\gamma$, the real speed must
+satisfy $\beta\gamma \ge \beta_{\mathrm{app}}$, which is
+$\gamma \ge \sqrt{1 + \beta_{\mathrm{app}}^2}$.
+
+::: {.content-visible when-format="pdf"}
+{{< include ../../in_class/lec22/exercises00.qmd >}}
+:::
+
+### Numerical exploration
+
+@fig-bapp plots @eq-betaapp for four speeds, in the style of the slide from
+lecture. Each curve rises to a peak at $\cos\theta = \beta$, and the peak is
+$\beta\gamma$. The faster the jet, the taller and narrower its peak, and the
+closer to the line of sight it sits.
+
+```{python}
+#| label: fig-bapp
+#| fig-cap: "Apparent speed across the sky, $\\beta_{\\mathrm{app}}$, against the angle $\\theta$ between the jet and the line of sight, for jets with real speeds $\\beta = 0.5$, $0.8$, $0.95$ and $0.99$ (@eq-betaapp). The dotted line marks the speed of light; any part of a curve above it is apparent superluminal motion. Each dot is the curve's maximum, $\\beta\\gamma$, at $\\cos\\theta = \\beta$."
+#| fig-alt: "A chart of apparent speed, from 0 to 8, against angle to the line of sight, from 0 to 90 degrees. Four curves start at zero at zero degrees and rise to a peak before falling. The curve for beta 0.5, gray, stays well below 1 everywhere, peaking near 0.58 at 60 degrees. The curve for beta 0.8, aqua, peaks just above 1, at 1.33 near 37 degrees. The curve for beta 0.95, orange, peaks at about 3 near 18 degrees. The curve for beta 0.99, blue, rises steeply to a peak of about 7 at 8 degrees and then falls, dropping below 2 by about 55 degrees. A horizontal dotted line at 1 marks the speed of light. All four curves end at the real speed beta at 90 degrees."
+#| fig-height: 4.0
+
+betas = [0.5, 0.8, 0.95, 0.99]
+colors = [INK2, AQUA, ORANGE, BLUE]
+theta_deg = np.linspace(0.05, 90, 900)
+fig, ax = plt.subplots(figsize=(5.8, 4.0))
+for i, b in enumerate(betas):
+    col = colors[i % len(colors)]
+    ax.plot(theta_deg, beta_app(b, np.radians(theta_deg)), color=col, lw=2,
+            label=rf"$\beta = {b}$")
+    g = 1 / np.sqrt(1 - b**2)
+    ax.plot(np.degrees(np.arccos(b)), b * g, "o", color=col, ms=6, zorder=3)
+    print(f"beta = {b}: peak {b * g:.2f} at {np.degrees(np.arccos(b)):.1f} deg")
+ax.axhline(1, color=MUTED, ls=":", lw=1.2)
+ax.text(42, 0.92, "speed of light", color=MUTED, ha="center", va="top", fontsize=10)
+ax.set_xlim(0, 90)
+ax.set_ylim(0, 8)
+ax.set_xticks([0, 15, 30, 45, 60, 75, 90])
+ax.set_xlabel(r"angle to the line of sight $\theta$ (degrees)")
+ax.set_ylabel(r"apparent speed $\beta_{\mathrm{app}}$")
+ax.legend(fontsize=10, loc="upper right")
+plt.show()
+```
+
+### Turn the knobs
+
+::: {.content-visible when-format="pdf"}
+Students have a live, editable version of this cell in the web notes —
+remind them to try it.
+:::
+
+::: {.content-visible when-format="html"}
+
+The same plot, but editable: change the list of speeds on the line marked
+`# <- edit this` (line 7 of the cell), run it, and watch the peaks move. The
+cell also prints each peak, $\beta\gamma$, and the angle where it occurs. Try
+$0.7$ and $0.72$, on either side of @eq-betamin, and then $0.999$.
+
+```{pyodide}
+#| autorun: false
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+INK2, AQUA, ORANGE, BLUE, MUTED = "#52514e", "#1baf7a", "#eb6834", "#2a78d6", "#898781"
+
+betas = [0.5, 0.8, 0.95, 0.99]     # real speeds, in units of c  # <- edit this
+
+
+def beta_app(beta, theta):
+    """Apparent transverse speed, in units of c, of a blob moving at speed
+    beta (units of c) at angle theta (radians) to the line of sight."""
+    return beta * np.sin(theta) / (1 - beta * np.cos(theta))
+
+
+colors = [INK2, AQUA, ORANGE, BLUE]
+theta_deg = np.linspace(0.05, 90, 900)
+fig, ax = plt.subplots(figsize=(5.8, 4.0))
+for i, b in enumerate(betas):
+    col = colors[i % len(colors)]
+    ax.plot(theta_deg, beta_app(b, np.radians(theta_deg)), color=col, lw=2,
+            label=rf"$\beta = {b}$")
+    g = 1 / np.sqrt(1 - b**2)
+    ax.plot(np.degrees(np.arccos(b)), b * g, "o", color=col, ms=6, zorder=3)
+    print(f"beta = {b}: peak {b * g:.2f} at {np.degrees(np.arccos(b)):.1f} deg")
+ax.axhline(1, color=MUTED, ls=":", lw=1.2)
+ax.text(42, 0.92, "speed of light", color=MUTED, ha="center", va="top", fontsize=10)
+ax.set_xlim(0, 90)
+ax.set_ylim(0, 8)
+ax.set_xticks([0, 15, 30, 45, 60, 75, 90])
+ax.set_xlabel(r"angle to the line of sight $\theta$ (degrees)")
+ax.set_ylabel(r"apparent speed $\beta_{\mathrm{app}}$")
+ax.legend(fontsize=10, loc="upper right")
+plt.show()
+```
+
+:::
+
+::::
+
+::: {.callout-note .worked-example collapse="true" title="Worked example: a jet at 0.99c, ten degrees from the line of sight"}
+**The question.** A blob moves at $\beta = 0.99$, at $\theta = 10^{\circ}$ to
+our line of sight. For every year that passes in the galaxy, how much time
+passes between the flashes we receive, and how fast does the blob appear to
+move across the sky?
+
+Start with @eq-tobs, for $\Delta t = 1\ \mathrm{yr}$:
+
+$$
+\Delta t_{\mathrm{obs}} = \left(1\ \mathrm{yr}\right)
+  \left(1 - 0.99 \cos 10^{\circ}\right) .
+$$
+
+*Do the units make sense?* The bracket is a pure number, so the answer is in
+years, a time, so yes. Since $\cos 10^{\circ} = 0.9848$, the bracket is
+$1 - 0.9750 = 0.0250$, and
+
+$$
+\Delta t_{\mathrm{obs}} = 0.025\ \mathrm{yr} ,
+$$
+
+**about nine days.** A year of the blob's travel reaches us compressed into nine
+days. In that year, it moved across the sky by $\beta\sin\theta =
+0.99 \times 0.1736 = 0.172$ light-years. So, by @eq-betaapp,
+
+$$
+\beta_{\mathrm{app}} = \frac{0.172\ \mathrm{ly}}{0.0250\ \mathrm{yr}} = 6.9\ \mathrm{ly\,yr^{-1}} .
+$$
+
+A light-year per year is the speed of light, so the units are already a
+multiple of $c$.
+
+**About seven times the speed of light**, from a blob that is moving at less
+than it. By @eq-betamax, the most this blob could appear to move is
+$\beta\gamma = 0.99 \times 7.09 = 7.0$, at $\theta = 8.1^{\circ}$, so ten
+degrees is close to the best angle.
+:::
+
+::: {.callout-warning .textbook-watch title="Textbook watch: is it a relativistic effect?"}
+Kutner's §19.2.3 introduces this explanation as *"an alternative explanation,
+involving a special relativistic effect."* The derivation that follows uses no
+relativity at all: no time dilation, no length contraction, only the time light
+takes to travel. That is the right physics; the label is not. Relativity's only
+role is to forbid $\beta > 1$, which is why the effect needs explaining. Kutner's
+derivation itself, his equations 19.4 to 19.8, is the same as the one above.
+:::
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-superluminal}
+
+1. A jet blob moves at $\beta = 0.9$. Find its apparent speed at
+   $\theta = 20^{\circ}$, $45^{\circ}$ and $90^{\circ}$. Check the first
+   against @fig-bapp, or the "Turn the knobs" cell.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   The apparent speeds are $2.0$, $1.75$ and $0.90$. At $90^{\circ}$ the blob
+   is moving straight across the sky, gains no head start on its own light, and
+   appears to move at its real speed.
+   :::
+
+2. Find the largest apparent speed, and the angle at which it occurs, for jets
+   with $\beta = 0.99$ and $\beta = 0.999$.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   The largest apparent speed is $7.0$ at $8.1^{\circ}$ for $\beta = 0.99$,
+   and $22.3$ at $2.6^{\circ}$ for $\beta = 0.999$.
+   :::
+
+3. Show, starting from @eq-betaapp, that a jet with $\beta < 1/\sqrt{2}$
+   cannot appear superluminal at any angle.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+   You do not need to search over angles if you already know the largest
+   value $\beta_{\mathrm{app}}$ can take for a given $\beta$. When is that
+   largest value less than one?
+   :::
+
+4. A blob is measured to move at $\beta_{\mathrm{app}} = 4.0$, and from other
+   evidence the jet is known to lie at $10^{\circ}$ to the line of sight. What
+   is its real speed, and its Lorentz factor?
+
+5. The counterjet points away from us, at $180^{\circ} - \theta$. Can a blob in
+   it ever appear superluminal? Explain using @eq-betaapp.
+
+:::
+
+## Why we see only one jet {#sec-boosting}
+
+Jets come in pairs, fired out of both poles. Yet in the images, most jets are
+one-sided: a bright jet on one side of the core, and on the other side, faint
+emission or nothing at all. The explanation is lecture 6's **Doppler beaming**.
+
+Lecture 6 defined the **Doppler factor**
+$\mathcal{D} = 1/[(1 + v_r/c)\,\gamma]$, where $v_r$ is the velocity away from
+us, and showed that a moving source's brightness scales as $\mathcal{D}^4$.
+For a jet at angle $\theta$, the radial velocity is $v_r = -\beta c\cos\theta$
+for the approaching jet and $+\beta c\cos\theta$ for the receding one, so
+
+$$
+\mathcal{D}_{\mathrm{app}} = \frac{1}{\gamma\,(1 - \beta\cos\theta)} ,
+\qquad
+\mathcal{D}_{\mathrm{rec}} = \frac{1}{\gamma\,(1 + \beta\cos\theta)} .
+$$
+
+The approaching jet carries the same factor $1 - \beta\cos\theta$ that made it
+appear superluminal. The two jets are identical except for their direction, so
+the ratio of their brightnesses is
+
+$$
+\frac{F_{\mathrm{app}}}{F_{\mathrm{rec}}}
+  = \left(\frac{\mathcal{D}_{\mathrm{app}}}{\mathcal{D}_{\mathrm{rec}}}\right)^{4}
+  = \left(\frac{1 + \beta\cos\theta}{1 - \beta\cos\theta}\right)^{4} ,
+$$ {#eq-jetratio}
+
+and the factors of $\gamma$ cancel, as they did for the disk in lecture 6.
+The power of 4 is for a single blob, as in lecture 6. A steady, continuous jet,
+and a real synchrotron spectrum, give a somewhat smaller power, closer to 2 or
+3 [@urry1995], but the conclusion below does not change.
+
+::: {.callout-note .worked-example collapse="true" title="Worked example: how much fainter is the counterjet?"}
+**The question.** Two identical jets move at $\beta = 0.98$, at
+$\theta = 20^{\circ}$ to the line of sight. How many times brighter does the
+approaching jet appear than the receding one?
+
+Here $\beta\cos\theta = 0.98 \times 0.9397 = 0.9209$, so @eq-jetratio gives
+
+$$
+\frac{F_{\mathrm{app}}}{F_{\mathrm{rec}}}
+  = \left(\frac{1.9209}{0.0791}\right)^{4} = (24.3)^{4} .
+$$
+
+*Do the units make sense?* A ratio of two fluxes is a pure number, and so is
+everything on the right, so yes. The answer is
+
+$$
+\frac{F_{\mathrm{app}}}{F_{\mathrm{rec}}} = 3.5 \times 10^{5} .
+$$
+
+**About a third of a million.** With a power of 2 instead of 4 it would still
+be about $600$. Either way, an image good enough to show the approaching jet
+clearly is nowhere near good enough to show the other.
+:::
+
+@fig-boost shows @eq-jetratio against angle. For a jet across our line of sight,
+$\theta = 90^{\circ}$, the two sides are equally bright; within a few tens of
+degrees of the line of sight, the counterjet vanishes.
+
+```{python}
+#| label: fig-boost
+#| fig-cap: "The brightness of the approaching jet relative to the receding one, against the angle $\\theta$ between the jet and the line of sight, from @eq-jetratio, for real speeds $\\beta = 0.5$, $0.9$ and $0.99$. The vertical axis is logarithmic: each labeled step is a factor of a hundred. Only jets lying nearly across the sky show two sides of similar brightness."
+#| fig-alt: "A chart with a logarithmic vertical axis, from 1 to 10 to the tenth, against angle to the line of sight from 0 to 90 degrees. Three curves fall from left to right and all meet at a ratio of 1 at 90 degrees. The curve for beta 0.5, gray, starts near 80 at zero degrees. The curve for beta 0.9, aqua, starts near 10 to the fifth. The curve for beta 0.99, blue, starts above 10 to the ninth and is still above 10 to the fourth at 30 degrees."
+#| fig-height: 3.8
+
+betas_b = [0.5, 0.9, 0.99]
+colors_b = [INK2, AQUA, BLUE]
+fig, ax = plt.subplots(figsize=(5.8, 3.8))
+for b, col in zip(betas_b, colors_b):
+    bc = b * np.cos(np.radians(theta_deg))
+    ax.plot(theta_deg, ((1 + bc) / (1 - bc)) ** 4, color=col, lw=2,
+            label=rf"$\beta = {b}$")
+ax.set_yscale("log")
+ax.set_xlim(0, 90)
+ax.set_ylim(0.8, 1e10)
+ax.set_yticks([1, 1e2, 1e4, 1e6, 1e8, 1e10])
+ax.minorticks_off()
+ax.set_xticks([0, 15, 30, 45, 60, 75, 90])
+ax.set_xlabel(r"angle to the line of sight $\theta$ (degrees)")
+ax.set_ylabel(r"$F_{\mathrm{app}} / F_{\mathrm{rec}}$")
+ax.legend(fontsize=10, loc="upper right")
+plt.show()
+```
+
+**Beaming also selects what we find.** A jet pointed nearly at us is not only
+faster on the sky, it is far brighter, by a factor of $\mathcal{D}^4$ over what
+it would be at rest, and $\mathcal{D}$ can be $20$ or more. So the brightest
+jets in the radio sky are, out of all proportion, the ones that happen to point
+at us. These are the **blazars** of lecture 20, the type 1 view taken to its
+extreme: AGN seen straight down the jet, whose light is dominated by the jet
+and flickers on a timescale of days, compressed by the same factor
+$1 - \beta\cos\theta$. A sample chosen for brightness is a sample of jets
+aimed at the Earth, which is why so many of MOJAVE's jets are superluminal.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-boosting}
+
+1. Use @eq-jetratio to find how much brighter the approaching jet appears than
+   the receding one, for $\beta = 0.9$ at $\theta = 30^{\circ}$.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Answer"}
+   The bracket is $8.07$, so about $4200$.
+   :::
+
+2. Explain why the two jets of a source that lies at $\theta = 90^{\circ}$ look
+   the same however fast they are moving.
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+   What is the radial velocity of each jet at $90^{\circ}$? The time dilation
+   factor $\gamma$ is still there; why does it not make one jet brighter than
+   the other?
+   :::
+
+3. A survey of the brightest radio sources in the sky finds that most of them
+   have one-sided jets with superluminal blobs. Does that mean most jets in the
+   Universe point at us? Explain.
+
+:::
+
+## Where jets come from {#sec-launch}
+
+How a black hole makes a jet is not completely settled, but the outline is
+agreed: **jets are made by magnetic fields, wound up by rotation** [@blandford2019].
+
+Gas in an accretion disk carries magnetic field with it (lecture 16). Where
+that field reaches the inner disk and the black hole, rotation twists the field
+lines into a tight spiral along the spin axis, like a coiled spring, and the
+spring pushes plasma outward along the axis and squeezes it into a narrow beam.
+There are two places the energy can come from.
+
+* **The disk.** Field lines anchored in the rotating disk fling gas outward
+  along them, like beads on a spinning wire [@blandfordpayne1982].
+* **The black hole's spin.** Field lines that thread the horizon of a spinning
+  black hole are dragged around by the spacetime itself, in the ergosphere of
+  lecture 2, and that extracts the black hole's rotational energy
+  [@blandford1977]. This is the **Blandford–Znajek process**.
+
+Computer simulations of disks full of magnetic field around rapidly spinning
+black holes find jets whose power exceeds $\dot{M} c^2$, the whole rest-mass
+energy of the gas being accreted, which is only possible because the energy is
+coming from the spin [@tchekhovskoy2011]. That would make the efficiency of
+lecture 7, for the jet alone, larger than one. Whether real jets are powered
+this way is one of the things the Event Horizon Telescope's images of M87 are
+being used to test.
+
+::: {.content-visible when-format="html"}
+
+### Exercises {#sec-exercises-launch}
+
+1. A simulation finds a jet power of $1.4\,\dot{M}c^2$. Does this break
+   conservation of energy? Where does the energy come from, and what happens to
+   the black hole?
+
+   ::: {.callout-tip .help-hint collapse="true" title="Hint"}
+   Lecture 2 showed that part of a spinning black hole's mass is rotational
+   energy, and that it can in principle be extracted. If it is, what happens to
+   the spin?
+   :::
+
+:::
+
+## If you want to go further
+
+None of this section is needed for what comes before or after.
+
+**Kutner, §19.2.** The chapter 19 PDF in Canvas Files describes radio galaxies,
+their lobes and jets, and in §19.2.3 derives apparent superluminal motion, with
+the image of the quasar 3C 279's jet from @wehrle2001.
+
+**The MOJAVE movies.** The MOJAVE program [@lister2009] has posted animations of
+its VLBA images, one per jet, on its website at Purdue University. They show
+the blobs moving.
+
+**The reviews.** Begelman, Blandford and Rees [-@begelman1984] is the classic
+account of how radio sources work; Blandford, Meier and Readhead
+[-@blandford2019] is the modern one.
+
+## Summary
+
+| idea | result | why it matters |
+|:---|:---|:---|
+| Jets | narrow, two-sided, synchrotron-emitting streams | found around young stars, stellar black holes and supermassive ones |
+| Jet speeds | $\gamma \approx 10$–$20$ for AGN | the fastest large things known |
+| Jet power | kinetic power is many times the radiated power | jets can heat their surroundings |
+| Interferometry | $\theta \approx \lambda/B$ | VLBI resolves a fraction of a milliarcsecond |
+| Proper motion | $v_{\mathrm{app}} = d\,\mathrm{d}\phi/\mathrm{d}t$ | blobs appear to move faster than light |
+| Superluminal motion | $\beta_{\mathrm{app}} = \beta\sin\theta/(1 - \beta\cos\theta)$ | light-travel time, not new physics |
+| Maximum apparent speed | $\beta\gamma$, at $\cos\theta = \beta$ | a floor on the Lorentz factor |
+| Slowest superluminal jet | $\beta = 1/\sqrt{2}$ | below it, no angle works |
+| One-sided jets | $F_{\mathrm{app}}/F_{\mathrm{rec}} = [(1 + \beta\cos\theta)/(1 - \beta\cos\theta)]^4$ | the counterjet is lost; blazars are jets aimed at us |
+| Launching | magnetic fields wound up by the disk or the spin | a jet can tap the black hole's rotational energy |
+
+A jet that appears to move faster than light is a jet moving at nearly the speed
+of light toward us, chasing its own light. Everything that made it look fast,
+the head start on its light, also makes it look bright, and makes the jet that
+points away from us all but invisible. That leaves one question about black
+holes that this course has not yet touched: what happens at the horizon when
+quantum mechanics is taken into account. Next time, black holes get a
+temperature.
+
+::: {.content-visible when-format="html"}
+## References {.unnumbered}
+
+:::: {#refs}
+::::
+:::
+
+::: {.content-visible when-format="pdf"}
+
+```{=latex}
+\clearpage
+\tableofcontents
+```
+:::

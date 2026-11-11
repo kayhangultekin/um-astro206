@@ -33,6 +33,7 @@ project:
     - lectures/galactic-center/index.qmd
     - lectures/active-galactic-nuclei/index.qmd
     - lectures/agn-feedback/index.qmd
+    - lectures/relativistic-jets/index.qmd
   # No `resources:` entry for fonts/ is needed. Quarto follows the url()
   # references in the theme SCSS and copies those files next to the compiled
   # CSS itself. Adding fonts/ here published a SECOND copy at _site/fonts/,
@@ -120,6 +121,8 @@ website:
             text: "Active galactic nuclei and the unified model"
           - href: lectures/agn-feedback/index.qmd
             text: "M–σ and AGN feedback"
+          - href: lectures/relativistic-jets/index.qmd
+            text: "Relativistic jets and superluminal motion"
 
 format:
   live-html:
